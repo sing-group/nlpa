@@ -1,0 +1,324 @@
+WARC/1.0
+WARC-Type: warcinfo
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Filename: 20180313121017061.warc
+WARC-Record-ID: <urn:uuid:65cc9a92-cdb5-7764-d6ba-ba255eaebb9e>
+Content-Type: application/warc-fields
+Content-Length: 457
+
+software: WARCreate/0.2017.6.6 http://warcreate.com
+format: WARC File Format 1.0
+conformsTo: http://bibnum.bnf.fr/WARC/WARC_ISO_28500_version1_latestdraft.pdf
+isPartOf:  basic
+description:  Crawl initiated from the WARCreate Google Chrome extension
+robots: ignore
+http-header-user-agent:  Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+http-header-from: warcreate@matkelly.com 
+
+
+
+WARC/1.0
+WARC-Type: request
+WARC-Target-URI: http://allorganic.eu/YbRNZ/
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:72b25389-261f-2196-61a8-7791e45ffaf7>
+WARC-Record-ID: <urn:uuid:04854f5e-10c3-d8d5-32c7-efbbe4221b22>
+Content-Type: application/http; msgtype=request
+Content-Length: 344
+
+GET /YbRNZ/ HTTP/1.1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: es-419,es;q=0.9
+
+
+
+WARC/1.0
+WARC-Type: metadata
+WARC-Target-URI: http://allorganic.eu/YbRNZ/
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:dddc4ba2-c1e1-459b-8d0d-a98a20b87e96>
+WARC-Record-ID: <urn:uuid:6fef2a49-a9ba-4b40-9f4a-5ca5db1fd5c6>
+Content-Type: application/warc-fields
+Content-Length: 0
+
+
+
+WARC/1.0
+WARC-Type: response
+WARC-Target-URI: http://allorganic.eu/YbRNZ/
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Record-ID: <urn:uuid:b5b06b00-79f5-4f73-516b-1118d5dbb778>
+Content-Type: application/http; msgtype=response
+Content-Length: 559
+
+HTTP/1.1 200 OK
+Cache-Control: no-cache
+Pragma: no-cache
+Content-Type: text/html; charset=utf-8
+Expires: -1
+Vary: Accept-Encoding
+Server: Microsoft-IIS/7.5
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+Date: Tue, 13 Mar 2018 12:10:07 GMT
+Age: 1
+X-Cache: MISS from proxy.uvigo.es
+X-Cache-Lookup: MISS from proxy.uvigo.es:3333
+Via: 1.0 proxy.uvigo.es:3333 (squid)
+Connection: keep-alive
+Proxy-Connection: keep-alive
+Transfer-Encoding: chunked
+
+<html><head></head><body>This domain is currently not approved for CashParking.</body></html>
+
+
+WARC/1.0
+WARC-Type: request
+WARC-Target-URI: https://www.google.es/gen_204?atyp=csi&ei=D7unWtDgNMmysQH0sZ7QDg&s=newtab&adh=&conn=onchange&ima=1&ime=0&imeb=0&imeo=0&mem=ujhs.10,tjhs.10,jhsl.2190&rt=aft.98,ol.106,prt.99,xjs.384,xjsee.383,xjses.180,xjsls.124,wsrt.714,cst.0,dnst.0,rqst.41,rspt.8,rqstt.613,unt.19,cstt.19,dit.817&zx=1520942996061
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:72b25389-261f-2196-61a8-7791e45ffaf7>
+WARC-Record-ID: <urn:uuid:853ea8c5-11f2-21a4-3e72-a04c44a4adde>
+Content-Type: application/http; msgtype=request
+Content-Length: 855
+
+POST /gen_204?atyp=csi&ei=D7unWtDgNMmysQH0sZ7QDg&s=newtab&adh=&conn=onchange&ima=1&ime=0&imeb=0&imeo=0&mem=ujhs.10,tjhs.10,jhsl.2190&rt=aft.98,ol.106,prt.99,xjs.384,xjsee.383,xjses.180,xjsls.124,wsrt.714,cst.0,dnst.0,rqst.41,rspt.8,rqstt.613,unt.19,cstt.19,dit.817&zx=1520942996061 HTTP/1.1
+Accept: */*
+Origin: https://www.google.es
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Content-Type: text/plain;charset=UTF-8
+Referer: https://www.google.es/_/chrome/newtab?ie=UTF-8
+Accept-Encoding: gzip, deflate, br
+Accept-Language: es-419,es;q=0.9
+Cookie: CONSENT=YES+ES.es-419+V7; NID=125=rDzu83LXapIROIJWP0fX3CvtdoqgGn3ZPHmsYrUAx8D3BWTI7YjGpA3aT3FGs7J3jVP-4dv8kF18EgJlKm_W1cVPdqLfrzuWAYiHX8jlaehod2UQpRPwmHq0XDCjOWfDbLIbFmZr8D8D9f4lVOk5-DWuc_6v; 1P_JAR=2018-3-13-11
+
+
+
+WARC/1.0
+WARC-Type: request
+WARC-Target-URI: https://www.google.es/async/newtab?ei=D7unWtDgNMmysQH0sZ7QDg&yv=2&async=xid:1,_fmt:json
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:72b25389-261f-2196-61a8-7791e45ffaf7>
+WARC-Record-ID: <urn:uuid:af6165d0-55e5-a397-018a-bac524908ddd>
+Content-Type: application/http; msgtype=request
+Content-Length: 573
+
+GET /async/newtab?ei=D7unWtDgNMmysQH0sZ7QDg&yv=2&async=xid:1,_fmt:json HTTP/1.1
+Accept: */*
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Referer: https://www.google.es/_/chrome/newtab?ie=UTF-8
+Accept-Encoding: gzip, deflate, br
+Accept-Language: es-419,es;q=0.9
+Cookie: CONSENT=YES+ES.es-419+V7; NID=125=rDzu83LXapIROIJWP0fX3CvtdoqgGn3ZPHmsYrUAx8D3BWTI7YjGpA3aT3FGs7J3jVP-4dv8kF18EgJlKm_W1cVPdqLfrzuWAYiHX8jlaehod2UQpRPwmHq0XDCjOWfDbLIbFmZr8D8D9f4lVOk5-DWuc_6v; 1P_JAR=2018-3-13-11
+
+
+
+WARC/1.0
+WARC-Type: request
+WARC-Target-URI: https://www.google.es/gen_204?atyp=csi&ei=D7unWtDgNMmysQH0sZ7QDg&s=newtab&action=perf&conn=onchange&ima=1&ime=0&imeb=0&imeo=0&mem=ujhs.10,tjhs.10,jhsl.2190&rt=aft.508,nti.342,fbd.354,thd.367,dbi.462,mvtr.553,wsrt.715,cst.0,dnst.0,rqst.41,rspt.8,rqstt.613,unt.19,cstt.19,dit.817&zx=1520942996210
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:72b25389-261f-2196-61a8-7791e45ffaf7>
+WARC-Record-ID: <urn:uuid:d01322eb-8020-7a43-0d8f-44b85acecc97>
+Content-Type: application/http; msgtype=request
+Content-Length: 852
+
+POST /gen_204?atyp=csi&ei=D7unWtDgNMmysQH0sZ7QDg&s=newtab&action=perf&conn=onchange&ima=1&ime=0&imeb=0&imeo=0&mem=ujhs.10,tjhs.10,jhsl.2190&rt=aft.508,nti.342,fbd.354,thd.367,dbi.462,mvtr.553,wsrt.715,cst.0,dnst.0,rqst.41,rspt.8,rqstt.613,unt.19,cstt.19,dit.817&zx=1520942996210 HTTP/1.1
+Accept: */*
+Origin: https://www.google.es
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Content-Type: text/plain;charset=UTF-8
+Referer: https://www.google.es/_/chrome/newtab?ie=UTF-8
+Accept-Encoding: gzip, deflate, br
+Accept-Language: es-419,es;q=0.9
+Cookie: CONSENT=YES+ES.es-419+V7; NID=125=rDzu83LXapIROIJWP0fX3CvtdoqgGn3ZPHmsYrUAx8D3BWTI7YjGpA3aT3FGs7J3jVP-4dv8kF18EgJlKm_W1cVPdqLfrzuWAYiHX8jlaehod2UQpRPwmHq0XDCjOWfDbLIbFmZr8D8D9f4lVOk5-DWuc_6v; 1P_JAR=2018-3-13-11
+
+
+
+WARC/1.0
+WARC-Type: request
+WARC-Target-URI: https://www.google.es/gen_204?atyp=csi&ei=D7unWtDgNMmysQH0sZ7QDg&s=async&astyp=newtab&rt=fr.6,ft.203&zx=1520942996333
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:72b25389-261f-2196-61a8-7791e45ffaf7>
+WARC-Record-ID: <urn:uuid:0751bd2a-c86d-c726-dcbb-0fd9ec2ba0b4>
+Content-Type: application/http; msgtype=request
+Content-Length: 675
+
+POST /gen_204?atyp=csi&ei=D7unWtDgNMmysQH0sZ7QDg&s=async&astyp=newtab&rt=fr.6,ft.203&zx=1520942996333 HTTP/1.1
+Accept: */*
+Origin: https://www.google.es
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Content-Type: text/plain;charset=UTF-8
+Referer: https://www.google.es/_/chrome/newtab?ie=UTF-8
+Accept-Encoding: gzip, deflate, br
+Accept-Language: es-419,es;q=0.9
+Cookie: CONSENT=YES+ES.es-419+V7; NID=125=rDzu83LXapIROIJWP0fX3CvtdoqgGn3ZPHmsYrUAx8D3BWTI7YjGpA3aT3FGs7J3jVP-4dv8kF18EgJlKm_W1cVPdqLfrzuWAYiHX8jlaehod2UQpRPwmHq0XDCjOWfDbLIbFmZr8D8D9f4lVOk5-DWuc_6v; 1P_JAR=2018-3-13-11
+
+
+
+WARC/1.0
+WARC-Type: request
+WARC-Target-URI: https://www.google.es/gen_204?atyp=csi&ei=D7unWtDgNMmysQH0sZ7QDg&s=newtab&action=update&conn=onchange&ima=1&ime=0&imeb=0&imeo=0&mem=ujhs.10,tjhs.10,jhsl.2190&rt=aft.20,xhrf.198,wsrt.1203,cst.0,dnst.0,rqst.41,rspt.8,rqstt.613,unt.19,cstt.19,dit.817&zx=1520942996341
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:72b25389-261f-2196-61a8-7791e45ffaf7>
+WARC-Record-ID: <urn:uuid:fd55eec2-d0f3-de25-4828-31c44c63503f>
+Content-Type: application/http; msgtype=request
+Content-Length: 822
+
+POST /gen_204?atyp=csi&ei=D7unWtDgNMmysQH0sZ7QDg&s=newtab&action=update&conn=onchange&ima=1&ime=0&imeb=0&imeo=0&mem=ujhs.10,tjhs.10,jhsl.2190&rt=aft.20,xhrf.198,wsrt.1203,cst.0,dnst.0,rqst.41,rspt.8,rqstt.613,unt.19,cstt.19,dit.817&zx=1520942996341 HTTP/1.1
+Accept: */*
+Origin: https://www.google.es
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Content-Type: text/plain;charset=UTF-8
+Referer: https://www.google.es/_/chrome/newtab?ie=UTF-8
+Accept-Encoding: gzip, deflate, br
+Accept-Language: es-419,es;q=0.9
+Cookie: CONSENT=YES+ES.es-419+V7; NID=125=rDzu83LXapIROIJWP0fX3CvtdoqgGn3ZPHmsYrUAx8D3BWTI7YjGpA3aT3FGs7J3jVP-4dv8kF18EgJlKm_W1cVPdqLfrzuWAYiHX8jlaehod2UQpRPwmHq0XDCjOWfDbLIbFmZr8D8D9f4lVOk5-DWuc_6v; 1P_JAR=2018-3-13-11
+
+
+
+WARC/1.0
+WARC-Type: request
+WARC-Target-URI: https://www.google.com/searchdomaincheck?format=domain&type=chrome
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:72b25389-261f-2196-61a8-7791e45ffaf7>
+WARC-Record-ID: <urn:uuid:6f0ba299-68a6-6bc4-f474-3f2957306bcc>
+Content-Type: application/http; msgtype=request
+Content-Length: 456
+
+GET /searchdomaincheck?format=domain&type=chrome HTTP/1.1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Accept-Encoding: gzip, deflate, br
+Accept-Language: es-419,es;q=0.9
+Cookie: CONSENT=YES+ES.es-419+V7; NID=120=BLhjLmNB6I-oDyRh8v2VrpDaZhkYFAzy9YLdx1oMADD6gCkQDyge5qSsJb-sFoi2FDFn50bG0IMT4JZxFdVtieGoNLjsO7HfepRKk4gKt08cKXrR48bYcy6vQnoTmtMqHI_Cnb5iVUY8Yz_nqqlcPLiU
+
+
+
+WARC/1.0
+WARC-Type: request
+WARC-Target-URI: https://www.google.es/complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=&oit=0&pgcl=7&gs_rn=42&psi=53Ubs7ks3XtTpcwl&sugkey=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:72b25389-261f-2196-61a8-7791e45ffaf7>
+WARC-Record-ID: <urn:uuid:3bc5417c-3958-a580-f6d1-4d081a9aa22a>
+Content-Type: application/http; msgtype=request
+Content-Length: 594
+
+GET /complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=&oit=0&pgcl=7&gs_rn=42&psi=53Ubs7ks3XtTpcwl&sugkey=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw HTTP/1.1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Accept-Encoding: gzip, deflate, br
+Accept-Language: es-419,es;q=0.9
+Cookie: CONSENT=YES+ES.es-419+V7; NID=125=rDzu83LXapIROIJWP0fX3CvtdoqgGn3ZPHmsYrUAx8D3BWTI7YjGpA3aT3FGs7J3jVP-4dv8kF18EgJlKm_W1cVPdqLfrzuWAYiHX8jlaehod2UQpRPwmHq0XDCjOWfDbLIbFmZr8D8D9f4lVOk5-DWuc_6v; 1P_JAR=2018-3-13-11
+
+
+
+WARC/1.0
+WARC-Type: request
+WARC-Target-URI: https://www.google.es/complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=http%3A%2F%2Fallorganic.eu&oit=3&cp=20&pgcl=7&gs_rn=42&psi=53Ubs7ks3XtTpcwl&sugkey=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:72b25389-261f-2196-61a8-7791e45ffaf7>
+WARC-Record-ID: <urn:uuid:74c07906-9dac-62cd-1a3e-34edc7331d57>
+Content-Type: application/http; msgtype=request
+Content-Length: 626
+
+GET /complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=http%3A%2F%2Fallorganic.eu&oit=3&cp=20&pgcl=7&gs_rn=42&psi=53Ubs7ks3XtTpcwl&sugkey=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw HTTP/1.1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Accept-Encoding: gzip, deflate, br
+Accept-Language: es-419,es;q=0.9
+Cookie: CONSENT=YES+ES.es-419+V7; NID=125=rDzu83LXapIROIJWP0fX3CvtdoqgGn3ZPHmsYrUAx8D3BWTI7YjGpA3aT3FGs7J3jVP-4dv8kF18EgJlKm_W1cVPdqLfrzuWAYiHX8jlaehod2UQpRPwmHq0XDCjOWfDbLIbFmZr8D8D9f4lVOk5-DWuc_6v; 1P_JAR=2018-3-13-11
+
+
+
+WARC/1.0
+WARC-Type: request
+WARC-Target-URI: https://www.google.es/gen_204?atyp=i&ct=nfkbx&cad=&ei=D7unWtDgNMmysQH0sZ7QDg&zx=1520943005150
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:72b25389-261f-2196-61a8-7791e45ffaf7>
+WARC-Record-ID: <urn:uuid:3d6c43f2-332c-950e-1908-9bd50c76754f>
+Content-Type: application/http; msgtype=request
+Content-Length: 615
+
+GET /gen_204?atyp=i&ct=nfkbx&cad=&ei=D7unWtDgNMmysQH0sZ7QDg&zx=1520943005150 HTTP/1.1
+Accept: image/webp,image/apng,image/*,*/*;q=0.8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Referer: https://www.google.es/_/chrome/newtab?ie=UTF-8
+Accept-Encoding: gzip, deflate, br
+Accept-Language: es-419,es;q=0.9
+Cookie: CONSENT=YES+ES.es-419+V7; NID=125=rDzu83LXapIROIJWP0fX3CvtdoqgGn3ZPHmsYrUAx8D3BWTI7YjGpA3aT3FGs7J3jVP-4dv8kF18EgJlKm_W1cVPdqLfrzuWAYiHX8jlaehod2UQpRPwmHq0XDCjOWfDbLIbFmZr8D8D9f4lVOk5-DWuc_6v; 1P_JAR=2018-3-13-11
+
+
+
+WARC/1.0
+WARC-Type: request
+WARC-Target-URI: https://www.google.es/_/chrome/newtab-serviceworker.js
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:72b25389-261f-2196-61a8-7791e45ffaf7>
+WARC-Record-ID: <urn:uuid:02a65db7-3bc6-7476-44df-68cf0d08e4af>
+Content-Type: application/http; msgtype=request
+Content-Length: 572
+
+GET /_/chrome/newtab-serviceworker.js HTTP/1.1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Accept: */*
+Service-Worker: script
+Referer: https://www.google.es/_/chrome/newtab-serviceworker.js
+Accept-Encoding: gzip, deflate, br
+Accept-Language: es-419,es;q=0.9
+Cookie: CONSENT=YES+ES.es-419+V7; NID=125=rDzu83LXapIROIJWP0fX3CvtdoqgGn3ZPHmsYrUAx8D3BWTI7YjGpA3aT3FGs7J3jVP-4dv8kF18EgJlKm_W1cVPdqLfrzuWAYiHX8jlaehod2UQpRPwmHq0XDCjOWfDbLIbFmZr8D8D9f4lVOk5-DWuc_6v; 1P_JAR=2018-3-13-11
+
+
+
+WARC/1.0
+WARC-Type: request
+WARC-Target-URI: http://allorganic.eu/
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:72b25389-261f-2196-61a8-7791e45ffaf7>
+WARC-Record-ID: <urn:uuid:0b472f09-6185-7909-ac52-d4eda6d02f61>
+Content-Type: application/http; msgtype=request
+Content-Length: 338
+
+GET / HTTP/1.1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: es-419,es;q=0.9
+
+
+
+WARC/1.0
+WARC-Type: request
+WARC-Target-URI: http://allorganic.eu/mcPTU/
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:72b25389-261f-2196-61a8-7791e45ffaf7>
+WARC-Record-ID: <urn:uuid:c7c3c6d1-1ca0-1ced-ab59-59691e51c2ed>
+Content-Type: application/http; msgtype=request
+Content-Length: 344
+
+GET /mcPTU/ HTTP/1.1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: es-419,es;q=0.9
+
+
+
+WARC/1.0
+WARC-Type: request
+WARC-Target-URI: http://allorganic.eu/favicon.ico
+WARC-Date: 2018-03-13T12:10:17Z
+WARC-Concurrent-To: <urn:uuid:72b25389-261f-2196-61a8-7791e45ffaf7>
+WARC-Record-ID: <urn:uuid:92c9733c-135c-220a-efef-7e49bf420d42>
+Content-Type: application/http; msgtype=request
+Content-Length: 311
+
+GET /favicon.ico HTTP/1.1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Accept: image/webp,image/apng,image/*,*/*;q=0.8
+Referer: http://allorganic.eu/YbRNZ/
+Accept-Encoding: gzip, deflate
+Accept-Language: es-419,es;q=0.9
+
+
+
