@@ -21,7 +21,7 @@ package gnu.trove;
 /**
  * Base class for hashtables that use open addressing to resolve
  * collisions.
- * <p>
+ *
  * Created: Wed Nov 28 21:11:16 2001
  *
  * @author Eric D. Friedman
@@ -33,13 +33,11 @@ abstract public class THash implements Cloneable {
      * the load above which rehashing occurs.
      */
     protected static final float DEFAULT_LOAD_FACTOR = 0.5f;
-    /**
-     * the default initial capacity for the hash table.  This is one
+    /** the default initial capacity for the hash table.  This is one
      * less than a prime value because one is added to it when
      * searching for a prime capacity to account for the free slot
      * required by open addressing. Thus, the real default capacity is
-     * 11.
-     */
+     * 11. */
     protected static final int DEFAULT_INITIAL_CAPACITY = 10;
     /**
      * the current number of occupied slots in the hash.
@@ -49,8 +47,7 @@ abstract public class THash implements Cloneable {
      * the current number of free slots in the hash.
      */
     protected transient int _free;
-    /**
-     * Determines how full the internal table can become before
+    /** Determines how full the internal table can become before
      * rehashing is required. This must be a value in the range: 0.0 <
      * loadFactor < 1.0.  The default value is 0.5, which is about as
      * large as you can get in open addressing without hurting
@@ -90,7 +87,7 @@ abstract public class THash implements Cloneable {
      * a rehash.
      *
      * @param initialCapacity an <code>int</code> value
-     * @param loadFactor      a <code>float</code> value
+     * @param loadFactor a <code>float</code> value
      */
     public THash(int initialCapacity, float loadFactor) {
         super();
@@ -152,11 +149,11 @@ abstract public class THash implements Cloneable {
      * operations and plan to do a lot of queries or insertions or
      * iteration, it is a good idea to invoke this method.  Doing so
      * will accomplish two things:
-     * <p>
+     *
      * <ol>
      * <li> You'll free memory allocated to the table but no
      * longer needed because of the remove()s.</li>
-     * <p>
+     *
      * <li> You'll get better query/insert/iterator performance
      * because there won't be any <tt>REMOVED</tt> slots to skip
      * over when probing for indices in the table.</li>
@@ -169,7 +166,7 @@ abstract public class THash implements Cloneable {
     }
 
     /**
-     * This simply calls {@link #compact compact}.  It is included for
+     * This simply calls {@link #compact compact}.  It is included for 
      * symmetry with other collection classes.  Note that the name of this
      * method is somewhat misleading (which is why we prefer
      * <tt>compact</tt>) as the load factor may require capacity above
@@ -201,7 +198,7 @@ abstract public class THash implements Cloneable {
 
     /**
      * initializes the hashtable to a prime capacity which is at least
-     * <tt>initialCapacity + 1</tt>.
+     * <tt>initialCapacity + 1</tt>.  
      *
      * @param initialCapacity an <code>int</code> value
      * @return the actual capacity chosen

@@ -14,22 +14,6 @@ import es.uvigo.esei.ia.util.PropertyList;
  * reads from and writes to, but usually a pipe will read its input from and write
  * its output to the "data" field of an instance.
  * <p>
- * A pipe doesn't have any direct notion of input or output - it merely modifies instances
- * that are handed to it.  A set of helper classes, subclasses of {@link es.uvigo.esei.ia.pipe.iterator.AbstractPipeInputIterator},
- * iterate over commonly encountered input data structures and feed the elements of these
- * data structures to a pipe as instances.
- * <p>
- * A pipe is frequently used in conjunction with an {@link es.uvigo.esei.ia.types.InstanceList}  As instances are added
- * to the list, they are processed by the pipe associated with the instance list and
- * the processed Instance is kept in the list.
- * <p>
- * In one common usage, a {@link es.uvigo.esei.pipe.iterator.FileIterator} is given a list of directories to operate over.
- * The FileIterator walks through each directory, creating an instance for each
- * file and putting the data from the file in the data field of the instance.
- * The directory of the file is stored in the target field of the instance.  The
- * FileIterator feeds instances to an InstanceList, which processes the instances through
- * its associated pipe and keeps the results.
- * <p>
  * Pipes can be hierachically composed. In a typical usage, a SerialPipe is created which
  * holds instances of other pipes in an ordered list. Piping
  * in instance through a SerialPipe means piping the instance through the child pipes
@@ -75,11 +59,11 @@ public abstract class Pipe {
      * @param name       Object used to initialize name field of new instance.
      * @param source     Object used to initialize source field of new instance.
      * @param parent     Unused
-     * @param properties Unused
+     * @param props      Unused
      */
     public Instance pipe(Object data, Object target, Object name,
                          Object source, Instance parent,
-                         PropertyList properties) {
+                         PropertyList props) {
 
         return pipe(new Instance(data, target, name, source));
     }

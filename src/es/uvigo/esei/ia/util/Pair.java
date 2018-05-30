@@ -1,7 +1,5 @@
 package es.uvigo.esei.ia.util;
 
-import com.sleepycat.persist.model.Persistent;
-
 import java.io.Serializable;
 
 /**
@@ -11,7 +9,6 @@ import java.io.Serializable;
  * Implementa un par de objetos
  * @since JDK 1.5
  */
-@Persistent
 public final class Pair<T1, T2> implements Serializable {
 
     /**
