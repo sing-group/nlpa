@@ -10,7 +10,9 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Program started.");
-        generateInstances();
+		
+		if (args.length==0) generateInstances("tests/");
+		else generateInstances(args[0]);
 
         for (Instance i : instances) {
             System.out.println(((File) i.getData()).getPath());
@@ -18,13 +20,13 @@ public class Main {
 
     }
 
-    private static void generateInstances() {
+    private static void generateInstances(String testDir) {
         String[] folders = {"hsspam14", "smsspamcollection", "spamassassin", "www", "youtube"};
         String[] targets = {"ham", "spam"};
 
         for (String folder : folders) {
             for (String target : targets) {
-                listFilesForFolder(new File("tests/" + folder + "/_" + target + "_"), target);
+                listFilesForFolder(new File(testDir + folder + "/_" + target + "_"), target);
             }
         }
     }
