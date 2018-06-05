@@ -9,7 +9,10 @@ import java.io.IOException;
 import java.io.Writer;
 
 import org.w3c.tidy.Tidy;
-
+/**
+ * This pipe drops HTML tags and changes entities by their corresponding character
+ * @author José Ramón Méndez Reboredo
+ */
 public class StripHTMLFromStringBufferPipe extends Pipe {
 
     public StripHTMLFromStringBufferPipe() {
