@@ -17,6 +17,14 @@ public class Main {
         for (Instance i : instances) {
             System.out.println(((File) i.getData()).getPath());
         }
+		
+		/*create a example of pipe*/
+		Pipe p=new SerialPipes();
+
+        /*Pipe all instances*/
+		for (Instace i:instances){
+			p.pipe(i);
+		}
 
     }
 
