@@ -1,4 +1,6 @@
 import es.uvigo.esei.ia.types.Instance;
+import es.uvigo.esei.pipe.*;
+import es.uvigo.esei.pipe.impl.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,10 +21,12 @@ public class Main {
         }
 		
 		/*create a example of pipe*/
-		Pipe p=new SerialPipes();
+		SerialPipes p=new SerialPipes();
+		
+		p.add(new File2StringBufferPipe());	
 
         /*Pipe all instances*/
-		for (Instace i:instances){
+		for (Instance i:instances){
 			p.pipe(i);
 		}
 

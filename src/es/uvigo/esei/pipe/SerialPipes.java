@@ -98,7 +98,7 @@ public class SerialPipes extends Pipe implements Serializable {
             (pipes.get(i)).setTargetProcessing(lookForAndProcessTarget);
     }
 
-    protected void add(Pipe pipe) {
+    public void add(Pipe pipe) {
         pipe.setParent(this);
         pipes.add(pipe);
     }
