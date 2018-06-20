@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Properties;
 
+import es.uvigo.esei.util.EMLTextExtractor;
+
 public class Main {
     private static ArrayList<Instance> instances = new ArrayList<>();
 
@@ -15,6 +17,11 @@ public class Main {
 		
 		if (args.length==0) generateInstances("tests/");
 		else generateInstances(args[0]);
+
+
+        //Configurations
+		EMLTextExtractor.setCfgPartSelectedOnAlternative("text/plain");
+
 
         for (Instance i : instances) {
             System.out.println(((File) i.getData()).getPath());
