@@ -142,7 +142,7 @@ public class EMLTextExtractor extends TextExtractor{
 								    CharsetDetector detector = new CharsetDetector();
 								    detector.setText(contents);
  					                CharsetMatch cm = detector.detect();
-									logger.warn("Charset guesed: "+cm.getName()+" for "+f.getAbsolutePath()+" Content type: "+contentType);
+									logger.warn("Charset guesed: "+cm.getName()+" [confidence="+cm.getConfidence()+"/100]for "+f.getAbsolutePath()+" Content type: "+contentType);
 									sbResult.append(new String(contents, Charset.forName(cm.getName())));
 								}
 

@@ -44,7 +44,7 @@ public class TSMSTextExtractor extends TextExtractor{
 	      CharsetDetector detector = new CharsetDetector();
 	      detector.setText(contents);
           CharsetMatch cm = detector.detect();
-		  logger.info("Charset guesed: "+cm.getName()+" for "+f.getAbsolutePath());
+		  logger.info("Charset guesed: "+cm.getName()+"[confidence="+cm.getConfidence()+"/100] for "+f.getAbsolutePath());
 		  sbResult.append(new String(contents, Charset.forName(cm.getName())));		
 		  is.close();
 		} catch (IOException e){
