@@ -40,7 +40,7 @@ public class File2StringBufferPipe extends Pipe {
     @Override
     public Instance pipe(Instance carrier) {
         if ( carrier.getData() instanceof File){
-            String [] extensions = {"eml", "sms", "tsms", "warc", "tytb", "twtid", "ttwt"};
+            String [] extensions = {"eml", "tsms", "sms", "warc", "tytb", "twtid", "ttwt"};
             String value = "";
             String name = ((String)carrier.getName()).toLowerCase();
             int i = 0;
