@@ -1,13 +1,13 @@
-import es.uvigo.esei.ia.types.Instance;
-import es.uvigo.esei.pipe.*;
-import es.uvigo.esei.pipe.impl.*;
+import org.ski4spam.pipe.impl.File2StringBufferPipe;
+import org.ski4spam.pipe.SerialPipes;
+import org.ski4spam.ia.types.Instance;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Properties;
 
-import es.uvigo.esei.util.EMLTextExtractor;
+import org.ski4spam.util.EMLTextExtractor;
 
 public class Main {
     private static ArrayList<Instance> instances = new ArrayList<>();
