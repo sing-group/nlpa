@@ -20,7 +20,12 @@ import java.util.regex.Pattern;
 import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 public class EMLTextExtractor extends TextExtractor{
+	private static final Logger logger = LogManager.getLogger(EMLTextExtractor.class);
+	
     private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
 	
 	private static String cfgPartSelectedOnAlternative="text/plain";
@@ -126,13 +131,13 @@ public class EMLTextExtractor extends TextExtractor{
 								
 								String charsetName=getCharsetFromContentType(contentType);
 								if (charsetName!=null){
-									 System.out.println("charset found in content-type: "+charsetName);
+									 logger.info("charset found in content-type: "+charsetName);
 								     sbResult.append(new String(contents, Charset.forName(charsetName)));
 							    }else{
 								    CharsetDetector detector = new CharsetDetector();
 								    detector.setText(contents);
  					                CharsetMatch cm = detector.detect();
-									System.out.println("charset guesed: "+cm.getName()+" for "+f.getAbsolutePath()+" Content type: "+contentType);
+									logger.warn("Charset guesed: "+cm.getName()+" for "+f.getAbsolutePath()+" Content type: "+contentType);
 									sbResult.append(new String(contents, Charset.forName(cm.getName())));
 								}
 
@@ -148,7 +153,7 @@ public class EMLTextExtractor extends TextExtractor{
 					}
 				
 		} catch (MessagingException e) {
-					//log.error("Excepci�n del mensaje (la t�pica): "+e.getMessage()+"Email actual: "+this.getId());
+					logger.error("Messagging Exception caught / "+e.getMessage()+"Current e-mail: "+f.getAbsolutePath());
 		
 		} catch (IOException e) {
 		
@@ -156,7 +161,7 @@ public class EMLTextExtractor extends TextExtractor{
 		
 		}
 		
-		System.out.println(sbResult.toString());
+		//System.out.println(sbResult.toString());
 		
 		return sbResult;
 	}

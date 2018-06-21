@@ -13,6 +13,7 @@ public class Main {
     private static ArrayList<Instance> instances = new ArrayList<>();
 
     public static void main(String[] args) {
+		
         System.out.println("Program started.");
 		
 		if (args.length==0) generateInstances("tests/");
