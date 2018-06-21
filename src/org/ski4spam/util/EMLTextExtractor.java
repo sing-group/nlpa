@@ -111,11 +111,16 @@ public class EMLTextExtractor extends TextExtractor{
 		ArrayList<Pair<String,InputStream>> parts=new ArrayList<Pair<String,InputStream>>();
 		
 		try {
-					//Create a multipart object to read it
+					//Create a mime message
 					MimeMessage mimeMultipart = new MimeMessage(null,new FileInputStream(f));
-					buildPartInfoList(parts,(Multipart)mimeMultipart.getContent());
-				
-					//Transform each part
+					
+					//If it is not multipart, anotate the part to handle it later
+				    if (mimeMultipart.getContentType().indexOf("multipart/") == -1) 
+						parts.add(new Pair<String,InputStream>(mimeMultipart.getContentType(),mimeMultipart.getInputStream()));
+					//If multipart, then recursivelly compile parts to handle them later
+					else buildPartInfoList(parts,(Multipart)mimeMultipart.getContent());
+					
+					//Transform each compiled part
 					for (Pair<String,InputStream> i:parts){
 						String contentType=i.getObj1();
 						if (contentType.toLowerCase().indexOf("text/")==0){
