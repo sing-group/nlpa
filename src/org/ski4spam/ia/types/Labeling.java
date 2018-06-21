@@ -8,7 +8,7 @@
 /**
  * @author Andrew McCallum <a href="mailto:mccallum@cs.umass.edu">mccallum@cs.umass.edu</a>
  */
-package es.uvigo.esei.ia.types;
+package org.ski4spam.ia.types;
 
 /**
  * A distribution over possible labels for an instance.

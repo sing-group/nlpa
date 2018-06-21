@@ -8,12 +8,12 @@
 /**
  * @author Andrew McCallum <a href="mailto:mccallum@cs.umass.edu">mccallum@cs.umass.edu</a>
  */
-package es.uvigo.esei.pipe.impl;
+package org.ski4spam.pipe.impl;
 
-import es.uvigo.esei.ia.types.FeatureSequence;
-import es.uvigo.esei.ia.types.FeatureVector;
-import es.uvigo.esei.ia.types.Instance;
-import es.uvigo.esei.pipe.Pipe;
+import org.ski4spam.ia.types.FeatureSequence;
+import org.ski4spam.ia.types.FeatureVector;
+import org.ski4spam.ia.types.Instance;
+import org.ski4spam.pipe.Pipe;
 
 import java.io.Serializable;
 

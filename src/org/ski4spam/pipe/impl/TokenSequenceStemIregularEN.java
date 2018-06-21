@@ -1,4 +1,4 @@
-package es.uvigo.esei.pipe.impl;
+package org.ski4spam.pipe.impl;
 
 import java.io.*;
 import java.net.URISyntaxException;

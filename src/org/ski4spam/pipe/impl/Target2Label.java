@@ -1,11 +1,11 @@
 
-package es.uvigo.esei.pipe.impl;
+package org.ski4spam.pipe.impl;
 
 
-import es.uvigo.esei.ia.types.Instance;
-import es.uvigo.esei.ia.types.Label;
-import es.uvigo.esei.ia.types.LabelAlphabet;
-import es.uvigo.esei.pipe.Pipe;
+import org.ski4spam.ia.types.Instance;
+import org.ski4spam.ia.types.Label;
+import org.ski4spam.ia.types.LabelAlphabet;
+import org.ski4spam.pipe.Pipe;
 
 
 /**

@@ -1,10 +1,10 @@
 /**
  *
  */
-package es.uvigo.esei.pipe.impl;
+package org.ski4spam.pipe.impl;
 
-import es.uvigo.esei.ia.types.Instance;
-import es.uvigo.esei.pipe.Pipe;
+import org.ski4spam.ia.types.Instance;
+import org.ski4spam.pipe.Pipe;
 
 /**
  * Limpia el source y llama al recolector de basura

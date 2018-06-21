@@ -1,9 +1,16 @@
-package es.uvigo.esei.pipe.impl;
+package org.ski4spam.pipe.impl;
 
-import es.uvigo.esei.ia.types.Instance;
-import es.uvigo.esei.pipe.Pipe;
+import org.ski4spam.util.TWTIDTextExtractor;
+import org.ski4spam.util.WARCTextExtractor;
+import org.ski4spam.util.TTWTTextExtractor;
+import org.ski4spam.util.SMSTextExtractor;
+import org.ski4spam.util.EMLTextExtractor;
+import org.ski4spam.util.TYTBTextExtractor;
+import org.ski4spam.util.TSMSTextExtractor;
+import org.ski4spam.util.TextExtractor;
+import org.ski4spam.ia.types.Instance;
+import org.ski4spam.pipe.Pipe;
 
-import  es.uvigo.esei.util.*;
 
 import java.io.File;
 import java.util.Hashtable;

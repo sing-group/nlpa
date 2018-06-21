@@ -8,14 +8,14 @@
 /**
  * @author Andrew McCallum <a href="mailto:mccallum@cs.umass.edu">mccallum@cs.umass.edu</a>
  */
-package es.uvigo.esei.pipe.impl;
+package org.ski4spam.pipe.impl;
 
-import es.uvigo.esei.ia.types.Instance;
-import es.uvigo.esei.ia.types.Token;
-import es.uvigo.esei.ia.types.TokenSequence;
-import es.uvigo.esei.ia.util.CharSequenceLexer;
-import es.uvigo.esei.pipe.Pipe;
-import es.uvigo.esei.pipe.SerialPipes;
+import org.ski4spam.ia.types.Instance;
+import org.ski4spam.ia.types.Token;
+import org.ski4spam.ia.types.TokenSequence;
+import org.ski4spam.ia.util.CharSequenceLexer;
+import org.ski4spam.pipe.Pipe;
+import org.ski4spam.pipe.SerialPipes;
 
 import java.io.File;
 import java.io.Serializable;

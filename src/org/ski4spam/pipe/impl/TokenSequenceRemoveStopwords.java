@@ -4,12 +4,12 @@
  This software is provided under the terms of the Common Public License,
  version 1.0, as published by http://www.opensource.org.  For further
  information, see the file `LICENSE' included with this distribution. */
-package es.uvigo.esei.pipe.impl;
+package org.ski4spam.pipe.impl;
 
-import es.uvigo.esei.ia.types.Instance;
-import es.uvigo.esei.ia.types.Token;
-import es.uvigo.esei.ia.types.TokenSequence;
-import es.uvigo.esei.pipe.Pipe;
+import org.ski4spam.ia.types.Instance;
+import org.ski4spam.ia.types.Token;
+import org.ski4spam.ia.types.TokenSequence;
+import org.ski4spam.pipe.Pipe;
 
 import java.io.Serializable;
 import java.util.HashSet;
