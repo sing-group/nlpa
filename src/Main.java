@@ -1,9 +1,11 @@
 import org.ski4spam.pipe.impl.*;
 import org.ski4spam.pipe.SerialPipes;
 import org.ski4spam.ia.types.Instance;
+import org.ski4spam.ia.util.InstanceListUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -15,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 public class Main {
 	private static final Logger logger = LogManager.getLogger(Main.class);	
 	
-    private static ArrayList<Instance> instances = new ArrayList<>();
+    private static List<Instance> instances = new ArrayList<Instance>();
 
     public static void main(String[] args) {
 		
@@ -43,6 +45,8 @@ public class Main {
 		for (Instance i:instances){
 			p.pipe(i);
 		}
+		
+		instances=InstanceListUtils.dropInvalid(instances);
 		
         for (Instance i : instances) {
             logger.info("Instance data after pipe: " + i.getSource() + " " +

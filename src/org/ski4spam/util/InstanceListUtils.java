@@ -1,4 +1,4 @@
-package org.ski4spam.utils;
+package org.ski4spam.ia.util;
 
 import org.ski4spam.ia.types.Instance;
 
