@@ -10,7 +10,8 @@ import org.ski4spam.ia.types.Instance;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Convert an instance through a sequence of pipes.
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 
 
 public class SerialPipes extends Pipe implements Serializable {
-
+	private static final Logger logger = LogManager.getLogger(SerialPipes.class);
     /**
      * Serial version UID
      */
@@ -109,14 +110,20 @@ public class SerialPipes extends Pipe implements Serializable {
             Pipe p = pipes.get(i);
 
             if (p == null) {
-                System.err.println("Pipe is null");
+                logger.fatal("Pipe "+ i +" is null");
+				System.exit(0);
             } else {
 
                 try {
-                    carrier = p.pipe(carrier);
+					if (carrier.isValid()){
+                       carrier = p.pipe(carrier);
+					}else{
+						logger.info("Skiping invalid instance "+carrier.toString());
+					}
                 } catch (Exception e) {
-                    System.err.println("Exception on pipe " + i + ". " + e);
+                    logger.fatal("Exception caught on pipe " + i + " ("+ p.getClass().getName() + "). " + e.getMessage() + " while processing " + carrier.toString() );
                     e.printStackTrace(System.err);
+					System.exit(0);
                 }
             }
         }
@@ -132,13 +139,19 @@ public class SerialPipes extends Pipe implements Serializable {
             Pipe p = pipes.get(i);
 
             if (p == null) {
-                System.err.println("Pipe is null");
+                logger.fatal("Pipe "+ i +" is null");
                 System.exit(0);
             } else {
                 try {
-                    carrier = p.pipe(carrier);
+					if (carrier.isValid()){
+                       carrier = p.pipe(carrier);
+					}else{
+						logger.info("Skiping invalid instance "+carrier.toString());
+					}
                 } catch (Exception e) {
-                    System.err.println("Exception on pipe " + i + ". " + e);
+                    logger.fatal("Exception caught on pipe " + i + " ("+ p.getClass().getName() + "). " + e.getMessage() + " while processing " + carrier.toString() );
+                    e.printStackTrace(System.err);
+					System.exit(0);
                 }
             }
         }

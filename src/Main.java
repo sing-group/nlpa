@@ -1,4 +1,4 @@
-import org.ski4spam.pipe.impl.File2StringBufferPipe;
+import org.ski4spam.pipe.impl.*;
 import org.ski4spam.pipe.SerialPipes;
 import org.ski4spam.ia.types.Instance;
 
@@ -37,7 +37,8 @@ public class Main {
 		SerialPipes p=new SerialPipes();
 		
 		p.add(new File2StringBufferPipe());	
-
+		p.add(new StripHTMLFromStringBufferPipe());	
+		
         /*Pipe all instances*/
 		for (Instance i:instances){
 			p.pipe(i);

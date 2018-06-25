@@ -12,6 +12,8 @@ import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import java.io.File;
+
 
 /**
  * A machine learning "example" to be used in training, testing or
@@ -73,6 +75,11 @@ public class Instance implements Serializable {
     private Object source; /* The input in a reproducable form, e.g. enabling re-print of
     string w/ POS tags, usually without target information,
     e.g. an un-annotated RegionList. */
+	
+	/**
+	* Represents whether the instance is valid or not
+	*/
+	private boolean isValid=true;
 
     public Instance(Object data, Object target, Object name, Object source) {
         this.data = data;
@@ -239,23 +246,15 @@ public class Instance implements Serializable {
         return (properties != null && properties.containsKey(key));
     }
 
+    /**
+	 * String representation of a instance
+     */
     public String toString() {
-        StringBuffer retValue = new StringBuffer();
-        retValue.append("\n_____________________NAME__________________\n");
-        retValue.append(name == null ? "null" : name.toString());
-        retValue.append("\n_____________________PROPERTIES__________________\n");
-        Enumeration<String> keys = properties.keys();
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-            retValue.append(key + " -> " + properties.get(key) + "\n");
-        }
-        retValue.append("\n_____________________SOURCE__________________\n");
-        retValue.append(source == null ? "null" : source.toString());
-        retValue.append("\n_____________________DATA__________________\n");
-        retValue.append(data == null ? "null" : data.toString());
-        retValue.append("\n_____________________TARGET__________________\n");
-        retValue.append(target == null ? "null" : target.toString());
-        return retValue.toString();
+		if (name instanceof File)
+			return ((File)name).getAbsolutePath();
+		else if (name instanceof String)
+			return (String)name;
+		else return name.toString();
     }
 
     public interface Iterator extends java.util.Iterator {
@@ -265,5 +264,20 @@ public class Instance implements Serializable {
 
         double getInstanceWeight();
     }
+	
+	/**
+	* Marks instance as invalid
+	*/
+	public void invalidate(){
+	   this.isValid=false;	
+	}
+	
+	/**
+	* Determine whether the instance is valid or not
+	* @return A boolean indicating if the instance is valid or not
+	*/
+	public boolean isValid(){
+		return isValid;
+	}
 
 }

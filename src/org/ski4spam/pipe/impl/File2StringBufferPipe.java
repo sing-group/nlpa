@@ -14,13 +14,17 @@ import org.ski4spam.pipe.Pipe;
 
 import java.io.File;
 import java.util.Hashtable;
-	
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 /**
  * This pipe reads text and html contents from files
  * @author José Ramón Méndez Reboredo
  */
 public class File2StringBufferPipe extends Pipe {
-	
+	private static final Logger logger = LogManager.getLogger(File2StringBufferPipe.class);
+		
 	Hashtable<String,TextExtractor> htExtractors;
 
     public File2StringBufferPipe() {
@@ -41,19 +45,29 @@ public class File2StringBufferPipe extends Pipe {
     public Instance pipe(Instance carrier) {
         if ( carrier.getData() instanceof File){
             String [] extensions = {"eml", "tsms", "sms", "warc", "tytb", "twtid", "ttwt"};
-            String value = "";
-            String name = ((String)carrier.getName()).toLowerCase();
+            String extension = "";
+            String name = (((File)carrier.getData()).getAbsolutePath()).toLowerCase();
             int i = 0;
             while(i < extensions.length && !name.endsWith(extensions[i])){
                 i++;
             }
             
             if (i < extensions.length){
-                 value = extensions[i];
-            }			 
+                 extension = extensions[i];
+            }		 
 			 
-			 TextExtractor te=htExtractors.get(value);
-			 if(te!=null) carrier.setData(te.extractText((File)(carrier.getData())));
+			 TextExtractor te=htExtractors.get(extension);
+			 
+			 if(te!=null){
+				 StringBuffer txt=te.extractText((File)(carrier.getData()));
+				 if (txt==null){
+				     logger.warn("Invalidating instance "+carrier.toString()+" due to a fault in parsing.");
+					 carrier.invalidate();
+			     } else carrier.setData(txt);
+			 } else {
+				 logger.warn("No parser available for instance "+carrier.toString()+". Invalidating instance.");
+			     carrier.invalidate();
+			 }
 		}
 
         return carrier;

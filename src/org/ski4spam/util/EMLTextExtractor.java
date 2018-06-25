@@ -114,6 +114,8 @@ public class EMLTextExtractor extends TextExtractor{
 					//Create a mime message
 					MimeMessage mimeMultipart = new MimeMessage(null,new FileInputStream(f));
 					
+					sbResult.append(mimeMultipart.getSubject()+"\n");
+					
 					//If it is not multipart, anotate the part to handle it later
 				    if (mimeMultipart.getContentType().indexOf("multipart/") == -1) 
 						parts.add(new Pair<String,InputStream>(mimeMultipart.getContentType(),mimeMultipart.getInputStream()));
@@ -159,11 +161,13 @@ public class EMLTextExtractor extends TextExtractor{
 				
 		} catch (MessagingException e) {
 					logger.error("Messagging Exception caught / "+e.getMessage()+"Current e-mail: "+f.getAbsolutePath());
-		
+					return null;
 		} catch (IOException e) {
-		
+			        logger.error("IO Exception caught / "+e.getMessage()+"Current e-mail: "+f.getAbsolutePath());
+			        return null;
 		} catch (Exception e) {
-		
+ 	                logger.error("Exception caught / "+e.getMessage()+"Current e-mail: "+f.getAbsolutePath());
+	                return null;
 		}
 		
 		//System.out.println(sbResult.toString());
