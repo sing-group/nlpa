@@ -75,7 +75,7 @@ public class StripHTMLFromStringBufferPipe extends Pipe {
 					Elements elements = doc.getAllElements();
 					for(Element element : elements) {
 					  for(TextNode node : element.textNodes()){
-						  System.out.print(" -*- ");
+						  //System.out.print(" -*- ");
 					    newSb.append( node + "\n" );
 					  }
 				    }
@@ -88,7 +88,7 @@ public class StripHTMLFromStringBufferPipe extends Pipe {
 			
 			
 				 
-			System.out.println("HTML +++ "+ carrier.getData());
+			//System.out.println("HTML +++ "+ carrier.getData());
 		}
 
         return carrier;
