@@ -24,7 +24,7 @@ import org.jsoup.select.Elements;
  * @author José Ramón Méndez Reboredo
  */
 public class StripHTMLFromStringBufferPipe extends Pipe {
-	private static final Logger logger = LogManager.getLogger(Html2Text.class);
+	private static final Logger logger = LogManager.getLogger(StripHTMLFromStringBufferPipe.class);
 	
     // adapted from post by Phil Haack and modified to match better
     public final static String tagStart=

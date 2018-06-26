@@ -40,6 +40,7 @@ public class Main {
 		
 		p.add(new File2StringBufferPipe());	
 		p.add(new StripHTMLFromStringBufferPipe());	
+		p.add(new GuessLanguageFromStringBufferPipe());
 		
         /*Pipe all instances*/
 		for (Instance i:instances){
