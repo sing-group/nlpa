@@ -1,4 +1,6 @@
-package org.ski4spam.util;
+package org.ski4spam.util.textextractor;
+
+import org.ski4spam.util.Pair;
 
 import java.io.BufferedReader;
 import java.io.File;

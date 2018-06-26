@@ -1,4 +1,5 @@
-package org.ski4spam.util;
+package org.ski4spam.util.textextractor;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

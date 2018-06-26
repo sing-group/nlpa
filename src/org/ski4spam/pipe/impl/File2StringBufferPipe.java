@@ -1,13 +1,14 @@
 package org.ski4spam.pipe.impl;
 
-import org.ski4spam.util.TWTIDTextExtractor;
-import org.ski4spam.util.WARCTextExtractor;
-import org.ski4spam.util.TTWTTextExtractor;
-import org.ski4spam.util.SMSTextExtractor;
-import org.ski4spam.util.EMLTextExtractor;
-import org.ski4spam.util.TYTBTextExtractor;
-import org.ski4spam.util.TSMSTextExtractor;
-import org.ski4spam.util.TextExtractor;
+import org.ski4spam.util.textextractor.TWTIDTextExtractor;
+import org.ski4spam.util.textextractor.WARCTextExtractor;
+import org.ski4spam.util.textextractor.TTWTTextExtractor;
+import org.ski4spam.util.textextractor.SMSTextExtractor;
+import org.ski4spam.util.textextractor.EMLTextExtractor;
+import org.ski4spam.util.textextractor.TYTBTextExtractor;
+import org.ski4spam.util.textextractor.TSMSTextExtractor;
+import org.ski4spam.util.textextractor.TextExtractor;
+
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
 

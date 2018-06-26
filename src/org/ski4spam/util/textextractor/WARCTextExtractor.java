@@ -1,25 +1,26 @@
-package org.ski4spam.util;
+package org.ski4spam.util.textextractor;
+
 import java.io.File;
 
-public class SMSTextExtractor extends TextExtractor{
+public class WARCTextExtractor extends TextExtractor{
 	static TextExtractor instance=null;
 	
-	private SMSTextExtractor(){
+	private WARCTextExtractor(){
 		
 	}
 	
 	public static String getExtension(){
-		return "sms";
+		return "warc";
 	}
 	
 	public static TextExtractor getInstance(){
 		if (instance==null) {
-			instance=new SMSTextExtractor();
+			instance=new WARCTextExtractor();
 		}
 		return instance;
 	}
 	
 	public StringBuffer extractText(File f){
-		return new StringBuffer("This is an example of SMS text");
+		return new StringBuffer("This is an example of WARC text");
 	}
 }
