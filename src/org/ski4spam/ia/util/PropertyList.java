@@ -1,3 +1,4 @@
+
 /* Copyright (C) 2002 Univ. of Massachusetts Amherst, Computer Science Dept.
    This file is part of "MALLET" (MAchine Learning for LanguagE Toolkit).
    http://www.cs.umass.edu/~mccallum/mallet
@@ -173,11 +174,11 @@ public class PropertyList {
 
         if (this instanceof NumericProperty)
             System.out.println(
-                    this.key.toString() + "=" +
+                    this.key + "=" +
                             ((NumericProperty) this).value);
         else if (this instanceof ObjectProperty)
             System.out.println(
-                    this.key.toString() + "=" +
+                    this.key + "=" +
                             ((ObjectProperty) this).value);
         else
             throw new IllegalArgumentException("Unrecognized PropertyList type");
