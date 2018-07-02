@@ -1,7 +1,8 @@
 #!/bin/bash
 
-cp="."
-for i in ../lib/*.jar 
+cp="bin"
+cd ..
+for i in lib/*.jar 
 do
 	cp=$cp:$i
 done
@@ -9,3 +10,4 @@ done
 echo "Using Classpath $cp..."
 
 java -classpath $cp Main $@
+cd -
