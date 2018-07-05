@@ -1,4 +1,4 @@
-package org.ski4spam.util.textextractor;
+package org.ski4spam.util.dateextractor;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,13 +13,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class TWTIDTextExtractor extends TextExtractor {
-    private static final Logger logger = LogManager.getLogger(TWTIDTextExtractor.class);
-    private static TextExtractor instance = null;
+public class TWTIDDateExtractor extends DateExtractor {
+    private static final Logger logger = LogManager.getLogger(TWTIDDateExtractor.class);
+    private static DateExtractor instance = null;
     private TwitterFactory tf = TwitterConfigurator.getTwitterFactory();
+
     private String tweetId;
 
-    private TWTIDTextExtractor() {
+    private TWTIDDateExtractor() {
 
     }
 
@@ -27,14 +28,14 @@ public class TWTIDTextExtractor extends TextExtractor {
         return "twtid";
     }
 
-    public static TextExtractor getInstance() {
+    public static DateExtractor getInstance() {
         if (instance == null) {
-            instance = new TWTIDTextExtractor();
+            instance = new TWTIDDateExtractor();
         }
         return instance;
     }
 
-    public StringBuffer extractText(File file) {
+    public StringBuffer extractDate(File file) {
         //Achieving the tweet id from the given file.
         try {
             FileReader f = new FileReader(file);
@@ -46,11 +47,11 @@ public class TWTIDTextExtractor extends TextExtractor {
             return null;
         }
 
-        //Extracting and returning the tweet status text or error if not available.
+        //Extracting and returning the tweet status date or error if not available.
         try {
             Twitter twitter = tf.getInstance();
             Status status = twitter.showStatus(Long.parseLong(tweetId));
-            return new StringBuffer(status.getText());
+            return new StringBuffer(status.getCreatedAt().toString());
         } catch (TwitterException te) {
             logger.error("Tweet error / " + te.getErrorMessage() + " | Current tweet: " + file.getAbsolutePath());
             return null;
