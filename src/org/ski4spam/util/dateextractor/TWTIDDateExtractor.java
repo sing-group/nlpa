@@ -53,7 +53,7 @@ public class TWTIDDateExtractor extends DateExtractor {
             Status status = twitter.showStatus(Long.parseLong(tweetId));
             return new StringBuffer(status.getCreatedAt().toString());
         } catch (TwitterException te) {
-            logger.error("Tweet error / " + te.getErrorMessage() + " | Current tweet: " + file.getAbsolutePath());
+            logger.error("Tweet error at date extraction / " + te.getErrorMessage() + " | Current tweet: " + file.getAbsolutePath());
             return null;
         }
     }

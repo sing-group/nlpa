@@ -3,16 +3,13 @@ import org.apache.logging.log4j.Logger;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.ia.util.InstanceListUtils;
 import org.ski4spam.pipe.SerialPipes;
-import org.ski4spam.pipe.impl.File2StringBufferPipe;
-import org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe;
-import org.ski4spam.pipe.impl.StripHTMLFromStringBufferPipe;
+import org.ski4spam.pipe.impl.*;
 import org.ski4spam.util.textextractor.EMLTextExtractor;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Properties;
 
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
@@ -38,9 +35,12 @@ public class Main {
         /*create a example of pipe*/
         SerialPipes p = new SerialPipes();
 
+        p.add(new StoreFileExtensionPipe());
+        p.add(new StoreTweetLangPipe());
         p.add(new File2StringBufferPipe());
         p.add(new StripHTMLFromStringBufferPipe());
         p.add(new GuessLanguageFromStringBufferPipe());
+        p.add(new File2CsvPipe());
 
         /*Pipe all instances*/
         for (Instance i : instances) {
@@ -78,7 +78,6 @@ public class Main {
                 String target = type;
                 String name = fileEntry.getPath();
                 File source = fileEntry;
-                Properties props = new Properties();
 
                 instances.add(new Instance(data, target, name, source));
             }

@@ -17,7 +17,6 @@ public class TWTIDTextExtractor extends TextExtractor {
     private static final Logger logger = LogManager.getLogger(TWTIDTextExtractor.class);
     private static TextExtractor instance = null;
     private TwitterFactory tf = TwitterConfigurator.getTwitterFactory();
-    private String tweetId;
 
     private TWTIDTextExtractor() {
 
@@ -36,6 +35,7 @@ public class TWTIDTextExtractor extends TextExtractor {
 
     public StringBuffer extractText(File file) {
         //Achieving the tweet id from the given file.
+        String tweetId;
         try {
             FileReader f = new FileReader(file);
             BufferedReader b = new BufferedReader(f);
@@ -43,7 +43,7 @@ public class TWTIDTextExtractor extends TextExtractor {
             b.close();
         } catch (IOException e) {
             logger.error("IO Exception caught / " + e.getMessage() + "Current tweet: " + file.getAbsolutePath());
-            return null;
+            return new StringBuffer();
         }
 
         //Extracting and returning the tweet status text or error if not available.
@@ -52,8 +52,8 @@ public class TWTIDTextExtractor extends TextExtractor {
             Status status = twitter.showStatus(Long.parseLong(tweetId));
             return new StringBuffer(status.getText());
         } catch (TwitterException te) {
-            logger.error("Tweet error / " + te.getErrorMessage() + " | Current tweet: " + file.getAbsolutePath());
-            return null;
+            logger.error("Tweet error at text extraction / " + te.getErrorMessage() + " | Current tweet: " + file.getAbsolutePath());
+            return new StringBuffer();
         }
     }
 }

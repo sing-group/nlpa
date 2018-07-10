@@ -8,23 +8,21 @@ package org.ski4spam.ia.types;
 
 import org.ski4spam.pipe.Pipe;
 
-import java.io.Serializable;
-import java.util.Enumeration;
-import java.util.Hashtable;
-
 import java.io.File;
+import java.io.Serializable;
+import java.util.Hashtable;
 
 
 /**
  * A machine learning "example" to be used in training, testing or
  * performance of various machine learning algorithms.
- * <p>
+ *
  * <p>An instance contains four generic fields of predefined name:
  * "data", "target", "name", and "source".   "Data" holds the data represented
  * `by the instance, "target" is often a label associated with the instance,
  * "name" is a short identifying name for the instance (such as a filename),
  * and "source" is human-readable sourceinformation, (such as the original text).
- * <p>
+ *
  * <p> Each field has no predefined type, and may change type as the instance
  * is processed. For example, the data field may start off being a string that
  * represents a file name and then be processed by a {@link org.ski4spam.pipe.Pipe} into a CharSequence
@@ -32,7 +30,7 @@ import java.io.File;
  * holding indices into an {@link org.ski4spam.ia.types.Alphabet} holding words found in the file.
  * It is up to each pipe which fields in the Instance it modifies; the most common
  * case is that the pipe modifies the data field.
- * <p>
+ *
  * <p>Generally speaking, there are two modes of operation for
  * Instances.  (1) An instance gets created and passed through a
  * Pipe, and the resulting data/target/name/source fields are used.
@@ -41,11 +39,11 @@ import java.io.File;
  * of the instance call newPipedCopy() with their respective
  * different pipes.  This might be done for test instances at
  * "performance" time.
- * <p>
+ *
  * <p>Instances can be made immutable if locked.
  * Although unlocked Instances are mutable, typically the only code that
  * changes the values in the four slots is inside Pipes.
- * <p>
+ *
  * <p> Note that constructing an instance with a pipe argument means
  * "Construct the instance and then run it through the pipe".
  * {@link es.uvigo.esei.ia.types.InstanceList} uses this method
@@ -75,11 +73,11 @@ public class Instance implements Serializable {
     private Object source; /* The input in a reproducable form, e.g. enabling re-print of
     string w/ POS tags, usually without target information,
     e.g. an un-annotated RegionList. */
-	
-	/**
-	* Represents whether the instance is valid or not
-	*/
-	private boolean isValid=true;
+
+    /**
+     * Represents whether the instance is valid or not
+     */
+    private boolean isValid = true;
 
     public Instance(Object data, Object target, Object name, Object source) {
         this.data = data;
@@ -155,7 +153,7 @@ public class Instance implements Serializable {
         public Pipe getPipe() {
             return pipe;
         }
-    */
+
     public Hashtable getPropertyList() { // added by Fuchun
         return properties;
     }
@@ -167,7 +165,7 @@ public class Instance implements Serializable {
             throw new IllegalStateException("Instance is locked.");
     }
 
-    /*
+
     public Instance getPipedCopy(Pipe p) {
         if (pipe != null)
             throw new IllegalStateException("This method can only be called on Instances that have not yet already been piped");
@@ -247,14 +245,14 @@ public class Instance implements Serializable {
     }
 
     /**
-	 * String representation of a instance
+     * String representation of a instance
      */
     public String toString() {
-		if (name instanceof File)
-			return ((File)name).getAbsolutePath();
-		else if (name instanceof String)
-			return (String)name;
-		else return name.toString();
+        if (name instanceof File)
+            return ((File) name).getAbsolutePath();
+        else if (name instanceof String)
+            return (String) name;
+        else return name.toString();
     }
 
     public interface Iterator extends java.util.Iterator {
@@ -264,20 +262,21 @@ public class Instance implements Serializable {
 
         double getInstanceWeight();
     }
-	
-	/**
-	* Marks instance as invalid
-	*/
-	public void invalidate(){
-	   this.isValid=false;	
-	}
-	
-	/**
-	* Determine whether the instance is valid or not
-	* @return A boolean indicating if the instance is valid or not
-	*/
-	public boolean isValid(){
-		return isValid;
-	}
+
+    /**
+     * Marks instance as invalid
+     */
+    public void invalidate() {
+        this.isValid = false;
+    }
+
+    /**
+     * Determine whether the instance is valid or not
+     *
+     * @return A boolean indicating if the instance is valid or not
+     */
+    public boolean isValid() {
+        return isValid;
+    }
 
 }
