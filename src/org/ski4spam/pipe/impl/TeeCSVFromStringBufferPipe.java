@@ -27,25 +27,50 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
 	private static String filename="output.csv";
 	private static File f=null;
 	private boolean isFirst=true;
+	private boolean saveData=false;
 
     public TeeCSVFromStringBufferPipe(){
+		initFile();
+    }
+
+    public TeeCSVFromStringBufferPipe(boolean saveData){
+		this.saveData=saveData;
 		initFile();
     }
 	
     public TeeCSVFromStringBufferPipe(String filePath){
 		this.filename=filePath;
 		initFile();
-    }	
-	
+    }
+
+    public TeeCSVFromStringBufferPipe(String filePath, boolean saveData){
+		this.filename=filePath;
+		this.saveData=saveData;
+		initFile();
+    }
+
 	public TeeCSVFromStringBufferPipe(File f){
         this.f=f;
 		this.filename=null;
 		initFile();
  	}
-	
+
+	public TeeCSVFromStringBufferPipe(File f, boolean saveData){
+        this.f=f;
+		this.filename=null;
+		this.saveData=saveData;
+		initFile();
+ 	}
+
 	public TeeCSVFromStringBufferPipe(Writer w){
 		this.w=w;
 		this.filename=null;
+	}
+
+	public TeeCSVFromStringBufferPipe(Writer w, boolean saveData){
+		this.w=w;
+		this.filename=null;
+		this.saveData=saveData;
 	}
 	
 	public void initFile(){
@@ -97,8 +122,8 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
         }
         */
         try {
-			if (isFirst){ bw.write(carrier.getCSVHeader(true)+"\n"); isFirst=false; }
-			bw.write(carrier.toCSV(true)+"\n");			
+			if (isFirst){ bw.write(carrier.getCSVHeader(saveData)+"\n"); isFirst=false; }
+			bw.write(carrier.toCSV(saveData)+"\n");			
 			
             //System.out.println(props.substring(0, props.length() - 1) + "\n");
             //bw.write(props.substring(0, props.length() - 1) + "\n");
