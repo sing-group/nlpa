@@ -40,7 +40,7 @@ public class Main {
         p.add(new File2StringBufferPipe());
         p.add(new StripHTMLFromStringBufferPipe());
         p.add(new GuessLanguageFromStringBufferPipe());
-        p.add(new File2CsvPipe());
+        p.add(new TeeCSVFromStringBufferPipe());
 
         /*Pipe all instances*/
         for (Instance i : instances) {

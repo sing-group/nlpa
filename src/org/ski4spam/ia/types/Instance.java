@@ -11,6 +11,10 @@ import org.ski4spam.pipe.Pipe;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Hashtable;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Collection;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 
 /**
@@ -255,6 +259,7 @@ public class Instance implements Serializable {
         else return name.toString();
     }
 
+    /*
     public interface Iterator extends java.util.Iterator {
 
         // xxx Change this to just return "Instance"?  No.
@@ -262,6 +267,7 @@ public class Instance implements Serializable {
 
         double getInstanceWeight();
     }
+	*/
 
     /**
      * Marks instance as invalid
@@ -278,5 +284,33 @@ public class Instance implements Serializable {
     public boolean isValid() {
         return isValid;
     }
+
+	/**
+	 * Computes the CSV header for the instance
+	*/
+	public String getCSVHeader(boolean withData){
+		String str=new String();
+		str+="id;"+(withData?"data;":"");
+		Enumeration<String> keys=properties.keys();
+		while (keys.hasMoreElements()){
+			str+=(keys.nextElement()+";");
+		}
+		return str;
+	}
+	
+	/**
+	 * Converts this instance toCSV string representation
+	*/
+	public String toCSV(boolean withData){
+		String str="";
+		
+		str+=name+";"+(withData?(StringEscapeUtils.escapeCsv(data.toString())+";"):"");
+		Collection values=properties.values();
+		Iterator it=values.iterator();
+		while (it.hasNext()){
+			str+=(it.next()+";");
+		}
+		return str;		
+	}
 
 }

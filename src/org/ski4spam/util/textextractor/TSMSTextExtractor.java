@@ -48,6 +48,7 @@ public class TSMSTextExtractor extends TextExtractor {
             is.close();
         } catch (IOException e) {
             logger.error("IOException caught" + e.getMessage());
+			sbResult=null;
         } finally {
             if (is != null) try {
                 is.close();

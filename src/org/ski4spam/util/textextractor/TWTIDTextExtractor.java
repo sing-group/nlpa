@@ -43,7 +43,7 @@ public class TWTIDTextExtractor extends TextExtractor {
             b.close();
         } catch (IOException e) {
             logger.error("IO Exception caught / " + e.getMessage() + "Current tweet: " + file.getAbsolutePath());
-            return new StringBuffer();
+            return null; //Return a null will cause a fuerther invalidation of the instance
         }
 
         //Extracting and returning the tweet status text or error if not available.
@@ -53,7 +53,8 @@ public class TWTIDTextExtractor extends TextExtractor {
             return new StringBuffer(status.getText());
         } catch (TwitterException te) {
             logger.error("Tweet error at text extraction / " + te.getErrorMessage() + " | Current tweet: " + file.getAbsolutePath());
-            return new StringBuffer();
+			return null; //Return a null will cause a fuerther invalidation of the instance
+            //return new StringBuffer();
         }
     }
 }
