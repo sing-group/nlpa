@@ -9,7 +9,7 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
-import org.ski4spam.pipe.PipeAnnotation;
+import org.ski4spam.pipe.TransformationPipe;
 
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
@@ -53,7 +53,7 @@ public class StripHTMLFromStringBufferPipe extends Pipe {
     public StripHTMLFromStringBufferPipe() {
     }
 
-    @PipeAnnotation(inputType = "StringBuffer", outputType = "StringBuffer")
+    @TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
     @Override
     public Instance pipe(Instance carrier) {
         if ( carrier.getData() instanceof StringBuffer){

@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
-import org.ski4spam.pipe.PipeAnnotation;
+import org.ski4spam.pipe.TransformationPipe;
 import org.ski4spam.util.textextractor.*;
 
 import java.io.File;
@@ -33,7 +33,7 @@ public class File2StringBufferPipe extends Pipe {
         htExtractors.put(TTWTTextExtractor.getExtension(), TTWTTextExtractor.getInstance());
     }
 
-    @PipeAnnotation(inputType = "File", outputType = "StringBuffer")
+    @TransformationPipe(inputType = "File", outputType = "StringBuffer")
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof File) {

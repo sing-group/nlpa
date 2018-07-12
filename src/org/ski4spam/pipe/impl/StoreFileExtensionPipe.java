@@ -2,7 +2,7 @@ package org.ski4spam.pipe.impl;
 
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
-import org.ski4spam.pipe.PipeAnnotation;
+import org.ski4spam.pipe.PropertyComputingPipe;
 
 
 /**
@@ -21,7 +21,7 @@ public class StoreFileExtensionPipe extends Pipe {
         key = k;
     }
 
-    @PipeAnnotation(inputType = "File", outputType = "File")
+    @PropertyComputingPipe(inputType = "File")
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getName() instanceof String) {

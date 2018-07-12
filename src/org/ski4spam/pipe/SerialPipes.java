@@ -125,7 +125,7 @@ public class SerialPipes extends Pipe implements Serializable {
         }
 
         assert method1 != null;
-        PipeAnnotation annotation1 = method1.getAnnotation(PipeAnnotation.class);
+        TransformationPipe annotation1 = method1.getAnnotation(TransformationPipe.class);
 
         Class<?> obj2 = p2.getClass();
         Method method2 = null;
@@ -136,7 +136,7 @@ public class SerialPipes extends Pipe implements Serializable {
         }
 
         assert method2 != null;
-        PipeAnnotation annotation2 = method2.getAnnotation(PipeAnnotation.class);
+        TransformationPipe annotation2 = method2.getAnnotation(TransformationPipe.class);
 
         return annotation2.inputType().equals("Instance") || annotation2.inputType().equals(annotation1.outputType());
     }

@@ -7,8 +7,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PipeAnnotation {
-    String inputType();
-
-    String outputType();
+public @interface TargetAsigningPipe {
 }

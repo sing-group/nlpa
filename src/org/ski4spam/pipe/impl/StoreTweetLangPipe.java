@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
-import org.ski4spam.pipe.PipeAnnotation;
+import org.ski4spam.pipe.PropertyComputingPipe;
 import org.ski4spam.util.TwitterConfigurator;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -26,7 +26,7 @@ public class StoreTweetLangPipe extends Pipe {
 
     private TwitterFactory tf = TwitterConfigurator.getTwitterFactory();
 
-    @PipeAnnotation(inputType = "File", outputType = "File")
+    @PropertyComputingPipe(inputType = "File")
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof File) {

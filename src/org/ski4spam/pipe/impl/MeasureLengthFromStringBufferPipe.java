@@ -2,7 +2,7 @@ package org.ski4spam.pipe.impl;
 
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
-import org.ski4spam.pipe.PipeAnnotation;
+import org.ski4spam.pipe.TransformationPipe;
 
 
 /**
@@ -18,7 +18,7 @@ public class MeasureLengthFromStringBufferPipe extends Pipe {
         key = k;
     }
 
-    @PipeAnnotation(inputType = "StringBuffer", outputType = "StringBuffer")
+    @TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer){
