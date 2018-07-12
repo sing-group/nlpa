@@ -2,11 +2,7 @@ package org.ski4spam.pipe.impl;
 
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
-
-import java.io.Reader;
-import java.io.Serializable;
-import java.io.IOException;
-import java.io.Writer;
+import org.ski4spam.pipe.PipeAnnotation;
 
 //import org.w3c.tidy.Tidy;
 /**
@@ -18,7 +14,7 @@ public class StringBufferToLowerCasePipe extends Pipe {
     public StringBufferToLowerCasePipe() {
     }
 
-
+    @PipeAnnotation(inputType = "StringBuffer", outputType = "StringBuffer")
     @Override
     public Instance pipe(Instance carrier) {
         if ( carrier.getData() instanceof StringBuffer){

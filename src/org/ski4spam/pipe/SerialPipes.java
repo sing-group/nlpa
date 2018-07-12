@@ -6,12 +6,13 @@
    information, see the file `LICENSE' included with this distribution. */
 package org.ski4spam.pipe;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.ski4spam.ia.types.Instance;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 /**
  * Convert an instance through a sequence of pipes.
@@ -21,7 +22,7 @@ import org.apache.logging.log4j.LogManager;
 
 
 public class SerialPipes extends Pipe implements Serializable {
-	private static final Logger logger = LogManager.getLogger(SerialPipes.class);
+    private static final Logger logger = LogManager.getLogger(SerialPipes.class);
     /**
      * Serial version UID
      */
@@ -30,7 +31,7 @@ public class SerialPipes extends Pipe implements Serializable {
     /**
      * Pipes
      */
-    ArrayList<Pipe> pipes;
+    private ArrayList<Pipe> pipes;
 
     public SerialPipes() {
         this.pipes = new ArrayList<Pipe>();
@@ -44,8 +45,7 @@ public class SerialPipes extends Pipe implements Serializable {
         this.pipes = new ArrayList<Pipe>(pipes.length);
 
         //System.out.println ("SerialPipes init this = "+this);
-        for (int i = 0; i < pipes.length; i++)
-            this.add(pipes[i]);
+        for (Pipe pipe : pipes) this.add(pipe);
     }
 
 
@@ -53,8 +53,8 @@ public class SerialPipes extends Pipe implements Serializable {
     ) {
         this.pipes = new ArrayList<Pipe>(pipeList.size());
 
-        for (int i = 0; i < pipeList.size(); i++) {
-            this.add(pipeList.get(i));
+        for (Pipe aPipeList : pipeList) {
+            this.add(aPipeList);
         }
     }
 
@@ -74,8 +74,7 @@ public class SerialPipes extends Pipe implements Serializable {
         this.pipes = new ArrayList<Pipe>(pipes.length);
 
         //System.out.println ("SerialPipes init this = "+this);
-        for (int i = 0; i < pipes.length; i++)
-            this.add(pipes[i]);
+        for (Pipe pipe : pipes) this.add(pipe);
     }
 
     /**
@@ -95,39 +94,82 @@ public class SerialPipes extends Pipe implements Serializable {
     public void setTargetProcessing(boolean lookForAndProcessTarget) {
         super.setTargetProcessing(lookForAndProcessTarget);
 
-        for (int i = 0; i < pipes.size(); i++)
-            (pipes.get(i)).setTargetProcessing(lookForAndProcessTarget);
+        for (Pipe pipe : pipes) pipe.setTargetProcessing(lookForAndProcessTarget);
     }
 
     public void add(Pipe pipe) {
-        pipe.setParent(this);
-        pipes.add(pipe);
+        if (!pipes.isEmpty()) {
+            Pipe last = pipes.get(pipes.size() - 1);
+            if (checkCompatibility(last, pipe)) {
+                logger.info("[PIPE ADD] Good compatibility between Pipes.");
+                pipe.setParent(this);
+                pipes.add(pipe);
+            } else {
+                logger.error("[PIPE ADD] BAD compatibility between Pipes.");
+                System.exit(0);
+            }
+        } else {
+            // If first Pipe
+            pipe.setParent(this);
+            pipes.add(pipe);
+        }
+    }
+
+    private boolean checkCompatibility(Pipe p1, Pipe p2) {
+        Class<?> obj1 = p1.getClass();
+        Method method1 = null;
+        try {
+            method1 = obj1.getMethod("pipe", Instance.class);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+        assert method1 != null;
+        PipeAnnotation annotation1 = method1.getAnnotation(PipeAnnotation.class);
+
+        Class<?> obj2 = p2.getClass();
+        Method method2 = null;
+        try {
+            method2 = obj2.getMethod("pipe", Instance.class);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+        assert method2 != null;
+        PipeAnnotation annotation2 = method2.getAnnotation(PipeAnnotation.class);
+
+        return annotation2.inputType().equals("Instance") || annotation2.inputType().equals(annotation1.outputType());
     }
 
     public Instance pipe(Instance carrier, int startingIndex) {
+        carrier = getInstance(carrier, startingIndex);
+
+        return carrier;
+    }
+
+    private Instance getInstance(Instance carrier, int startingIndex) {
         for (int i = startingIndex; i < pipes.size(); i++) {
 
             Pipe p = pipes.get(i);
 
             if (p == null) {
-                logger.fatal("Pipe "+ i +" is null");
-				System.exit(0);
+                logger.fatal("Pipe " + i + " is null");
+                System.exit(0);
             } else {
 
                 try {
-					if (carrier.isValid()){
-                       carrier = p.pipe(carrier);
-					}else{
-						logger.info("Skiping invalid instance "+carrier.toString());
-					}
+                    if (carrier.isValid()) {
+                        carrier = p.pipe(carrier);
+                    } else {
+                        logger.info("Skipping invalid instance " + carrier.toString());
+                    }
                 } catch (Exception e) {
-                    logger.fatal("Exception caught on pipe " + i + " ("+ p.getClass().getName() + "). " + e.getMessage() + " while processing " + carrier.toString() );
+                    logger.fatal("Exception caught on pipe " + i + " (" + p.getClass().getName() + "). " + e.getMessage() + " while processing " + carrier.toString());
                     e.printStackTrace(System.err);
-					System.exit(0);
+                    System.exit(0);
                 }
             }
         }
-
         return carrier;
     }
 
@@ -135,26 +177,7 @@ public class SerialPipes extends Pipe implements Serializable {
     public Instance pipe(Instance carrier, int startingIndex,
                          boolean growAlphabet) {
         System.out.print("*");
-        for (int i = startingIndex; i < pipes.size(); i++) {
-            Pipe p = pipes.get(i);
-
-            if (p == null) {
-                logger.fatal("Pipe "+ i +" is null");
-                System.exit(0);
-            } else {
-                try {
-					if (carrier.isValid()){
-                       carrier = p.pipe(carrier);
-					}else{
-						logger.info("Skiping invalid instance "+carrier.toString());
-					}
-                } catch (Exception e) {
-                    logger.fatal("Exception caught on pipe " + i + " ("+ p.getClass().getName() + "). " + e.getMessage() + " while processing " + carrier.toString() );
-                    e.printStackTrace(System.err);
-					System.exit(0);
-                }
-            }
-        }
+        carrier = getInstance(carrier, startingIndex);
         return carrier;
     }
 
@@ -205,10 +228,9 @@ public class SerialPipes extends Pipe implements Serializable {
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < pipes.size(); i++)
-            sb.append(pipes.get(i).toString() + ",");
+        for (Pipe pipe : pipes) sb.append(pipe.toString()).append(",");
 
         return sb.toString();
     }

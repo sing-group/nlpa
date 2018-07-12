@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
+import org.ski4spam.pipe.PipeAnnotation;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,19 +24,19 @@ import java.util.List;
 public class GuessLanguageFromStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(GuessLanguageFromStringBufferPipe.class);
 
-    String langProp = "language";
+    private String langProp = "language";
 
-    String langRealiabilityProp = "language-reliability";
+    private String langReliabilityProp = "language-reliability";
 
-    LanguageDetector languageDetector;
+    private LanguageDetector languageDetector;
 
     public GuessLanguageFromStringBufferPipe() {
         init();
     }
 
-    public GuessLanguageFromStringBufferPipe(String langProp, String langRealiabilityProp) {
+    public GuessLanguageFromStringBufferPipe(String langProp, String langReliabilityProp) {
         this.langProp = langProp;
-        this.langRealiabilityProp = langRealiabilityProp;
+        this.langReliabilityProp = langReliabilityProp;
         init();
     }
 
@@ -58,6 +59,7 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
         }
     }
 
+    @PipeAnnotation(inputType = "StringBuffer", outputType = "StringBuffer")
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
@@ -81,7 +83,7 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
                 } else {
                     carrier.setProperty(langProp, "");
                 }
-                carrier.setProperty(langRealiabilityProp, prob);
+                carrier.setProperty(langReliabilityProp, prob);
             }
         }
 

@@ -4,14 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
+import org.ski4spam.pipe.PipeAnnotation;
 
-import java.io.File;
-import java.io.Writer;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Hashtable;
-import java.util.Map;
+import java.io.*;
 
 /**
  * This pipe parses Instances to csv format.
@@ -20,87 +15,88 @@ import java.util.Map;
  * @author Yeray Lage Freitas
  */
 public class TeeCSVFromStringBufferPipe extends Pipe {
-    private static final Logger logger = LogManager.getLogger(File2CsvPipe.class);
-	private static FileWriter fw=null;
-    private static Writer w=null;
-    private static BufferedWriter bw=null;
-	private static String filename="output.csv";
-	private static File f=null;
-	private boolean isFirst=true;
-	private boolean saveData=false;
+    private static final Logger logger = LogManager.getLogger(TeeCSVFromStringBufferPipe.class);
+    private static FileWriter fw = null;
+    private static Writer w = null;
+    private static BufferedWriter bw = null;
+    private static String filename = "output.csv";
+    private static File f = null;
+    private boolean isFirst = true;
+    private boolean saveData = false;
 
-    public TeeCSVFromStringBufferPipe(){
-		initFile();
+    public TeeCSVFromStringBufferPipe() {
+        initFile();
     }
 
-    public TeeCSVFromStringBufferPipe(boolean saveData){
-		this.saveData=saveData;
-		initFile();
-    }
-	
-    public TeeCSVFromStringBufferPipe(String filePath){
-		this.filename=filePath;
-		initFile();
+    public TeeCSVFromStringBufferPipe(boolean saveData) {
+        this.saveData = saveData;
+        initFile();
     }
 
-    public TeeCSVFromStringBufferPipe(String filePath, boolean saveData){
-		this.filename=filePath;
-		this.saveData=saveData;
-		initFile();
+    public TeeCSVFromStringBufferPipe(String filePath) {
+        filename = filePath;
+        initFile();
     }
 
-	public TeeCSVFromStringBufferPipe(File f){
-        this.f=f;
-		this.filename=null;
-		initFile();
- 	}
+    public TeeCSVFromStringBufferPipe(String filePath, boolean saveData) {
+        filename = filePath;
+        this.saveData = saveData;
+        initFile();
+    }
 
-	public TeeCSVFromStringBufferPipe(File f, boolean saveData){
-        this.f=f;
-		this.filename=null;
-		this.saveData=saveData;
-		initFile();
- 	}
+    public TeeCSVFromStringBufferPipe(File f) {
+        TeeCSVFromStringBufferPipe.f = f;
+        filename = null;
+        initFile();
+    }
 
-	public TeeCSVFromStringBufferPipe(Writer w){
-		this.w=w;
-		this.filename=null;
-	}
+    public TeeCSVFromStringBufferPipe(File f, boolean saveData) {
+        TeeCSVFromStringBufferPipe.f = f;
+        filename = null;
+        this.saveData = saveData;
+        initFile();
+    }
 
-	public TeeCSVFromStringBufferPipe(Writer w, boolean saveData){
-		this.w=w;
-		this.filename=null;
-		this.saveData=saveData;
-	}
-	
-	public void initFile(){
+    public TeeCSVFromStringBufferPipe(Writer w) {
+        TeeCSVFromStringBufferPipe.w = w;
+        filename = null;
+    }
+
+    public TeeCSVFromStringBufferPipe(Writer w, boolean saveData) {
+        TeeCSVFromStringBufferPipe.w = w;
+        filename = null;
+        this.saveData = saveData;
+    }
+
+    public void initFile() {
         try {
-			if (this.filename!=null){
+            if (filename != null) {
                 fw = new FileWriter(filename, false);
-				bw = new BufferedWriter(fw);
-			}else if (this.f!=null){
+                bw = new BufferedWriter(fw);
+            } else if (f != null) {
                 fw = new FileWriter(f, false);
-				bw = new BufferedWriter(fw);				
-			}
-			fw.close();
-			bw.close();
+                bw = new BufferedWriter(fw);
+            }
+            fw.close();
+            bw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-	}
+    }
 
+    @PipeAnnotation(inputType = "StringBuffer", outputType = "StringBuffer")
     @Override
     public Instance pipe(Instance carrier) {
         try {
-			if (this.filename!=null){
+            if (filename != null) {
                 fw = new FileWriter(filename, true);
-				bw = new BufferedWriter(fw);
-			}else if (this.w!=null){
-				bw = new BufferedWriter(w);
-			}else if (this.f!=null){
+                bw = new BufferedWriter(fw);
+            } else if (w != null) {
+                bw = new BufferedWriter(w);
+            } else if (f != null) {
                 fw = new FileWriter(f, true);
-				bw = new BufferedWriter(fw);				
-			}
+                bw = new BufferedWriter(fw);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -122,16 +118,19 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
         }
         */
         try {
-			if (isFirst){ bw.write(carrier.getCSVHeader(saveData)+"\n"); isFirst=false; }
-			bw.write(carrier.toCSV(saveData)+"\n");			
-			
+            if (isFirst) {
+                bw.write(carrier.getCSVHeader(saveData) + "\n");
+                isFirst = false;
+            }
+            bw.write(carrier.toCSV(saveData) + "\n");
+
             //System.out.println(props.substring(0, props.length() - 1) + "\n");
             //bw.write(props.substring(0, props.length() - 1) + "\n");
-			
+
             bw.close();
-			if (this.fw!=null){
-				fw.close();
-			}
+            if (fw != null) {
+                fw.close();
+            }
             fw.close();
         } catch (IOException e) {
             e.printStackTrace();
