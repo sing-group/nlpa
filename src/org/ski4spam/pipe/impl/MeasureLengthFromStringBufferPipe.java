@@ -9,6 +9,7 @@ import org.ski4spam.pipe.TransformationPipe;
  * This pipe adds the length property. 
  * @author Rosalía Laza y Reyes Pavón
  */
+@TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
 public class MeasureLengthFromStringBufferPipe extends Pipe {
     private String key;
     public MeasureLengthFromStringBufferPipe() {
@@ -18,7 +19,7 @@ public class MeasureLengthFromStringBufferPipe extends Pipe {
         key = k;
     }
 
-    @TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
+
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer){

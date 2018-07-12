@@ -3,13 +3,15 @@ package org.ski4spam.pipe.impl;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
 import org.ski4spam.pipe.PropertyComputingPipe;
-
+import org.ski4spam.pipe.TransformationPipe;
 
 /**
  * This pipe adds the length property.
  *
  * @author Rosalía Laza y Reyes Pavón
  */
+//@PropertyComputingPipe(inputType = "File")
+@TransformationPipe(inputType = "File", outputType = "File")
 public class StoreFileExtensionPipe extends Pipe {
     private String key;
 
@@ -21,7 +23,7 @@ public class StoreFileExtensionPipe extends Pipe {
         key = k;
     }
 
-    @PropertyComputingPipe(inputType = "File")
+
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getName() instanceof String) {

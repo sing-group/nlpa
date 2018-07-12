@@ -21,6 +21,7 @@ import java.util.List;
  *
  * @author José Ramón Méndez Reboredo
  */
+@TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
 public class GuessLanguageFromStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(GuessLanguageFromStringBufferPipe.class);
 
@@ -59,7 +60,6 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
         }
     }
 
-    @TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {

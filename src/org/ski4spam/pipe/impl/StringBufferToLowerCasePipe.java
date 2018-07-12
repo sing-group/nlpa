@@ -9,12 +9,12 @@ import org.ski4spam.pipe.TransformationPipe;
  * This pipe modifies data to lowercase
  * @author Rosalía Laza y Reyes Pavón
  */
+@TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
 public class StringBufferToLowerCasePipe extends Pipe {
 
     public StringBufferToLowerCasePipe() {
     }
 
-    @TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
     @Override
     public Instance pipe(Instance carrier) {
         if ( carrier.getData() instanceof StringBuffer){

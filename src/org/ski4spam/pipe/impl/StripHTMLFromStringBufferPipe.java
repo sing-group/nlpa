@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
  * This pipe drops HTML tags and changes entities by their corresponding character
  * @author José Ramón Méndez Reboredo
  */
+@TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
 public class StripHTMLFromStringBufferPipe extends Pipe {
 	private static final Logger logger = LogManager.getLogger(StripHTMLFromStringBufferPipe.class);
 	
@@ -53,7 +54,6 @@ public class StripHTMLFromStringBufferPipe extends Pipe {
     public StripHTMLFromStringBufferPipe() {
     }
 
-    @TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
     @Override
     public Instance pipe(Instance carrier) {
         if ( carrier.getData() instanceof StringBuffer){

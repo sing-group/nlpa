@@ -117,28 +117,28 @@ public class SerialPipes extends Pipe implements Serializable {
 
     private boolean checkCompatibility(Pipe p1, Pipe p2) {
         Class<?> obj1 = p1.getClass();
-        Method method1 = null;
-        try {
-            method1 = obj1.getMethod("pipe", Instance.class);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
+        //Method method1 = null;
+        //try {
+        //    method1 = obj1.getMethod("pipe", Instance.class);
+        //} catch (NoSuchMethodException e) {
+        //    e.printStackTrace();
+        //}
 
-        assert method1 != null;
-        TransformationPipe annotation1 = method1.getAnnotation(TransformationPipe.class);
+        //assert method1 != null;
+        TransformationPipe annotation1 = obj1.getAnnotation(TransformationPipe.class);
 
         Class<?> obj2 = p2.getClass();
-        Method method2 = null;
-        try {
-            method2 = obj2.getMethod("pipe", Instance.class);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
+        //Method method2 = null;
+        //try {
+        //    method2 = obj2.getMethod("pipe", Instance.class);
+        //} catch (NoSuchMethodException e) {
+        //    e.printStackTrace();
+        //}
 
-        assert method2 != null;
-        TransformationPipe annotation2 = method2.getAnnotation(TransformationPipe.class);
+        //assert method2 != null;
+        TransformationPipe annotation2 = obj2.getAnnotation(TransformationPipe.class);
 
-        return annotation2.inputType().equals("Instance") || annotation2.inputType().equals(annotation1.outputType());
+        return /*annotation2.inputType().equals("Instance") ||*/ annotation2.inputType().equals(annotation1.outputType());
     }
 
     public Instance pipe(Instance carrier, int startingIndex) {

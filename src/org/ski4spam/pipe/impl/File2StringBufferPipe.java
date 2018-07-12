@@ -15,6 +15,7 @@ import java.util.Hashtable;
  *
  * @author José Ramón Méndez Reboredo
  */
+@TransformationPipe(inputType = "File", outputType = "StringBuffer")
 public class File2StringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(File2StringBufferPipe.class);
 
@@ -33,7 +34,7 @@ public class File2StringBufferPipe extends Pipe {
         htExtractors.put(TTWTTextExtractor.getExtension(), TTWTTextExtractor.getInstance());
     }
 
-    @TransformationPipe(inputType = "File", outputType = "StringBuffer")
+
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof File) {

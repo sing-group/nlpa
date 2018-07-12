@@ -14,6 +14,7 @@ import java.io.*;
  *
  * @author Yeray Lage Freitas
  */
+@TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
 public class TeeCSVFromStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(TeeCSVFromStringBufferPipe.class);
     private static FileWriter fw = null;
@@ -84,7 +85,6 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
         }
     }
 
-    @TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
     @Override
     public Instance pipe(Instance carrier) {
         try {
