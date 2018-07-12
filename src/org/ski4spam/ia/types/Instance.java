@@ -82,6 +82,8 @@ public class Instance implements Serializable {
      * Represents whether the instance is valid or not
      */
     private boolean isValid = true;
+	
+	private static final String CSV_SEP=";";
 
     public Instance(Object data, Object target, Object name, Object source) {
         this.data = data;
@@ -290,10 +292,10 @@ public class Instance implements Serializable {
 	*/
 	public String getCSVHeader(boolean withData){
 		String str=new String();
-		str+="id;"+(withData?"data;":"");
+		str+="id"+CSV_SEP+(withData?("data"+CSV_SEP):"");
 		Enumeration<String> keys=properties.keys();
 		while (keys.hasMoreElements()){
-			str+=(keys.nextElement()+";");
+			str+=(keys.nextElement()+CSV_SEP);
 		}
 		return str;
 	}
@@ -304,11 +306,11 @@ public class Instance implements Serializable {
 	public String toCSV(boolean withData){
 		String str="";
 		
-		str+=name+";"+(withData?(StringEscapeUtils.escapeCsv(data.toString())+";"):"");
+		str+=name+CSV_SEP+(withData?(StringEscapeUtils.escapeCsv(data.toString())+CSV_SEP):"");
 		Collection values=properties.values();
 		Iterator it=values.iterator();
 		while (it.hasNext()){
-			str+=(it.next()+";");
+			str+=(it.next()+CSV_SEP);
 		}
 		return str;		
 	}
