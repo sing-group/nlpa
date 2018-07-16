@@ -14,7 +14,8 @@ import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Collection;
-import org.apache.commons.lang3.StringEscapeUtils;
+//import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 
 /**

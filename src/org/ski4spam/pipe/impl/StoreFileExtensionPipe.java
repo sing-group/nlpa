@@ -5,6 +5,8 @@ import org.ski4spam.pipe.Pipe;
 import org.ski4spam.pipe.PropertyComputingPipe;
 import org.ski4spam.pipe.TransformationPipe;
 
+import java.io.File;
+
 /**
  * This pipe adds the length property.
  *
@@ -26,10 +28,10 @@ public class StoreFileExtensionPipe extends Pipe {
 
     @Override
     public Instance pipe(Instance carrier) {
-        if (carrier.getName() instanceof String) {
+        if (carrier.getData() instanceof File) {
             String[] extensions = {"eml", "tsms", "sms", "warc", "tytb", "twtid", "ttwt"};
             String value = "";
-            String name = ((String) carrier.getName()).toLowerCase();
+            String name = (((File) carrier.getData()).getAbsolutePath()).toLowerCase();
             int i = 0;
             while (i < extensions.length && !name.endsWith(extensions[i])) {
                 i++;

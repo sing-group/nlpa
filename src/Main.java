@@ -7,9 +7,15 @@ import org.ski4spam.pipe.impl.*;
 import org.ski4spam.util.textextractor.EMLTextExtractor;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
@@ -34,7 +40,7 @@ public class Main {
 
         /*create a example of pipe*/
         SerialPipes p = new SerialPipes();
-
+        p.add(new TargetAssigningPipe());
         p.add(new StoreFileExtensionPipe());
         p.add(new StoreTweetLangPipe());
         p.add(new File2StringBufferPipe());
@@ -57,31 +63,28 @@ public class Main {
         }
 
     }
+	
+	static class FileMng {
+	    static void visit(Path path) {
+            File data = path.toFile();
+            String target = null;
+            String name = data.getPath();
+            File source = data;
+		
+			instances.add(new Instance(data, target, name, source));
+	    }
+	}
 
     private static void generateInstances(String testDir) {
-        String[] folders = {"hsspam14", "smsspamcollection", "spamassassin", "www", "youtube"};
-        String[] targets = {"ham", "spam"};
-
-        for (String folder : folders) {
-            for (String target : targets) {
-                listFilesForFolder(new File(testDir + folder + "/_" + target + "_"), target);
-            }
-        }
+		try{
+		    Files.walk(Paths.get(testDir))
+		             .filter(Files::isRegularFile)
+		             .forEach(FileMng::visit);
+		}catch (IOException e){
+			logger.error("IOException found "+e.getMessage());
+			System.exit(0);
+		}
     }
-
-    private static void listFilesForFolder(final File folder, String type) {
-        for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
-            if (fileEntry.isDirectory()) {
-                listFilesForFolder(fileEntry, type);
-            } else {
-                File data = fileEntry;
-                String target = type;
-                String name = fileEntry.getPath();
-                File source = fileEntry;
-
-                instances.add(new Instance(data, target, name, source));
-            }
-        }
-    }
+	
 
 }
