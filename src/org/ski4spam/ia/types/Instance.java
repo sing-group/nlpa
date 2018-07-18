@@ -298,6 +298,7 @@ public class Instance implements Serializable {
 		while (keys.hasMoreElements()){
 			str+=(keys.nextElement()+CSV_SEP);
 		}
+		str+="target";
 		return str;
 	}
 	
@@ -313,7 +314,8 @@ public class Instance implements Serializable {
 		while (it.hasNext()){
 			str+=(it.next()+CSV_SEP);
 		}
-		return str;		
+		str+=target.toString();
+		return str;
 	}
 
 }
