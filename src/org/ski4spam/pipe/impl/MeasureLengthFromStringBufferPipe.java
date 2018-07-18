@@ -2,14 +2,14 @@ package org.ski4spam.pipe.impl;
 
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
-import org.ski4spam.pipe.TransformationPipe;
+import org.ski4spam.pipe.PropertyComputingPipe;
 
 
 /**
  * This pipe adds the length property. 
  * @author Rosalía Laza y Reyes Pavón
  */
-@TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
+@PropertyComputingPipe(inputType = "StringBuffer")
 public class MeasureLengthFromStringBufferPipe extends Pipe {
     private String key;
     public MeasureLengthFromStringBufferPipe() {

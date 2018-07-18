@@ -16,15 +16,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.ski4spam.pipe.TransformationPipe;
-
 /**
  * This pipe implements language guessing by using Twitter API
  *
  * @author Yeray Lage Freitas
  */
-//@PropertyComputingPipe(inputType = "File")
-@TransformationPipe(inputType = "File", outputType = "File")
+@PropertyComputingPipe(inputType = "File")
 public class StoreTweetLangPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(StoreTweetLangPipe.class);
 

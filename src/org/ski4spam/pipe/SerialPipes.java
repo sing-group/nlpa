@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.ski4spam.ia.types.Instance;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 
 /**
@@ -117,28 +117,40 @@ public class SerialPipes extends Pipe implements Serializable {
 
     private boolean checkCompatibility(Pipe p1, Pipe p2) {
         Class<?> obj1 = p1.getClass();
-        //Method method1 = null;
-        //try {
-        //    method1 = obj1.getMethod("pipe", Instance.class);
-        //} catch (NoSuchMethodException e) {
-        //    e.printStackTrace();
-        //}
-
-        //assert method1 != null;
-        TransformationPipe annotation1 = obj1.getAnnotation(TransformationPipe.class);
-
+        Annotation[] annotation1 = obj1.getDeclaredAnnotations();
         Class<?> obj2 = p2.getClass();
-        //Method method2 = null;
-        //try {
-        //    method2 = obj2.getMethod("pipe", Instance.class);
-        //} catch (NoSuchMethodException e) {
-        //    e.printStackTrace();
-        //}
+        Annotation[] annotation2 = obj2.getDeclaredAnnotations();
 
-        //assert method2 != null;
-        TransformationPipe annotation2 = obj2.getAnnotation(TransformationPipe.class);
+        if (annotation1[0].toString().contains("TargetAssigning") && pipes.size() > 1) {
+            // If target assigning is the last on pipes array, we take the before one for Data type evaluation
+            obj1 = pipes.get(pipes.size() - 2).getClass();
+            annotation1 = obj1.getDeclaredAnnotations();
+        }
 
-        return /*annotation2.inputType().equals("Instance") ||*/ annotation2.inputType().equals(annotation1.outputType());
+        if (annotation2[0].toString().contains("TargetAssigning")) {
+            // If target assigning it doesn't matter the before Data type
+            return true;
+        } else if (annotation1[0].toString().contains("TargetAssigning") && pipes.size() == 1) {
+            // If target assigning is the first on pipes array
+            return true;
+        } else if (annotation1[0].toString().contains("TransformationPipe")) {
+            // Compare p1 output with p2 input
+            TransformationPipe tp1 = obj1.getAnnotation(TransformationPipe.class);
+            String inputType2 = annotation2[0].toString().split("inputType=")[1].split(",")[0].replace(")", "");
+            return tp1.outputType().equals(inputType2);
+        } else if (annotation1[0].toString().contains("TeePipe")) {
+            // Compare p1 input with p2 input because type is not modified
+            TeePipe tp1 = obj1.getAnnotation(TeePipe.class);
+            String inputType2 = annotation2[0].toString().split("inputType=")[1].split(",")[0].replace(")", "");
+            return tp1.inputType().equals(inputType2);
+        } else if (annotation1[0].toString().contains("PropertyComputingPipe")) {
+            // Compare p1 input with p2 input because type is not modified
+            PropertyComputingPipe tp1 = obj1.getAnnotation(PropertyComputingPipe.class);
+            String inputType2 = annotation2[0].toString().split("inputType=")[1].split(",")[0].replace(")", "");
+            return tp1.inputType().equals(inputType2);
+        }
+
+        return false;
     }
 
     public Instance pipe(Instance carrier, int startingIndex) {

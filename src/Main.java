@@ -8,13 +8,11 @@ import org.ski4spam.util.textextractor.EMLTextExtractor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Main {
@@ -63,15 +61,15 @@ public class Main {
         }
 
     }
-	
-	static class FileMng {
+
+    static class FileMng {
 	    static void visit(Path path) {
             File data = path.toFile();
             String target = null;
             String name = data.getPath();
             File source = data;
-		
-			instances.add(new Instance(data, target, name, source));
+
+            instances.add(new Instance(data, target, name, source));
 	    }
 	}
 
@@ -85,6 +83,6 @@ public class Main {
 			System.exit(0);
 		}
     }
-	
+
 
 }

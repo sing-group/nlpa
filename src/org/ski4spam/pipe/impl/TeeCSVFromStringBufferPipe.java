@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
-import org.ski4spam.pipe.TransformationPipe;
+import org.ski4spam.pipe.PropertyComputingPipe;
 
 import java.io.*;
 
@@ -14,7 +14,7 @@ import java.io.*;
  *
  * @author Yeray Lage Freitas
  */
-@TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
+@PropertyComputingPipe(inputType = "StringBuffer")
 public class TeeCSVFromStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(TeeCSVFromStringBufferPipe.class);
     private static FileWriter fw = null;

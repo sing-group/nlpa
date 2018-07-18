@@ -3,7 +3,6 @@ package org.ski4spam.pipe.impl;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
 import org.ski4spam.pipe.PropertyComputingPipe;
-import org.ski4spam.pipe.TransformationPipe;
 
 import java.io.File;
 
@@ -12,8 +11,7 @@ import java.io.File;
  *
  * @author Rosalía Laza y Reyes Pavón
  */
-//@PropertyComputingPipe(inputType = "File")
-@TransformationPipe(inputType = "File", outputType = "File")
+@PropertyComputingPipe(inputType = "File")
 public class StoreFileExtensionPipe extends Pipe {
     private String key;
 
