@@ -136,21 +136,22 @@ public class SerialPipes extends Pipe implements Serializable {
         } else if (annotation1[0].toString().contains("TransformationPipe")) {
             // Compare p1 output with p2 input
             TransformationPipe tp1 = obj1.getAnnotation(TransformationPipe.class);
-            String inputType2 = annotation2[0].toString().split("inputType=")[1].split(",")[0].replace(")", "");
-            return tp1.outputType().equals(inputType2);
+            return tp1.outputType().equals(getInputType(annotation2[0]));
         } else if (annotation1[0].toString().contains("TeePipe")) {
             // Compare p1 input with p2 input because type is not modified
             TeePipe tp1 = obj1.getAnnotation(TeePipe.class);
-            String inputType2 = annotation2[0].toString().split("inputType=")[1].split(",")[0].replace(")", "");
-            return tp1.inputType().equals(inputType2);
+            return tp1.inputType().equals(getInputType(annotation2[0]));
         } else if (annotation1[0].toString().contains("PropertyComputingPipe")) {
             // Compare p1 input with p2 input because type is not modified
             PropertyComputingPipe tp1 = obj1.getAnnotation(PropertyComputingPipe.class);
-            String inputType2 = annotation2[0].toString().split("inputType=")[1].split(",")[0].replace(")", "");
-            return tp1.inputType().equals(inputType2);
+            return tp1.inputType().equals(getInputType(annotation2[0]));
         }
 
         return false;
+    }
+
+    private String getInputType(Annotation a) {
+        return a.toString().split("inputType=")[1].split(",")[0].replace(")", "");
     }
 
     public Instance pipe(Instance carrier, int startingIndex) {
