@@ -117,7 +117,7 @@ public StringBuffer extractText(File f){
                                     if (charsetName!=null){
                                             logger.info("charset found in content-type: "+charsetName);
                                             sbResult.append(new String(rawData, Charset.forName(charsetName)));
-                                    }else{ //detecta charset con librería
+                                    }else{ //Detect the charset using CharsetDetector Library
                                             CharsetDetector detector = new CharsetDetector(); 
                                             detector.setText(rawData);
                                             CharsetMatch cm = detector.detect();
