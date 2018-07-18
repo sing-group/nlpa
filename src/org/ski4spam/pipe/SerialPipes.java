@@ -22,7 +22,19 @@ import java.util.ArrayList;
 
 
 public class SerialPipes extends Pipe implements Serializable {
+    private String inputType = "";
+    private String outputType = "";
+
     private static final Logger logger = LogManager.getLogger(SerialPipes.class);
+
+    public String getInputType() {
+        return inputType;
+    }
+
+    public String getOutputType() {
+        return outputType;
+    }
+
     /**
      * Serial version UID
      */
@@ -104,6 +116,22 @@ public class SerialPipes extends Pipe implements Serializable {
                 logger.info("[PIPE ADD] Good compatibility between Pipes.");
                 pipe.setParent(this);
                 pipes.add(pipe);
+
+                if (inputType.equals("")) {
+                    // If first Pipe hasn't inputType
+                    inputType = getInputType(pipe.getClass().getDeclaredAnnotations()[0]);
+                }
+
+                if (pipe.getClass().getDeclaredAnnotations()[0].toString().contains("TargetAssigning") && pipes.size() > 1) {
+                    Annotation a = pipes.get(pipes.size() - 2).getClass().getDeclaredAnnotations()[0];
+                    outputType = getOutputType(a);
+                } else {
+                    if (pipe.getClass().getDeclaredAnnotations()[0].toString().contains("TransformationPipe")) {
+                        outputType = getOutputType(pipe.getClass().getDeclaredAnnotations()[0]);
+                    } else {
+                        outputType = getInputType(pipe.getClass().getDeclaredAnnotations()[0]);
+                    }
+                }
             } else {
                 logger.error("[PIPE ADD] BAD compatibility between Pipes.");
                 System.exit(0);
@@ -112,6 +140,9 @@ public class SerialPipes extends Pipe implements Serializable {
             // If first Pipe
             pipe.setParent(this);
             pipes.add(pipe);
+            if (!pipe.getClass().getDeclaredAnnotations()[0].toString().contains("TargetAssigning")) {
+                inputType = getInputType(pipe.getClass().getDeclaredAnnotations()[0]);
+            }
         }
     }
 
@@ -152,6 +183,10 @@ public class SerialPipes extends Pipe implements Serializable {
 
     private String getInputType(Annotation a) {
         return a.toString().split("inputType=")[1].split(",")[0].replace(")", "");
+    }
+
+    private String getOutputType(Annotation a) {
+        return a.toString().split("outputType=")[1].split(",")[0].replace(")", "");
     }
 
     public Instance pipe(Instance carrier, int startingIndex) {

@@ -46,6 +46,7 @@ public class Main {
         p.add(new GuessLanguageFromStringBufferPipe());
         p.add(new TeeCSVFromStringBufferPipe(true));
 
+
         /*Pipe all instances*/
         for (Instance i : instances) {
             p.pipe(i);
@@ -62,26 +63,26 @@ public class Main {
 
     }
 
+    private static void generateInstances(String testDir) {
+        try {
+            Files.walk(Paths.get(testDir))
+                    .filter(Files::isRegularFile)
+                    .forEach(FileMng::visit);
+        } catch (IOException e) {
+            logger.error("IOException found " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
     static class FileMng {
-	    static void visit(Path path) {
+        static void visit(Path path) {
             File data = path.toFile();
             String target = null;
             String name = data.getPath();
             File source = data;
 
             instances.add(new Instance(data, target, name, source));
-	    }
-	}
-
-    private static void generateInstances(String testDir) {
-		try{
-		    Files.walk(Paths.get(testDir))
-		             .filter(Files::isRegularFile)
-		             .forEach(FileMng::visit);
-		}catch (IOException e){
-			logger.error("IOException found "+e.getMessage());
-			System.exit(0);
-		}
+        }
     }
 
 
