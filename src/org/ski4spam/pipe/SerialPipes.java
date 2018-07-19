@@ -22,8 +22,8 @@ import java.util.ArrayList;
 
 
 public class SerialPipes extends Pipe implements Serializable {
-    private String inputType = "";
-    private String outputType = "";
+    protected String inputType = "";
+    protected String outputType = "";
 
     private static final Logger logger = LogManager.getLogger(SerialPipes.class);
 
@@ -112,7 +112,7 @@ public class SerialPipes extends Pipe implements Serializable {
     public void add(Pipe pipe) {
         if (!pipes.isEmpty()) {
             Pipe last = pipes.get(pipes.size() - 1);
-            if (checkCompatibility(last, pipe)) {
+            if (checkCompatibility(pipe)) {
                 logger.info("[PIPE ADD] Good compatibility between Pipes.");
                 pipe.setParent(this);
                 pipes.add(pipe);
@@ -146,15 +146,17 @@ public class SerialPipes extends Pipe implements Serializable {
         }
     }
 
-    private boolean checkCompatibility(Pipe p1, Pipe p2) {
-        Class<?> obj1 = p1.getClass();
+    public boolean checkCompatibility(Pipe p2) {
+        Class<?> obj1 = pipes.get(pipes.size()-1).getClass();
         Annotation[] annotation1 = obj1.getDeclaredAnnotations();
         Class<?> obj2 = p2.getClass();
         Annotation[] annotation2 = obj2.getDeclaredAnnotations();
 
-        if (annotation1[0].toString().contains("TargetAssigning") && pipes.size() > 1) {
+        int i=0;
+        while (annotation1[0].toString().contains("TargetAssigning") && pipes.size() > (i+1)) {
+			i++;
             // If target assigning is the last on pipes array, we take the before one for Data type evaluation
-            obj1 = pipes.get(pipes.size() - 2).getClass();
+            obj1 = pipes.get(pipes.size() - (i+1)).getClass();
             annotation1 = obj1.getDeclaredAnnotations();
         }
 
@@ -181,11 +183,11 @@ public class SerialPipes extends Pipe implements Serializable {
         return false;
     }
 
-    private String getInputType(Annotation a) {
+    private static String getInputType(Annotation a) {
         return a.toString().split("inputType=")[1].split(",")[0].replace(")", "");
     }
 
-    private String getOutputType(Annotation a) {
+    private static String getOutputType(Annotation a) {
         return a.toString().split("outputType=")[1].split(",")[0].replace(")", "");
     }
 

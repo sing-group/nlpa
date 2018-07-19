@@ -14,7 +14,7 @@ import java.io.*;
  *
  * @author Yeray Lage Freitas
  */
-@PropertyComputingPipe(inputType = "StringBuffer")
+@TeePipe(inputType = "StringBuffer")
 public class TeeCSVFromStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(TeeCSVFromStringBufferPipe.class);
     private static FileWriter fw = null;
