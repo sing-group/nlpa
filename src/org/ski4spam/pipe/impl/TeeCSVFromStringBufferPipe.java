@@ -12,6 +12,8 @@ import java.io.*;
 /**
  * This pipe parses Instances to csv format.
  * It can be for showing it on terminal or exporting it to .csv file.
+ * The resulting CSV could be readed in R using 
+ * out <- read.csv("output.csv",header = TRUE, sep=";", encoding = "UTF-8", skipNul = TRUE, stringsAsFactors = FALSE )
  *
  * @author Yeray Lage Freitas
  */

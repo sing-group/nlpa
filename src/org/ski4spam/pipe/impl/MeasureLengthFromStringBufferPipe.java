@@ -7,18 +7,21 @@ import org.ski4spam.pipe.PropertyComputingPipe;
 
 /**
  * This pipe adds the length property. 
- * @author Rosalía Laza y Reyes Pavón
+ * @author Rosalía Laza 
+ * @author Reyes Pavón
  */
 @PropertyComputingPipe(inputType = "StringBuffer")
 public class MeasureLengthFromStringBufferPipe extends Pipe {
+
     private String key;
+	
     public MeasureLengthFromStringBufferPipe() {
         key = "length";
     }
+
     public MeasureLengthFromStringBufferPipe(String k) {
         key = k;
     }
-
 
     @Override
     public Instance pipe(Instance carrier) {
@@ -26,6 +29,8 @@ public class MeasureLengthFromStringBufferPipe extends Pipe {
             StringBuffer sb = (StringBuffer)carrier.getData();
             int lengthSb = sb.length();
             carrier.setProperty(key, lengthSb);
+        } else {
+        	carrier.setProperty(key, "null");
         }
                     
         return carrier;
