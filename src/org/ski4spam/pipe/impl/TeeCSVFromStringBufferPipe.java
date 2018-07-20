@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
 import org.ski4spam.pipe.PropertyComputingPipe;
+import org.ski4spam.pipe.TeePipe;
 
 import java.io.*;
 

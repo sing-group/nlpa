@@ -93,21 +93,7 @@ public class Instance implements Serializable {
         this.source = source;
     }
 
-    /**
-     * Initialize the slots with the given four values, then put the
-     * Instance through the given pipe, then lock the instance.
-     */
-    //public Instance(Object data, Object target, Object name, Object source, 
-    //               Pipe p) {
-    // this(data, target, name, source);
 
-    //if (p != null) {
-    //p.pipe(this);
-    //   locked = true;
-    // }
-
-    //pipe = p;
-    //}
     public Object getData() {
         return data == null ? "NULL" : data;
     }
@@ -156,34 +142,6 @@ public class Instance implements Serializable {
         return properties;
     }
 
-    /*
-        public Pipe getPipe() {
-            return pipe;
-        }
-
-    public Hashtable getPropertyList() { // added by Fuchun
-        return properties;
-    }
-
-    public void setPropertyList(Hashtable<String, Object> p) { //added by Fuchun
-        if (!locked)
-            properties = p;
-        else
-            throw new IllegalStateException("Instance is locked.");
-    }
-
-
-    public Instance getPipedCopy(Pipe p) {
-        if (pipe != null)
-            throw new IllegalStateException("This method can only be called on Instances that have not yet already been piped");
-
-        Instance ret = p.pipe(this.shallowCopy());
-        ret.pipe = p;
-
-        return ret;
-    }
-    */
-
     // Setting and getting properties
     public void setProperty(String key, Object value) {
         properties.put(key, value);
@@ -191,60 +149,6 @@ public class Instance implements Serializable {
 
     public Object getProperty(String key) {
         return properties.get(key);
-    }
-
-    /**
-     * This is a left-over convenience method that may be removed.
-     */
-    /*
-    public Object getData(Pipe p) {
-        if (p != pipe)
-            throw new IllegalArgumentException("Pipe doesn't match.");
-
-        return data;
-    }
-    */
-    public boolean isLocked() {
-        return locked;
-    }
-
-    public void setLock() {
-        locked = true;
-    }
-
-    public void unLock() {
-        locked = false;
-    }
-
-    public Labeling getLabeling() {
-        if (target == null || target instanceof Labeling)
-            return (Labeling) target;
-
-        throw new IllegalStateException("Target is not a Labeling; it is a " +
-                target.getClass().getName());
-    }
-
-    public void setLabeling(Labeling l) {
-        // This test isn't strictly necessary, but might catch some typos.
-        assert (target == null || target instanceof Labeling);
-
-        if (!locked)
-            target = l;
-        else
-            throw new IllegalStateException("Instance is locked.");
-    }
-
-    public void clearSource() {
-        source = null;
-    }
-
-    public Instance shallowCopy() {
-        Instance ret = new Instance(data, target, name, source);
-        //ret.pipe = pipe;
-        ret.locked = locked;
-        ret.properties = properties;
-
-        return ret;
     }
 
     public boolean hasProperty(String key) {
@@ -261,16 +165,6 @@ public class Instance implements Serializable {
             return (String) name;
         else return name.toString();
     }
-
-    /*
-    public interface Iterator extends java.util.Iterator {
-
-        // xxx Change this to just return "Instance"?  No.
-        Instance nextInstance();
-
-        double getInstanceWeight();
-    }
-	*/
 
     /**
      * Marks instance as invalid
@@ -308,7 +202,7 @@ public class Instance implements Serializable {
 	public String toCSV(boolean withData){
 		String str="";
 		
-		str+=name+CSV_SEP+(withData?(StringEscapeUtils.escapeCsv(data.toString())+CSV_SEP):"");
+		str+=name+CSV_SEP+(withData?(StringEscapeUtils.escapeCsv(data.toString().replaceAll(";","\\;"))+CSV_SEP):"");
 		Collection values=properties.values();
 		Iterator it=values.iterator();
 		while (it.hasNext()){

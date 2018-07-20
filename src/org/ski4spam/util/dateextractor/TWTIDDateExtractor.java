@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import java.util.Date;
+
 public class TWTIDDateExtractor extends DateExtractor {
     private static final Logger logger = LogManager.getLogger(TWTIDDateExtractor.class);
     private static DateExtractor instance = null;
@@ -35,7 +37,7 @@ public class TWTIDDateExtractor extends DateExtractor {
         return instance;
     }
 
-    public StringBuffer extractDate(File file) {
+    public Date extractDate(File file) {
         //Achieving the tweet id from the given file.
         try {
             FileReader f = new FileReader(file);
@@ -51,7 +53,7 @@ public class TWTIDDateExtractor extends DateExtractor {
         try {
             Twitter twitter = tf.getInstance();
             Status status = twitter.showStatus(Long.parseLong(tweetId));
-            return new StringBuffer(status.getCreatedAt().toString());
+            return status.getCreatedAt();
         } catch (TwitterException te) {
             logger.error("Tweet error at date extraction / " + te.getErrorMessage() + " | Current tweet: " + file.getAbsolutePath());
             return null;

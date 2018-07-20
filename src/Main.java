@@ -41,10 +41,12 @@ public class Main {
         p.add(new TargetAssigningPipe());
         p.add(new StoreFileExtensionPipe());
         p.add(new StoreTweetLangPipe());
+		p.add(new StoreTweetLangPipe());
+		p.add(new GuessDateFromFile());
         p.add(new File2StringBufferPipe());
         p.add(new StripHTMLFromStringBufferPipe());
         p.add(new GuessLanguageFromStringBufferPipe());
-        p.add(new TeeCSVFromStringBufferPipe(true));
+        p.add(new TeeCSVFromStringBufferPipe(false));
 
 
         /*Pipe all instances*/
