@@ -2,9 +2,12 @@ package org.ski4spam.util.dateextractor;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Date;
+import java.util.TimeZone;
 
 import org.archive.io.ArchiveRecord;
 import org.archive.io.warc.*;
@@ -31,8 +34,8 @@ public class WARCDateExtractor extends DateExtractor {
         return instance;
     }
 
-    public Date extractDate(File f) {
-        Date d = null;
+   public Date extractDate(File f) {
+        Date sbResult = null;
         ArchiveRecord ar = null;
    
         try 
@@ -45,12 +48,11 @@ public class WARCDateExtractor extends DateExtractor {
                    String warcType = (String)header.get("WARC-Type");
 
                     if (warcType.equals("warcinfo")){
-                        String dateWarc = (String)header.get("WARC-Date");
-						try{
-                           d = new Date(dateWarc); 
-					   }catch(Exception e){
-					   	   d=null;
-					   }
+                        String dateWarc = (String)ar.getHeader().getDate();
+                        SimpleDateFormat sdf = new SimpleDateFormat();
+                        sdf.applyPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                        sdf.setTimeZone(TimeZone.getTimeZone("GMT+1"));
+                        sbResult = sdf.parse(dateWarc, new ParsePosition(0));
                     }
                     else{
                         logger.error("warc error at date extraction / " + " | Current warc: " + f.getAbsolutePath());
@@ -62,6 +64,6 @@ public class WARCDateExtractor extends DateExtractor {
             logger.error(e.getMessage() + " while processing " + f.getAbsolutePath());
             return null;
         }
-        return d;
+        return sbResult;
     }
 }
