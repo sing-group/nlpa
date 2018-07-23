@@ -163,7 +163,7 @@ public class SerialPipes extends Pipe implements Serializable {
         if (annotation2[0].toString().contains("TargetAssigning")) {
             // If target assigning it doesn't matter the before Data type
             return true;
-        } else if (annotation1[0].toString().contains("TargetAssigning") && pipes.size() == 1) {
+        } else if (annotation1[0].toString().contains("TargetAssigningPipe") && pipes.size() == 1) {
             // If target assigning is the first on pipes array
             return true;
         } else if (annotation1[0].toString().contains("TransformationPipe")) {

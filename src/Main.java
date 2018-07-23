@@ -38,7 +38,7 @@ public class Main {
 
         /*create a example of pipe*/
         SerialPipes p = new SerialPipes();
-        p.add(new TargetAssigningPipe());
+        p.add(new TargetAssigningFromPathPipe());
         p.add(new StoreFileExtensionPipe());
         p.add(new StoreTweetLangPipe());
 		p.add(new StoreTweetLangPipe());

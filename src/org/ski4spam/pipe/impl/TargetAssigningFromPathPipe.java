@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
-import org.ski4spam.pipe.TargetAssigning;
+import org.ski4spam.pipe.TargetAssigningPipe;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +15,8 @@ import java.util.Set;
  *
  * @author José Ramón Méndez Reboredo
  */
-@TargetAssigning()
-public class TargetAssigningPipe extends Pipe {
+@TargetAssigningPipe()
+public class TargetAssigningFromPathPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(TargetAssigningPipe.class);
 
     /**
@@ -27,7 +27,7 @@ public class TargetAssigningPipe extends Pipe {
     /**
      * Create a TargetAssigningPipe using the default mapping ("_spam_" for target "spam" and "_ham_" for target "ham")
      */
-    public TargetAssigningPipe() {
+    public TargetAssigningFromPathPipe() {
         targets = new HashMap();
         targets.put("_ham_", "ham");
         targets.put("_spam_", "spam");
@@ -38,7 +38,7 @@ public class TargetAssigningPipe extends Pipe {
      *
      * @targets Map of targets. The key represents the substring of the path and the value the specific target.
      */
-    public TargetAssigningPipe(Map<String, String> targets) {
+    public TargetAssigningFromPathPipe(Map<String, String> targets) {
         this.targets = targets;
     }
 
