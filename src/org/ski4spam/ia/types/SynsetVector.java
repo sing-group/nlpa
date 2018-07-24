@@ -3,6 +3,11 @@ package org.ski4spam.ia.types;
 import java.util.Vector;
 import org.ski4spam.util.Pair;
 
+/**
+  * A class to represent a vector of synsets and the asofiated information
+  * @author Iñaki Velez
+  * @author Enaitz Ezpeleta
+  */
 public class SynsetVector {
 	/**
 	  * The original text
