@@ -52,6 +52,36 @@ public class SynsetVector {
 		this.originalText=originalText.toString();
     }
 
-	//TODO Implement getters and setters.
-	
+	public String getOriginalText() {
+		return originalText;
+	}
+
+	public void setOriginalText(String originalText) {
+		this.originalText = originalText;
+	}
+
+	public Vector<Pair<String, String>> getUnmatchedTexts() {
+		return unmatchedTexts;
+	}
+
+	public void setUnmatchedTexts(Vector<Pair<String, String>> unmatchedTexts) {
+		this.unmatchedTexts = unmatchedTexts;
+	}
+
+	public String getFixedText() {
+		return fixedText;
+	}
+
+	public void setFixedText(String fixedText) {
+		this.fixedText = fixedText;
+	}
+
+	public Vector<Pair<String, String>> getSynsets() {
+		return synsets;
+	}
+
+	public void setSynsets(Vector<Pair<String, String>> synsets) {
+		this.synsets = synsets;
+	}
+
 }
