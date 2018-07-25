@@ -1,7 +1,7 @@
 package org.ski4spam.pipe;
 
 import org.ski4spam.ia.types.Instance;
-import org.ski4spam.ia.util.PropertyList;
+// import org.ski4spam.ia.util.PropertyList;
 
 
 /**
@@ -50,6 +50,7 @@ public abstract class Pipe {
      */
     public abstract Instance pipe(Instance carrier);
 
+
     /**
      * Create and process an Instance. An instance is created from
      * the given arguments and then the pipe is run on the instance.
@@ -61,12 +62,14 @@ public abstract class Pipe {
      * @param parent     Unused
      * @param props      Unused
      */
+    /*
     public Instance pipe(Object data, Object target, Object name,
                          Object source, Instance parent,
                          PropertyList props) {
 
         return pipe(new Instance(data, target, name, source));
     }
+    */
 
     /**
      * Return true iff this pipe expects and processes information in

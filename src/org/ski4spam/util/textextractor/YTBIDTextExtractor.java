@@ -2,46 +2,43 @@ package org.ski4spam.util.textextractor;
 
 import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.InputStream;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import javax.json.*;
 
 
-public class YTBIDTextExtractor extends TextExtractor{
-	 private static final Logger logger = LogManager.getLogger(YTBIDTextExtractor.class);
-	static TextExtractor instance=null;
-	
-	private YTBIDTextExtractor(){
-		
-	}
-	
-	public static String getExtension(){
-		return "ytbid";
-	}
-	
-	public static TextExtractor getInstance(){
-		if (instance==null) {
-			instance=new YTBIDTextExtractor();
-		}
-		return instance;
-	}
-	
-	public StringBuffer extractText(File f){
-		 //Achieving the youtube id from the given file.
+public class YTBIDTextExtractor extends TextExtractor {
+    private static final Logger logger = LogManager.getLogger(YTBIDTextExtractor.class);
+    static TextExtractor instance = null;
+
+    private YTBIDTextExtractor() {
+
+    }
+
+    public static String getExtension() {
+        return "ytbid";
+    }
+
+    public static TextExtractor getInstance() {
+        if (instance == null) {
+            instance = new YTBIDTextExtractor();
+        }
+        return instance;
+    }
+
+    public StringBuffer extractText(File file) {
+        //Achieving the youtube id from the given file.
         String youtubeId;
-        StringBuffer sbResult=new StringBuffer();
-        String text= null;
+        StringBuffer sbResult = new StringBuffer();
+        String text = null;
         try {
             FileReader f = new FileReader(file);
             BufferedReader b = new BufferedReader(f);
@@ -59,29 +56,27 @@ public class YTBIDTextExtractor extends TextExtractor{
             JsonReader rdr = Json.createReader(is);
             JsonObject obj = rdr.readObject();
             JsonArray arr = obj.getJsonArray("items");
-            if (arr.isEmpty()){
+            if (arr.isEmpty()) {
                 logger.error("empty array while processing " + file.getAbsolutePath());
                 return null;
-            }
-            else {
+            } else {
                 text = arr.getJsonObject(0).getJsonObject("snippet").getString("textOriginal");
-                 //detecting charset with library
+                //detecting charset with library
                 byte[] rawData = text.getBytes();
-                CharsetDetector detector = new CharsetDetector(); 
+                CharsetDetector detector = new CharsetDetector();
                 detector.setText(rawData);
                 CharsetMatch cm = detector.detect();
-                logger.warn("Charset guesed: "+cm.getName()+" [confidence="+cm.getConfidence()+"/100]for "+file.getAbsolutePath()+" Content type: "+ text);                                    
+                logger.warn("Charset guesed: " + cm.getName() + " [confidence=" + cm.getConfidence() + "/100]for " + file.getAbsolutePath() + " Content type: " + text);
                 sbResult.append(new String(rawData, Charset.forName(cm.getName())));
                 return sbResult;
             }
-            
-        } 
-        catch (MalformedURLException e) {
+
+        } catch (MalformedURLException e) {
+            logger.error(e.getMessage() + " while processing " + file.getAbsolutePath());
+            return null;
+        } catch (IOException e) {
             logger.error(e.getMessage() + " while processing " + file.getAbsolutePath());
             return null;
         }
-        catch (IOException e) {
-            logger.error(e.getMessage() + " while processing " + file.getAbsolutePath());
-            return null;
-        }
+    }
 }

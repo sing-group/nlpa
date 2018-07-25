@@ -3,7 +3,10 @@ import org.apache.logging.log4j.Logger;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.ia.util.InstanceListUtils;
 import org.ski4spam.pipe.SerialPipes;
-import org.ski4spam.pipe.impl.*;
+import org.ski4spam.pipe.impl.GuessDateFromFile;
+import org.ski4spam.pipe.impl.StoreFileExtensionPipe;
+import org.ski4spam.pipe.impl.StoreTweetLangPipe;
+import org.ski4spam.pipe.impl.TargetAssigningFromPathPipe;
 import org.ski4spam.util.textextractor.EMLTextExtractor;
 
 import java.io.File;
@@ -41,15 +44,16 @@ public class Main {
         p.add(new TargetAssigningFromPathPipe());
         p.add(new StoreFileExtensionPipe());
         p.add(new StoreTweetLangPipe());
-		p.add(new StoreTweetLangPipe());
-		p.add(new GuessDateFromFile());
+        p.add(new StoreTweetLangPipe());
+        p.add(new GuessDateFromFile());
+        /*
         p.add(new File2StringBufferPipe());
 		p.add(new MeasureLengthFromStringBufferPipe());
         p.add(new StripHTMLFromStringBufferPipe());
 		p.add(new MeasureLengthFromStringBufferPipe("length_after_html_drop"));
         p.add(new GuessLanguageFromStringBufferPipe());
         p.add(new TeeCSVFromStringBufferPipe(true));
-
+        */
 
         /*Pipe all instances*/
         for (Instance i : instances) {

@@ -7,8 +7,6 @@ import org.ski4spam.pipe.Pipe;
 import org.ski4spam.pipe.PropertyComputingPipe;
 import org.ski4spam.util.TwitterConfigurator;
 import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
 import java.io.BufferedReader;
@@ -27,7 +25,7 @@ public class StoreTweetLangPipe extends Pipe {
 
     private TwitterFactory tf = TwitterConfigurator.getTwitterFactory();
 
-    
+
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof File) {
@@ -46,14 +44,10 @@ public class StoreTweetLangPipe extends Pipe {
                 }
 
                 //Extracting and returning the tweet status date or error if not available.
-                try {
-                    Twitter twitter = tf.getInstance();
-                    Status status = twitter.showStatus(Long.parseLong(tweetId));
+                Status status = TwitterConfigurator.getStatus(tweetId);
+                if (status != null) {
                     carrier.setProperty("language", status.getLang());
                     carrier.setProperty("language-reliability", 1.0);
-                } catch (TwitterException te) {
-                    logger.error("Tweet error at lang guess / " + te.getErrorMessage() + " | Current tweet: " + file.getAbsolutePath());
-                    return carrier;
                 }
             }
         }

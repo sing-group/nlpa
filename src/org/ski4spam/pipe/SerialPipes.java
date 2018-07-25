@@ -111,7 +111,6 @@ public class SerialPipes extends Pipe implements Serializable {
 
     public void add(Pipe pipe) {
         if (!pipes.isEmpty()) {
-            Pipe last = pipes.get(pipes.size() - 1);
             if (checkCompatibility(pipe)) {
                 logger.info("[PIPE ADD] Good compatibility between Pipes.");
                 pipe.setParent(this);
@@ -146,38 +145,41 @@ public class SerialPipes extends Pipe implements Serializable {
         }
     }
 
-    public boolean checkCompatibility(Pipe p2) {
-        Class<?> obj1 = pipes.get(pipes.size()-1).getClass();
-        Annotation[] annotation1 = obj1.getDeclaredAnnotations();
-        Class<?> obj2 = p2.getClass();
-        Annotation[] annotation2 = obj2.getDeclaredAnnotations();
+    private boolean checkCompatibility(Pipe p1) {
+        // Last pipe con ArrayList
+        Class<?> obj1 = pipes.get(pipes.size() - 1).getClass();
+        Annotation annotation1 = obj1.getDeclaredAnnotations()[0];
 
-        int i=0;
-        while (annotation1[0].toString().contains("TargetAssigning") && pipes.size() > (i+1)) {
-			i++;
+        // Pipe for add
+        Class<?> obj2 = p1.getClass();
+        Annotation annotation2 = obj2.getDeclaredAnnotations()[0];
+
+        int i = 0;
+        while (annotation1.toString().contains("TargetAssigning") && pipes.size() > (i + 1)) {
+            i++;
             // If target assigning is the last on pipes array, we take the before one for Data type evaluation
-            obj1 = pipes.get(pipes.size() - (i+1)).getClass();
-            annotation1 = obj1.getDeclaredAnnotations();
+            obj1 = pipes.get(pipes.size() - (i + 1)).getClass();
+            annotation1 = obj1.getDeclaredAnnotations()[0];
         }
 
-        if (annotation2[0].toString().contains("TargetAssigning")) {
+        if (annotation2.toString().contains("TargetAssigning")) {
             // If target assigning it doesn't matter the before Data type
             return true;
-        } else if (annotation1[0].toString().contains("TargetAssigningPipe") && pipes.size() == 1) {
+        } else if (annotation1.toString().contains("TargetAssigning") && pipes.size() == 1) {
             // If target assigning is the first on pipes array
             return true;
-        } else if (annotation1[0].toString().contains("TransformationPipe")) {
+        } else if (annotation1.toString().contains("TransformationPipe")) {
             // Compare p1 output with p2 input
             TransformationPipe tp1 = obj1.getAnnotation(TransformationPipe.class);
-            return tp1.outputType().equals(getInputType(annotation2[0]));
-        } else if (annotation1[0].toString().contains("TeePipe")) {
+            return tp1.outputType().equals(getInputType(annotation2));
+        } else if (annotation1.toString().contains("TeePipe")) {
             // Compare p1 input with p2 input because type is not modified
             TeePipe tp1 = obj1.getAnnotation(TeePipe.class);
-            return tp1.inputType().equals(getInputType(annotation2[0]));
-        } else if (annotation1[0].toString().contains("PropertyComputingPipe")) {
+            return tp1.inputType().equals(getInputType(annotation2));
+        } else if (annotation1.toString().contains("PropertyComputingPipe")) {
             // Compare p1 input with p2 input because type is not modified
             PropertyComputingPipe tp1 = obj1.getAnnotation(PropertyComputingPipe.class);
-            return tp1.inputType().equals(getInputType(annotation2[0]));
+            return tp1.inputType().equals(getInputType(annotation2));
         }
 
         return false;
