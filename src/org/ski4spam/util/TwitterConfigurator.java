@@ -57,16 +57,13 @@ public class TwitterConfigurator {
 
         if (validTweetsCache.containsKey(Long.parseLong(tweetId))) {
             // If already on valid cache
-            System.out.println("Cached as valid.");
             toret = validTweetsCache.get(Long.parseLong(tweetId));
         } else if (errorTweetsCache.containsKey(Long.parseLong(tweetId))) {
             // If already on error cache
             ErrorTweet et = errorTweetsCache.get(Long.parseLong(tweetId));
-            System.out.println("Cached as error.");
             logger.error("Tweet error / " + et.getError() + " | Current tweet: " + et.getTweetId());
         } else {
             // If not on cache
-            System.out.println("NOT cached.");
             Twitter twitter = tf.getInstance();
             try {
                 toret = twitter.showStatus(Long.parseLong(tweetId));
