@@ -25,7 +25,7 @@ public class File2StringBufferPipe extends Pipe {
         htExtractors = new Hashtable<String, TextExtractor>();
 
         //Add the extractors
-        for (String ext:GenericTextExtractor.getExtensions()) htExtractors.put(ext, TSMSTextExtractor.getInstance());		
+        for (String ext:GenericTextExtractor.getExtensions()) htExtractors.put(ext, GenericTextExtractor.getInstance());		
 		for (String ext:EMLTextExtractor.getExtensions()) htExtractors.put(ext, EMLTextExtractor.getInstance());
         for (String ext:SMSTextExtractor.getExtensions()) htExtractors.put(ext, SMSTextExtractor.getInstance());
         for (String ext:WARCTextExtractor.getExtensions()) htExtractors.put(ext, WARCTextExtractor.getInstance());
