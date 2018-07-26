@@ -44,7 +44,8 @@ public class GuessDateFromFile extends Pipe {
         htExtractors.put(TYTBDateExtractor.getExtension(), TYTBDateExtractor.getInstance());
         htExtractors.put(TWTIDDateExtractor.getExtension(), TWTIDDateExtractor.getInstance());
         htExtractors.put(TTWTDateExtractor.getExtension(), TTWTDateExtractor.getInstance());
-    }
+        htExtractors.put(YTBIDDateExtractor.getExtension(), YTBIDDateExtractor.getInstance());
+	}
 
 
     @Override
