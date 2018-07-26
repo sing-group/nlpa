@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rm -rf es/ *.class
+rm -rf org/ *.class
