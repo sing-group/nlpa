@@ -30,6 +30,7 @@ public class File2StringBufferPipe extends Pipe {
         for (String ext:SMSTextExtractor.getExtensions()) htExtractors.put(ext, SMSTextExtractor.getInstance());
         for (String ext:WARCTextExtractor.getExtensions()) htExtractors.put(ext, WARCTextExtractor.getInstance());
         for (String ext:TWTIDTextExtractor.getExtensions()) htExtractors.put(ext, TWTIDTextExtractor.getInstance());
+		for (String ext:YTBIDTextExtractor.getExtensions()) htExtractors.put(ext, YTBIDTextExtractor.getInstance());
     }
 
 

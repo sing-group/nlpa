@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 public class GenericTextExtractor extends TextExtractor {
-    private static final Logger logger = LogManager.getLogger(TSMSTextExtractor.class);
+    private static final Logger logger = LogManager.getLogger(GenericTextExtractor.class);
 
     static TextExtractor instance = null;
 
