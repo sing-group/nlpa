@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rm -rf es/ gnu/ Main.class
+rm -rf es/ *.class
