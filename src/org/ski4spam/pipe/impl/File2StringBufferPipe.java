@@ -25,13 +25,11 @@ public class File2StringBufferPipe extends Pipe {
         htExtractors = new Hashtable<String, TextExtractor>();
 
         //Add the extractors
-        htExtractors.put(EMLTextExtractor.getExtension(), EMLTextExtractor.getInstance());
-        htExtractors.put(SMSTextExtractor.getExtension(), SMSTextExtractor.getInstance());
-        htExtractors.put(TSMSTextExtractor.getExtension(), TSMSTextExtractor.getInstance());
-        htExtractors.put(WARCTextExtractor.getExtension(), WARCTextExtractor.getInstance());
-        htExtractors.put(TYTBTextExtractor.getExtension(), TYTBTextExtractor.getInstance());
-        htExtractors.put(TWTIDTextExtractor.getExtension(), TWTIDTextExtractor.getInstance());
-        htExtractors.put(TTWTTextExtractor.getExtension(), TTWTTextExtractor.getInstance());
+        for (String ext:GenericTextExtractor.getExtensions()) htExtractors.put(ext, TSMSTextExtractor.getInstance());		
+		for (String ext:EMLTextExtractor.getExtensions()) htExtractors.put(ext, EMLTextExtractor.getInstance());
+        for (String ext:SMSTextExtractor.getExtensions()) htExtractors.put(ext, SMSTextExtractor.getInstance());
+        for (String ext:WARCTextExtractor.getExtensions()) htExtractors.put(ext, WARCTextExtractor.getInstance());
+        for (String ext:TWTIDTextExtractor.getExtensions()) htExtractors.put(ext, TWTIDTextExtractor.getInstance());
     }
 
 

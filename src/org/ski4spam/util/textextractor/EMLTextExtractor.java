@@ -46,8 +46,8 @@ public class EMLTextExtractor extends TextExtractor{
 		
 	}
 	
-	public static String getExtension(){
-		return "eml";
+	public static String[] getExtensions(){
+		return new String[]{"eml"};
 	}
 	
 	public static TextExtractor getInstance(){

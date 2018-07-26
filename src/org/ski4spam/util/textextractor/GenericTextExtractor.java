@@ -10,22 +10,22 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-public class TSMSTextExtractor extends TextExtractor {
+public class GenericTextExtractor extends TextExtractor {
     private static final Logger logger = LogManager.getLogger(TSMSTextExtractor.class);
 
     static TextExtractor instance = null;
 
-    private TSMSTextExtractor() {
+    private GenericTextExtractor() {
 
     }
-
-    public static String getExtension() {
-        return "tsms";
-    }
-
+	
+	public static String[] getExtensions(){
+		return new String[]{"tsms","ttwt","tytb"};
+	}
+	
     public static TextExtractor getInstance() {
         if (instance == null) {
-            instance = new TSMSTextExtractor();
+            instance = new GenericTextExtractor();
         }
         return instance;
     }

@@ -23,8 +23,8 @@ public class YTBIDTextExtractor extends TextExtractor {
 
     }
 
-    public static String getExtension() {
-        return "ytbid";
+    public static String[] getExtensions() {
+        return new String[]{"ytbid"};
     }
 
     public static TextExtractor getInstance() {

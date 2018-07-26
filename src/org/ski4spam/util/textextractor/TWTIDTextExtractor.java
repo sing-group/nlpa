@@ -17,9 +17,11 @@ public class TWTIDTextExtractor extends TextExtractor {
 
     }
 
-    public static String getExtension() {
-        return "twtid";
+    public static String[] getExtensions() {
+        return new String[]{"twtid"};
     }
+	
+	
 
     public static TextExtractor getInstance() {
         if (instance == null) {

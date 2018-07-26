@@ -30,8 +30,8 @@ public class WARCTextExtractor extends TextExtractor{
 		
 	}
 	
-	public static String getExtension(){
-		return "warc";
+	public static String[] getExtensions(){
+		return new String[]{"warc"};
 	}
 	
 	public static TextExtractor getInstance(){

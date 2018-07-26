@@ -8,8 +8,8 @@ public class SMSTextExtractor extends TextExtractor{
 		
 	}
 	
-	public static String getExtension(){
-		return "sms";
+	public static String[] getExtensions(){
+		return new String[]{"sms"};
 	}
 	
 	public static TextExtractor getInstance(){
