@@ -23,6 +23,6 @@ public class SMSDateExtractor extends DateExtractor {
     }
 
     public Date extractDate(File f) {
-        return new Date();
+        return null;
     }
 }

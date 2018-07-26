@@ -22,6 +22,6 @@ public class TSMSDateExtractor extends DateExtractor {
     }
 
     public Date extractDate(File f) {
-        return new Date();
+        return null;
     }
 }

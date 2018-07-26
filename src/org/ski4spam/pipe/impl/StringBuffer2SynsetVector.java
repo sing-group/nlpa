@@ -5,6 +5,7 @@ import org.ski4spam.pipe.TransformationPipe;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.ia.types.SynsetVector;
 import org.ski4spam.util.Pair;
+import org.ski4spam.util.unmatchedtexthandler.*;
 
 import java.util.HashSet;
 import java.util.StringTokenizer;
@@ -16,9 +17,15 @@ import java.util.Vector;
   * A pipe to compute synsets from text
   * @author Iñaki Velez
   * @author Enaitz Ezpeleta
+  * @author José Ramón Méndez
   */
 @TransformationPipe(inputType="StringBuffer", outputType="SynsetVector")
 public class StringBuffer2SynsetVector extends Pipe {
+	
+	/**
+	  * UnmatchedTextHandlers
+	  */
+	UnmatchedTextHandler vUTH[]={new UrbanDictionaryHandler(),new TyposHandler(),new ObfuscationHandler()};
 	
 	/**
 	  * The dictionary to store all sinsets seen in any text
@@ -86,7 +93,11 @@ public class StringBuffer2SynsetVector extends Pipe {
 		//+ ObfuscationHandler
 		
 		//The replacement should be done here
-		//TODO develop these things (Moncho)
+		//DONE develop these things (Moncho)
+		for (Pair<String,String> current:unmatched){
+		    for (int i=0;current.getObj2()==null && i<vUTH.length;i++) vUTH[i].handle(current);
+            if (current.getObj2()!=null) originalText.replace(current.getObj1(),current.getObj2());
+		}		
 		
 		return originalText;
 	}
