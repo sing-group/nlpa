@@ -27,7 +27,7 @@ public class StoreFileExtensionPipe extends Pipe {
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof File) {
-            String[] extensions = {"eml", "tsms", "sms", "warc", "tytb", "twtid", "ttwt"};
+            String[] extensions = {"eml", "tsms", "sms", "warc", "ytbid", "tytb", "twtid", "ttwt"};
             String value = "";
             String name = (((File) carrier.getData()).getAbsolutePath()).toLowerCase();
             int i = 0;
