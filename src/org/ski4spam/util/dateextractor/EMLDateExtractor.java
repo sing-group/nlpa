@@ -22,8 +22,8 @@ public class EMLDateExtractor extends DateExtractor {
 
     }
 
-    public static String getExtension() {
-        return "eml";
+    public static String[] getExtensions() {
+        return new String []{"eml"};
     }
 
     public static DateExtractor getInstance() {

@@ -23,8 +23,8 @@ public class WARCDateExtractor extends DateExtractor {
 
     }
 
-    public static String getExtension() {
-        return "warc";
+    public static String[] getExtensions() {
+        return new String[] {"warc"};
     }
 
     public static DateExtractor getInstance() {

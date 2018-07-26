@@ -37,14 +37,11 @@ public class GuessDateFromFile extends Pipe {
         htExtractors = new Hashtable<String, DateExtractor>();
 
         //Add the extractors
-        htExtractors.put(EMLDateExtractor.getExtension(), EMLDateExtractor.getInstance());
-        htExtractors.put(SMSDateExtractor.getExtension(), SMSDateExtractor.getInstance());
-        htExtractors.put(TSMSDateExtractor.getExtension(), TSMSDateExtractor.getInstance());
-        htExtractors.put(WARCDateExtractor.getExtension(), WARCDateExtractor.getInstance());
-        htExtractors.put(TYTBDateExtractor.getExtension(), TYTBDateExtractor.getInstance());
-        htExtractors.put(TWTIDDateExtractor.getExtension(), TWTIDDateExtractor.getInstance());
-        htExtractors.put(TTWTDateExtractor.getExtension(), TTWTDateExtractor.getInstance());
-        htExtractors.put(YTBIDDateExtractor.getExtension(), YTBIDDateExtractor.getInstance());
+        for (String ext:EMLDateExtractor.getExtensions()) htExtractors.put(ext, EMLDateExtractor.getInstance());
+        for (String ext:WARCDateExtractor.getExtensions()) htExtractors.put(ext, WARCDateExtractor.getInstance());
+        for (String ext:TWTIDDateExtractor.getExtensions()) htExtractors.put(ext, TWTIDDateExtractor.getInstance());
+        for (String ext:YTBIDDateExtractor.getExtensions()) htExtractors.put(ext, YTBIDDateExtractor.getInstance());
+		for (String ext:NullDateExtractor.getExtensions()) htExtractors.put(ext, NullDateExtractor.getInstance());
 	}
 
 

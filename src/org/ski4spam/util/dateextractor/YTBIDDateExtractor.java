@@ -24,8 +24,8 @@ public class YTBIDDateExtractor extends DateExtractor {
 
     }
 
-    public static String getExtension() {
-        return "ytbid";
+    public static String[] getExtensions() {
+        return new String[] {"ytbid"};
     }
 
     public static DateExtractor getInstance() {

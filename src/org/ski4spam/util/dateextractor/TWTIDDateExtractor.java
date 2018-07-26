@@ -23,8 +23,8 @@ public class TWTIDDateExtractor extends DateExtractor {
 
     }
 
-    public static String getExtension() {
-        return "twtid";
+    public static String[] getExtensions() {
+        return new String[] {"twtid"};
     }
 
     public static DateExtractor getInstance() {
