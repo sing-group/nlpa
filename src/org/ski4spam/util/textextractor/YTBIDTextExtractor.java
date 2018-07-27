@@ -4,6 +4,7 @@ import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.ini4j.Wini;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -48,10 +49,22 @@ public class YTBIDTextExtractor extends TextExtractor {
             logger.error("IO Exception caught / " + e.getMessage() + "Current youtube: " + file.getAbsolutePath());
             return null; //Return a null will cause a fuerther invalidation of the instance
         }
-
+        // Setting up the tokens config based on the .ini file on conf/ folder.
+        Wini ini = null;
+        try {
+            ini = new Wini(new File("conf/configurations.ini"));
+        } catch (IOException e) {
+            logger.error("IO Exception caught / " + e.getMessage());
+        }
+        
+        String apiKey;
+        assert ini != null;
+        apiKey = ini.get("youtube", "APIKey");
+        
+        
         //Extracting and returning the youtube text or error if not available.
         try {
-            URL url = new URL("https://www.googleapis.com/youtube/v3/comments?part=snippet&id=" + youtubeId + "&textFormat=html&key=AIzaSyAgGPiyeKbC7xnY3eTmRXU22lxc2TpyQoE");
+            URL url = new URL("https://www.googleapis.com/youtube/v3/comments?part=snippet&id=" + youtubeId + "&textFormat=html&key=" + apiKey);
             InputStream is = url.openStream();
             JsonReader rdr = Json.createReader(is);
             JsonObject obj = rdr.readObject();
