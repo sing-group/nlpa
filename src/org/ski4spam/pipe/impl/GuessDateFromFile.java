@@ -8,17 +8,27 @@ import org.ski4spam.pipe.PropertyComputingPipe;
 import org.ski4spam.util.dateextractor.*;
 
 import java.io.File;
-import java.util.Hashtable;
 import java.util.Date;
+import java.util.Hashtable;
 
 /**
  * This pipe reads text and html contents from files
  *
  * @author José Ramón Méndez Reboredo
  */
-@PropertyComputingPipe(inputType = "File")
+@PropertyComputingPipe()
 public class GuessDateFromFile extends Pipe {
     private static final Logger logger = LogManager.getLogger(GuessDateFromFile.class);
+
+    @Override
+    public Class getInputType() {
+        return File.class;
+    }
+
+    @Override
+    public Class getOutputType() {
+        return File.class;
+    }
 
     Hashtable<String, DateExtractor> htExtractors;
 	

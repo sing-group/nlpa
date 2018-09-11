@@ -19,10 +19,20 @@ import java.util.regex.Pattern;
  * This pipe drops HTML tags and changes entities by their corresponding character
  * @author José Ramón Méndez Reboredo
  */
-@TransformationPipe(inputType = "StringBuffer", outputType = "StringBuffer")
+@TransformationPipe()
 public class StripHTMLFromStringBufferPipe extends Pipe {
 	private static final Logger logger = LogManager.getLogger(StripHTMLFromStringBufferPipe.class);
-	
+
+    @Override
+    public Class getInputType() {
+        return StringBuffer.class;
+    }
+
+    @Override
+    public Class getOutputType() {
+        return StringBuffer.class;
+    }
+
     // adapted from post by Phil Haack and modified to match better
     public final static String tagStart=
         "\\<\\w+((\\s+\\w+(\\s*\\=\\s*(?:\".*?\"|'.*?'|[^'\"\\>\\s]+))?)+\\s*|\\s*)\\>";

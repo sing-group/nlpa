@@ -43,14 +43,14 @@ public class Main {
         p.add(new StoreTweetLangPipe());
         p.add(new StoreTweetLangPipe());
         p.add(new GuessDateFromFile());
-        
+
         p.add(new File2StringBufferPipe());
         p.add(new MeasureLengthFromStringBufferPipe());
         p.add(new StripHTMLFromStringBufferPipe());
-	p.add(new MeasureLengthFromStringBufferPipe("length_after_html_drop"));
+        p.add(new MeasureLengthFromStringBufferPipe("length_after_html_drop"));
         p.add(new GuessLanguageFromStringBufferPipe());
         p.add(new TeeCSVFromStringBufferPipe(true));
-        
+
 
         /*Pipe all instances*/
         for (Instance i : instances) {

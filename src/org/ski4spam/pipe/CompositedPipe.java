@@ -7,6 +7,17 @@ import java.util.List;
 
 public class CompositedPipe extends Pipe {
 
+    //TODO what data types does this Pipe has?
+    @Override
+    public Class getInputType() {
+        return null;
+    }
+
+    @Override
+    public Class getOutputType() {
+        return null;
+    }
+
     private final List<Pipe> pipes;
 
     CompositedPipe(Pipe... pipes) {

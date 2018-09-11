@@ -11,8 +11,8 @@ import org.apache.logging.log4j.Logger;
 import org.ski4spam.ia.types.Instance;
 
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Convert an instance through a sequence of pipes.
@@ -22,16 +22,18 @@ import java.util.ArrayList;
 
 
 public class SerialPipes extends Pipe implements Serializable {
-    protected String inputType = "";
-    protected String outputType = "";
+    private Class inputType = null;
+    private Class outputType = null;
 
     private static final Logger logger = LogManager.getLogger(SerialPipes.class);
 
-    public String getInputType() {
+    @Override
+    public Class getInputType() {
         return inputType;
     }
 
-    public String getOutputType() {
+    @Override
+    public Class getOutputType() {
         return outputType;
     }
 
@@ -116,81 +118,34 @@ public class SerialPipes extends Pipe implements Serializable {
                 pipe.setParent(this);
                 pipes.add(pipe);
 
-                if (inputType.equals("")) {
+                if (inputType == null) {
                     // If first Pipe hasn't inputType
-                    inputType = getInputType(pipe.getClass().getDeclaredAnnotations()[0]);
+                    inputType = pipe.getInputType();
                 }
 
-                if (pipe.getClass().getDeclaredAnnotations()[0].toString().contains("TargetAssigning") && pipes.size() > 1) {
-                    Annotation a = pipes.get(pipes.size() - 2).getClass().getDeclaredAnnotations()[0];
-                    outputType = getOutputType(a);
-                } else {
-                    if (pipe.getClass().getDeclaredAnnotations()[0].toString().contains("TransformationPipe")) {
-                        outputType = getOutputType(pipe.getClass().getDeclaredAnnotations()[0]);
-                    } else {
-                        outputType = getInputType(pipe.getClass().getDeclaredAnnotations()[0]);
-                    }
-                }
+                outputType = pipe.getInputType();
             } else {
-                logger.error("[PIPE ADD] BAD compatibility between Pipes.");
+                logger.error("[SERIAL PIPE ADD] BAD compatibility between Pipes.");
                 System.exit(0);
             }
         } else {
             // If first Pipe
             pipe.setParent(this);
             pipes.add(pipe);
-            if (!pipe.getClass().getDeclaredAnnotations()[0].toString().contains("TargetAssigning")) {
-                inputType = getInputType(pipe.getClass().getDeclaredAnnotations()[0]);
-            }
+
+            inputType = pipe.getInputType();
+            outputType = pipe.getOutputType();
         }
     }
 
-    private boolean checkCompatibility(Pipe p1) {
+    private boolean checkCompatibility(Pipe pipe) {
         // Last pipe con ArrayList
-        Class<?> obj1 = pipes.get(pipes.size() - 1).getClass();
-        Annotation annotation1 = obj1.getDeclaredAnnotations()[0];
+        Pipe lastPipe = pipes.get(pipes.size() - 1);
 
-        // Pipe for add
-        Class<?> obj2 = p1.getClass();
-        Annotation annotation2 = obj2.getDeclaredAnnotations()[0];
+        System.out.println("Last pipe - " + lastPipe.getInputType() + " | " + lastPipe.getOutputType());
+        System.out.println("New pipe - " + pipe.getInputType() + " | " + pipe.getOutputType());
 
-        int i = 0;
-        while (annotation1.toString().contains("TargetAssigning") && pipes.size() > (i + 1)) {
-            i++;
-            // If target assigning is the last on pipes array, we take the before one for Data type evaluation
-            obj1 = pipes.get(pipes.size() - (i + 1)).getClass();
-            annotation1 = obj1.getDeclaredAnnotations()[0];
-        }
-
-        if (annotation2.toString().contains("TargetAssigning")) {
-            // If target assigning it doesn't matter the before Data type
-            return true;
-        } else if (annotation1.toString().contains("TargetAssigning") && pipes.size() == 1) {
-            // If target assigning is the first on pipes array
-            return true;
-        } else if (annotation1.toString().contains("TransformationPipe")) {
-            // Compare p1 output with p2 input
-            TransformationPipe tp1 = obj1.getAnnotation(TransformationPipe.class);
-            return tp1.outputType().equals(getInputType(annotation2));
-        } else if (annotation1.toString().contains("TeePipe")) {
-            // Compare p1 input with p2 input because type is not modified
-            TeePipe tp1 = obj1.getAnnotation(TeePipe.class);
-            return tp1.inputType().equals(getInputType(annotation2));
-        } else if (annotation1.toString().contains("PropertyComputingPipe")) {
-            // Compare p1 input with p2 input because type is not modified
-            PropertyComputingPipe tp1 = obj1.getAnnotation(PropertyComputingPipe.class);
-            return tp1.inputType().equals(getInputType(annotation2));
-        }
-
-        return false;
-    }
-
-    private static String getInputType(Annotation a) {
-        return a.toString().split("inputType=")[1].split(",")[0].replace(")", "");
-    }
-
-    private static String getOutputType(Annotation a) {
-        return a.toString().split("outputType=")[1].split(",")[0].replace(")", "");
+        return lastPipe.getOutputType() == pipe.getInputType();
     }
 
     public Instance pipe(Instance carrier, int startingIndex) {
@@ -233,8 +188,13 @@ public class SerialPipes extends Pipe implements Serializable {
         return carrier;
     }
 
-    public void removePipe(int index) {
+    @Override
+    public Collection<Instance> pipeAll(Collection<Instance> carriers) {
+        //TODO method not implemented yet.
+        return null;
+    }
 
+    public void removePipe(int index) {
         try {
             pipes.remove(index);
         } catch (Exception e) {
@@ -246,7 +206,6 @@ public class SerialPipes extends Pipe implements Serializable {
 
     //added by Fuchun Jan.30, 2004
     public void replacePipe(int index, Pipe p) {
-
         try {
             pipes.set(index, p);
         } catch (Exception e) {
@@ -257,7 +216,6 @@ public class SerialPipes extends Pipe implements Serializable {
     }
 
     public int size() {
-
         return pipes.size();
     }
 

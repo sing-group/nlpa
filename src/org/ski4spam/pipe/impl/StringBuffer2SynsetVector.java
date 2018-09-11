@@ -1,17 +1,20 @@
 package org.ski4spam.pipe.impl;
 
-import org.ski4spam.pipe.Pipe;
-import org.ski4spam.pipe.TransformationPipe;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.ia.types.SynsetVector;
+import org.ski4spam.pipe.Pipe;
+import org.ski4spam.pipe.TransformationPipe;
 import org.ski4spam.util.Pair;
-import org.ski4spam.util.unmatchedtexthandler.*;
+import org.ski4spam.util.unmatchedtexthandler.ObfuscationHandler;
+import org.ski4spam.util.unmatchedtexthandler.TyposHandler;
+import org.ski4spam.util.unmatchedtexthandler.UnmatchedTextHandler;
+import org.ski4spam.util.unmatchedtexthandler.UrbanDictionaryHandler;
 
 import java.util.HashSet;
 import java.util.StringTokenizer;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
   * A pipe to compute synsets from text
@@ -19,13 +22,23 @@ import java.util.Vector;
   * @author Enaitz Ezpeleta
   * @author José Ramón Méndez
   */
-@TransformationPipe(inputType="StringBuffer", outputType="SynsetVector")
+@TransformationPipe()
 public class StringBuffer2SynsetVector extends Pipe {
-	
-	/**
+
+    /**
 	  * UnmatchedTextHandlers
 	  */
 	UnmatchedTextHandler vUTH[]={new UrbanDictionaryHandler(),new TyposHandler(),new ObfuscationHandler()};
+
+    @Override
+    public Class getInputType() {
+        return StringBuffer.class;
+    }
+
+    @Override
+    public Class getOutputType() {
+        return SynsetVector.class;
+    }
 	
 	/**
 	  * The dictionary to store all sinsets seen in any text

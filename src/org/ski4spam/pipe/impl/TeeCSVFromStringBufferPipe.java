@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
-import org.ski4spam.pipe.PropertyComputingPipe;
 import org.ski4spam.pipe.TeePipe;
 
 import java.io.*;
@@ -12,12 +11,12 @@ import java.io.*;
 /**
  * This pipe parses Instances to csv format.
  * It can be for showing it on terminal or exporting it to .csv file.
- * The resulting CSV could be readed in R using 
+ * The resulting CSV could be readed in R using
  * out <- read.csv("output.csv",header = TRUE, sep=";", encoding = "UTF-8", skipNul = TRUE, stringsAsFactors = FALSE )
  *
  * @author Yeray Lage Freitas
  */
-@TeePipe(inputType = "StringBuffer")
+@TeePipe()
 public class TeeCSVFromStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(TeeCSVFromStringBufferPipe.class);
     private static FileWriter fw = null;
@@ -27,6 +26,16 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
     private static File f = null;
     private boolean isFirst = true;
     private boolean saveData = false;
+
+    @Override
+    public Class getInputType() {
+        return StringBuffer.class;
+    }
+
+    @Override
+    public Class getOutputType() {
+        return StringBuffer.class;
+    }
 
     public TeeCSVFromStringBufferPipe() {
         initFile();

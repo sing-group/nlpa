@@ -11,8 +11,18 @@ import java.io.File;
  *
  * @author Rosalía Laza y Reyes Pavón
  */
-@PropertyComputingPipe(inputType = "File")
+@PropertyComputingPipe()
 public class StoreFileExtensionPipe extends Pipe {
+    @Override
+    public Class getInputType() {
+        return File.class;
+    }
+
+    @Override
+    public Class getOutputType() {
+        return File.class;
+    }
+
     private String key;
 
     public StoreFileExtensionPipe() {

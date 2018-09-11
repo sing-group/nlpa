@@ -19,9 +19,19 @@ import java.io.IOException;
  *
  * @author Yeray Lage Freitas
  */
-@PropertyComputingPipe(inputType = "File")
+@PropertyComputingPipe()
 public class StoreTweetLangPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(StoreTweetLangPipe.class);
+
+    @Override
+    public Class getInputType() {
+        return File.class;
+    }
+
+    @Override
+    public Class getOutputType() {
+        return File.class;
+    }
 
     private TwitterFactory tf = TwitterConfigurator.getTwitterFactory();
 

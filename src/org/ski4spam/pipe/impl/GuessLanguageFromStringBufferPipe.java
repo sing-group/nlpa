@@ -21,9 +21,19 @@ import java.util.List;
  *
  * @author José Ramón Méndez Reboredo
  */
-@PropertyComputingPipe(inputType = "StringBuffer")
+@PropertyComputingPipe()
 public class GuessLanguageFromStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(GuessLanguageFromStringBufferPipe.class);
+
+    @Override
+    public Class getInputType() {
+        return StringBuffer.class;
+    }
+
+    @Override
+    public Class getOutputType() {
+        return StringBuffer.class;
+    }
 
     private String langProp = "language";
 

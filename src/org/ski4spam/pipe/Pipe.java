@@ -1,6 +1,8 @@
 package org.ski4spam.pipe;
 
 import org.ski4spam.ia.types.Instance;
+
+import java.util.Collection;
 // import org.ski4spam.ia.util.PropertyList;
 
 
@@ -50,6 +52,10 @@ public abstract class Pipe {
      */
     public abstract Instance pipe(Instance carrier);
 
+    public Collection<Instance> pipeAll(Collection<Instance> carriers) {
+        for (Instance i : carriers) pipe(i);
+        return carriers;
+    }
 
     /**
      * Create and process an Instance. An instance is created from
@@ -118,4 +124,8 @@ public abstract class Pipe {
 
         return p;
     }
+
+    public abstract Class getInputType();
+
+    public abstract Class getOutputType();
 }

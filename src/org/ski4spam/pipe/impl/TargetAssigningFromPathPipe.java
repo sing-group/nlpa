@@ -6,6 +6,7 @@ import org.ski4spam.ia.types.Instance;
 import org.ski4spam.pipe.Pipe;
 import org.ski4spam.pipe.TargetAssigningPipe;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +19,18 @@ import java.util.Set;
 @TargetAssigningPipe()
 public class TargetAssigningFromPathPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(TargetAssigningPipe.class);
+
+    @Override
+    public Class getInputType() {
+        //TODO what data type goes here?
+        return File.class;
+    }
+
+    @Override
+    public Class getOutputType() {
+        //TODO what data type goes here?
+        return File.class;
+    }
 
     /**
      * A map where the key is the substring found in the file path and the value the label for the object

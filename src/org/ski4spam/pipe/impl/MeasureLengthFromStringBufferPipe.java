@@ -10,8 +10,18 @@ import org.ski4spam.pipe.PropertyComputingPipe;
  * @author Rosalía Laza 
  * @author Reyes Pavón
  */
-@PropertyComputingPipe(inputType = "StringBuffer")
+@PropertyComputingPipe()
 public class MeasureLengthFromStringBufferPipe extends Pipe {
+
+    @Override
+    public Class getInputType() {
+        return StringBuffer.class;
+    }
+
+    @Override
+    public Class getOutputType() {
+        return StringBuffer.class;
+    }
 
     private String key;
 	
