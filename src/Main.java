@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import org.ski4spam.pipe.Pipe;
 
 
 public class Main {
@@ -37,28 +38,28 @@ public class Main {
         }
 
         /*create a example of pipe*/
-        SerialPipes p = new SerialPipes();
-        p.add(new TargetAssigningFromPathPipe());
-        p.add(new StoreFileExtensionPipe());
-        p.add(new StoreTweetLangPipe());
-        p.add(new StoreTweetLangPipe());
-        p.add(new GuessDateFromFile());
+        Pipe p = new SerialPipes(new Pipe[
+        ]{
+        new TargetAssigningFromPathPipe(),
+        new StoreFileExtensionPipe(),
+        new StoreTweetLangPipe(),
+        new StoreTweetLangPipe(),
+        new GuessDateFromFile(),
 
-        p.add(new File2StringBufferPipe());
-        p.add(new MeasureLengthFromStringBufferPipe());
-        p.add(new StripHTMLFromStringBufferPipe());
-        p.add(new MeasureLengthFromStringBufferPipe("length_after_html_drop"));
-        p.add(new GuessLanguageFromStringBufferPipe());
-        p.add(new TeeCSVFromStringBufferPipe(true));
+        new File2StringBufferPipe(),
+        new MeasureLengthFromStringBufferPipe(),
+        new StripHTMLFromStringBufferPipe(),
+        new MeasureLengthFromStringBufferPipe("length_after_html_drop"),
+        new GuessLanguageFromStringBufferPipe(),
+        new TeeCSVFromStringBufferPipe(true)
+        });
 
-
-        /*Pipe all instances*/
-        for (Instance i : instances) {
-            p.pipe(i);
-        }
-
+        
         instances = InstanceListUtils.dropInvalid(instances);
 
+        /*Pipe all instances*/
+        p.pipeAll(instances);
+         
         for (Instance i : instances) {
             logger.info("Instance data after pipe: " + i.getSource() + " " +
                     (((i.getData().toString().length()) > 10) ?

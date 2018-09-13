@@ -52,8 +52,19 @@ public abstract class Pipe {
      */
     public abstract Instance pipe(Instance carrier);
 
+    /**
+     * Pipe all instances from a Collection
+     * @param carriers Collection of instances to pipe
+     * @return The collection of instances after being processed
+     */
     public Collection<Instance> pipeAll(Collection<Instance> carriers) {
-        for (Instance i : carriers) pipe(i);
+        if (this instanceof SerialPipes)
+            ((SerialPipes)this).pipeAll(carriers);
+        else if (this instanceof ParallelPipes)
+            ((ParallelPipes)this).pipeAll(carriers);
+        else carriers.forEach((i) -> {
+            pipe(i);
+        });
         return carriers;
     }
 

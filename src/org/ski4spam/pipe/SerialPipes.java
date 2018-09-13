@@ -13,6 +13,7 @@ import org.ski4spam.ia.types.Instance;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
 
 /**
  * Convert an instance through a sequence of pipes.
@@ -190,8 +191,30 @@ public class SerialPipes extends Pipe implements Serializable {
 
     @Override
     public Collection<Instance> pipeAll(Collection<Instance> carriers) {
-        //TODO method not implemented yet.
-        return null;
+        for (int i = 0; i < pipes.size(); i++) {
+            Pipe p = pipes.get(i);
+            System.out.println("SERIAL PIPE ALL " + p.getClass().getName());
+            if (p == null) {
+                logger.fatal("Pipe " + i + " is null");
+                System.exit(0);
+            } else {
+                try {
+                    for (Instance carrier : carriers) {
+                        if (carrier.isValid()) {
+                            System.out.println("INST " + carrier.getName());
+                            carrier = p.pipe(carrier);
+                        }else{
+                             logger.info("Skipping invalid instance " + carrier.toString());
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.fatal("Exception caught on pipe " + i + " (" + p.getClass().getName() + "). " + e.getMessage() + " while processing instance");
+                    e.printStackTrace(System.err);
+                    System.exit(0);
+                }
+            }
+        }
+        return carriers;
     }
 
     public void removePipe(int index) {
@@ -237,6 +260,7 @@ public class SerialPipes extends Pipe implements Serializable {
         return pipe(carrier, 0);
     }
 
+    
     public String toString() {
         StringBuilder sb = new StringBuilder();
 

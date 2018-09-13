@@ -7,6 +7,12 @@ import org.ski4spam.pipe.Pipe;
 import org.ski4spam.pipe.TeePipe;
 
 import java.io.*;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import org.ski4spam.util.CSVUtils;
+import static org.ski4spam.util.CSVUtils.CSV_SEP;
 
 /**
  * This pipe parses Instances to csv format.
@@ -97,6 +103,40 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
         }
     }
 
+    /**
+     * Computes the CSV header for the instance
+     */
+    public static String getCSVHeader(boolean withData, Hashtable<String, Object> properties) {
+        String str = new String();
+        
+        str += "id" + CSV_SEP + (withData ? ("data" + CSV_SEP) : "");
+        Enumeration<String> keys = properties.keys();
+        while (keys.hasMoreElements()) {
+            str += (keys.nextElement() + CSV_SEP);
+        }
+        str += "target";
+        return str;
+    }
+
+    /**
+     * Converts this instance toCSV string representation
+     */
+    public static String toCSV(boolean withData, Instance carrier) {
+        String str = "";
+        Object name =  carrier.getName();
+        Object data =  carrier.getData();
+        Object target = carrier.getTarget();
+        str += name + CSV_SEP + (withData ? CSVUtils.escapeCsv(data.toString()) : "");
+        Hashtable<String, Object> properties = carrier.getProperties();
+        Collection values = properties.values();
+        Iterator it = values.iterator();
+        while (it.hasNext()) {
+            str += (it.next() + CSV_SEP);
+        }
+        str += target.toString();
+        return str;
+    }
+    
     @Override
     public Instance pipe(Instance carrier) {
         try {
@@ -112,33 +152,15 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
-
-		
-		/*
-        Hashtable<String, Object> properties = carrier.getProperties();
-        System.out.println(carrier.getName());
-        System.out.println("\t" + properties.entrySet());
-
-        String props = "";
-        for (Map.Entry<String, Object> p : carrier.getProperties().entrySet()) {
-            if ((p.getValue()) instanceof Double) {
-                p.setValue(String.valueOf(p.getValue()));
-            }
-
-            props += "\"" + p.getValue() + "\",";
-        }
-        */
+       
         try {
+            
             if (isFirst) {
-                bw.write(carrier.getCSVHeader(saveData) + "\n");
+                Hashtable<String, Object> properties = carrier.getProperties();
+                bw.write(getCSVHeader(saveData, properties));
                 isFirst = false;
             }
-            bw.write(carrier.toCSV(saveData) + "\n");
-
-            //System.out.println(props.substring(0, props.length() - 1) + "\n");
-            //bw.write(props.substring(0, props.length() - 1) + "\n");
-
+            bw.write(toCSV(saveData, carrier) + "\n");
             bw.close();
             if (fw != null) {
                 fw.close();
