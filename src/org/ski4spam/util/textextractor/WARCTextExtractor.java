@@ -61,7 +61,7 @@ public StringBuffer extractText(File f){
     try 
     {  
         WARCReader warcReader = WARCReaderFactory.get(f);
-
+        warcReader.setStrict(true);
         Iterator<ArchiveRecord> it = warcReader.iterator();
         while (it.hasNext()) {
             
