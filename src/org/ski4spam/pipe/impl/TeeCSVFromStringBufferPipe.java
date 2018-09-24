@@ -7,14 +7,7 @@ import org.ski4spam.pipe.Pipe;
 import org.ski4spam.pipe.TeePipe;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
-import org.ski4spam.pipe.ParameterPipe;
-import org.ski4spam.pipe.TransformationPipe;
 import org.ski4spam.util.CSVUtils;
 import static org.ski4spam.util.CSVUtils.CSV_SEP;
 
