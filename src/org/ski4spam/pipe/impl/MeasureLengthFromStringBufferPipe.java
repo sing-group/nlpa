@@ -12,7 +12,7 @@ import org.ski4spam.pipe.PropertyComputingPipe;
  */
 @PropertyComputingPipe()
 public class MeasureLengthFromStringBufferPipe extends Pipe {
-
+   
     @Override
     public Class getInputType() {
         return StringBuffer.class;
@@ -24,7 +24,15 @@ public class MeasureLengthFromStringBufferPipe extends Pipe {
     }
 
     private String key;
-	
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getKey() {
+        return this.key;
+    }
+
     public MeasureLengthFromStringBufferPipe() {
         key = "length";
     }
@@ -32,6 +40,7 @@ public class MeasureLengthFromStringBufferPipe extends Pipe {
     public MeasureLengthFromStringBufferPipe(String k) {
         key = k;
     }
+
 
     @Override
     public Instance pipe(Instance carrier) {

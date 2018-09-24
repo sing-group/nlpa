@@ -37,6 +37,14 @@ public class TargetAssigningFromPathPipe extends Pipe {
      */
     Map<String, String> targets = null;
 
+    public void setTargets(Map<String, String> targets){
+        this.targets = targets;
+    }
+    
+    public Map<String, String> getTargets(){
+        return this.targets;
+    }
+    
     /**
      * Create a TargetAssigningPipe using the default mapping ("_spam_" for target "spam" and "_ham_" for target "ham")
      */

@@ -36,11 +36,25 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
     }
 
     private String langProp = "language";
-
     private String langReliabilityProp = "language-reliability";
-
-    private LanguageDetector languageDetector;
-
+    private LanguageDetector languageDetector; 
+    
+    public void setLangProp(String langProp){
+        this.langProp = langProp;
+    }
+    
+    public String getLangProp(){
+        return this.langProp;
+    }
+   
+    public void setLangReliabilityProp(String langReliabilityProp){
+        this.langReliabilityProp = langReliabilityProp;
+    }
+    
+    public String getLangReliabilityProp(){
+        return this.langReliabilityProp;
+    }
+   
     public GuessLanguageFromStringBufferPipe() {
         init();
     }

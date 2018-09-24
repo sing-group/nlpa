@@ -14,6 +14,9 @@ import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 //import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -68,8 +71,8 @@ public class Instance implements Serializable {
      */
     private static final long serialVersionUID = -8139659995227189017L;
     //Pipe pipe = null; // The Pipe through which this instance had its fields set
-    Hashtable<String, Object> properties = new Hashtable<String, Object>();
-    //PropertyList properties = null;
+    Map<String, Object> properties = new ConcurrentHashMap<>();
+   //PropertyList properties = null;
     boolean locked = false;
     //   private static Logger logger = MalletLogger.getLogger(Instance.class.getName());
     private Object data; // The input data in digested form, e.g. a FeatureVector
@@ -138,7 +141,7 @@ public class Instance implements Serializable {
             throw new IllegalStateException("Instance is locked.");
     }
 
-    public Hashtable<String, Object> getProperties() {
+    public Map<String, Object> getProperties() {
         return properties;
     }
 
@@ -181,35 +184,5 @@ public class Instance implements Serializable {
     public boolean isValid() {
         return isValid;
     }
-
-	/**
-	 * Computes the CSV header for the instance
-	*/
-	public String getCSVHeader(boolean withData){
-		String str=new String();
-		str+="id"+CSV_SEP+(withData?("data"+CSV_SEP):"");
-		Enumeration<String> keys=properties.keys();
-		while (keys.hasMoreElements()){
-			str+=(keys.nextElement()+CSV_SEP);
-		}
-		str+="target";
-		return str;
-	}
-	
-	/**
-	 * Converts this instance toCSV string representation
-	*/
-	public String toCSV(boolean withData){
-		String str="";
-		
-		str+=name+CSV_SEP+(withData?(StringEscapeUtils.escapeCsv(data.toString().replaceAll(";","\\;"))+CSV_SEP):"");
-		Collection values=properties.values();
-		Iterator it=values.iterator();
-		while (it.hasNext()){
-			str+=(it.next()+CSV_SEP);
-		}
-		str+=target.toString();
-		return str;
-	}
 
 }

@@ -20,8 +20,8 @@ public class CSVUtils {
     public static final String CSV_SEP = ";";
     
     public static String escapeCsv(String str){
-        String str_scape = new String();
-        str_scape = StringEscapeUtils.escapeCsv(str.replaceAll(";", "\\;")) + CSV_SEP;
-        return str_scape;
+        StringBuilder str_scape = new StringBuilder();
+        str_scape.append(StringEscapeUtils.escapeCsv(str.replaceAll(";", "\\;"))).append(CSV_SEP);
+        return str_scape.toString();
     }
 }

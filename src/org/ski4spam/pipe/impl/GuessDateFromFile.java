@@ -18,6 +18,7 @@ import java.util.Hashtable;
  */
 @PropertyComputingPipe()
 public class GuessDateFromFile extends Pipe {
+
     private static final Logger logger = LogManager.getLogger(GuessDateFromFile.class);
 
     @Override
@@ -31,29 +32,45 @@ public class GuessDateFromFile extends Pipe {
     }
 
     Hashtable<String, DateExtractor> htExtractors;
-	
-	String datePropertyStr="date";
-	
-	public GuessDateFromFile(){
-		init();
-	}
-	
-	public GuessDateFromFile(String datePropertyStr){
-		this.datePropertyStr=datePropertyStr;
-		init();
-	}	
+
+    String datePropertyStr = "date";
+    
+    public void setDatePropertyStr(String datePropertyStr){
+        this.datePropertyStr = datePropertyStr;
+    }
+    public String getDatePropertyStr(){
+        return this.datePropertyStr;
+    }
+    
+    public GuessDateFromFile() {
+        init();
+    }
+
+    public GuessDateFromFile(String datePropertyStr) {
+        this.datePropertyStr = datePropertyStr;
+        init();
+    }
 
     private void init() {
         htExtractors = new Hashtable<String, DateExtractor>();
 
         //Add the extractors
-        for (String ext:EMLDateExtractor.getExtensions()) htExtractors.put(ext, EMLDateExtractor.getInstance());
-        for (String ext:WARCDateExtractor.getExtensions()) htExtractors.put(ext, WARCDateExtractor.getInstance());
-        for (String ext:TWTIDDateExtractor.getExtensions()) htExtractors.put(ext, TWTIDDateExtractor.getInstance());
-        for (String ext:YTBIDDateExtractor.getExtensions()) htExtractors.put(ext, YTBIDDateExtractor.getInstance());
-		for (String ext:NullDateExtractor.getExtensions()) htExtractors.put(ext, NullDateExtractor.getInstance());
-	}
-
+        for (String ext : EMLDateExtractor.getExtensions()) {
+            htExtractors.put(ext, EMLDateExtractor.getInstance());
+        }
+        for (String ext : WARCDateExtractor.getExtensions()) {
+            htExtractors.put(ext, WARCDateExtractor.getInstance());
+        }
+        for (String ext : TWTIDDateExtractor.getExtensions()) {
+            htExtractors.put(ext, TWTIDDateExtractor.getInstance());
+        }
+        for (String ext : YTBIDDateExtractor.getExtensions()) {
+            htExtractors.put(ext, YTBIDDateExtractor.getInstance());
+        }
+        for (String ext : NullDateExtractor.getExtensions()) {
+            htExtractors.put(ext, NullDateExtractor.getInstance());
+        }
+    }
 
     @Override
     public Instance pipe(Instance carrier) {
@@ -76,13 +93,13 @@ public class GuessDateFromFile extends Pipe {
                 Date d = de.extractDate((File) (carrier.getData()));
                 if (d == null) {
                     logger.warn("Invalid date " + carrier.toString() + " due to a fault in parsing.");
-                    carrier.setProperty(datePropertyStr,"null");
-                }else{
-				   carrier.setProperty(datePropertyStr,d);
-				}
+                    carrier.setProperty(datePropertyStr, "null");
+                } else {
+                    carrier.setProperty(datePropertyStr, d);
+                }
             } else {
                 logger.warn("No parser available for instance " + carrier.toString() + ". Invalidating instance.");
-                carrier.setProperty(datePropertyStr,"null");
+                carrier.setProperty(datePropertyStr, "null");
             }
         }
 

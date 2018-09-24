@@ -11,27 +11,44 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Level;
+import org.ski4spam.pipe.ParameterPipe;
+import org.ski4spam.pipe.TransformationPipe;
 import org.ski4spam.util.CSVUtils;
 import static org.ski4spam.util.CSVUtils.CSV_SEP;
 
 /**
- * This pipe parses Instances to csv format.
- * It can be for showing it on terminal or exporting it to .csv file.
- * The resulting CSV could be readed in R using
- * out <- read.csv("output.csv",header = TRUE, sep=";", encoding = "UTF-8", skipNul = TRUE, stringsAsFactors = FALSE )
+ * This pipe parses Instances to csv format. It can be for showing it on
+ * terminal or exporting it to .csv file. The resulting CSV could be readed in R
+ * using out <- read.csv("output.csv",header = TRUE, sep=";", encoding =
+ * "UTF-8", skipNul = TRUE, stringsAsFactors = FALSE )
  *
  * @author Yeray Lage Freitas
  */
 @TeePipe()
 public class TeeCSVFromStringBufferPipe extends Pipe {
+
     private static final Logger logger = LogManager.getLogger(TeeCSVFromStringBufferPipe.class);
-    private static FileWriter fw = null;
-    private static Writer w = null;
-    private static BufferedWriter bw = null;
-    private static String filename = "output.csv";
-    private static File f = null;
-    private boolean isFirst = true;
-    private boolean saveData = false;
+    
+    private String output;
+    private FileWriter outputFile;
+    private boolean saveData;
+    private boolean isFirst;
+
+    public TeeCSVFromStringBufferPipe() {
+        this(null, false);
+    }
+
+    public TeeCSVFromStringBufferPipe(String output) {
+        this(output, false);
+    }
+
+    public TeeCSVFromStringBufferPipe(String output, boolean saveData) {
+        this.setOutput(output);
+        this.setSaveData(saveData);
+        this.isFirst = true;
+    }
 
     @Override
     public Class getInputType() {
@@ -43,134 +60,79 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
         return StringBuffer.class;
     }
 
-    public TeeCSVFromStringBufferPipe() {
-        initFile();
+    public void setOutput(String output) {
+        this.output = output;
     }
 
-    public TeeCSVFromStringBufferPipe(boolean saveData) {
-        this.saveData = saveData;
-        initFile();
+    public String getOutput() {
+        return this.output;
     }
-
-    public TeeCSVFromStringBufferPipe(String filePath) {
-        filename = filePath;
-        initFile();
-    }
-
-    public TeeCSVFromStringBufferPipe(String filePath, boolean saveData) {
-        filename = filePath;
-        this.saveData = saveData;
-        initFile();
-    }
-
-    public TeeCSVFromStringBufferPipe(File f) {
-        TeeCSVFromStringBufferPipe.f = f;
-        filename = null;
-        initFile();
-    }
-
-    public TeeCSVFromStringBufferPipe(File f, boolean saveData) {
-        TeeCSVFromStringBufferPipe.f = f;
-        filename = null;
-        this.saveData = saveData;
-        initFile();
-    }
-
-    public TeeCSVFromStringBufferPipe(Writer w) {
-        TeeCSVFromStringBufferPipe.w = w;
-        filename = null;
-    }
-
-    public TeeCSVFromStringBufferPipe(Writer w, boolean saveData) {
-        TeeCSVFromStringBufferPipe.w = w;
-        filename = null;
+    
+    public void setSaveData(boolean saveData) {
         this.saveData = saveData;
     }
 
-    public void initFile() {
-        try {
-            if (filename != null) {
-                fw = new FileWriter(filename, false);
-                bw = new BufferedWriter(fw);
-            } else if (f != null) {
-                fw = new FileWriter(f, false);
-                bw = new BufferedWriter(fw);
-            }
-            fw.close();
-            bw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public boolean getSaveData() {
+        return this.saveData;
     }
 
     /**
      * Computes the CSV header for the instance
      */
-    public static String getCSVHeader(boolean withData, Hashtable<String, Object> properties) {
-        String str = new String();
+    public static String getCSVHeader(boolean withData, Map<String, Object> properties) {
+        StringBuilder builder = new StringBuilder();
         
-        str += "id" + CSV_SEP + (withData ? ("data" + CSV_SEP) : "");
-        Enumeration<String> keys = properties.keys();
-        while (keys.hasMoreElements()) {
-            str += (keys.nextElement() + CSV_SEP);
+        builder.append("id").append(CSV_SEP);
+        
+        if (withData) builder.append("data").append(CSV_SEP);
+        
+        for (String key : properties.keySet()) {
+            builder.append(key).append(CSV_SEP);
         }
-        str += "target";
-        return str;
+        
+        builder.append("target");
+        
+        return builder.toString();
     }
 
     /**
      * Converts this instance toCSV string representation
      */
     public static String toCSV(boolean withData, Instance carrier) {
-        String str = "";
-        Object name =  carrier.getName();
-        Object data =  carrier.getData();
+        StringBuilder builder = new StringBuilder();
+        Object name = carrier.getName();
+        Object data = carrier.getData();
         Object target = carrier.getTarget();
-        str += name + CSV_SEP + (withData ? CSVUtils.escapeCsv(data.toString()) : "");
-        Hashtable<String, Object> properties = carrier.getProperties();
-        Collection values = properties.values();
-        Iterator it = values.iterator();
-        while (it.hasNext()) {
-            str += (it.next() + CSV_SEP);
+        
+        builder.append(name).append(CSV_SEP);
+        if (withData) builder.append(CSVUtils.escapeCsv(data.toString()));
+        
+        Map<String, Object> properties = carrier.getProperties();
+        
+        for (Object value: properties.values()){
+            builder.append(value).append(CSV_SEP);
         }
-        str += target.toString();
-        return str;
+        builder.append(target.toString());
+        
+        return builder.toString();
     }
-    
+
     @Override
     public Instance pipe(Instance carrier) {
         try {
-            if (filename != null) {
-                fw = new FileWriter(filename, true);
-                bw = new BufferedWriter(fw);
-            } else if (w != null) {
-                bw = new BufferedWriter(w);
-            } else if (f != null) {
-                fw = new FileWriter(f, true);
-                bw = new BufferedWriter(fw);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-       
-        try {
-            
             if (isFirst) {
-                Hashtable<String, Object> properties = carrier.getProperties();
-                bw.write(getCSVHeader(saveData, properties));
+                outputFile = new FileWriter(output);
+                Map<String, Object> properties = carrier.getProperties();
+                this.outputFile.write(getCSVHeader(saveData, properties));
                 isFirst = false;
             }
-            bw.write(toCSV(saveData, carrier) + "\n");
-            bw.close();
-            if (fw != null) {
-                fw.close();
+            outputFile.write(toCSV(saveData, carrier) + "\n");
+            if (isLast()){
+                outputFile.close();
             }
-            fw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-        return null;
+        return carrier;
     }
 }

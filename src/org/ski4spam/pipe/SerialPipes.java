@@ -13,6 +13,7 @@ import org.ski4spam.ia.types.Instance;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.logging.Level;
 
 /**
@@ -102,16 +103,6 @@ public class SerialPipes extends Pipe implements Serializable {
         return this;
     }
 
-    //public ArrayList<Pipe> getPipes() { //added by Fuchun
-    //    return pipes;
-    //}
-
-    public void setTargetProcessing(boolean lookForAndProcessTarget) {
-        super.setTargetProcessing(lookForAndProcessTarget);
-
-        for (Pipe pipe : pipes) pipe.setTargetProcessing(lookForAndProcessTarget);
-    }
-
     public void add(Pipe pipe) {
         if (!pipes.isEmpty()) {
             if (checkCompatibility(pipe)) {
@@ -193,21 +184,23 @@ public class SerialPipes extends Pipe implements Serializable {
     public Collection<Instance> pipeAll(Collection<Instance> carriers) {
         for (int i = 0; i < pipes.size(); i++) {
             Pipe p = pipes.get(i);
-            System.out.println("SERIAL PIPE ALL " + p.getClass().getName());
             if (p == null) {
                 logger.fatal("Pipe " + i + " is null");
                 System.exit(0);
             } else {
                 try {
-                    for (Instance carrier : carriers) {
+                    Iterator<Instance> it=carriers.iterator();
+                    while (it.hasNext()) {
+                        Instance carrier=it.next();
                         if (carrier.isValid()) {
                             System.out.println("INST " + carrier.getName());
                             carrier = p.pipe(carrier);
                         }else{
                              logger.info("Skipping invalid instance " + carrier.toString());
                         }
+                        isLast=!it.hasNext();
                     }
-                } catch (Exception e) {
+                 } catch (Exception e) {
                     logger.fatal("Exception caught on pipe " + i + " (" + p.getClass().getName() + "). " + e.getMessage() + " while processing instance");
                     e.printStackTrace(System.err);
                     System.exit(0);

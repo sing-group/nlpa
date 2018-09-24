@@ -5,10 +5,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TransformationPipe {
+/**
+ * This annotation is used to indicate which pipes have required parameters, in order to use from an UI.
+ */
+public @interface ParameterPipe {
+    String name();
+    String description();
 }
-
-//String name() default "Hello";
-//    String description();

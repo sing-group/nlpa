@@ -3,6 +3,7 @@ package org.ski4spam.pipe;
 import org.ski4spam.ia.types.Instance;
 
 import java.util.Collection;
+import java.util.Iterator;
 // import org.ski4spam.ia.util.PropertyList;
 
 
@@ -30,7 +31,7 @@ import java.util.Collection;
  */
 public abstract class Pipe {
     Pipe parent = null;
-    boolean targetProcessing = true;
+    boolean isLast = false;
 
     /**
      * Construct a pipe with no data and target dictionaries
@@ -58,53 +59,12 @@ public abstract class Pipe {
      * @return The collection of instances after being processed
      */
     public Collection<Instance> pipeAll(Collection<Instance> carriers) {
-        if (this instanceof SerialPipes)
-            ((SerialPipes)this).pipeAll(carriers);
-        else if (this instanceof ParallelPipes)
-            ((ParallelPipes)this).pipeAll(carriers);
-        else carriers.forEach((i) -> {
-            pipe(i);
-        });
+        Iterator<Instance> it=carriers.iterator();
+        while(it.hasNext()) {
+            pipe(it.next());
+            isLast=!it.hasNext(); 
+        };
         return carriers;
-    }
-
-    /**
-     * Create and process an Instance. An instance is created from
-     * the given arguments and then the pipe is run on the instance.
-     *
-     * @param data       Object used to initialize data field of new instance.
-     * @param target     Object used to initialize target field of new instance.
-     * @param name       Object used to initialize name field of new instance.
-     * @param source     Object used to initialize source field of new instance.
-     * @param parent     Unused
-     * @param props      Unused
-     */
-    /*
-    public Instance pipe(Object data, Object target, Object name,
-                         Object source, Instance parent,
-                         PropertyList props) {
-
-        return pipe(new Instance(data, target, name, source));
-    }
-    */
-
-    /**
-     * Return true iff this pipe expects and processes information in
-     * the <tt>target</tt> slot.
-     */
-
-    public boolean isTargetProcessing() {
-
-        return targetProcessing;
-    }
-
-    /**
-     * Set whether input is taken from target field of instance during processing.
-     * If argument is false, don't expect to find input material for the target.
-     * By default, this is true.
-     */
-    public void setTargetProcessing(boolean lookForAndProcessTarget) {
-        targetProcessing = lookForAndProcessTarget;
     }
 
     public Pipe getParent() {
@@ -135,8 +95,24 @@ public abstract class Pipe {
 
         return p;
     }
+    
+    /**
+     * Say whether the current Instance is the last being processed
+     * @return true if the current Instance is the last being processed
+     */
+    public boolean isLast(){
+        return isLast;
+    }
 
+    /**
+     * Return the output type included the data attribute of a Instance
+     * @return the output type for the data attribute of the Instances processed
+     */
     public abstract Class getInputType();
 
+    /**
+     * Say datatype expected in the data attribute of a Instance
+     * @return the datatype expected in the data attribute of a Instance
+     */
     public abstract Class getOutputType();
 }

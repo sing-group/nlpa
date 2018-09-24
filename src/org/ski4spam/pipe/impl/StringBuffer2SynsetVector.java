@@ -11,6 +11,7 @@ import org.ski4spam.util.unmatchedtexthandler.UnmatchedTextHandler;
 import org.ski4spam.util.unmatchedtexthandler.UrbanDictionaryHandler;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -99,7 +100,7 @@ public class StringBuffer2SynsetVector extends Pipe {
 		return returnValue;
     }
 	
-	private String handleUnmatched(String originalText,Vector<Pair<String,String>> unmatched){
+	private String handleUnmatched(String originalText,List<Pair<String,String>> unmatched){
 		//Implement the UnmatchedTextHandler interface and three specific implementations that are:
 		//+ UrbanDictionaryHandler
 		//+ TyposHandler

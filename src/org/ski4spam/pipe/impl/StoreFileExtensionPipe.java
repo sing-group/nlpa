@@ -13,6 +13,7 @@ import java.io.File;
  */
 @PropertyComputingPipe()
 public class StoreFileExtensionPipe extends Pipe {
+
     @Override
     public Class getInputType() {
         return File.class;
@@ -25,6 +26,13 @@ public class StoreFileExtensionPipe extends Pipe {
 
     private String key;
 
+    public void setKey(String key) {
+        this.key = key;
+    }
+    public String getKey(){
+        return this.key;
+    }
+
     public StoreFileExtensionPipe() {
         key = "extension";
     }
@@ -32,7 +40,6 @@ public class StoreFileExtensionPipe extends Pipe {
     public StoreFileExtensionPipe(String k) {
         key = k;
     }
-
 
     @Override
     public Instance pipe(Instance carrier) {
