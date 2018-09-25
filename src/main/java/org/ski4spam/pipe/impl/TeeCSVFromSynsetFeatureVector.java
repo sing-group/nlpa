@@ -7,7 +7,7 @@ package org.ski4spam.pipe.impl;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,7 +91,7 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
     /**
      * Computes the CSV header for the instance
      */
-    public static String getCSVHeader(boolean withData, Map<String, Object> properties) {
+    public static String getCSVHeader(boolean withData, Set<String> propertyList) {
         String str = new String();
 //        
 //        str += "id" + CSV_SEP + (withData ? ("data" + CSV_SEP) : "");
@@ -126,8 +126,8 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
     public Instance pipe(Instance carrier) {
         try {
             if (isFirst) {
-                Map<String, Object> properties = carrier.getProperties();
-                this.output.write(getCSVHeader(saveData, properties));
+                //Map<String, Object> properties = carrier.getProperties();
+                this.output.write(getCSVHeader(saveData, carrier.getPropertyList()));
                 isFirst = false;
             }
             output.write(toCSV(saveData, carrier) + "\n");

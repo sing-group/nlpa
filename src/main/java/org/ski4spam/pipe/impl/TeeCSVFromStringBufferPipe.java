@@ -4,7 +4,7 @@ import static org.ski4spam.util.CSVUtils.CSV_SEP;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,14 +74,14 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
     /**
      * Computes the CSV header for the instance
      */
-    public static String getCSVHeader(boolean withData, Map<String, Object> properties) {
+    public static String getCSVHeader(boolean withData, Set<String> propertyList) {
         StringBuilder builder = new StringBuilder();
         
         builder.append("id").append(CSV_SEP);
         
         if (withData) builder.append("data").append(CSV_SEP);
         
-        for (String key : properties.keySet()) {
+        for (String key : propertyList) {
             builder.append(key).append(CSV_SEP);
         }
         
@@ -102,9 +102,9 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
         builder.append(name).append(CSV_SEP);
         if (withData) builder.append(CSVUtils.escapeCsv(data.toString()));
         
-        Map<String, Object> properties = carrier.getProperties();
+        //Map<String, Object> properties = carrier.getProperties();
         
-        for (Object value: properties.values()){
+        for (Object value: carrier.getValueList()){
             builder.append(value).append(CSV_SEP);
         }
         builder.append(target.toString());
@@ -117,8 +117,7 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
         try {
             if (isFirst) {
                 outputFile = new FileWriter(output);
-                Map<String, Object> properties = carrier.getProperties();
-                this.outputFile.write(getCSVHeader(saveData, properties));
+                this.outputFile.write(getCSVHeader(saveData, carrier.getPropertyList()));
                 isFirst = false;
             }
             outputFile.write(toCSV(saveData, carrier) + "\n");
