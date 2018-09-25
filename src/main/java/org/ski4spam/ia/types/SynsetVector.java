@@ -2,6 +2,7 @@ package org.ski4spam.ia.types;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
 import org.ski4spam.util.Pair;
 
@@ -11,7 +12,7 @@ import org.ski4spam.util.Pair;
  * @author Iñaki Velez
  * @author Enaitz Ezpeleta
  */
-public class SynsetVector {
+public class SynsetVector implements Serializable {
 
     /**
      * The original text

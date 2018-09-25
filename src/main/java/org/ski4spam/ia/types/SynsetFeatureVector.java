@@ -6,6 +6,7 @@
 package org.ski4spam.ia.types;
 
 import java.util.List;
+import java.io.Serializable;
 
 import org.ski4spam.util.Pair;
 
@@ -13,7 +14,7 @@ import org.ski4spam.util.Pair;
  *
  * @author María Novo
  */
-public class SynsetFeatureVector {
+public class SynsetFeatureVector implements Serializable {
     private List<Pair<String, Double>> synsetFeature;
     
     public SynsetFeatureVector(List<Pair<String, Double>> synsetFeature) {
