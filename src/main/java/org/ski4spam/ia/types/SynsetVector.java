@@ -11,6 +11,8 @@ import org.ski4spam.util.Pair;
  *
  * @author Iñaki Velez
  * @author Enaitz Ezpeleta
+ * @author Maria Novo
+ * @author Jose Ramon Mendez
  */
 public class SynsetVector implements Serializable {
 
@@ -57,7 +59,6 @@ public class SynsetVector implements Serializable {
 
     /**
      * Constructs a SynsetVector from the original text given in a StringBuffer
-     *
      * @param originalText StringBuffer that is an object
      */
     public SynsetVector(StringBuffer originalText) {

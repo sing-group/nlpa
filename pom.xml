@@ -30,6 +30,18 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>sing-third-party</id>
+			<name>SING Maven Third Party</name>
+			<url>http://maven.sing-group.org/repository/third-party/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -93,7 +105,23 @@
 			<artifactId>log4j-core</artifactId>
 			<version>2.11.1</version>
 		</dependency>
-
+		<dependency>
+			<groupId>it.uniroma1.lcl.babelfy</groupId>
+			<artifactId>babelfy-online</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>it.uniroma1.lcl.babelfy</groupId>
+			<artifactId>babelfy-commons</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>it.uniroma1.lcl.jlt</groupId>
+			<artifactId>jltutils</artifactId>
+			<version>2.0.4</version>
+		</dependency>		
+      
+			
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
