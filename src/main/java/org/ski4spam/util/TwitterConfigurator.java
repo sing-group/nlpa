@@ -34,10 +34,10 @@ public class TwitterConfigurator {
     private static File errorTweetsCacheFile = new File(System.getProperty("java.io.tmpdir"), "errorTweetsCache.json");
 
     private TwitterConfigurator() {
-        // Setting up the tokens config based on the .ini file on conf/ folder.
+        // Setting up the tokens config based on the .ini file on config/ folder.
         Wini ini = null;
         try {
-            ini = new Wini(new File("conf/configurations.ini"));
+            ini = new Wini(new File("config/configurations.ini"));
         } catch (IOException e) {
             logger.error("IO Exception caught / " + e.getMessage());
         }
