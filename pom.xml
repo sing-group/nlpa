@@ -105,6 +105,18 @@
 			<artifactId>log4j-core</artifactId>
 			<version>2.11.1</version>
 		</dependency>
+		<!-- Poner sólo si no se incluyen en el POM del repositorio sing-->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
+		    <version>4.5.6</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpcore</artifactId>
+		    <version>4.4.10</version>
+		</dependency>
+		<!-- Fin poner sólo si no se incluyen en el POM del repositorio sing-->		
 		<dependency>
 			<groupId>it.uniroma1.lcl.babelfy</groupId>
 			<artifactId>babelfy-online</artifactId>
