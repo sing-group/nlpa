@@ -55,10 +55,10 @@ public class YTBIDTextExtractor extends TextExtractor {
             logger.error("IO Exception caught / " + e.getMessage() + "Current youtube: " + file.getAbsolutePath());
             return null; //Return a null will cause a fuerther invalidation of the instance
         }
-        // Setting up the tokens config based on the .ini file on conf/ folder.
+        // Setting up the tokens config based on the .ini file on config/ folder.
         Wini ini = null;
         try {
-            ini = new Wini(new File("conf/configurations.ini"));
+            ini = new Wini(new File("config/configurations.ini"));
         } catch (IOException e) {
             logger.error("IO Exception caught / " + e.getMessage());
         }
