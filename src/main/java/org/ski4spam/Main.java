@@ -26,7 +26,10 @@ import org.ski4spam.pipe.impl.StripHTMLFromStringBufferPipe;
 import org.ski4spam.pipe.impl.SynsetVector2SynsetFeatureVector;
 import org.ski4spam.pipe.impl.TargetAssigningFromPathPipe;
 import org.ski4spam.pipe.impl.TeeCSVFromStringBufferPipe;
+import org.ski4spam.pipe.impl.StringBuffer2SynsetVector;
+
 import org.ski4spam.util.textextractor.EMLTextExtractor;
+
 
 public class Main {
 
@@ -77,7 +80,8 @@ public class Main {
                 new StripHTMLFromStringBufferPipe(),
                 new MeasureLengthFromStringBufferPipe("length_after_html_drop"),
                 new GuessLanguageFromStringBufferPipe(),
-                new TeeCSVFromStringBufferPipe("output.csv", true)
+                new TeeCSVFromStringBufferPipe("output.csv", true)//,
+				//new StringBuffer2SynsetVector() /* It has been disabled because the maximum number of requests has reached*/
             });
 
             instances = InstanceListUtils.dropInvalid(instances);

@@ -17,6 +17,13 @@ import org.ski4spam.util.unmatchedtexthandler.TyposHandler;
 import org.ski4spam.util.unmatchedtexthandler.UnmatchedTextHandler;
 import org.ski4spam.util.unmatchedtexthandler.UrbanDictionaryHandler;
 
+import it.uniroma1.lcl.babelfy.core.Babelfy;
+import it.uniroma1.lcl.babelfy.commons.annotation.SemanticAnnotation;
+import it.uniroma1.lcl.jlt.util.Language;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
   * A pipe to compute synsets from text
   * @author Iñaki Velez
@@ -25,6 +32,9 @@ import org.ski4spam.util.unmatchedtexthandler.UrbanDictionaryHandler;
   */
 @TransformationPipe()
 public class StringBuffer2SynsetVector extends Pipe {
+   
+	private static final Logger logger = LogManager.getLogger(StringBuffer2SynsetVector.class);
+	private Babelfy bfy;
 
     /**
 	  * UnmatchedTextHandlers
@@ -52,6 +62,8 @@ public class StringBuffer2SynsetVector extends Pipe {
 	  **/
 	public StringBuffer2SynsetVector(){
 		dict=new HashSet<String>();
+		bfy = new Babelfy();
+		
 	}
 	
 	/**
@@ -90,10 +102,16 @@ public class StringBuffer2SynsetVector extends Pipe {
 				 //To check the exitence of the term in BabelNet, we will 
 				 //create a class org.ski4spam.util.BabelNetUtils with  
 				 //static methods.
+				 
+				 
 			 }else{
 				 //TODO check if the term current exist in babelnet. 
 				 //if current is not found in Babelnet
 				 //    returnValue.add(new Pair<String,String>(current,null));
+				 List<SemanticAnnotation> bfyAnnotations = bfy.babelfy(current, Language.valueOf("EN")); //TODO: compile language from Propoerties
+				 logger.info("Babelfy query: " + current + " results: " +  bfyAnnotations.size());
+				 if (bfyAnnotations.size()==0)
+				     returnValue.add(new Pair<String,String>(current,null));
 			 }
 			
         }
