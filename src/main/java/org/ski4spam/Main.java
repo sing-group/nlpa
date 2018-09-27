@@ -39,7 +39,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println("Program started.");
+        //System.out.println("Program started.");
 
         if (args.length == 0) {
             generateInstances("tests/");
@@ -63,7 +63,7 @@ public class Main {
                 String parameterName = parameterPipe.name();
                 String parameterDescription = parameterPipe.description();
                 Class<?>[] types = method.getParameterTypes(); // Obtienes los tipos de los parámetros para un método
-                System.out.println(parameterName + " --> " + parameterDescription);
+                //System.out.println(parameterName + " --> " + parameterDescription);
             }   
         }
 
@@ -80,8 +80,8 @@ public class Main {
                 new StripHTMLFromStringBufferPipe(),
                 new MeasureLengthFromStringBufferPipe("length_after_html_drop"),
                 new GuessLanguageFromStringBufferPipe(),
-                new TeeCSVFromStringBufferPipe("output.csv", true)//,
-				//new StringBuffer2SynsetVector() /* It has been disabled because the maximum number of requests has reached*/
+                new TeeCSVFromStringBufferPipe("output.csv", true),
+				new StringBuffer2SynsetVector() /* It has been disabled because the maximum number of requests has reached*/
             });
 
             instances = InstanceListUtils.dropInvalid(instances);

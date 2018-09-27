@@ -108,10 +108,14 @@ public class StringBuffer2SynsetVector extends Pipe {
 				 //TODO check if the term current exist in babelnet. 
 				 //if current is not found in Babelnet
 				 //    returnValue.add(new Pair<String,String>(current,null));
-				 List<SemanticAnnotation> bfyAnnotations = bfy.babelfy(current, Language.valueOf("EN")); //TODO: compile language from Propoerties
-				 logger.info("Babelfy query: " + current + " results: " +  bfyAnnotations.size());
-				 if (bfyAnnotations.size()==0)
-				     returnValue.add(new Pair<String,String>(current,null));
+				 try{
+				     List<SemanticAnnotation> bfyAnnotations = bfy.babelfy(current, Language.valueOf("EN")); //TODO: compile language from Propoerties
+				     logger.info("Babelfy query: " + current + " results: " +  bfyAnnotations.size());
+				     if (bfyAnnotations.size()==0)
+				        returnValue.add(new Pair<String,String>(current,null));
+			    }catch(Exception e){
+					 logger.error("Unable to query Babelfy: "+e.getMessage());
+			    }
 			 }
 			
         }
