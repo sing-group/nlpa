@@ -122,7 +122,13 @@
 			<artifactId>babelfy-online</artifactId>
 			<version>1.0</version>
 		</dependency>
-			
+		<dependency>
+			<groupId>it.uniroma1.lcl.babelnet</groupId>
+			<artifactId>babelnet-api</artifactId>
+			<version>4.0.1</version>
+		</dependency>
+		
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

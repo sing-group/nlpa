@@ -21,6 +21,10 @@ import it.uniroma1.lcl.babelfy.core.Babelfy;
 import it.uniroma1.lcl.babelfy.commons.annotation.SemanticAnnotation;
 import it.uniroma1.lcl.jlt.util.Language;
 
+import it.uniroma1.lcl.babelnet.BabelSynset;
+import it.uniroma1.lcl.babelnet.BabelNet;
+import it.uniroma1.lcl.babelnet.BabelNetQuery;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,6 +39,7 @@ public class StringBuffer2SynsetVector extends Pipe {
    
 	private static final Logger logger = LogManager.getLogger(StringBuffer2SynsetVector.class);
 	private Babelfy bfy;
+	private BabelNet bn;
 
     /**
 	  * UnmatchedTextHandlers
@@ -63,7 +68,7 @@ public class StringBuffer2SynsetVector extends Pipe {
 	public StringBuffer2SynsetVector(){
 		dict=new HashSet<String>();
 		bfy = new Babelfy();
-		
+		bn = BabelNet.getInstance();
 	}
 	
 	/**
@@ -109,10 +114,19 @@ public class StringBuffer2SynsetVector extends Pipe {
 				 //if current is not found in Babelnet
 				 //    returnValue.add(new Pair<String,String>(current,null));
 				 try{
+					 /*This is a query to babelfy not babelnet*/
+					 /*
 				     List<SemanticAnnotation> bfyAnnotations = bfy.babelfy(current, Language.valueOf("EN")); //TODO: compile language from Propoerties
 				     logger.info("Babelfy query: " + current + " results: " +  bfyAnnotations.size());
 				     if (bfyAnnotations.size()==0)
 				        returnValue.add(new Pair<String,String>(current,null));
+					  */
+					  BabelNetQuery query = new BabelNetQuery.Builder(current)
+						 	.from(Language.valueOf("EN")) //TODO: compile language from Propoerties
+						 	.build();
+					  List<BabelSynset> byl = bn.getSynsets(query);
+					  if (byl.size()==0)
+						  returnValue.add(new Pair<String,String>(current,null));
 			    }catch(Exception e){
 					 logger.error("Unable to query Babelfy: "+e.getMessage());
 			    }
