@@ -118,16 +118,16 @@
 		</dependency>
 		<!-- Fin poner sólo si no se incluyen en el POM del repositorio sing-->		
 		<dependency>
-			<groupId>it.uniroma1.lcl.babelfy</groupId>
-			<artifactId>babelfy-online</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
 			<groupId>it.uniroma1.lcl.babelnet</groupId>
 			<artifactId>babelnet-api</artifactId>
 			<version>4.0.1</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>it.uniroma1.lcl.babelfy</groupId>
+			<artifactId>babelfy-online</artifactId>
+			<version>1.0</version>
+		</dependency>
+
 		
 		<dependency>
 			<groupId>junit</groupId>
