@@ -6,7 +6,9 @@
 package org.ski4spam.pipe.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bdp4j.ia.types.Instance;
 import org.bdp4j.pipe.ParameterPipe;
@@ -21,7 +23,7 @@ import org.ski4spam.util.Pair;
  */
 public class SynsetVector2SynsetFeatureVector extends Pipe {
 
-    private List<Pair<String, Double>> synsetFeatureVector;
+    private Map<String, Double> synsetFeatureVector;
     private SynsetVector synsetVector;
     private int countSynsets = 0;
     /**
@@ -57,51 +59,35 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
     }
 
     /**
-     *
-     * @param carrier
-     * @return
+     * Converts a synsetVector in a synsetFeatureVector, with the synsetId and the number of times that a synsetId appears in synsetVector
+     * @param synsetVector
+     * @return A synsetFeatureVector with the synsetId and the number of times that a synsetId appears in synsetVector
      */
     private SynsetFeatureVector countMatches(SynsetVector synsetVector) {
-        List<Pair<String, Double>> synsetFeatureVector = new ArrayList<>();
+        Map<String, Double> synsetFeatureVector = new HashMap<>();
 
         try {
-            synsetVector.getSynsets().forEach((pairSV) -> {
-                Pair pSFV;
-                if (synsetFeatureVector.isEmpty()) {
-                    pSFV = new Pair(pairSV.getObj1().toString(), 1.0);
-                    synsetFeatureVector.add(pSFV);
-                    countSynsets++;
+            for (Pair<String, String> pairSV : synsetVector.getSynsets()) {
+                String synsetId = pairSV.getObj1();
+                
+                if (synsetFeatureVector.get(synsetId) == null) {
+                    synsetFeatureVector.put(pairSV.getObj1(), 1d);
                 } else {
-                    Boolean found = false;
-                    int i = 0;
-                    while (i < synsetFeatureVector.size() && !found) {
-                        Double appearanceNumber = synsetFeatureVector.get(i).getObj2();
-                        if ((synsetFeatureVector.get(i).getObj1()).equals(pairSV.getObj1())) {
-                            synsetFeatureVector.get(i).setObj2(appearanceNumber + 1);
-                            found = true;
-                        } else {
-                            pSFV = new Pair(pairSV.getObj1().toString(), 1.0);
-                            synsetFeatureVector.add(pSFV);
-                            found = true;
-                        }
-                        if (found) {
-                            countSynsets++;
-                        }
-                        i++;
-                    };
+                    Double appearanceNumber = synsetFeatureVector.get(synsetId);
+                    synsetFeatureVector.put(synsetId, appearanceNumber + 1d);
                 }
-            });
-
+            }
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
+        countSynsets = synsetFeatureVector.size();
         return new SynsetFeatureVector(synsetFeatureVector);
     }
 
     @Override
     public Instance pipe(Instance carrier) {
 
-        List<Pair<String, Double>> sfv = new ArrayList<Pair<String, Double>>();
+        List<Pair<String, Double>> sfv = new ArrayList<>();
 
         /**
          * *****************************************
@@ -123,43 +109,32 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
          */
 
         try {
-//            SynsetVector synsetVector = (SynsetVector)carrier.getData();
+//          SynsetVector synsetVector = (SynsetVector)carrier.getData();
 
             SynsetVector synsetVector = (SynsetVector) svTest;
             switch (groupStrategy) {
                 case COUNT:
+                    /* Generate a synsetFeatureVector with synsetId and synsetId appearance number in synsetVector*/
                     countMatches(synsetVector);
                     break;
                 case BOOLEAN:
-                    synsetVector.getSynsets().forEach((pairSV) -> {
-                        Pair pSFV;
-                        if (sfv.isEmpty()) {
-                            pSFV = new Pair(pairSV.getObj1().toString(), 1.0);
-                            sfv.add(pSFV);
-                        } else {
-                            Boolean found = false;
-                            int i = 0;
-                            while (i < sfv.size() && !found) {
-                                if ((sfv.get(i).getObj1()).equals(pairSV.getObj1())) {
-                                    found = true;
-                                }
-                                i++;
-                            };
-                            if (!found) {
-                                pSFV = new Pair(pairSV.getObj1().toString(), 1.0);
-                                sfv.add(pSFV);
-                                found = true;
+                    /* Generate a synsetFeatureVector with synsetId and 0/1 if this synsetId is or not in synsetVector*/
+                        synsetFeatureVector = new HashMap<>();
+                        for (Pair<String, String> pairSV : synsetVector.getSynsets()) {
+                            String synsetId = pairSV.getObj1();
+                            if (synsetFeatureVector.get(synsetId) == null) {
+                                synsetFeatureVector.put(pairSV.getObj1(), 1d);
                             }
-                        }
-                    });
+                        };
+
                     break;
                 case FREQUENCY:
+                    /* Generate a synsetFeatureVector with synsetId and synsetId appearance frequency in synsetVector*/
                     SynsetFeatureVector synsetFeatureVectorCountMatches = countMatches(synsetVector);
-
-                    Double frequency;
-                    for (Pair<String, Double> synsetsFeaturePair : synsetFeatureVectorCountMatches.getSynsetsFeature()) {
-                        frequency = synsetsFeaturePair.getObj2() / countSynsets;
-                        synsetsFeaturePair.setObj2(frequency);
+                    Map<String, Double> synsets = synsetFeatureVectorCountMatches.getSynsetsFeature();
+                    for (Map.Entry<String, Double>  entry: synsets.entrySet()) {
+                       Double frequency = entry.getValue() / countSynsets;
+                       synsets.put(entry.getKey(), frequency);   
                     }
 
                     break;

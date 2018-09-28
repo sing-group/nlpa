@@ -7,7 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,20 +18,9 @@ import org.bdp4j.ia.util.InstanceListUtils;
 import org.bdp4j.pipe.ParameterPipe;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.SerialPipes;
-import org.ski4spam.pipe.impl.File2StringBufferPipe;
-import org.ski4spam.pipe.impl.GuessDateFromFile;
-import org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe;
-import org.ski4spam.pipe.impl.MeasureLengthFromStringBufferPipe;
-import org.ski4spam.pipe.impl.StoreFileExtensionPipe;
-import org.ski4spam.pipe.impl.StoreTweetLangPipe;
-import org.ski4spam.pipe.impl.StripHTMLFromStringBufferPipe;
-import org.ski4spam.pipe.impl.SynsetVector2SynsetFeatureVector;
-import org.ski4spam.pipe.impl.TargetAssigningFromPathPipe;
-import org.ski4spam.pipe.impl.TeeCSVFromStringBufferPipe;
-import org.ski4spam.pipe.impl.StringBuffer2SynsetVector;
-
+import org.ski4spam.ia.types.SynsetFeatureVector;
+import org.ski4spam.pipe.impl.*;
 import org.ski4spam.util.textextractor.EMLTextExtractor;
-
 
 public class Main {
 
@@ -67,7 +58,16 @@ public class Main {
             }   
         }
 
+        /* Example */
+        Map<String, Double> synsetFeature = new HashMap<>();
+        synsetFeature.put("21565421", 2.0);
+        synsetFeature.put("54554548", 1.0);
+        synsetFeature.put("78248598", 1.0);
+        SynsetFeatureVector synsetFeatureVector = new SynsetFeatureVector(synsetFeature);
         
+//        TeeCSVFromSynsetFeatureVector teeCSVFromSynsetFeatureVector = new TeeCSVFromSynsetFeatureVector();
+//        teeCSVFromSynsetFeatureVector.setSynsetFeatureVector(synsetFeatureVector);
+//        teeCSVFromSynsetFeatureVector.setOutput("outputSFV.csv");
             /*create a example of pipe*/
             Pipe p = new SerialPipes(new Pipe[]{
                 new TargetAssigningFromPathPipe(),
@@ -80,8 +80,8 @@ public class Main {
                 new StripHTMLFromStringBufferPipe(),
                 new MeasureLengthFromStringBufferPipe("length_after_html_drop"),
                 new GuessLanguageFromStringBufferPipe(),
-                new TeeCSVFromStringBufferPipe("output.csv", true),
-				new StringBuffer2SynsetVector() /* It has been disabled because the maximum number of requests has reached*/
+                new TeeCSVFromStringBufferPipe("output.csv", true)
+                //teeCSVFromSynsetFeatureVector
             });
 
             instances = InstanceListUtils.dropInvalid(instances);
