@@ -5,28 +5,42 @@
  */
 package org.ski4spam.ia.types;
 
-import java.util.List;
 import java.io.Serializable;
+import java.util.Map;
 
-import org.ski4spam.util.Pair;
 
 /**
  *
  * @author María Novo
  */
 public class SynsetFeatureVector implements Serializable {
-    private List<Pair<String, Double>> synsetFeature;
+    private Map<String, Double> synsetFeature;
     
-    public SynsetFeatureVector(List<Pair<String, Double>> synsetFeature) {
+    public SynsetFeatureVector(Map<String, Double> synsetFeature) {
         this.synsetFeature = synsetFeature;
     }
 
-    public List<Pair<String, Double>> getSynsetsFeature() {
+    public Map<String, Double> getSynsetsFeature() {
         return synsetFeature;
     }
     
     public int getSize(){
         return synsetFeature.size();
+    }
+    /**
+     * 
+     * @param synsetId
+     * @return The value asociated to synsetId, which represents the frequency of appearance of the synsetId
+     */
+    public double getFrequencyValue(String synsetId){
+        if (synsetFeature.containsKey(synsetId)){
+            for (Map.Entry<String, Double> entry : synsetFeature.entrySet()) {
+               if (entry.getKey() == synsetId){
+                return entry.getValue();
+               }
+            }
+        }
+        return -1;
     }
 
 }

@@ -6,33 +6,43 @@
 package org.ski4spam.util;
 
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
  *
  * @author María Novo
  */
-public class Dictionary {
-    private Set<Object> hs;
-    private static Dictionary dict = null;
-    private Dictionary(){};
-    
-    public Dictionary getDictionary() {
-        if (dict == null) {
-            dict = new Dictionary();
+public class Dictionary implements Iterable<String> {
+
+    private Set<String> synsetIdsHashSet;
+
+    private static Dictionary dictionary = null;
+
+    private Dictionary() {
+        synsetIdsHashSet = new LinkedHashSet<>();
+    }
+
+    public static Dictionary getDictionary() {
+        if (dictionary == null) {
+            dictionary = new Dictionary();
         }
-        return dict;
+        return dictionary;
     }
 
-    public void publish(Object obj) {
+    public void add(String synsetId) {
         //TODO method not implemented yet.
-        hs =  new HashSet<>();
-        hs.add(obj);
+        synsetIdsHashSet.add(synsetId);
     }
 
-    public Object retrieve() {
-        //TODO method not implemented yet.
-        return hs;
-    }
+    public boolean isIncluded(String synsetId) {
+        return synsetIdsHashSet.contains(synsetId);
 
+    }
+    
+    @Override
+    public Iterator<String> iterator() {
+        return this.synsetIdsHashSet.iterator();
+    }
 }
