@@ -16,5 +16,5 @@ babelnet.key=
 
 # BabelNet RESTFul service url
 #
-babelnet.restfulurl=http://babelnet.io/v4/service
+babelnet.restfulurl=http://babelnet.io/v5/service
 
