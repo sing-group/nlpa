@@ -26,6 +26,9 @@ import com.optimaize.langdetect.profiles.LanguageProfileReader;
 public class GuessLanguageFromStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(GuessLanguageFromStringBufferPipe.class);
 
+    public static String DEFAULT_LANG_PROPERTY="language";
+	 public static String DEFAULT_LANG_RELIABILITY_PROPERTY="language-reliability";
+
     @Override
     public Class getInputType() {
         return StringBuffer.class;
@@ -36,8 +39,8 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
         return StringBuffer.class;
     }
 
-    private String langProp = "language";
-    private String langReliabilityProp = "language-reliability";
+    private String langProp = DEFAULT_LANG_PROPERTY;
+    private String langReliabilityProp = DEFAULT_LANG_RELIABILITY_PROPERTY;
     private LanguageDetector languageDetector; 
     
     public void setLangProp(String langProp){

@@ -87,7 +87,7 @@ public class StringBuffer2SynsetVector extends Pipe {
 		this.dict=dict;
 	}		
 	
-	private Vector<Pair<String,String>> computeUnmatched(String str){
+	private Vector<Pair<String,String>> computeUnmatched(String str, String lang){
 		StringTokenizer st=new StringTokenizer(str," \t\n\r\u000b\f");
 		Vector<Pair<String,String>> returnValue=new Vector<Pair<String,String>>();
 		
@@ -116,13 +116,13 @@ public class StringBuffer2SynsetVector extends Pipe {
 				 try{
 					 /*This is a query to babelfy not babelnet*/
 					 /*
-				     List<SemanticAnnotation> bfyAnnotations = bfy.babelfy(current, Language.valueOf("EN")); //TODO: compile language from Propoerties
+				     List<SemanticAnnotation> bfyAnnotations = bfy.babelfy(current, Language.valueOf(lang)); //TODO: compile language from Propoerties
 				     logger.info("Babelfy query: " + current + " results: " +  bfyAnnotations.size());
 				     if (bfyAnnotations.size()==0)
 				        returnValue.add(new Pair<String,String>(current,null));
 					  */
 					  BabelNetQuery query = new BabelNetQuery.Builder(current)
-						 	.from(Language.valueOf("EN")) //TODO: compile language from Propoerties
+						 	.from(Language.valueOf(lang)) //TODO: compile language from Propoerties
 						 	.build();
 					  List<BabelSynset> byl = bn.getSynsets(query);
 					  if (byl.size()==0)
@@ -136,7 +136,7 @@ public class StringBuffer2SynsetVector extends Pipe {
 		return returnValue;
     }
 	
-	private String handleUnmatched(String originalText,List<Pair<String,String>> unmatched){
+	private String handleUnmatched(String originalText,List<Pair<String,String>> unmatched, String lang){
 		//Implement the UnmatchedTextHandler interface and three specific implementations that are:
 		//+ UrbanDictionaryHandler
 		//+ TyposHandler
@@ -145,7 +145,7 @@ public class StringBuffer2SynsetVector extends Pipe {
 		//The replacement should be done here
 		//DONE develop these things (Moncho)
 		for (Pair<String,String> current:unmatched){
-		    for (int i=0;current.getObj2()==null && i<vUTH.length;i++) vUTH[i].handle(current);
+		    for (int i=0;current.getObj2()==null && i<vUTH.length;i++) vUTH[i].handle(current, lang);
             if (current.getObj2()!=null) originalText.replace(current.getObj1(),current.getObj2());
 		}		
 		
@@ -167,10 +167,15 @@ public class StringBuffer2SynsetVector extends Pipe {
 	public Instance pipe(Instance carrier){
 		SynsetVector sv=new SynsetVector((StringBuffer)carrier.getData());
 		
-		sv.setUnmatchedTexts(computeUnmatched(sv.getOriginalText()));
+		sv.setUnmatchedTexts(computeUnmatched(sv.getOriginalText(),(String)carrier.getProperty(GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY)));
 		
 		if(sv.getUnmatchedTexts().size()>0)
-		    sv.setFixedText(handleUnmatched(sv.getOriginalText(),sv.getUnmatchedTexts()));
+		    sv.setFixedText(handleUnmatched(
+				 sv.getOriginalText(),
+				 sv.getUnmatchedTexts(),
+				 (String)carrier.getProperty(GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY)
+			   )
+		    );
 		
 		sv.setSynsets(buildSynsetVector(sv.getFixedText()));
 		
