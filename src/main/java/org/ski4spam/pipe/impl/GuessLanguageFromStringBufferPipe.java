@@ -107,7 +107,7 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
                 }
 
                 if (bestlang != null) { // In case of emojis bestLang is null
-                    carrier.setProperty(langProp, bestlang.getLanguage());
+                    carrier.setProperty(langProp, bestlang.getLanguage().toUpperCase());
                 } else {
                     carrier.setProperty(langProp, "");
                 }
