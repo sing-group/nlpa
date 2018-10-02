@@ -59,11 +59,11 @@ public class Main {
         }
 
         /* Example */
-        Map<String, Double> synsetFeature = new HashMap<>();
-        synsetFeature.put("21565421", 2.0);
-        synsetFeature.put("54554548", 1.0);
-        synsetFeature.put("78248598", 1.0);
-        SynsetFeatureVector synsetFeatureVector = new SynsetFeatureVector(synsetFeature);
+//        Map<String, Double> synsetFeature = new HashMap<>();
+//        synsetFeature.put("21565421", 2.0);
+//        synsetFeature.put("54554548", 1.0);
+//        synsetFeature.put("78248598", 1.0);
+//        SynsetFeatureVector synsetFeatureVector = new SynsetFeatureVector(synsetFeature);
         
 //        TeeCSVFromSynsetFeatureVector teeCSVFromSynsetFeatureVector = new TeeCSVFromSynsetFeatureVector();
 //        teeCSVFromSynsetFeatureVector.setSynsetFeatureVector(synsetFeatureVector);
@@ -80,6 +80,7 @@ public class Main {
                 new StripHTMLFromStringBufferPipe(),
                 new MeasureLengthFromStringBufferPipe("length_after_html_drop"),
                 new GuessLanguageFromStringBufferPipe(),
+//                new StringBuffer2SynsetVector(),
                 new TeeCSVFromStringBufferPipe("output.csv", true)
                 //teeCSVFromSynsetFeatureVector
             });
