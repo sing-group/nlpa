@@ -18,7 +18,15 @@ import org.ski4spam.ia.types.SynsetVector;
 import org.ski4spam.util.Pair;
 
 /**
- *
+ * A pipe to transform a SynsetVector wich contains a list of synsets included in a message
+ * into a SynsetFeatureVector wich compile togeher duplicated features and assign a score
+ * for each feature according with a groupingStrategy. The groupStrategy is one of the 
+ * following: <ul>
+ * <li>SynsetVectorGroupingStrategy.COUNT: indicates the number of times that a synset is observed in the content (ex. 5)</li> 
+ * <li>SynsetVectorGroupingStrategy.BOOLEAN: Indicates if the synset is observed in the content (1) or not (0) (ex. 0)</li>
+ * <li>SynsetVectorGroupingStrategy.FREQUENCY: Indicates the frequency of the synset in the text that is the count 
+ * of times that the synset is observed divided by the whole amount of synsets.</li>
+ * </ul>
  * @author María Novo
  */
 public class SynsetVector2SynsetFeatureVector extends Pipe {
@@ -26,6 +34,7 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
     private Map<String, Double> synsetFeatureVector;
     private SynsetVector synsetVector;
     private int countSynsets = 0;
+	 
     /**
      * Indicates the group strategy to create the synsetFeatureVector
      */
@@ -42,18 +51,27 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
         return SynsetFeatureVector.class;
     }
 
+    /**
+		* Changes the grouping strategy
+		* @param groupStrategy The new grouping strategy
+		*/
     @ParameterPipe(name = "groupStrategy", description = "Indicates the group strategy to create the synsetFeatureVector")
     public void setGroupStrategy(SynsetVectorGroupingStrategy groupStrategy) {
         this.groupStrategy = groupStrategy;
     }
 
+    /**
+		* Retrieves the current grouping strategy
+		* @return The current grouping strategy
+		*/
     public SynsetVectorGroupingStrategy getGroupStrategy() {
         return this.groupStrategy;
     }
 
-    public SynsetVector2SynsetFeatureVector() {
-    }
-
+    /**
+		* Creates a SynsetVector2SynsetFeatureVector Pipe using an specific grouping strategy
+		* @param groupStrategy The selected grouping strategy
+		*/
     public SynsetVector2SynsetFeatureVector(SynsetVectorGroupingStrategy groupStrategy) {
         this.groupStrategy = groupStrategy;
     }
@@ -88,30 +106,26 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
     public Instance pipe(Instance carrier) {
 
         List<Pair<String, Double>> sfv = new ArrayList<>();
-
-        /**
-         * *****************************************
-         */
+		  
+        /********************************************/
         /*create a example of synsetvector*/
-        SynsetVector svTest = new SynsetVector("el perro ladra");
-        List<Pair<String, String>> synsetsTest = new ArrayList<Pair<String, String>>();
-        Pair p1 = new Pair("bn:21565421", "el");
-        Pair p2 = new Pair("bn:54554548", "perro");
-        Pair p3 = new Pair("bn:78248598", "ladra");
-        Pair p4 = new Pair("bn:21565421", "la");
-        synsetsTest.add(p1);
-        synsetsTest.add(p4);
-        synsetsTest.add(p2);
-        synsetsTest.add(p3);
-        svTest.setSynsets(synsetsTest);
-        /**
-         * *****************************************
-         */
+        //SynsetVector svTest = new SynsetVector("el perro ladra");
+        //List<Pair<String, String>> synsetsTest = new ArrayList<Pair<String, String>>();
+        //Pair p1 = new Pair("bn:21565421", "el");
+        //Pair p2 = new Pair("bn:54554548", "perro");
+        //Pair p3 = new Pair("bn:78248598", "ladra");
+        //Pair p4 = new Pair("bn:21565421", "la");
+        //synsetsTest.add(p1);
+        //synsetsTest.add(p4);
+        //synsetsTest.add(p2);
+        //synsetsTest.add(p3);
+        //svTest.setSynsets(synsetsTest);
+        /********************************************/
 
         try {
-//          SynsetVector synsetVector = (SynsetVector)carrier.getData();
+            SynsetVector synsetVector = (SynsetVector)carrier.getData();
 
-            SynsetVector synsetVector = (SynsetVector) svTest;
+            //SynsetVector synsetVector = (SynsetVector) svTest;
             switch (groupStrategy) {
                 case COUNT:
                     /* Generate a synsetFeatureVector with synsetId and synsetId appearance number in synsetVector*/
