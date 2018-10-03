@@ -34,10 +34,6 @@ public class StringBuffer2SynsetVector extends Pipe {
    
 	private static final Logger logger = LogManager.getLogger(StringBuffer2SynsetVector.class);
 
-    private static final Logger logger = LogManager.getLogger(StringBuffer2SynsetVector.class);
-    private Babelfy bfy;
-    private BabelNet bn;
-
     /**
      * UnmatchedTextHandlers
      */
@@ -67,7 +63,7 @@ public class StringBuffer2SynsetVector extends Pipe {
 
 	}
 	
-	private final String acceptedCharOnBeggining="¿¡"; ".hola"
+	private final String acceptedCharOnBeggining="¿¡";
 	private final String acceptedCharOnEnd=".,!?";
 	private final String acceptedCharOnMiddle="/-.,";
 		
@@ -129,7 +125,7 @@ public class StringBuffer2SynsetVector extends Pipe {
 					 	 returnValue.add(new Pair<String,String>(current,null));
 					 }else{
 		             if (!BabelUtils.getDefault().isTermInBabelNet(current.substring(0,indexOfPuntMark-1), lang) ||
- 							  !BabelUtils.getDefault().isTermInBabelNet(current.substring(indexOfPuntMark+1,curent.length()-1), lang)
+ 							  !BabelUtils.getDefault().isTermInBabelNet(current.substring(indexOfPuntMark+1,current.length()-1), lang)
 							  )
 							 returnValue.add(new Pair<String,String>(current,null));
 					 }
@@ -187,7 +183,7 @@ public class StringBuffer2SynsetVector extends Pipe {
 				 (String)carrier.getProperty(GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY)
 			   )
 		    );
-	   else (sv.setFixedText(sv.getOriginalText()));
+	   else sv.setFixedText(sv.getOriginalText());
 		
 		sv.setSynsets(buildSynsetVector(sv.getFixedText()));
 		
