@@ -50,7 +50,7 @@ public class StringBuffer2SynsetVector extends Pipe {
     }
 	
 	/**
-	  * The dictionary to store all sinsets seen in any text
+	  * The dictionary to store all synsets seen in any text
 	  */
 	HashSet<String> dict;
 	
