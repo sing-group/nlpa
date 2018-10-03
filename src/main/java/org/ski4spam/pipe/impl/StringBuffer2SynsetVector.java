@@ -158,7 +158,7 @@ public class StringBuffer2SynsetVector extends Pipe {
 		return originalText;
 	}
 	
-	private Vector<Pair<String,String>> buildSynsetVector(String fixedText){
+	private Vector<Pair<String,String>> buildSynsetVector(String fixedText, String lang){
 		Vector<Pair<String,String>> returnValue=new Vector<Pair<String,String>>();
 		
 		//Call Babelfy api to transform the string into a vector of sysnsets. 
@@ -174,18 +174,18 @@ public class StringBuffer2SynsetVector extends Pipe {
 	public Instance pipe(Instance carrier){
 		SynsetVector sv=new SynsetVector((StringBuffer)carrier.getData());
 		
-		sv.setUnmatchedTexts(computeUnmatched(sv.getOriginalText(),(String)carrier.getProperty(GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY)));
+		sv.setUnmatchedTexts(computeUnmatched(sv.getOriginalText(),((String)carrier.getProperty(GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY)).toUpperCase()));
 		
 		if(sv.getUnmatchedTexts().size()>0)
 		    sv.setFixedText(handleUnmatched(
 				 sv.getOriginalText(),
 				 sv.getUnmatchedTexts(),
-				 (String)carrier.getProperty(GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY)
+				 ((String)carrier.getProperty(GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY)).toUpperCase()
 			   )
 		    );
 	   else sv.setFixedText(sv.getOriginalText());
 		
-		sv.setSynsets(buildSynsetVector(sv.getFixedText()));
+		sv.setSynsets(buildSynsetVector(sv.getFixedText(),((String)carrier.getProperty(GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY)).toUpperCase()));
 		
 		carrier.setData(sv);
 		

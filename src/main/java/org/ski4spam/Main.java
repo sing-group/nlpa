@@ -80,9 +80,10 @@ public class Main {
                 new StripHTMLFromStringBufferPipe(),
                 new MeasureLengthFromStringBufferPipe("length_after_html_drop"),
                 new GuessLanguageFromStringBufferPipe(),
-//                new StringBuffer2SynsetVector(),
-                new TeeCSVFromStringBufferPipe("output.csv", true)
-                //teeCSVFromSynsetFeatureVector
+                new TeeCSVFromStringBufferPipe("output.csv", true),
+                new StringBuffer2SynsetVector()//,
+				//new SynsetVector2SynsetFeatureVector(SynsetVectorGroupingStrategy.FREQUENCY)
+                //new TeeCSVFromSynsetFeatureVector()
             });
 
             instances = InstanceListUtils.dropInvalid(instances);
