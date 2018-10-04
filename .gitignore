@@ -12,23 +12,21 @@ output\.csv
 outputSFV\.csv
 
 tests2/
-
 *.bak
-
 build\.xml
-
 build/built-jar\.properties
-
 build/
-
 nbproject/
-
 lib/nblibraries\.properties
-
 manifest\.mf
-
 *.json
-
 lib/CopyLibs/org-netbeans-modules-java-j2seproject-copylibstask\.jar
-
 dist/
+config/babelnet.var.properties
+/JSpellDictionary/nbproject/private/
+/JSpellDictionary/build/
+/JSpellDictionary/dist/
+
+# Netbeans
+nbactions.xml
+
