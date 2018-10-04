@@ -22,12 +22,27 @@ import org.ski4spam.ia.types.SynsetFeatureVector;
 import org.ski4spam.pipe.impl.*;
 import org.ski4spam.util.textextractor.EMLTextExtractor;
 
+/** 
+  * Main class for SKI4Spam project
+  * @author Yeray Lage
+  * @author José Ramón Méndez
+  * @author María Novo
+  */
 public class Main {
 
+    /**
+	  * A logger for logging purposes
+	  */
     private static final Logger logger = LogManager.getLogger(Main.class);
 
+    /**
+	  * List of instances that are being processed
+	  */
     private static List<Instance> instances = new ArrayList<Instance>();
 
+    /*
+	 * The main method for the running application
+	 */
     public static void main(String[] args) {
 
         //System.out.println("Program started.");
@@ -58,16 +73,6 @@ public class Main {
             }   
         }
 
-        /* Example */
-//        Map<String, Double> synsetFeature = new HashMap<>();
-//        synsetFeature.put("21565421", 2.0);
-//        synsetFeature.put("54554548", 1.0);
-//        synsetFeature.put("78248598", 1.0);
-//        SynsetFeatureVector synsetFeatureVector = new SynsetFeatureVector(synsetFeature);
-        
-//        TeeCSVFromSynsetFeatureVector teeCSVFromSynsetFeatureVector = new TeeCSVFromSynsetFeatureVector();
-//        teeCSVFromSynsetFeatureVector.setSynsetFeatureVector(synsetFeatureVector);
-//        teeCSVFromSynsetFeatureVector.setOutput("outputSFV.csv");
             /*create a example of pipe*/
             Pipe p = new SerialPipes(new Pipe[]{
                 new TargetAssigningFromPathPipe(),
@@ -100,6 +105,11 @@ public class Main {
 
     }
 
+    /**
+	  * Generate a instance List on instances attribute by recursivelly
+	  * finding all files included in testDir directory
+	  * @param testDir The directory where the instances should be loaded
+	  */
     private static void generateInstances(String testDir) {
         try {
             Files.walk(Paths.get(testDir))
@@ -111,8 +121,15 @@ public class Main {
         }
     }
 
+    /**
+	  * Used to add a new instance on instances attribute when a new
+	  * file is detected.
+	  */
     static class FileMng {
-
+		/**
+		  * Include a filne in the instancelist
+		  * @param path The path of the file
+		  */
         static void visit(Path path) {
             File data = path.toFile();
             String target = null;
