@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bdp4j.ia.types.Instance;
-import org.bdp4j.pipe.ParameterPipe;
+import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.Pipe;
 import org.ski4spam.ia.types.SynsetFeatureVector;
 import org.ski4spam.ia.types.SynsetVector;
@@ -31,9 +31,7 @@ import org.ski4spam.util.Pair;
  */
 public class SynsetVector2SynsetFeatureVector extends Pipe {
 
-    private Map<String, Double> synsetFeatureVector;
-    private SynsetVector synsetVector;
-    private int countSynsets = 0;
+	 public static final String DEFAULT_GROUPTING_STRATEGY="FREQUENCY";
 	 
     /**
      * Indicates the group strategy to create the synsetFeatureVector
@@ -55,9 +53,9 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
 		* Changes the grouping strategy
 		* @param groupStrategy The new grouping strategy
 		*/
-    @ParameterPipe(name = "groupStrategy", description = "Indicates the group strategy to create the synsetFeatureVector")
-    public void setGroupStrategy(SynsetVectorGroupingStrategy groupStrategy) {
-        this.groupStrategy = groupStrategy;
+    @PipeParameter(name = "groupStrategy", description = "Indicates the group strategy to create the synsetFeatureVector", defaultValue=DEFAULT_GROUPTING_STRATEGY)
+    public void setGroupStrategy(String groupStrategy) {
+        this.groupStrategy = SynsetVectorGroupingStrategy.valueOf(groupStrategy);
     }
 
     /**
@@ -82,6 +80,7 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
      * @return A synsetFeatureVector with the synsetId and the number of times that a synsetId appears in synsetVector
      */
     private SynsetFeatureVector countMatches(SynsetVector synsetVector) {
+
         Map<String, Double> synsetFeatureVector = new HashMap<>();
 
         try {
@@ -98,29 +97,14 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
-        countSynsets = synsetFeatureVector.size();
+
         return new SynsetFeatureVector(synsetFeatureVector);
     }
 
     @Override
     public Instance pipe(Instance carrier) {
-
+        Map<String, Double> synsetFeatureVector;
         List<Pair<String, Double>> sfv = new ArrayList<>();
-		  
-        /********************************************/
-        /*create a example of synsetvector*/
-        //SynsetVector svTest = new SynsetVector("el perro ladra");
-        //List<Pair<String, String>> synsetsTest = new ArrayList<Pair<String, String>>();
-        //Pair p1 = new Pair("bn:21565421", "el");
-        //Pair p2 = new Pair("bn:54554548", "perro");
-        //Pair p3 = new Pair("bn:78248598", "ladra");
-        //Pair p4 = new Pair("bn:21565421", "la");
-        //synsetsTest.add(p1);
-        //synsetsTest.add(p4);
-        //synsetsTest.add(p2);
-        //synsetsTest.add(p3);
-        //svTest.setSynsets(synsetsTest);
-        /********************************************/
 
         try {
             SynsetVector synsetVector = (SynsetVector)carrier.getData();
@@ -146,6 +130,7 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
                     /* Generate a synsetFeatureVector with synsetId and synsetId appearance frequency in synsetVector*/
                     SynsetFeatureVector synsetFeatureVectorCountMatches = countMatches(synsetVector);
                     Map<String, Double> synsets = synsetFeatureVectorCountMatches.getSynsetsFeature();
+						  int countSynsets = synsets.size();
                     for (Map.Entry<String, Double>  entry: synsets.entrySet()) {
                        Double frequency = entry.getValue() / countSynsets;
                        synsets.put(entry.getKey(), frequency);   
