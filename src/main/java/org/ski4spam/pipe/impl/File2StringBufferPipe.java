@@ -1,7 +1,7 @@
 package org.ski4spam.pipe.impl;
 
 import java.io.File;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,8 +17,7 @@ import org.ski4spam.util.textextractor.WARCTextExtractor;
 import org.ski4spam.util.textextractor.YTBIDTextExtractor;
 
 /**
- * This pipe reads text and html contents from files
- *
+ * This pipe reads text and html contents from different file formats
  * @author José Ramón Méndez Reboredo
  */
 @TransformationPipe()
@@ -35,18 +34,24 @@ public class File2StringBufferPipe extends Pipe {
         return StringBuffer.class;
     }
 
-    Hashtable<String, TextExtractor> htExtractors;
+    /**
+		* A collection of Textextractors to extract the text
+		*/
+    private HashMap<String, TextExtractor> htExtractors;
 
+    /**
+		* Default constructor for the class
+		*/
     public File2StringBufferPipe() {
-        htExtractors = new Hashtable<String, TextExtractor>();
+        htExtractors = new HashMap<>();
 
         //Add the extractors
         for (String ext:GenericTextExtractor.getExtensions()) htExtractors.put(ext, GenericTextExtractor.getInstance());		
-		for (String ext:EMLTextExtractor.getExtensions()) htExtractors.put(ext, EMLTextExtractor.getInstance());
+		  for (String ext:EMLTextExtractor.getExtensions()) htExtractors.put(ext, EMLTextExtractor.getInstance());
         for (String ext:SMSTextExtractor.getExtensions()) htExtractors.put(ext, SMSTextExtractor.getInstance());
         for (String ext:WARCTextExtractor.getExtensions()) htExtractors.put(ext, WARCTextExtractor.getInstance());
         for (String ext:TWTIDTextExtractor.getExtensions()) htExtractors.put(ext, TWTIDTextExtractor.getInstance());
-		for (String ext:YTBIDTextExtractor.getExtensions()) htExtractors.put(ext, YTBIDTextExtractor.getInstance());
+		  for (String ext:YTBIDTextExtractor.getExtensions()) htExtractors.put(ext, YTBIDTextExtractor.getInstance());
     }
 
 

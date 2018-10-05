@@ -2,7 +2,7 @@ package org.ski4spam.pipe.impl;
 
 import java.io.File;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,14 +16,19 @@ import org.ski4spam.util.dateextractor.TWTIDDateExtractor;
 import org.ski4spam.util.dateextractor.WARCDateExtractor;
 import org.ski4spam.util.dateextractor.YTBIDDateExtractor;
 
+import org.bdp4j.pipe.PipeParameter;
+
 /**
- * This pipe reads text and html contents from files
- *
+ * This pipe finds the content Date from different formats
  * @author José Ramón Méndez Reboredo
  */
 @PropertyComputingPipe()
 public class GuessDateFromFile extends Pipe {
-
+	/**
+	  * The default name for the date property
+	  */
+	 public static final String DEFAULT_DATE_PROPERTY="date";
+	
     private static final Logger logger = LogManager.getLogger(GuessDateFromFile.class);
 
     @Override
@@ -36,13 +41,25 @@ public class GuessDateFromFile extends Pipe {
         return File.class;
     }
 
-    Hashtable<String, DateExtractor> htExtractors;
+    /**
+		* A collection of DateExtractors
+		*/
+    HashMap<String, DateExtractor> htExtractors;
 
-    String datePropertyStr = "date";
+    /**
+		* The property where the date is being stored
+		*/
+    String datePropertyStr = DEFAULT_DATE_PROPERTY;
     
+	 /**
+		* Sthe the property where the date will be stored
+		* @param datePropertyStr the name of the property for the date
+		*/
+	 @PipeParameter(name = "propname", description = "Indicates the property name to store the date", defaultValue=DEFAULT_DATE_PROPERTY)
     public void setDatePropertyStr(String datePropertyStr){
         this.datePropertyStr = datePropertyStr;
     }
+	 
     public String getDatePropertyStr(){
         return this.datePropertyStr;
     }
@@ -57,7 +74,7 @@ public class GuessDateFromFile extends Pipe {
     }
 
     private void init() {
-        htExtractors = new Hashtable<String, DateExtractor>();
+        htExtractors = new HashMap<>();
 
         //Add the extractors
         for (String ext : EMLDateExtractor.getExtensions()) {
