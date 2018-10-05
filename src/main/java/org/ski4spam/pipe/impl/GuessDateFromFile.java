@@ -55,7 +55,7 @@ public class GuessDateFromFile extends Pipe {
 		* Sthe the property where the date will be stored
 		* @param datePropertyStr the name of the property for the date
 		*/
-	 @PipeParameter(name = "propname", description = "Indicates the property name to store the date", defaultValue=DEFAULT_DATE_PROPERTY)
+	 @PipeParameter(name = "datepropname", description = "Indicates the property name to store the date", defaultValue=DEFAULT_DATE_PROPERTY)
     public void setDatePropertyStr(String datePropertyStr){
         this.datePropertyStr = datePropertyStr;
     }
