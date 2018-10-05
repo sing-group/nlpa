@@ -48,7 +48,7 @@ public class BabelUtils{
 				  List<BabelSynset> byl = bn.getSynsets(query);
 				  resultNo=byl.size();
 		    }catch(Exception e){
-				 logger.error("Unable to query Babelfy: "+e.getMessage());
+				 logger.error("Unable to query Babelnet: "+e.getMessage());
 		    }
 			 return (resultNo>0);
 		 }
