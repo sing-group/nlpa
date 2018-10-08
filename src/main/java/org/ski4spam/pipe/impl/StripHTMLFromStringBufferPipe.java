@@ -17,7 +17,8 @@ import org.jsoup.select.Elements;
 
 /**
  * This pipe drops HTML tags and changes entities by their corresponding character
- * @author José Ramón Méndez Reboredo
+ * The data of the instance should contain a StringBuffer with HTML
+ * @author José Ramón Méndez 
  */
 @TransformationPipe()
 public class StripHTMLFromStringBufferPipe extends Pipe {
@@ -32,8 +33,18 @@ public class StripHTMLFromStringBufferPipe extends Pipe {
     public Class getOutputType() {
         return StringBuffer.class;
     }
+	 
+	 /** NOTE **//*
+	 The following lines of source code (regular expressions and isHtml method) 
+	 have been extracted from the open source project Reporting Tool. Public 
+	 information about it is available in:
+		 https://github.com/kbss-cvut/reporting-tool
+		 
+	 The URL of the file used is 
+		 https://github.com/kbss-cvut/reporting-tool/blob/master/src/main/java/cz/cvut/kbss/reporting/util/DetectHtml.java
+	 *//** NOTE **/
 
-    // adapted from post by Phil Haack and modified to match better
+    //Adapted from post by Phil Haack and modified to match better
     public final static String tagStart=
         "\\<\\w+((\\s+\\w+(\\s*\\=\\s*(?:\".*?\"|'.*?'|[^'\"\\>\\s]+))?)+\\s*|\\s*)\\>";
     public final static String tagEnd=
@@ -61,6 +72,9 @@ public class StripHTMLFromStringBufferPipe extends Pipe {
         return ret;
     }
 
+    /**
+		* Construct a StripHTMLFromStringBufferPipe instance
+		*/
     public StripHTMLFromStringBufferPipe() {
     }
 
@@ -72,7 +86,6 @@ public class StripHTMLFromStringBufferPipe extends Pipe {
 			String data=carrier.getData().toString();
 			if (isHtml(data)){
 				    Document doc=Jsoup.parse(data);
-					//doc.outputSettings().prettyPrint(false);
 					doc.charset(Charset.forName("UTF-16"));
 					
 					String title;
@@ -81,20 +94,13 @@ public class StripHTMLFromStringBufferPipe extends Pipe {
 					Elements elements = doc.getAllElements();
 					for(Element element : elements) {
 					  for(TextNode node : element.textNodes()){
-						  //System.out.print(" -*- ");
 					    newSb.append( node + "\n" );
 					  }
 				    }
-				    //newSb.append(doc.text());
 
 				    carrier.setData(newSb);
 
-     		} else
-				logger.info("HTML not found for instance "+carrier.toString());
-			
-			
-				 
-			//System.out.println("HTML +++ "+ carrier.getData());
+     		} else logger.info("HTML not found for instance "+carrier.toString());
 		}
 
         return carrier;

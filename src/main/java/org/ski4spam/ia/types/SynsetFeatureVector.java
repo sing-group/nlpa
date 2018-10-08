@@ -28,8 +28,8 @@ public class SynsetFeatureVector implements Serializable {
         return synsetFeature.size();
     }
     /**
-     * 
-     * @param synsetId
+     * Checks for the value stored for the synset synsetId
+     * @param synsetId The target synset 
      * @return The value asociated to synsetId, which represents the frequency of appearance of the synsetId
      */
     public double getFrequencyValue(String synsetId){

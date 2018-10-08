@@ -4,10 +4,11 @@ import org.bdp4j.ia.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TransformationPipe;
 
-//import org.w3c.tidy.Tidy;
 /**
- * This pipe modifies data to lowercase
- * @author Rosalía Laza y Reyes Pavón
+ * This pipe modifies the data of an Insatance to lowercase
+ * The data should be a StringBuffer
+ * @author Rosalía Laza 
+ * @author Reyes Pavón
  */
 @TransformationPipe()
 public class StringBufferToLowerCasePipe extends Pipe {
@@ -21,7 +22,10 @@ public class StringBufferToLowerCasePipe extends Pipe {
     public Class getOutputType() {
         return StringBuffer.class;
     }
-
+    
+	 /**
+		* Build a StringBufferToLowerCasePipe
+		*/
     public StringBufferToLowerCasePipe() {
     }
 

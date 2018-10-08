@@ -14,7 +14,7 @@ import org.bdp4j.pipe.TargetAssigningPipe;
 /**
  * This pipe assign a target to an instance keeping in mind the file path of the instance
  *
- * @author José Ramón Méndez Reboredo
+ * @author José Ramón Méndez
  */
 @TargetAssigningPipe()
 public class TargetAssigningFromPathPipe extends Pipe {
@@ -57,7 +57,7 @@ public class TargetAssigningFromPathPipe extends Pipe {
     /**
      * Create a TargetAssigningPipe using the map for mapping from filepath to targets
      *
-     * @targets Map of targets. The key represents the substring of the path and the value the specific target.
+     * @param targets Map of targets. The key represents the substring of the path and the value the specific target.
      */
     public TargetAssigningFromPathPipe(Map<String, String> targets) {
         this.targets = targets;
