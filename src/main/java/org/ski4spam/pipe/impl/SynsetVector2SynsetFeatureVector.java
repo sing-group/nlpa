@@ -18,21 +18,25 @@ import org.ski4spam.ia.types.SynsetVector;
 import org.ski4spam.util.Pair;
 
 /**
- * A pipe to transform a SynsetVector wich contains a list of synsets included in a message
- * into a SynsetFeatureVector wich compile togeher duplicated features and assign a score
- * for each feature according with a groupingStrategy. The groupStrategy is one of the 
- * following: <ul>
- * <li>SynsetVectorGroupingStrategy.COUNT: indicates the number of times that a synset is observed in the content (ex. 5)</li> 
- * <li>SynsetVectorGroupingStrategy.BOOLEAN: Indicates if the synset is observed in the content (1) or not (0) (ex. 0)</li>
- * <li>SynsetVectorGroupingStrategy.FREQUENCY: Indicates the frequency of the synset in the text that is the count 
- * of times that the synset is observed divided by the whole amount of synsets.</li>
+ * A pipe to transform a SynsetVector wich contains a list of synsets included
+ * in a message into a SynsetFeatureVector wich compile togeher duplicated
+ * features and assign a score for each feature according with a
+ * groupingStrategy. The groupStrategy is one of the following: <ul>
+ * <li>SynsetVectorGroupingStrategy.COUNT: indicates the number of times that a
+ * synset is observed in the content (ex. 5)</li>
+ * <li>SynsetVectorGroupingStrategy.BOOLEAN: Indicates if the synset is observed
+ * in the content (1) or not (0) (ex. 0)</li>
+ * <li>SynsetVectorGroupingStrategy.FREQUENCY: Indicates the frequency of the
+ * synset in the text that is the count of times that the synset is observed
+ * divided by the whole amount of synsets.</li>
  * </ul>
+ *
  * @author María Novo
  */
 public class SynsetVector2SynsetFeatureVector extends Pipe {
 
-	 public static final String DEFAULT_GROUPTING_STRATEGY="FREQUENCY";
-	 
+    public static final String DEFAULT_GROUPTING_STRATEGY = "FREQUENCY";
+
     /**
      * Indicates the group strategy to create the synsetFeatureVector
      */
@@ -50,34 +54,41 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
     }
 
     /**
-		* Changes the grouping strategy
-		* @param groupStrategy The new grouping strategy
-		*/
-    @PipeParameter(name = "groupStrategy", description = "Indicates the group strategy to create the synsetFeatureVector", defaultValue=DEFAULT_GROUPTING_STRATEGY)
+     * Changes the grouping strategy
+     *
+     * @param groupStrategy The new grouping strategy
+     */
+    @PipeParameter(name = "groupStrategy", description = "Indicates the group strategy to create the synsetFeatureVector", defaultValue = DEFAULT_GROUPTING_STRATEGY)
     public void setGroupStrategy(String groupStrategy) {
         this.groupStrategy = SynsetVectorGroupingStrategy.valueOf(groupStrategy);
     }
 
     /**
-		* Retrieves the current grouping strategy
-		* @return The current grouping strategy
-		*/
+     * Retrieves the current grouping strategy
+     *
+     * @return The current grouping strategy
+     */
     public SynsetVectorGroupingStrategy getGroupStrategy() {
         return this.groupStrategy;
     }
 
     /**
-		* Creates a SynsetVector2SynsetFeatureVector Pipe using an specific grouping strategy
-		* @param groupStrategy The selected grouping strategy
-		*/
+     * Creates a SynsetVector2SynsetFeatureVector Pipe using an specific
+     * grouping strategy
+     *
+     * @param groupStrategy The selected grouping strategy
+     */
     public SynsetVector2SynsetFeatureVector(SynsetVectorGroupingStrategy groupStrategy) {
         this.groupStrategy = groupStrategy;
     }
 
     /**
-     * Converts a synsetVector in a synsetFeatureVector, with the synsetId and the number of times that a synsetId appears in synsetVector
+     * Converts a synsetVector in a synsetFeatureVector, with the synsetId and
+     * the number of times that a synsetId appears in synsetVector
+     *
      * @param synsetVector
-     * @return A synsetFeatureVector with the synsetId and the number of times that a synsetId appears in synsetVector
+     * @return A synsetFeatureVector with the synsetId and the number of times
+     * that a synsetId appears in synsetVector
      */
     private SynsetFeatureVector countMatches(SynsetVector synsetVector) {
 
@@ -86,7 +97,7 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
         try {
             for (Pair<String, String> pairSV : synsetVector.getSynsets()) {
                 String synsetId = pairSV.getObj1();
-                
+
                 if (synsetFeatureVector.get(synsetId) == null) {
                     synsetFeatureVector.put(pairSV.getObj1(), 1d);
                 } else {
@@ -107,7 +118,7 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
         List<Pair<String, Double>> sfv = new ArrayList<>();
 
         try {
-            SynsetVector synsetVector = (SynsetVector)carrier.getData();
+            SynsetVector synsetVector = (SynsetVector) carrier.getData();
 
             //SynsetVector synsetVector = (SynsetVector) svTest;
             switch (groupStrategy) {
@@ -117,23 +128,24 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
                     break;
                 case BOOLEAN:
                     /* Generate a synsetFeatureVector with synsetId and 0/1 if this synsetId is or not in synsetVector*/
-                        synsetFeatureVector = new HashMap<>();
-                        for (Pair<String, String> pairSV : synsetVector.getSynsets()) {
-                            String synsetId = pairSV.getObj1();
-                            if (synsetFeatureVector.get(synsetId) == null) {
-                                synsetFeatureVector.put(pairSV.getObj1(), 1d);
-                            }
-                        };
+                    synsetFeatureVector = new HashMap<>();
+                    for (Pair<String, String> pairSV : synsetVector.getSynsets()) {
+                        String synsetId = pairSV.getObj1();
+                        if (synsetFeatureVector.get(synsetId) == null) {
+                            synsetFeatureVector.put(pairSV.getObj1(), 1d);
+                        }
+                    }
+                    ;
 
                     break;
                 case FREQUENCY:
                     /* Generate a synsetFeatureVector with synsetId and synsetId appearance frequency in synsetVector*/
                     SynsetFeatureVector synsetFeatureVectorCountMatches = countMatches(synsetVector);
                     Map<String, Double> synsets = synsetFeatureVectorCountMatches.getSynsetsFeature();
-						  int countSynsets = synsets.size();
-                    for (Map.Entry<String, Double>  entry: synsets.entrySet()) {
-                       Double frequency = entry.getValue() / countSynsets;
-                       synsets.put(entry.getKey(), frequency);   
+                    int countSynsets = synsets.size();
+                    for (Map.Entry<String, Double> entry : synsets.entrySet()) {
+                        Double frequency = entry.getValue() / countSynsets;
+                        synsets.put(entry.getKey(), frequency);
                     }
 
                     break;
