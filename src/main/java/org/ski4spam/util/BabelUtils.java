@@ -13,30 +13,32 @@ import it.uniroma1.lcl.babelnet.BabelNetQuery;
 
 import java.util.List;
 
-public class BabelUtils{
+public class BabelUtils {
 
-	    private static final Logger logger = LogManager.getLogger(BabelUtils.class);	
+    private static final Logger logger = LogManager.getLogger(BabelUtils.class);
 
-	    private static BabelUtils bu=null;
+    private static BabelUtils bu = null;
 
-	 	 private Babelfy bfy;
-	 	 private BabelNet bn;
-			 
-       private BabelUtils(){
-	 		bfy = new Babelfy();
-	 		bn = BabelNet.getInstance();       	
-       }
-		
-	    public static BabelUtils getDefault(){
-			 if (bu==null) bu=new BabelUtils();
-			 return bu;
-	    }
-		 
-		 public boolean isTermInBabelNet(String term, String lang){
-			 int resultNo=0;
-			 try{
-				 /*This is a query to babelfy not babelnet*/
-				 /*
+    private Babelfy bfy;
+    private BabelNet bn;
+
+    private BabelUtils() {
+        bfy = new Babelfy();
+        bn = BabelNet.getInstance();
+    }
+
+    public static BabelUtils getDefault() {
+        if (bu == null) {
+            bu = new BabelUtils();
+        }
+        return bu;
+    }
+
+    public boolean isTermInBabelNet(String term, String lang) {
+        int resultNo = 0;
+        try {
+            /*This is a query to babelfy not babelnet*/
+ /*
 			     List<SemanticAnnotation> bfyAnnotations = bfy.babelfy(current, Language.valueOf(lang)); //TODO: compile language from Propoerties
 			     logger.info("Babelfy query: " + current + " results: " +  bfyAnnotations.size());
 			     if (bfyAnnotations.size()==0)
