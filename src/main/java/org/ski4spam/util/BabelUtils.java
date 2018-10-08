@@ -12,6 +12,7 @@ import it.uniroma1.lcl.babelnet.BabelNet;
 import it.uniroma1.lcl.babelnet.BabelNetQuery;
 
 import java.util.List;
+import java.util.Vector;
 
 public class BabelUtils {
 
@@ -19,31 +20,22 @@ public class BabelUtils {
 
     private static BabelUtils bu = null;
 
-    private Babelfy bfy;
-    private BabelNet bn;
-
-    private BabelUtils() {
-        bfy = new Babelfy();
-        bn = BabelNet.getInstance();
-    }
-
-    public static BabelUtils getDefault() {
-        if (bu == null) {
-            bu = new BabelUtils();
-        }
-        return bu;
-    }
-
-    public boolean isTermInBabelNet(String term, String lang) {
-        int resultNo = 0;
-        try {
-            /*This is a query to babelfy not babelnet*/
- /*
-			     List<SemanticAnnotation> bfyAnnotations = bfy.babelfy(current, Language.valueOf(lang)); //TODO: compile language from Propoerties
-			     logger.info("Babelfy query: " + current + " results: " +  bfyAnnotations.size());
-			     if (bfyAnnotations.size()==0)
-			        returnValue.add(new Pair<String,String>(current,null));
-				  */
+	 	 private Babelfy bfy;
+	 	 private BabelNet bn;
+			 
+       private BabelUtils(){
+	 		bfy = new Babelfy();
+	 		bn = BabelNet.getInstance();       	
+       }
+		
+	    public static BabelUtils getDefault(){
+			 if (bu==null) bu=new BabelUtils();
+			 return bu;
+	    }
+		 
+		 public boolean isTermInBabelNet(String term, String lang){
+			 int resultNo=0;
+			 try{
 				  BabelNetQuery query = new BabelNetQuery.Builder(term)
 					 	.from(Language.valueOf(lang)) //TODO: compile language from Propoerties
 					 	.build();
@@ -54,4 +46,25 @@ public class BabelUtils {
 		    }
 			 return (resultNo>0);
 		 }
+		 public Vector<Pair<String,String>> buildSynsetVector(String fixedText, String lang){
+				
+			//The value that will be returned
+			Vector<Pair<String,String>> returnValue=new Vector<Pair<String,String>>();
+				
+			List<SemanticAnnotation> bfyAnnotations = bfy.babelfy(fixedText, Language.valueOf(lang));
+			// logger.info("Babelfy query: " + current + " results: " +  bfyAnnotations.size());
+			// if (bfyAnnotations.size()==0)
+				for (SemanticAnnotation annotation : bfyAnnotations)
+				{
+					/*If is necesary to split the input text the disambiguated word is frag
+				    String frag = inputText.substring(annotation.getCharOffsetFragment().getStart(),
+				        annotation.getCharOffsetFragment().getEnd() + 1); */
+					returnValue.add(new Pair<String,String>(annotation.getBabelSynsetID(),null));
+				}
+			return returnValue;
+
+				    
+				}
+			 
+
 }
