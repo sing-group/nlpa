@@ -44,55 +44,56 @@ public class GuessDateFromFile extends Pipe {
     /**
 		* A collection of DateExtractors
 		*/
-    HashMap<String, DateExtractor> htExtractors;
+    private static HashMap<String, DateExtractor> htExtractors;
+	 
+	 static{
+       htExtractors = new HashMap<>();
+
+       //Add the extractors
+       for (String ext : EMLDateExtractor.getExtensions()) htExtractors.put(ext, EMLDateExtractor.getInstance());
+       for (String ext : WARCDateExtractor.getExtensions()) htExtractors.put(ext, WARCDateExtractor.getInstance());
+       for (String ext : TWTIDDateExtractor.getExtensions()) htExtractors.put(ext, TWTIDDateExtractor.getInstance());
+       for (String ext : YTBIDDateExtractor.getExtensions()) htExtractors.put(ext, YTBIDDateExtractor.getInstance());
+       for (String ext : NullDateExtractor.getExtensions()) htExtractors.put(ext, NullDateExtractor.getInstance());	 	
+	 }
 
     /**
 		* The property where the date is being stored
 		*/
-    String datePropertyStr = DEFAULT_DATE_PROPERTY;
+    String dateProp = DEFAULT_DATE_PROPERTY;
     
 	 /**
-		* Sthe the property where the date will be stored
-		* @param datePropertyStr the name of the property for the date
+		* Set the the property where the date will be stored
+		* @param dateProp the name of the property for the date
 		*/
 	 @PipeParameter(name = "datepropname", description = "Indicates the property name to store the date", defaultValue=DEFAULT_DATE_PROPERTY)
-    public void setDatePropertyStr(String datePropertyStr){
-        this.datePropertyStr = datePropertyStr;
+    public void setDateProp(String dateProp){
+        this.dateProp = dateProp;
     }
 	 
-    public String getDatePropertyStr(){
-        return this.datePropertyStr;
+	 /**
+		* Retrieves the name of the property to store the Date
+		* @return the name of the property to store the Date
+		*/
+    public String getDateProp(){
+        return this.dateProp;
     }
     
+	 /**
+		* Create a GuessDateFromFile which stores the date of the content in the property "date"
+		*/
     public GuessDateFromFile() {
-        init();
     }
 
-    public GuessDateFromFile(String datePropertyStr) {
-        this.datePropertyStr = datePropertyStr;
-        init();
+	 /**
+		* Create a GuessDateFromFile which stores the date of the content in the property
+		* indicated by dateProp
+		* @param dateProp The name of the property to store the date
+		*/
+    public GuessDateFromFile(String dateProp) {
+        this.dateProp = dateProp;
     }
 
-    private void init() {
-        htExtractors = new HashMap<>();
-
-        //Add the extractors
-        for (String ext : EMLDateExtractor.getExtensions()) {
-            htExtractors.put(ext, EMLDateExtractor.getInstance());
-        }
-        for (String ext : WARCDateExtractor.getExtensions()) {
-            htExtractors.put(ext, WARCDateExtractor.getInstance());
-        }
-        for (String ext : TWTIDDateExtractor.getExtensions()) {
-            htExtractors.put(ext, TWTIDDateExtractor.getInstance());
-        }
-        for (String ext : YTBIDDateExtractor.getExtensions()) {
-            htExtractors.put(ext, YTBIDDateExtractor.getInstance());
-        }
-        for (String ext : NullDateExtractor.getExtensions()) {
-            htExtractors.put(ext, NullDateExtractor.getInstance());
-        }
-    }
 
     @Override
     public Instance pipe(Instance carrier) {
@@ -115,13 +116,13 @@ public class GuessDateFromFile extends Pipe {
                 Date d = de.extractDate((File) (carrier.getData()));
                 if (d == null) {
                     logger.warn("Invalid date " + carrier.toString() + " due to a fault in parsing.");
-                    carrier.setProperty(datePropertyStr, "null");
+                    carrier.setProperty(dateProp, "null");
                 } else {
-                    carrier.setProperty(datePropertyStr, d);
+                    carrier.setProperty(dateProp, d);
                 }
             } else {
                 logger.warn("No parser available for instance " + carrier.toString() + ". Invalidating instance.");
-                carrier.setProperty(datePropertyStr, "null");
+                carrier.setProperty(dateProp, "null");
             }
         }
 

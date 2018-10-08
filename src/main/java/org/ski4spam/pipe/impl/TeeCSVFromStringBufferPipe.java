@@ -16,10 +16,11 @@ import org.ski4spam.util.CSVUtils;
 /**
  * This pipe parses Instances to csv format. It can be for showing it on
  * terminal or exporting it to .csv file. The resulting CSV could be readed in R
- * using out <- read.csv("output.csv",header = TRUE, sep=";", encoding =
+ * using out &lt;- read.csv("output.csv",header = TRUE, sep=";", encoding =
  * "UTF-8", skipNul = TRUE, stringsAsFactors = FALSE )
  *
  * @author Yeray Lage Freitas
+ * @author María Novo
  */
 @TeePipe()
 public class TeeCSVFromStringBufferPipe extends Pipe {
@@ -73,6 +74,9 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
 
     /**
      * Computes the CSV header for the instance
+	  * @param withData Indicates whether include or not the data of the instance in the output
+	  * @param propertyList a list of properties to be included in the CSV header
+	  * @return The CSV header
      */
     public static String getCSVHeader(boolean withData, Set<String> propertyList) {
         StringBuilder builder = new StringBuilder();
@@ -92,6 +96,9 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
 
     /**
      * Converts this instance toCSV string representation
+	  * @param withData Indicates whether include or not the data of the instance in the output
+	  * @param carrier Indicates the instance to be represented in the CSV line
+	  * @return The string representation o the instance carrier
      */
     public static String toCSV(boolean withData, Instance carrier) {
         StringBuilder builder = new StringBuilder();
@@ -101,8 +108,6 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
         
         builder.append(name).append(CSV_SEP);
         if (withData) builder.append(CSVUtils.escapeCsv(data.toString()));
-        
-        //Map<String, Object> properties = carrier.getProperties();
         
         for (Object value: carrier.getValueList()){
             builder.append(value).append(CSV_SEP);

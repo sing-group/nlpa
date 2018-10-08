@@ -6,10 +6,13 @@ import org.bdp4j.ia.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PropertyComputingPipe;
 
+import org.bdp4j.pipe.PipeParameter;
+
 /**
- * This pipe adds the length property.
+ * This pipe adds the extension of a file as instance property.
  *
- * @author Rosalía Laza y Reyes Pavón
+ * @author Rosalía Laza 
+ * @author Reyes Pavón
  */
 @PropertyComputingPipe()
 public class StoreFileExtensionPipe extends Pipe {
@@ -24,21 +27,45 @@ public class StoreFileExtensionPipe extends Pipe {
         return File.class;
     }
 
-    private String key;
+    /**
+		* The default property name to store the extension
+		*/
+    public static final String DEFAULT_EXTENSION_PROPERTY="extension";
 
-    public void setKey(String key) {
-        this.key = key;
+    /**
+		* The property name to store the extension
+		*/
+    private String extProp=DEFAULT_EXTENSION_PROPERTY;
+
+	 /**
+		* Sets the property where the extension will be stored
+		* @param extProp the name of the property for the extension
+		*/
+	 @PipeParameter(name = "extpropname", description = "Indicates the property name to store the extension", defaultValue=DEFAULT_EXTENSION_PROPERTY)    
+    public void setExtensionProp(String extProp) {
+        this.extProp = extProp;
     }
-    public String getKey(){
-        return this.key;
+	 
+	 /**
+		* Retrieves the property name for storing the file extension
+		* @return String containing the property name for storing the file extension
+		*/
+    public String getExtenstionProp(){
+        return this.extProp;
     }
 
+    /**
+		* Default constructor
+		*/
     public StoreFileExtensionPipe() {
-        key = "extension";
     }
 
-    public StoreFileExtensionPipe(String k) {
-        key = k;
+    /**
+		* Build a StoreFileExtensionPipe that stores the extension of the file in the property extProp
+		* @param extProp The name of the property to extore the file extension
+		*/
+    public StoreFileExtensionPipe(String extProp) {
+        this.extProp = extProp;
     }
 
     @Override
@@ -56,7 +83,7 @@ public class StoreFileExtensionPipe extends Pipe {
                 value = extensions[i];
             }
 
-            carrier.setProperty(key, value);
+            carrier.setProperty(extProp, value);
         }
         return carrier;
     }

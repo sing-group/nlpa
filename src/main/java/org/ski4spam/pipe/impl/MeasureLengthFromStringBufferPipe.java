@@ -4,9 +4,11 @@ import org.bdp4j.ia.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PropertyComputingPipe;
 
+import org.bdp4j.pipe.PipeParameter;
 
 /**
- * This pipe adds the length property. 
+ * This pipe adds the length property that is computed by measuring 
+ * the length of a stringbuffer included in the data of the Instance
  * @author Rosalía Laza 
  * @author Reyes Pavón
  */
@@ -22,23 +24,48 @@ public class MeasureLengthFromStringBufferPipe extends Pipe {
     public Class getOutputType() {
         return StringBuffer.class;
     }
+    
+	 /**
+		* The default name of the property to store the length of the text
+		*/
+	 public static final String DEFAULT_LENGTH_PROPERTY="length";
+		 
+    /**
+		* The property to store the length of the text
+		*/
+    private String lengthProp=DEFAULT_LENGTH_PROPERTY;
 
-    private String key;
-
-    public void setKey(String key) {
-        this.key = key;
+    /**
+		* Stablish the name of the property to sotre the lenght of the text
+		* @param lengthProp the name of the property to sotre the lenght of the text
+		*/
+	 @PipeParameter(name = "lengthpropname", description = "Indicates the property name to store the length", defaultValue=DEFAULT_LENGTH_PROPERTY)
+    public void setLengthProp(String lengthProp) {
+        this.lengthProp = lengthProp;
+    }
+    
+	 /**
+		* Returns the name of the property to store the length
+		* @return the name of the property to store the length
+		*/
+    public String getLengthProp() {
+        return this.lengthProp;
     }
 
-    public String getKey() {
-        return this.key;
-    }
-
+    /**
+		* Build a MeasureLengthFromStringBufferPipe that stores the length in the
+		* default property ("length")
+		*/
     public MeasureLengthFromStringBufferPipe() {
-        key = "length";
     }
 
-    public MeasureLengthFromStringBufferPipe(String k) {
-        key = k;
+    /**
+		* Build a MeasureLengthFromStringBufferPipe that stores the length in the
+		* property indicated by lengthProp parameter
+		* @param lengthProp the name of te property to store the text length
+		*/
+    public MeasureLengthFromStringBufferPipe(String lengthProp) {
+        this.lengthProp = lengthProp;
     }
 
 
@@ -47,9 +74,9 @@ public class MeasureLengthFromStringBufferPipe extends Pipe {
         if (carrier.getData() instanceof StringBuffer){
             StringBuffer sb = (StringBuffer)carrier.getData();
             int lengthSb = sb.length();
-            carrier.setProperty(key, lengthSb);
+            carrier.setProperty(lengthProp, lengthSb);
         } else {
-        	carrier.setProperty(key, "null");
+        	carrier.setProperty(lengthProp, "null");
         }
                     
         return carrier;
