@@ -15,7 +15,7 @@ import org.bdp4j.ia.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.ski4spam.ia.types.SynsetFeatureVector;
 import org.ski4spam.util.Dictionary;
-import static org.ski4spam.util.CSVUtils.CSV_SEP;
+import static org.ski4spam.util.CSVUtils.getCSVSep;
 
 import org.bdp4j.pipe.PipeParameter;
 
@@ -155,19 +155,19 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
         Dictionary synsetsDictionary = Dictionary.getDictionary();
 
         StringBuilder csvHeader = new StringBuilder();
-        csvHeader.append("id").append(CSV_SEP);
+        csvHeader.append("id").append(getCSVSep());
 
 		  if(saveProps){ //Generate the props if required
 	        for (String key : carrier.getPropertyList()) {
-	            csvHeader.append(key).append(CSV_SEP);
+	            csvHeader.append(key).append(getCSVSep());
 	        }
 		  }
 		  
         for (String synsetId : synsetsDictionary) {
-            csvHeader.append(synsetId).append(CSV_SEP);
+            csvHeader.append(synsetId).append(getCSVSep());
         }
 		  
-        csvHeader.append("target").append(CSV_SEP);
+        csvHeader.append("target").append(getCSVSep());
         return csvHeader.toString();
     }
 
@@ -185,24 +185,24 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
         Object name = carrier.getName();
         Object target = carrier.getTarget();
 
-        csvBody.append(name).append(CSV_SEP);
+        csvBody.append(name).append(getCSVSep());
 		  
 		  if(saveProps){ //Generate the props if required
 	        for (Object value: carrier.getValueList()){
-	            csvBody.append(value).append(CSV_SEP);
+	            csvBody.append(value).append(getCSVSep());
 	        }
 		  }		  
 		  
         for (String synsetId : synsetsDictionary) {
-            csvBody.append(synsetId).append(CSV_SEP);
+            csvBody.append(synsetId).append(getCSVSep());
 							
             Double frequency = synsetFeatureVector.getFrequencyValue(synsetId);
             if (frequency > 0) {
-                csvBody.append(frequency.toString()).append(CSV_SEP);
+                csvBody.append(frequency.toString()).append(getCSVSep());
             } else {
-                csvBody.append("0").append(CSV_SEP);
+                csvBody.append("0").append(getCSVSep());
             }
-            csvBody.append(target.toString()).append(CSV_SEP);
+            csvBody.append(target.toString()).append(getCSVSep());
         }
         return csvBody.toString();
     }

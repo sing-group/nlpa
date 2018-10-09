@@ -7,3 +7,9 @@ AccessTokenSecret =
 [youtube]
 APIKey = 
 
+[csv]
+CSVSep = ;
+
+[eml]
+PartSelectedOnMPAlternative = text/plain
+

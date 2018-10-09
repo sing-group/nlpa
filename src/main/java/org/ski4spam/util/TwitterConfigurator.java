@@ -11,7 +11,6 @@ import java.util.HashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.ini4j.Wini;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -22,32 +21,59 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
-// This is a Singleton class
+import org.ski4spam.util.Configuration;
+
+/**
+  * Handle all functionality of accessing tweets by using Twitter Java API
+  * @author Yeray Lage
+  */
 public class TwitterConfigurator {
+	 /**
+	  * For logging purposes
+	  */
     private static final Logger logger = LogManager.getLogger(TwitterConfigurator.class);
+	
+	 /**
+	  * A twitterFactory instance
+	  */
     private static TwitterFactory tf;
+	
+	 /**
+	  * A instance of this class to implement a singleton pattern
+	  */
     private static TwitterConfigurator tc;
+	
+	 /**
+	  * A hashmap with a cache of valid tweets
+	  */
     private static HashMap<Long, TweetStatus> validTweetsCache = new HashMap<>();
+	
+	 /**
+		* A Hashmap witha a cache of valid tweets
+		*/
     private static HashMap<Long, ErrorTweet> errorTweetsCache = new HashMap<>();
     
+	 /**
+		* A file to store valid tweets
+		*/
     private static File validTweetsCacheFile = new File(System.getProperty("java.io.tmpdir"), "validTweetsCache.json");
+	 
+	 /**
+		* A file to store invalid twits
+		*/
     private static File errorTweetsCacheFile = new File(System.getProperty("java.io.tmpdir"), "errorTweetsCache.json");
 
+    /**
+		* Build a TwitterConfigurator instance
+		*/
     private TwitterConfigurator() {
-        // Setting up the tokens config based on the .ini file on config/ folder.
-        Wini ini = null;
-        try {
-            ini = new Wini(new File("config/configurations.ini"));
-        } catch (IOException e) {
-            logger.error("IO Exception caught / " + e.getMessage());
-        }
-
+		 //Load twitter configuration using System configuration method
         String consumerKey, consumerSecret, accessToken, accessTokenSecret;
-        assert ini != null;
-        consumerKey = ini.get("twitter", "ConsumerKey");
-        consumerSecret = ini.get("twitter", "ConsumerSecret");
-        accessToken = ini.get("twitter", "AccessToken");
-        accessTokenSecret = ini.get("twitter", "AccessTokenSecret");
+        consumerKey = Configuration.getSystemConfig().getConfigOption("twitter", "ConsumerKey");
+        consumerSecret = Configuration.getSystemConfig().getConfigOption("twitter", "ConsumerSecret");
+        accessToken = Configuration.getSystemConfig().getConfigOption("twitter", "AccessToken");
+        accessTokenSecret = Configuration.getSystemConfig().getConfigOption("twitter", "AccessTokenSecret");
+		  
 
         //Setting up the twitter factory object from the Configuration Builder.
         ConfigurationBuilder cb = new ConfigurationBuilder();
@@ -61,6 +87,11 @@ public class TwitterConfigurator {
         readCachedTweets(); // Read tweets stored in cache
     }
 
+    /**
+		* Find the status for a tweet from its tweetId
+		* @param tweetId The id of the desired tweet
+		* @return The status for the desired tweet
+		*/
     public static Status getStatus(String tweetId) {
         Status toret = null;
         Gson gson = new Gson();
@@ -102,6 +133,10 @@ public class TwitterConfigurator {
         return toret;
     }
 
+    /**
+		* Retrieves a TwitterFactory to use it externally
+		* @return the TwitterFactory to use it externally
+		*/    
     public static TwitterFactory getTwitterFactory() {
         if (tc == null) {
             // If not instanced yet, we do it
@@ -111,7 +146,9 @@ public class TwitterConfigurator {
         return tf;
     }
 
-    // src/org/ski4spam/util/validTweetsCache.json
+    /**
+		* Read Cached Tweets from a JSON file
+		*/
     private void readCachedTweets() {
         BufferedReader bufferedReader = null;
         Gson gson = new Gson();

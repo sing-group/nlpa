@@ -21,31 +21,73 @@ import org.ski4spam.util.Pair;
 import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 
+import org.ski4spam.util.Configuration;
+
+/** 
+  * A TextExtractor used to extract text from emails represented in its original format (.eml)
+  * Files using this TextExtractor should contain the original representation in the format
+  * defined by RFC 2822 (https://tools.ietf.org/html/rfc2822)
+  */
 public class EMLTextExtractor extends TextExtractor{
+	/**
+	  * For logging purposes
+	  */		
 	private static final Logger logger = LogManager.getLogger(EMLTextExtractor.class);
 	
-    private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
+ 	/**
+ 	  *  Pattern to find the charset from ContentType headers
+ 	  */		
+   private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
 	
+	/**
+	  * The part to parse on Multipart/Alternative parts or messages
+	  */
 	private static String cfgPartSelectedOnAlternative="text/plain";
 	
+	static {
+		cfgPartSelectedOnAlternative=Configuration.getSystemConfig().getConfigOption("eml", "PartSelectedOnMPAlternative");		
+	}
+	
+	/**
+	  * Gets the part to parse on Multipart/Alternative parts or messages
+	  * @return The part to parse on Multipart/Alternative parts or messages (text/plain or text/html)
+	  */
 	public static String getCfgPartSelectedOnAlternative(){ 
 		return cfgPartSelectedOnAlternative;
     }
-	
+	 
+ 	/**
+ 	  * Sets the part to parse on Multipart/Alternative parts or messages
+ 	  * @param cfg The part to parse on Multipart/Alternative parts or messages (text/plain or text/html)
+ 	  */	
 	public static void setCfgPartSelectedOnAlternative(String cfg){
         cfgPartSelectedOnAlternative=cfg;
     }
-	
+
+  	/**
+  	  * A static instance of the TexTextractor to implement a singleton pattern
+  	  */		
 	static TextExtractor instance=null;
 	
+ 	/**
+ 	  * Private default constructor
+ 	  */		
 	private EMLTextExtractor(){
-		
+
 	}
 	
+   /**
+	* Retrieve the extensions that can process this TextExtractor
+	* @return An array of Strings containing the extensions of files that this TextExtractor can handle
+	*/		
 	public static String[] getExtensions(){
 		return new String[]{"eml"};
 	}
 	
+   /**
+	* Return an instance of this TextExtractor
+	* @return an instance of this TextExtractor
+	*/		
 	public static TextExtractor getInstance(){
 		if (instance==null) {
 			instance=new EMLTextExtractor();
@@ -88,6 +130,11 @@ public class EMLTextExtractor extends TextExtractor{
 	    }
 	}//buildPartList	
 
+	/**
+	  * Determines the charset from the ContentType header 
+	  * @param contentType the ContentType header
+	  * @return A string containing the charset of the text
+	  */
     private String getCharsetFromContentType(String contentType) {
       if (contentType == null)
         return null;
@@ -104,6 +151,7 @@ public class EMLTextExtractor extends TextExtractor{
 	  *  @param f The file where the contents will be extracted
 	  *  @return an StringBuffer with text contents of message
 	  */
+   @Override			
 	public StringBuffer extractText(File f){
 		StringBuffer sbResult=new StringBuffer();
 		ArrayList<Pair<String,InputStream>> parts=new ArrayList<Pair<String,InputStream>>();
