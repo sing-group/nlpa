@@ -35,7 +35,7 @@ import org.ski4spam.util.Pair;
  */
 public class SynsetVector2SynsetFeatureVector extends Pipe {
 
-    public static final String DEFAULT_GROUPTING_STRATEGY = "FREQUENCY";
+    public static final String DEFAULT_GROUPTING_STRATEGY = "COUNT";
 
     /**
      * Indicates the group strategy to create the synsetFeatureVector

@@ -93,7 +93,7 @@ public class Main {
             new GuessLanguageFromStringBufferPipe(),
             new TeeCSVFromStringBufferPipe("output.csv", true),
             new StringBuffer2SynsetVector(),
-            new SynsetVector2SynsetFeatureVector(SynsetVectorGroupingStrategy.FREQUENCY),
+            new SynsetVector2SynsetFeatureVector(SynsetVectorGroupingStrategy.COUNT),
             new TeeCSVFromSynsetFeatureVector("outputsyns.csv")
         });
 
