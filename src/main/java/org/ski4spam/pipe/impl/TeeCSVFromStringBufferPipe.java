@@ -12,6 +12,10 @@ import org.bdp4j.pipe.TeePipe;
 import static org.ski4spam.util.CSVUtils.getCSVSep;
 import static org.ski4spam.util.CSVUtils.escapeCSV;
 
+import org.bdp4j.pipe.PipeParameter;
+
+import org.ski4spam.util.EBoolean;
+
 /**
  * This pipe parses Instances to csv format. It can be for showing it on
  * terminal or exporting it to .csv file. The resulting CSV could be readed in R
@@ -24,21 +28,63 @@ import static org.ski4spam.util.CSVUtils.escapeCSV;
 @TeePipe()
 public class TeeCSVFromStringBufferPipe extends Pipe {
 
+	/**
+ 	  * For logging purposes
+	  */
     private static final Logger logger = LogManager.getLogger(TeeCSVFromStringBufferPipe.class);
     
+	 /**
+		* Indicates the output filename/path for CSV storing
+		*/
     private String output;
+	 
+	 /**
+		* A writer for the output file
+		*/
     private FileWriter outputFile;
+	 
+	 /**
+		* Indicates if the data should be saved
+		*/
     private boolean saveData;
+	 
+	 /**
+		* Indicates if the current instance will be the first one to save
+		*/
     private boolean isFirst;
+	 
+	 /**
+		* The default value for save Data
+		*/
+	 public static final String DEFAULT_SAVEDATA="yes";
+	 
+	 /**
+		* The default value for the output file
+		*/	 
+	 public static final String DEFAULT_OUTPUT_FILE="output.csv";
 
+    /**
+		* Build a TeeCSVFromStringBufferPipe pipe with the default configuration values
+		*/
     public TeeCSVFromStringBufferPipe() {
-        this(null, false);
+        this(DEFAULT_OUTPUT_FILE, true);
     }
 
+    /**
+		* Build a TeeCSVFromStringBufferPipe using the specified output directory
+		* and the default value for saveData
+		* @param output The filename/path for the output file
+		*/
     public TeeCSVFromStringBufferPipe(String output) {
-        this(output, false);
+        this(output, true);
     }
 
+    /**
+		* Build a TeeCSVFromStringBufferPipe using the specified output directory
+		* and the value for saveData
+		* @param output The filename/path for the output file
+		* @param saveData tells if the data should be also saved in CSV
+		*/
     public TeeCSVFromStringBufferPipe(String output, boolean saveData) {
         this.setOutput(output);
         this.setSaveData(saveData);
@@ -54,19 +100,47 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
     public Class getOutputType() {
         return StringBuffer.class;
     }
-
+	 
+    /**
+		* Set the output fileName to store the CSV contents
+		* @param output The filename/filepath to store the CSV contents
+		*/
+	 @PipeParameter(name = "output", description = "Indicates the output filename/path for saving CSV", defaultValue=DEFAULT_OUTPUT_FILE)		
     public void setOutput(String output) {
         this.output = output;
     }
 
+    /**
+		* Returns the filename where the CSV contents will be stored
+		* @return the filename/filepath where the CSV contents will be stored
+		*/
     public String getOutput() {
         return this.output;
     }
-    
+
+    /**
+		* Indicates if the data of the instance should be also saved in the
+		* CSV file
+		* @param saveData True if the data should be also saved in the CSV
+		*/    
     public void setSaveData(boolean saveData) {
         this.saveData = saveData;
     }
 
+    /**
+		* Indicates if the data of the instance should be also saved in the
+		* CSV file (but from string)
+		* @param saveData "true" if the data should be also saved in the CSV
+		*/
+	 @PipeParameter(name = "saveData", description = "Indicates if the data should be saved or not", defaultValue=DEFAULT_SAVEDATA)
+    public void setSaveData(String saveData) {
+        this.saveData = EBoolean.parseBoolean(saveData);
+    }
+
+    /**
+		* Checks whether the data should be saved to the CSV file or not
+		* @return true if the data should be also saved in CSV
+		*/
     public boolean getSaveData() {
         return this.saveData;
     }

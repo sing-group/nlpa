@@ -17,8 +17,11 @@ import org.ski4spam.util.unmatchedtexthandler.TyposHandler;
 import org.ski4spam.util.unmatchedtexthandler.UnmatchedTextHandler;
 import org.ski4spam.util.unmatchedtexthandler.UrbanDictionaryHandler;
 import org.ski4spam.util.SynsetDictionary;
+import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 import org.ski4spam.util.BabelUtils;
+
+import org.bdp4j.pipe.PipeParameter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,6 +46,11 @@ public class StringBuffer2SynsetVector extends Pipe {
      */
     UnmatchedTextHandler vUTH[] = {new UrbanDictionaryHandler(), new TyposHandler(), new ObfuscationHandler()};
 
+    /**
+		* The name of the property where the language is stored
+		*/
+    private String langProp = DEFAULT_LANG_PROPERTY;
+
     @Override
     public Class getInputType() {
         return StringBuffer.class;
@@ -52,6 +60,24 @@ public class StringBuffer2SynsetVector extends Pipe {
     public Class getOutputType() {
         return SynsetVector.class;
     }
+
+	 /**
+		* Stablish the name of the property where the language will be stored
+		* @param langProp The name of the property where the language is stored
+		*/
+	 @PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue=DEFAULT_LANG_PROPERTY)
+    public void setLangProp(String langProp){
+        this.langProp = langProp;
+    }
+    
+	 /**
+		* Returns the name of the property in which the language is stored
+		* @return the name of the property where the language is stored
+	  */
+    public String getLangProp(){
+        return this.langProp;
+    }
+   
 		
 	/**
 	  * Create the pipe and initialize the synset dictionary. Please note that the synset dictionary
@@ -196,18 +222,25 @@ public class StringBuffer2SynsetVector extends Pipe {
 	public Instance pipe(Instance carrier){
 		SynsetVector sv=new SynsetVector((StringBuffer)carrier.getData());
 		
-		sv.setUnmatchedTexts(computeUnmatched(sv.getOriginalText(),((String)carrier.getProperty(GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY)).toUpperCase()));
+		//Invalidate the instance if the language is not present
+		//We cannot correctly represent the instance if the language is not present
+		if (carrier.getProperty(langProp)==null){
+			carrier.invalidate();
+			return carrier;
+		}
+		
+		sv.setUnmatchedTexts(computeUnmatched(sv.getOriginalText(),((String)carrier.getProperty(langProp)).toUpperCase()));
 		
 		if(sv.getUnmatchedTexts().size()>0)
 		    sv.setFixedText(handleUnmatched(
 				 sv.getOriginalText(),
 				 sv.getUnmatchedTexts(),
-				 ((String)carrier.getProperty(GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY)).toUpperCase()
+				 ((String)carrier.getProperty(langProp)).toUpperCase()
 			   )
 		    );
 	   else sv.setFixedText(sv.getOriginalText());
 		
-		sv.setSynsets(buildSynsetVector(sv.getFixedText(),((String)carrier.getProperty(GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY)).toUpperCase()));
+		sv.setSynsets(buildSynsetVector(sv.getFixedText(),((String)carrier.getProperty(langProp)).toUpperCase()));
 		
 		carrier.setData(sv);
 		

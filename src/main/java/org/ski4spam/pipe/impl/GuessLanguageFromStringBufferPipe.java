@@ -132,7 +132,7 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
-            if (carrier.getProperty("extension") != "twtid") { // For not using this with tweets
+            //if (carrier.getProperty("extension") != "twtid") { // For not using this with tweets
                 //query:
                 List<DetectedLanguage> langList = languageDetector.getProbabilities((StringBuffer) (carrier.getData()));
 
@@ -149,11 +149,14 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
 
                 if (bestlang != null) { // In case of emojis bestLang is null
                     carrier.setProperty(langProp, bestlang.getLanguage().toUpperCase());
+						  carrier.setProperty(langReliabilityProp, prob);
                 } else {
-                    carrier.setProperty(langProp, "");
+						 //see ISO 639-3:2007
+                    carrier.setProperty(langProp, "UND");
+                    carrier.setProperty(langReliabilityProp, 0);
                 }
-                carrier.setProperty(langReliabilityProp, prob);
-            }
+                
+            //}
         }
 
         return carrier;

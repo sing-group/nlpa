@@ -85,8 +85,6 @@ public class Main {
         Pipe p = new SerialPipes(new Pipe[]{
             new TargetAssigningFromPathPipe(),
             new StoreFileExtensionPipe(),
-            new StoreTweetLangPipe(),
-            new StoreTweetLangPipe(),
             new GuessDateFromFile(),
             new File2StringBufferPipe(),
             new MeasureLengthFromStringBufferPipe(),
