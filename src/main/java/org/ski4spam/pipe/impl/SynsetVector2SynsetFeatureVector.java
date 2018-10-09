@@ -115,6 +115,7 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
     @Override
     public Instance pipe(Instance carrier) {
         Map<String, Double> synsetFeatureVector;
+		  SynsetFeatureVector synsetFeatureVectorCountMatches=null;
         List<Pair<String, Double>> sfv = new ArrayList<>();
 
         try {
@@ -124,7 +125,7 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
             switch (groupStrategy) {
                 case COUNT:
                     /* Generate a synsetFeatureVector with synsetId and synsetId appearance number in synsetVector*/
-                    SynsetFeatureVector synsetFeatureVectorCountMatches=countMatches(synsetVector);
+                    synsetFeatureVectorCountMatches=countMatches(synsetVector);
 						  carrier.setData(synsetFeatureVectorCountMatches);
 						  
                     break;
@@ -142,7 +143,7 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
                     break;
                 case FREQUENCY:
                     /* Generate a synsetFeatureVector with synsetId and synsetId appearance frequency in synsetVector*/
-                    SynsetFeatureVector synsetFeatureVectorCountMatches = countMatches(synsetVector);
+                    synsetFeatureVectorCountMatches = countMatches(synsetVector);
                     Map<String, Double> synsets = synsetFeatureVectorCountMatches.getSynsetsFeature();
                     int countSynsets = synsets.size();
                     for (Map.Entry<String, Double> entry : synsets.entrySet()) {
