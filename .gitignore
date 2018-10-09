@@ -30,3 +30,5 @@ config/babelnet.var.properties
 # Netbeans
 nbactions.xml
 
+
+outputsyns\.csv
