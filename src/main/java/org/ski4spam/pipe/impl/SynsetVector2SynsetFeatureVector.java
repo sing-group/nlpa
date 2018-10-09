@@ -124,7 +124,9 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
             switch (groupStrategy) {
                 case COUNT:
                     /* Generate a synsetFeatureVector with synsetId and synsetId appearance number in synsetVector*/
-                    countMatches(synsetVector);
+                    SynsetFeatureVector synsetFeatureVectorCountMatches=countMatches(synsetVector);
+						  carrier.setData(synsetFeatureVectorCountMatches);
+						  
                     break;
                 case BOOLEAN:
                     /* Generate a synsetFeatureVector with synsetId and 0/1 if this synsetId is or not in synsetVector*/
@@ -134,8 +136,8 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
                         if (synsetFeatureVector.get(synsetId) == null) {
                             synsetFeatureVector.put(pairSV.getObj1(), 1d);
                         }
-                    }
-                    ;
+                    };
+						  carrier.setData(new SynsetFeatureVector(synsetFeatureVector));
 
                     break;
                 case FREQUENCY:
@@ -147,9 +149,11 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
                         Double frequency = entry.getValue() / countSynsets;
                         synsets.put(entry.getKey(), frequency);
                     }
+						  carrier.setData(synsetFeatureVectorCountMatches);
 
                     break;
             }
+				
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
