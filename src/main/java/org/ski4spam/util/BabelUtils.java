@@ -89,28 +89,155 @@ public class BabelUtils {
 			          synset ID
 			*/
 		 public ArrayList<Pair<String,String>> buildSynsetVector(String fixedText, String lang){
- 			//The value that will be returned
- 			ArrayList<Pair<String,String>> returnValue=new ArrayList<Pair<String,String>>();
-
-			 if (lang.trim().equalsIgnoreCase("UND")) {
-				 logger.error("Unable to query Babelfy because language is not found.");
-				 return returnValue;
-			 }			 
+			   //This is an arraylist of entries to check for duplicate results and nGrams
+			   ArrayList<BabelfyEntry> nGrams=new ArrayList<>();
 				
-			List<SemanticAnnotation> bfyAnnotations = bfy.babelfy(fixedText, Language.valueOf(lang));
+			   List<SemanticAnnotation> bfyAnnotations = bfy.babelfy(fixedText, Language.valueOf(lang));
 				for (SemanticAnnotation annotation : bfyAnnotations) {
-					/*If is necesary to split the input text the disambiguated word is frag
-				    String frag = inputText.substring(annotation.getCharOffsetFragment().getStart(),
-				        annotation.getCharOffsetFragment().getEnd() + 1); */
-					returnValue.add(new Pair<String,String>(annotation.getBabelSynsetID(),
-						fixedText.substring(annotation.getCharOffsetFragment().getStart(),
-										        annotation.getCharOffsetFragment().getEnd() + 1)
-						));
-				}
-			return returnValue;
+					 int start=annotation.getCharOffsetFragment().getStart();
+					 int end=annotation.getCharOffsetFragment().getEnd();
+					 double score=annotation.getGlobalScore();
+					 String synsetId = annotation.getBabelSynsetID();
+					 String text=fixedText.substring(start, end+1);
+					 
+					 if (nGrams.size()==0){ //If this anotation is the first i have ever received
+					 	nGrams.add(new BabelfyEntry(start,end,score,synsetId,text)); 
+						continue;
+					 }
 
-				    
+                //This is a sequential search to find previous synsets that are connected with the current one
+					 int pos=0;
+					 BabelfyEntry prevAnot=nGrams.get(pos);
+					 for (;!(start>=prevAnot.getStartIdx()&&end<=prevAnot.getEndIdx()) && //The current anotation is included in other previous one
+						    !(prevAnot.getStartIdx()>=start&&prevAnot.getEndIdx()<=end) && //A previous anotation is included in the current one
+							 pos<nGrams.size()-1
+							;prevAnot=nGrams.get(pos++));
+					 
+					 if (start>=prevAnot.getStartIdx()&&end<=prevAnot.getEndIdx()){ //The current anotation is included in other previous one
+						 if (start==prevAnot.getStartIdx() && end==prevAnot.getEndIdx() && score>prevAnot.getScore()) nGrams.set(pos,new BabelfyEntry(start,end,score,synsetId,text));
+					 }else if (prevAnot.getStartIdx()>=start&&prevAnot.getEndIdx()<=end) { //A previous anotation is included in the current one
+						 nGrams.set(pos,new BabelfyEntry(start,end,score,synsetId,text));
+					 }else nGrams.add(new BabelfyEntry(start,end,score,synsetId,text)); //it it not related to nothing previous
 				}
-			 
+				
+ 			   //The value that will be returned
+ 			   ArrayList<Pair<String,String>> returnValue=new ArrayList<Pair<String,String>>();				
+			   for (BabelfyEntry entry:nGrams) returnValue.add(new Pair<String,String>(entry.getSynsetId(), entry.getText()));
+			   return returnValue;
+		}
+}
+
+/**
+  * This class is to represent a babelfy Semantic annotation with all relevant attributes to made 
+  * intensive searches and discard the irrelevant information achieved by Babelfy
+  */
+class BabelfyEntry {
+private int startIdx;
+private int endIdx;
+private double score;
+private String synsetId;
+private String text;
+
+/**
+* No args constructor
+*/
+public BabelfyEntry() {
+}
+
+/**
+* Constructor that stablish all attributes of a BabelfyEntry
+* @param endIdx The last index of the entry
+* @param synsetId The synset ID
+* @param score The score
+* @param startIdx The start index of an entry
+* @param text The text of an entry
+*/
+public BabelfyEntry(int startIdx, int endIdx, Double score, String synsetId, String text) {
+this.startIdx = startIdx;
+this.endIdx = endIdx;
+this.score = score;
+this.synsetId = synsetId;
+this.text = text;
+}
+
+/**
+  * Returns the start index of an entry
+  * @return The start index of an entry
+  */
+public int getStartIdx() {
+return startIdx;
+}
+
+/**
+  * Stablish the start index of an entry
+  * @param startIdx The start index of an entry  
+  */
+public void setStartIdx(int startIdx) {
+this.startIdx = startIdx;
+}
+
+/**
+  * Return the end index for an entry
+  * @return he last index of the entry
+  */
+public int getEndIdx() {
+return endIdx;
+}
+
+/**
+  * Stablish the end index for an entry
+  * @param endIdx The last index of the entry
+  */
+public void setEndIdx(int endIdx) {
+this.endIdx = endIdx;
+}
+
+/**
+  * Returns the score of an entry
+  * @return the score of an entry
+  */
+public double getScore() {
+return score;
+}
+
+/**
+  * Change the score of an entry
+  * @param score the score of the entry
+  */
+public void setScore(double score) {
+this.score = score;
+}
+
+/**
+  * Returns the synsetId for the entry
+  * @return the synsetId for the entry
+  */
+public String getSynsetId() {
+return synsetId;
+}
+
+/**
+  * Stablish the synsetId for the entry
+  * @param synsetID the synsetId for the entry
+  */
+public void setSynsetId(String synsetId) {
+this.synsetId = synsetId;
+}
+
+/**
+  * Returns the text for an entrty
+  * @return the text for the entry
+  */
+public String getText(){
+	return this.text;
+}
+
+/**
+  * Stablish the text for an entry
+  * @param text The text for the entry
+  */
+public void setText(String text){
+	this.text=text;
+}
 
 }
