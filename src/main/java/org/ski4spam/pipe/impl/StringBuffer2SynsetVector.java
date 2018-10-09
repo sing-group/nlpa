@@ -3,7 +3,7 @@ package org.ski4spam.pipe.impl;
 import java.util.HashSet;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +16,7 @@ import org.ski4spam.util.unmatchedtexthandler.ObfuscationHandler;
 import org.ski4spam.util.unmatchedtexthandler.TyposHandler;
 import org.ski4spam.util.unmatchedtexthandler.UnmatchedTextHandler;
 import org.ski4spam.util.unmatchedtexthandler.UrbanDictionaryHandler;
+import org.ski4spam.util.Dictionary;
 
 import org.ski4spam.util.BabelUtils;
 
@@ -32,10 +33,13 @@ import org.apache.logging.log4j.Logger;
 @TransformationPipe()
 public class StringBuffer2SynsetVector extends Pipe {
    
+	/**
+	  * For loggins purposes
+	  */
 	private static final Logger logger = LogManager.getLogger(StringBuffer2SynsetVector.class);
 
     /**
-     * UnmatchedTextHandlers
+     * An array of UnmatchedTextHandlers to fix incorrect text fragments
      */
     UnmatchedTextHandler vUTH[] = {new UrbanDictionaryHandler(), new TyposHandler(), new ObfuscationHandler()};
 
@@ -48,46 +52,43 @@ public class StringBuffer2SynsetVector extends Pipe {
     public Class getOutputType() {
         return SynsetVector.class;
     }
-	
-	/**
-	  * The dictionary to store all synsets seen in any text
-	  */
-	HashSet<String> dict;
-	
+		
 	/**
 	  * Create the pipe and initialize the synset dictionary. Please note that the synset dictionary
 	  * can be achieved by using the corresponding getter.
 	  **/
 	public StringBuffer2SynsetVector(){
-		dict=new HashSet<String>();
 
 	}
 	
-	private final String acceptedCharOnBeggining="¿¡";
-	private final String acceptedCharOnEnd=".,!?";
-	private final String acceptedCharOnMiddle="/-.,";
-		
 	/**
-	  * Create the pipe specifiying an external dictionary.
-	  * @param dict The dictionary used to compile the full list of synsets. 
+	  * List of puntuation marks acepted on the beggining of a word
 	  */
-	public StringBuffer2SynsetVector(HashSet<String> dict){
-		this.dict=dict;
-	}
+	private final String acceptedCharOnBeggining="¿¡";
 	
-	public HashSet<String> getDict(){
-		return dict;
-	}
+	/**
+	  * List of puntuation marks acepted on the end of a word
+	  */	
+	private final String acceptedCharOnEnd=".,!?";
+
+	/**
+	  * List of puntuation marks acepted on the middle of a word
+	  */	
+	private final String acceptedCharOnMiddle="/-.,";
 	
-	public void setDict(HashSet<String> dict){
-		this.dict=dict;
-	}		
-	
-	private Vector<Pair<String,String>> computeUnmatched(String str, String lang){
+
+   /**
+		* This method find fagments in text (str) thar are incorrect. 
+		* @param str The original text
+		* @param lang The language of the original text
+		* @return A vector of pairs (T,R) where T is the incorrect fragment and R will 
+		*         be the replacement (null now)
+		*/	
+	private ArrayList<Pair<String,String>> computeUnmatched(String str, String lang){
 		StringTokenizer st=new StringTokenizer(str," \t\n\r\u000b\f");
 		
 		//The value that will be returned
-		Vector<Pair<String,String>> returnValue=new Vector<Pair<String,String>>();
+		ArrayList<Pair<String,String>> returnValue=new ArrayList<Pair<String,String>>();
 		
 		while(st.hasMoreTokens()){
 			String current=st.nextToken();
@@ -141,31 +142,52 @@ public class StringBuffer2SynsetVector extends Pipe {
         }
         return returnValue;
     }
-	
+
+   /**
+	  * Try to fix terms that are incorrectly written (and are not found in Wordnet)
+	  * The original text should be fixed according with the replacements made
+	  * @param originalText The originalText to fix
+	  * @param unmatched A list of text fragments that should be tryed to fix. The text fragments are
+	  *         in the form of a pair (T,R) where T is the original fragment ant R the replacement 
+	  *         (null originally). This method should fill R with the suggested replacement
+	  * @return A string containing the original text fixed
+	  */	
 	private String handleUnmatched(String originalText,List<Pair<String,String>> unmatched, String lang){
 		//Implement the UnmatchedTextHandler interface and three specific implementations that are:
 		//+ UrbanDictionaryHandler
 		//+ TyposHandler
 		//+ ObfuscationHandler
+		String returnValue=new String(originalText);
 		
 		//The replacement should be done here
 		//DONE develop these things (Moncho)
 		for (Pair<String,String> current:unmatched){
 		    for (int i=0;current.getObj2()==null && i<vUTH.length;i++) vUTH[i].handle(current, lang);
-            if (current.getObj2()!=null) originalText.replace(current.getObj1(),current.getObj2());
+            if (current.getObj2()!=null) returnValue.replace(current.getObj1(),current.getObj2());
 		}		
 		
-		return originalText;
+		return returnValue;
 	}
 	
-	private Vector<Pair<String,String>> buildSynsetVector(String fixedText, String lang){
-		Vector<Pair<String,String>> returnValue=new Vector<Pair<String,String>>();
-		
+	/**
+		* Create a synsetVector from text
+		* @param fixedText The text to transform into a synset vector
+		* @param lang The language in which the original text is written
+		* @return A vector of synsets. Each synset is represented in a pair (S,T) where 
+		          S stands for the synset ID and T for the text that matches this 
+		          synset ID
+		*/
+	private ArrayList<Pair<String,String>> buildSynsetVector(String fixedText, String lang){
 		//Call Babelfy api to transform the string into a vector of sysnsets. 
 		//The fisrt string in the pair is the synsetID from babelnet
 		//The second string is the matched text
 		//The dictionary (dict) should be updated by adding each detected synset in texts.
-		//TODO implement the transformation
+
+      //Query Babelnet
+		ArrayList<Pair<String,String>> returnValue=BabelUtils.getDefault().buildSynsetVector(fixedText,lang);
+		
+		//Update dictionaries
+		for (Pair<String,String> current:returnValue) Dictionary.getDictionary().add(current.getObj1());
 		
 		return returnValue;
 	}
