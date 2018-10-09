@@ -212,11 +212,12 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
         try {
             if (isFirst) {
                 outputFile = new BufferedWriter(new FileWriter(output));
-                this.outputFile.write(getCSVHeader(carrier) + "\n");
+                outputFile.write(getCSVHeader(carrier) + "\n");
                 isFirst = false;
             }
-
-            outputFile.flush();
+				
+            outputFile.write(toCSV(carrier) + "\n");
+            
             if (isLast()) {
                 outputFile.close();
             }
