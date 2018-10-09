@@ -95,8 +95,8 @@ public class Main {
             new GuessLanguageFromStringBufferPipe(),
             new TeeCSVFromStringBufferPipe("output.csv", true),
             new StringBuffer2SynsetVector(),
-        //new SynsetVector2SynsetFeatureVector(SynsetVectorGroupingStrategy.FREQUENCY)
-        //new TeeCSVFromSynsetFeatureVector()
+            new SynsetVector2SynsetFeatureVector(SynsetVectorGroupingStrategy.FREQUENCY),
+            new TeeCSVFromSynsetFeatureVector("outputsyns.csv")
         });
 
         instances = InstanceListUtils.dropInvalid(instances);
