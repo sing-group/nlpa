@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.bdp4j.ia.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.ski4spam.ia.types.SynsetFeatureVector;
-import org.ski4spam.util.Dictionary;
+import org.ski4spam.util.SynsetDictionary;
 import static org.ski4spam.util.CSVUtils.getCSVSep;
 
 import org.bdp4j.pipe.PipeParameter;
@@ -152,7 +152,7 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
 	  * @return the CSV header for representing all instances
      */
     public String getCSVHeader(Instance carrier) {
-        Dictionary synsetsDictionary = Dictionary.getDictionary();
+        SynsetDictionary synsetsDictionary = SynsetDictionary.getDictionary();
 
         StringBuilder csvHeader = new StringBuilder();
         csvHeader.append("id").append(getCSVSep());
@@ -177,7 +177,7 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
 	  * @return The string representation of the instance 
      */
     public String toCSV(Instance carrier) {
-        Dictionary synsetsDictionary = Dictionary.getDictionary();
+        SynsetDictionary synsetsDictionary = SynsetDictionary.getDictionary();
 		  SynsetFeatureVector synsetFeatureVector=(SynsetFeatureVector)carrier.getData();
 
         StringBuilder csvBody = new StringBuilder();

@@ -16,7 +16,7 @@ import org.ski4spam.util.unmatchedtexthandler.ObfuscationHandler;
 import org.ski4spam.util.unmatchedtexthandler.TyposHandler;
 import org.ski4spam.util.unmatchedtexthandler.UnmatchedTextHandler;
 import org.ski4spam.util.unmatchedtexthandler.UrbanDictionaryHandler;
-import org.ski4spam.util.Dictionary;
+import org.ski4spam.util.SynsetDictionary;
 
 import org.ski4spam.util.BabelUtils;
 
@@ -187,7 +187,7 @@ public class StringBuffer2SynsetVector extends Pipe {
 		ArrayList<Pair<String,String>> returnValue=BabelUtils.getDefault().buildSynsetVector(fixedText,lang);
 		
 		//Update dictionaries
-		for (Pair<String,String> current:returnValue) Dictionary.getDictionary().add(current.getObj1());
+		for (Pair<String,String> current:returnValue) SynsetDictionary.getDictionary().add(current.getObj1());
 		
 		return returnValue;
 	}
