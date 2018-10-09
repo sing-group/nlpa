@@ -193,17 +193,15 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
 	        }
 		  }		  
 		  
-        for (String synsetId : synsetsDictionary) {
-            csvBody.append(synsetId).append(getCSVSep());
-							
+        for (String synsetId : synsetsDictionary) {			
             Double frequency = synsetFeatureVector.getFrequencyValue(synsetId);
             if (frequency > 0) {
                 csvBody.append(frequency.toString()).append(getCSVSep());
             } else {
                 csvBody.append("0").append(getCSVSep());
             }
-            csvBody.append(target.toString()).append(getCSVSep());
         }
+		  csvBody.append(target.toString()).append(getCSVSep());
         return csvBody.toString();
     }
 
