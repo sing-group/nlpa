@@ -63,10 +63,14 @@ public class BabelUtils {
 			* @return true if the term is included in Babelnet ontological dictionary
 			*/
 		 public boolean isTermInBabelNet(String term, String lang){
+			 if (lang.trim().equalsIgnoreCase("UND")) {
+				 logger.error("Unable to query Babelnet because language is not found.");
+				 return false;
+			 }
 			 int resultNo=0;
 			 try{
 				  BabelNetQuery query = new BabelNetQuery.Builder(term)
-					 	.from(Language.valueOf(lang)) //TODO: compile language from Propoerties
+					 	.from(Language.valueOf(lang)) 
 					 	.build();
 				  List<BabelSynset> byl = bn.getSynsets(query);
 				  resultNo=byl.size();
@@ -85,8 +89,13 @@ public class BabelUtils {
 			          synset ID
 			*/
 		 public ArrayList<Pair<String,String>> buildSynsetVector(String fixedText, String lang){
-			//The value that will be returned
-			ArrayList<Pair<String,String>> returnValue=new ArrayList<Pair<String,String>>();
+ 			//The value that will be returned
+ 			ArrayList<Pair<String,String>> returnValue=new ArrayList<Pair<String,String>>();
+
+			 if (lang.trim().equalsIgnoreCase("UND")) {
+				 logger.error("Unable to query Babelfy because language is not found.");
+				 return returnValue;
+			 }			 
 				
 			List<SemanticAnnotation> bfyAnnotations = bfy.babelfy(fixedText, Language.valueOf(lang));
 				for (SemanticAnnotation annotation : bfyAnnotations) {
