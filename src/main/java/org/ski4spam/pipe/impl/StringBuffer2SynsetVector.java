@@ -44,7 +44,7 @@ public class StringBuffer2SynsetVector extends Pipe {
     /**
      * An array of UnmatchedTextHandlers to fix incorrect text fragments
      */
-    UnmatchedTextHandler vUTH[] = {new UrbanDictionaryHandler(), new TyposHandler(), new ObfuscationHandler()};
+    UnmatchedTextHandler vUTH[] = {new UrbanDictionaryHandler(), /*new TyposHandler(), */new ObfuscationHandler()};
 
     /**
 		* The name of the property where the language is stored
