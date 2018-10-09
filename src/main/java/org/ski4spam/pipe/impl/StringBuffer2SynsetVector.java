@@ -245,6 +245,8 @@ public class StringBuffer2SynsetVector extends Pipe {
 		
 		carrier.setData(sv);
 		
+		logger.info("Instance processed: "+carrier.getName());
+		
 		return carrier;
 	}
 }
