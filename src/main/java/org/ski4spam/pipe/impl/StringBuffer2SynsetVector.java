@@ -224,7 +224,7 @@ public class StringBuffer2SynsetVector extends Pipe {
 		
 		//Invalidate the instance if the language is not present
 		//We cannot correctly represent the instance if the language is not present
-		if (carrier.getProperty(langProp)==null || carrier.getProperty(langProp).equalsIgnoreCase("UND")){
+		if (carrier.getProperty(langProp)==null || ((String)carrier.getProperty(langProp)).equalsIgnoreCase("UND")){
 			logger.error("Instance "+carrier.getName()+" cannot be transformed into a SynsetVector because language could not be determined. It has been invalidated.");
 			carrier.invalidate();
 			return carrier;
