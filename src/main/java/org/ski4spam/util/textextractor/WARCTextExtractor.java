@@ -18,19 +18,46 @@ import org.archive.io.warc.WARCReaderFactory;
 import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 
+/** 
+  * A TextExtractor used to extract text from WARC files 
+  * Files using this TextExtractor should contain only one website
+  */
 public class WARCTextExtractor extends TextExtractor{
+	
+	/**
+	  * A static instance of the TexTextractor to implement a singleton pattern
+	  */
 	static TextExtractor instance=null;
+	
+	/**
+	  * Pattern to identify the charset
+	  */
 	private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
+	
+	/**
+	  * For logging purposes
+	  */	
 	private static final Logger logger = LogManager.getLogger(WARCTextExtractor.class);
 	
+	/**
+	  * Private default constructor
+	  */
 	private WARCTextExtractor(){
 		
 	}
 	
+   /**
+	* Retrieve the extensions that can process this TextExtractor
+	* @return An array of Strings containing the extensions of files that this TextExtractor can handle
+	*/	
 	public static String[] getExtensions(){
 		return new String[]{"warc"};
 	}
-	
+
+   /**
+	* Return an instance of this TextExtractor
+	* @return an instance of this TextExtractor
+	*/	
 	public static TextExtractor getInstance(){
 		if (instance==null) {
 			instance=new WARCTextExtractor();
@@ -38,6 +65,11 @@ public class WARCTextExtractor extends TextExtractor{
 		return instance;
 	}
 	
+	/**
+	  * Determines the charset from the ContentType header 
+	  * @param contentType the ContentType header
+	  * @return A string containing the charset of the text
+	  */
 	private String getCharsetFromContentType(String contentType) {
       if (contentType == null)
         return null;
@@ -49,8 +81,13 @@ public class WARCTextExtractor extends TextExtractor{
       return null;
     }
 
-
-public StringBuffer extractText(File f){
+    /**
+		* Extracts text from a given file
+		* @param f The file where the text is included
+		* @return A StringBuffer with the extracted text
+		*/
+	 @Override
+    public StringBuffer extractText(File f){
     
     StringBuffer sbResult=new StringBuffer();
     ArchiveRecord ar = null;

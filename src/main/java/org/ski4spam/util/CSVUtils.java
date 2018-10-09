@@ -7,17 +7,39 @@ package org.ski4spam.util;
 
 import org.apache.commons.text.StringEscapeUtils;
 
+import org.ski4spam.util.Configuration;
+
 /**
- *
+ * Several utilities to create and manage CSV files
  * @author María Novo
+ * @author José Ramón Méndez
  */
 public class CSVUtils {
     
-    public static final String CSV_SEP = ";";
+	/**
+	  * The configured CSV Separator
+	  */
+    private static String CSVSep = null;
     
-    public static String escapeCsv(String str){
+	 /**
+		* Escape a CSV String to allow including texts into cells
+		* @param str The string to scape
+		* @return the scaped string
+		*/
+    public static String escapeCSV(String str){
         StringBuilder str_scape = new StringBuilder();
-        str_scape.append(StringEscapeUtils.escapeCsv(str.replaceAll(";", "\\;"))).append(CSV_SEP);
+        str_scape.append(StringEscapeUtils.escapeCsv(str.replaceAll(";", "\\;"))).append(CSVSep);
         return str_scape.toString();
     }
+	 
+	 /**
+		* Returns the CSV separator configured
+		* @return the configured separator for CSV files
+		*/
+	 public static String getCSVSep(){
+		 if (CSVSep==null){
+			 CSVSep=Configuration.getSystemConfig().getConfigOption("csv", "CSVSep");
+		 }
+		 return CSVSep;
+	 }
 }

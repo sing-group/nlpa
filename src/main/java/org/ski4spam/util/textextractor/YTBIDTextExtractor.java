@@ -16,24 +16,47 @@ import javax.json.JsonReader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.ini4j.Wini;
 
 import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 
+import org.ski4spam.util.Configuration;
 
+/** 
+  * A TextExtractor used to extract text from youtube comments identifier
+  * Files using this TextExtractor should contain only a identifier of a 
+  * youtube comment
+  */
 public class YTBIDTextExtractor extends TextExtractor {
+	/**
+	  * For logging purposes
+	  */
     private static final Logger logger = LogManager.getLogger(YTBIDTextExtractor.class);
+	
+	/**
+	  * A static instance of the TexTextractor to implement a singleton pattern
+	  */
     static TextExtractor instance = null;
 
+	/**
+	  * Private default constructor
+	  */
     private YTBIDTextExtractor() {
 
     }
 
+    /**
+		* Retrieve the extensions that can process this TextExtractor
+		* @return An array of Strings containing the extensions of files that this TextExtractor can handle
+		*/
     public static String[] getExtensions() {
         return new String[] {"ytbid"};
     }
 
+    /**
+		* Return an instance of this TextExtractor
+		* @return an instance of this TextExtractor
+		*/
     public static TextExtractor getInstance() {
         if (instance == null) {
             instance = new YTBIDTextExtractor();
@@ -41,6 +64,12 @@ public class YTBIDTextExtractor extends TextExtractor {
         return instance;
     }
 
+    /**
+		* Extracts text from a given file
+		* @param file The file where the text is included
+		* @return A StringBuffer with the extracted text		 
+		*/
+	 @Override
     public StringBuffer extractText(File file) {
         //Achieving the youtube id from the given file.
         String youtubeId;
@@ -55,18 +84,8 @@ public class YTBIDTextExtractor extends TextExtractor {
             logger.error("IO Exception caught / " + e.getMessage() + "Current youtube: " + file.getAbsolutePath());
             return null; //Return a null will cause a fuerther invalidation of the instance
         }
-        // Setting up the tokens config based on the .ini file on config/ folder.
-        Wini ini = null;
-        try {
-            ini = new Wini(new File("config/configurations.ini"));
-        } catch (IOException e) {
-            logger.error("IO Exception caught / " + e.getMessage());
-        }
-        
-        String apiKey;
-        assert ini != null;
-        apiKey = ini.get("youtube", "APIKey");
-        
+
+		  String apiKey =  Configuration.getSystemConfig().getConfigOption("youtube", "APIKey");
         
         //Extracting and returning the youtube text or error if not available.
         try {

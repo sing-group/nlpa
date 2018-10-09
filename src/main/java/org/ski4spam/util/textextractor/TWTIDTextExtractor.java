@@ -9,27 +9,54 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ski4spam.util.TwitterConfigurator;
 
+/**
+  * A TextExtractor to extract text from tweets. The files that handle this TextExtractor
+  * should contain only the tweet id of the desired twitter. Please remenber that storing
+  * tweets is not legal
+  */
 public class TWTIDTextExtractor extends TextExtractor {
+	/**
+	  * For loging purposes
+	  */ 
     private static final Logger logger = LogManager.getLogger(TWTIDTextExtractor.class);
+	
+	/**
+	  * A static instance of the TexTextractor to implement a singleton pattern
+	  */
     private static TextExtractor instance = null;
-
+	 
+ 	/**
+ 	  * Private default constructor
+ 	  */
     private TWTIDTextExtractor() {
 
     }
 
+    /**
+		* Retrieve the extensions that can process this TextExtractor
+		* @return An array of Strings containing the extensions of files that this TextExtractor can handle
+		*/
     public static String[] getExtensions() {
         return new String[]{"twtid"};
     }
 	
-	
-
+    /**
+		* Return an instance of this TextExtractor
+		* @return an instance of this TextExtractor
+		*/
     public static TextExtractor getInstance() {
         if (instance == null) {
             instance = new TWTIDTextExtractor();
         }
         return instance;
     }
-
+	 
+    /**
+		* Extracts text from a given file
+		* @param file The file where the text is included
+		* @return A StringBuffer with the extracted text		 
+		*/
+	 @Override
     public StringBuffer extractText(File file) {
         //Achieving the tweet id from the given file.
         String tweetId;

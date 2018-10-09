@@ -1,7 +1,5 @@
 package org.ski4spam.pipe.impl;
 
-import static org.ski4spam.util.CSVUtils.CSV_SEP;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Set;
@@ -11,7 +9,8 @@ import org.apache.logging.log4j.Logger;
 import org.bdp4j.ia.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TeePipe;
-import org.ski4spam.util.CSVUtils;
+import static org.ski4spam.util.CSVUtils.getCSVSep;
+import static org.ski4spam.util.CSVUtils.escapeCSV;
 
 /**
  * This pipe parses Instances to csv format. It can be for showing it on
@@ -81,12 +80,12 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
     public static String getCSVHeader(boolean withData, Set<String> propertyList) {
         StringBuilder builder = new StringBuilder();
         
-        builder.append("id").append(CSV_SEP);
+        builder.append("id").append(getCSVSep());
         
-        if (withData) builder.append("data").append(CSV_SEP);
+        if (withData) builder.append("data").append(getCSVSep());
         
         for (String key : propertyList) {
-            builder.append(key).append(CSV_SEP);
+            builder.append(key).append(getCSVSep());
         }
         
         builder.append("target");
@@ -106,11 +105,11 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
         Object data = carrier.getData();
         Object target = carrier.getTarget();
         
-        builder.append(name).append(CSV_SEP);
-        if (withData) builder.append(CSVUtils.escapeCsv(data.toString()));
+        builder.append(name).append(getCSVSep());
+        if (withData) builder.append(escapeCSV(data.toString()));
         
         for (Object value: carrier.getValueList()){
-            builder.append(value).append(CSV_SEP);
+            builder.append(value).append(getCSVSep());
         }
         builder.append(target.toString());
         
