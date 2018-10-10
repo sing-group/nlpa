@@ -10,6 +10,7 @@ package org.ski4spam.util;
   * <li> "true" for true and "false" for false </li>
   * <li> "on" for true and "off" for false </li>
   * </ul>
+  * @author José Ramón Méndez
   */
 public class EBoolean{
 	/**

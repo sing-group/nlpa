@@ -26,6 +26,8 @@ import org.ski4spam.util.Configuration;
   * A TextExtractor used to extract text from youtube comments identifier
   * Files using this TextExtractor should contain only a identifier of a 
   * youtube comment
+  * @author Rosalía Laza
+  * @author Reyes Pavón
   */
 public class YTBIDTextExtractor extends TextExtractor {
 	/**

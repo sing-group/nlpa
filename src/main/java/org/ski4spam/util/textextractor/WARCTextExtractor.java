@@ -21,6 +21,8 @@ import com.ibm.icu.text.CharsetMatch;
 /** 
   * A TextExtractor used to extract text from WARC files 
   * Files using this TextExtractor should contain only one website
+  * @author Rosalía Laza
+  * @author Reyes Pavón
   */
 public class WARCTextExtractor extends TextExtractor{
 	

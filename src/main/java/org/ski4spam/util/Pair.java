@@ -3,8 +3,9 @@ package org.ski4spam.util;
 import java.io.Serializable;
 
 /**
+ * A pair of generic objects implemented by using Java Generics
  * @since JDK 1.5
- * @author Jos� Ram�n M�ndez Reboredo
+ * @author José Ramón Méndez
  * Implementa un par de objetos
  * @param <T1> Tipo del primer objeto
  * @param <T2> Tipo del segundo objeto
