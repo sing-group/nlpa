@@ -6,6 +6,7 @@ import java.io.File;
   * Files using this TextExtractor should contain the original 
   * representation of SMS 
   * TODO: Implement this
+  * @author José Ramón Méndez
   */
 public class SMSTextExtractor extends TextExtractor{
 	/**

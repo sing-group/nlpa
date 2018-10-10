@@ -13,6 +13,7 @@ import org.ski4spam.util.TwitterConfigurator;
   * A TextExtractor to extract text from tweets. The files that handle this TextExtractor
   * should contain only the tweet id of the desired twitter. Please remenber that storing
   * tweets is not legal
+  * @author Yeray Lage
   */
 public class TWTIDTextExtractor extends TextExtractor {
 	/**

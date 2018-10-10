@@ -27,6 +27,7 @@ import org.ski4spam.util.Configuration;
   * A TextExtractor used to extract text from emails represented in its original format (.eml)
   * Files using this TextExtractor should contain the original representation in the format
   * defined by RFC 2822 (https://tools.ietf.org/html/rfc2822)
+  * @author José Ramón Méndez
   */
 public class EMLTextExtractor extends TextExtractor{
 	/**

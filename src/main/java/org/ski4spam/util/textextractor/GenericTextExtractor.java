@@ -15,6 +15,7 @@ import com.ibm.icu.text.CharsetMatch;
   * A TextExtractor used to extract text from text/plain files
   * It is currrently used to handle SMS texts and other plain texts
   * Files using this TextExtractor should contain only text 
+  * @author José Ramón Méndez
   */
 public class GenericTextExtractor extends TextExtractor {
 	/**
