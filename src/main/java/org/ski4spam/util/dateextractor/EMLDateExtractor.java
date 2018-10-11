@@ -11,20 +11,41 @@ import javax.mail.internet.MimeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+  * This is a DateExtracfor for EML files (RFC 2822)
+  * <a href="https://tools.ietf.org/html/rfc2822">https://tools.ietf.org/html/rfc2822</a>
+  * @author José Ramón Méndez
+  */ 
 public class EMLDateExtractor extends DateExtractor {
+	/**
+	  * For loging purposes
+	  */
 	private static final Logger logger = LogManager.getLogger(EMLDateExtractor.class);
 
+	/**
+	  * An instance to implement a singleton pattern
+	  */
     static DateExtractor instance = null;
 
-	
+	/**
+	   * The default constructor (converted to private to implement singleton)
+	   */
     private EMLDateExtractor() {
 
     }
 
+    /**
+		* Retrieve a list of file extensions that can be processed
+		* @return an array of file extensions that can be handled with this DateExtractor
+		*/
     public static String[] getExtensions() {
         return new String []{"eml"};
     }
 
+    /**
+		* Retrieve an instance of the current DateExtractor
+		* @return an instance of the current DateExtractor
+		*/
     public static DateExtractor getInstance() {
         if (instance == null) {
             instance = new EMLDateExtractor();
@@ -32,6 +53,12 @@ public class EMLDateExtractor extends DateExtractor {
         return instance;
     }
 
+ 	/**
+ 	  * Finds the content date from a file
+ 	  * @param f The file to use to retrieve the content date
+	  * @return the date of the content
+ 	  */
+		@Override		
     public Date extractDate(File f) {
 		Date returnValue=null;
 		

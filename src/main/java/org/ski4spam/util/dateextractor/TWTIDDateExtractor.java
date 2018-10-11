@@ -13,21 +13,46 @@ import org.ski4spam.util.TwitterConfigurator;
 import twitter4j.Status;
 import twitter4j.TwitterFactory;
 
+/**
+  * This is a DateExtracfor for twtid files.
+  * These files should contain only a tweet Id
+  * @author Yeray Lage
+  */ 
 public class TWTIDDateExtractor extends DateExtractor {
+	/**
+	  * For loging purposes
+	  */
     private static final Logger logger = LogManager.getLogger(TWTIDDateExtractor.class);
+	
+	/**
+	  * An instance to implement a singleton pattern
+	  */
     private static DateExtractor instance = null;
+	
+	/**
+	  * A instance of TwitterFactory
+	  */
     private TwitterFactory tf = TwitterConfigurator.getTwitterFactory();
 
-    private String tweetId;
-
+	/**
+	   * The default constructor (converted to private to implement singleton)
+	   */
     private TWTIDDateExtractor() {
 
     }
-
+	 
+    /**
+		* Retrieve a list of file extensions that can be processed
+		* @return an array of file extensions that can be handled with this DateExtractor
+		*/
     public static String[] getExtensions() {
         return new String[] {"twtid"};
     }
-
+	 
+    /**
+		* Retrieve an instance of the current DateExtractor
+		* @return an instance of the current DateExtractor
+		*/
     public static DateExtractor getInstance() {
         if (instance == null) {
             instance = new TWTIDDateExtractor();
@@ -35,7 +60,15 @@ public class TWTIDDateExtractor extends DateExtractor {
         return instance;
     }
 
+  	/**
+  	  * Finds the content date from a file
+  	  * @param file The file to use to retrieve the content date
+ 	  * @return the date of the content
+  	  */
+		@Override
     public Date extractDate(File file) {
+	     String tweetId;
+		  
         //Achieving the tweet id from the given file.
         try {
             FileReader f = new FileReader(file);
