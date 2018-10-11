@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 /** 
   * This class encapsulates all required information to support Babelfy and Babelnet queryies
+  * @author Iñaki Velez
   */
 public class BabelUtils {
 

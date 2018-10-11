@@ -45,7 +45,7 @@ public class EMLTextExtractor extends TextExtractor{
 	  */
 	private static String cfgPartSelectedOnAlternative="text/plain";
 	
-	static {
+	static { //Load EML configuration
 		cfgPartSelectedOnAlternative=Configuration.getSystemConfig().getConfigOption("eml", "PartSelectedOnMPAlternative");		
 	}
 	
