@@ -15,18 +15,42 @@ import org.archive.io.ArchiveRecord;
 import org.archive.io.warc.WARCReader;
 import org.archive.io.warc.WARCReaderFactory;
 
+/**
+  * A DateExtractor for WarcFiles. In this case the data extracted corresponds to 
+  * the download date
+  * @author Reyes Pavón
+  * @author Rosalía Laza
+  */
 public class WARCDateExtractor extends DateExtractor {
+	/**
+	  * For loging purposes
+	  */	
 	private static final Logger logger = LogManager.getLogger(WARCDateExtractor.class);
+	
+	/**
+	  * An instance to implement a singleton pattern
+	  */	
     static DateExtractor instance = null;
 
+	/**
+	   * The default constructor (converted to private to implement singleton)
+	   */
     private WARCDateExtractor() {
 
     }
 
+    /**
+		* Retrieve a list of file extensions that can be processed
+		* @return an array of file extensions that can be handled with this DateExtractor
+		*/
     public static String[] getExtensions() {
         return new String[] {"warc"};
     }
 
+    /**
+		* Retrieve an instance of the current DateExtractor
+		* @return an instance of the current DateExtractor
+		*/
     public static DateExtractor getInstance() {
         if (instance == null) {
             instance = new WARCDateExtractor();
@@ -34,6 +58,12 @@ public class WARCDateExtractor extends DateExtractor {
         return instance;
     }
 
+  	/**
+  	  * Finds the content date from a file
+  	  * @param f The file to use to retrieve the content date
+ 	  * @return the date of the content
+  	  */
+ 		@Override	
    public Date extractDate(File f) {
         Date sbResult = null;
         ArchiveRecord ar = null;

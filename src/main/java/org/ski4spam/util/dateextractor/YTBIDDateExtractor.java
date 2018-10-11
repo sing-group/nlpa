@@ -20,19 +20,42 @@ import javax.json.JsonReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
+/**
+  * A DateExtractor for ytbid files (that stands for youtube comments)
+  * These files only contains the identifier of the youtube comment
+  * @author Reyes Pavón
+  * @author Rosalía Laza
+  */
 public class YTBIDDateExtractor extends DateExtractor {
+	/**
+	  * For loging purposes
+	  */	
 	private static final Logger logger = LogManager.getLogger(YTBIDDateExtractor.class);
+
+	/**
+	  * An instance to implement a singleton pattern
+	  */
     static DateExtractor instance = null;
 
+	/**
+	   * The default constructor (converted to private to implement singleton)
+	   */
     private YTBIDDateExtractor() {
 
     }
 
+    /**
+		* Retrieve a list of file extensions that can be processed
+		* @return an array of file extensions that can be handled with this DateExtractor
+		*/
     public static String[] getExtensions() {
         return new String[] {"ytbid"};
     }
 
+    /**
+		* Retrieve an instance of the current DateExtractor
+		* @return an instance of the current DateExtractor
+		*/
     public static DateExtractor getInstance() {
         if (instance == null) {
             instance = new YTBIDDateExtractor();
@@ -40,6 +63,12 @@ public class YTBIDDateExtractor extends DateExtractor {
         return instance;
     }
 
+  	/**
+  	  * Finds the content date from a file
+  	  * @param f The file to use to retrieve the content date
+ 	  * @return the date of the content
+  	  */
+ 		@Override
     public Date extractDate(File f) {
 		String youtubeId;
         Date dateResult = null;
