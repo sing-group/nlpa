@@ -19,7 +19,6 @@ build/
 nbproject/
 lib/nblibraries\.properties
 manifest\.mf
-*.json
 lib/CopyLibs/org-netbeans-modules-java-j2seproject-copylibstask\.jar
 dist/
 config/babelnet.var.properties
