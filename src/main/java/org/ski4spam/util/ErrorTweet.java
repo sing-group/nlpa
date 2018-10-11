@@ -41,5 +41,19 @@ public class ErrorTweet {
         return error;
     }
 	 
-	 //TODO: create setters
+	 /**
+		* Sets the error of the tweet
+		* @param error The error of the tweet
+		*/
+	 public void setError(String error){
+		 this.error=error;
+	 }
+	 
+	 /**
+		* Sets the tweetId for the current tweet
+		* @param tweetId the tweetId for the current tweet
+		*/
+	 public void setTweetId(Long tweetId){
+		 this.tweetId=tweetId;
+	 }
 }
