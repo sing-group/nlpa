@@ -162,7 +162,9 @@ public class StopWordFromStringBuffer extends Pipe {
             StringTokenizer st = new StringTokenizer(data, " \t\n\r\u000b\f");
             while (st.hasMoreTokens()) {
                 String current = st.nextToken();
-                if (!htStopwords.contains(lang + current)) {
+					 String currentFixed=(new String (current)).replaceAll("[^a-zA-Z0-9]", "");
+					 
+                if (!htStopwords.contains(lang + currentFixed)) {
                     newSb.append(current + " ");
                 }
             }

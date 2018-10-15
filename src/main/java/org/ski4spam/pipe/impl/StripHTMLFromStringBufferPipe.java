@@ -14,6 +14,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * This pipe drops HTML tags and changes entities by their corresponding character
@@ -111,7 +112,7 @@ public class StripHTMLFromStringBufferPipe extends Pipe {
 					Elements elements = doc.getAllElements();
 					for(Element element : elements) {
 					  for(TextNode node : element.textNodes()){
-					    newSb.append( node + "\n" );
+					    newSb.append( StringEscapeUtils.unescapeHtml4(node.text​()) + "\n" );
 					  }
 				    }
 
