@@ -24,6 +24,7 @@ public class UrbanDictionaryHandler extends UnmatchedTextHandler {
             String matchedString = getMatch(originalString);
             if (matchedString != null) {
                 text.setObj2(matchedString);
+                System.out.println("UrbanDictionaryHandler: " + text.getObj1() + " - " + text.getObj2());
             }
         }
     }
