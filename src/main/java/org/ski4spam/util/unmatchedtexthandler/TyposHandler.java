@@ -20,11 +20,14 @@ import pt.tumba.spell.SpellChecker;
 
 /**
  * Search words/text matches with two different tools:
- * <li>JLanguageTool:&nbsp;A tool that offers spell and grammar checking.</li>
- * <li>JaSpell:&nbsp;This tool is a Java spelling checking package./li>
+ * <ul>
+ * <li>JLanguageTool: A tool that offers spell and grammar checking.</li>
+ * <li>JaSpell: This tool is a Java spelling checking package.</li>
+ * </ul>
+ * @author María Novo
  */
 public class TyposHandler extends UnmatchedTextHandler {
-
+   
     private static final Logger logger = LogManager.getLogger(TyposHandler.class);
     private final static Map<String, Class<? extends Language>> LANGUAGE_CLASSES = new HashMap<>();
 
