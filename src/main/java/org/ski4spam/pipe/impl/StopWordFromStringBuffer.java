@@ -14,6 +14,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
+import javax.json.JsonString;
 
 import java.util.HashSet;
 import java.util.StringTokenizer;
@@ -74,7 +75,7 @@ public class StopWordFromStringBuffer extends Pipe {
                 JsonArray array = rdr.readArray();
 
                 for (JsonValue v : array) {
-                    htStopwords.add(lang + v.toString());
+                    htStopwords.add(lang + ((JsonString)v).getString());
                     //System.out.println("Adding: "+lang+((JsonString)v).getString());
                 }
             } catch (Exception e) {
@@ -163,10 +164,13 @@ public class StopWordFromStringBuffer extends Pipe {
             while (st.hasMoreTokens()) {
                 String current = st.nextToken();
 					 String currentFixed=(new String (current)).replaceAll("[^a-zA-Z0-9]", "");
-					 
+					 //System.out.print("Replacing "+current+" codified as (" + currentFixed +") by searching for "+lang+currentFixed+"...");
                 if (!htStopwords.contains(lang + currentFixed)) {
                     newSb.append(current + " ");
-                }
+						 //System.out.println("kept");						  
+                }/*else{
+						 System.out.println("dropped");
+                }*/
             }
             carrier.setData(newSb);
         }
