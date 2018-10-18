@@ -1,11 +1,13 @@
 package org.ski4spam.util.unmatchedtexthandler;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,15 +21,16 @@ import org.ski4spam.util.Pair;
 import pt.tumba.spell.SpellChecker;
 
 /**
- * Search words/text matches with two different tools:
+ * A class to get the match with the specific word from two different tools:
  * <ul>
  * <li>JLanguageTool: A tool that offers spell and grammar checking.</li>
  * <li>JaSpell: This tool is a Java spelling checking package.</li>
  * </ul>
+ *
  * @author María Novo
  */
 public class TyposHandler extends UnmatchedTextHandler {
-   
+
     private static final Logger logger = LogManager.getLogger(TyposHandler.class);
     private final static Map<String, Class<? extends Language>> LANGUAGE_CLASSES = new HashMap<>();
 
@@ -84,43 +87,67 @@ public class TyposHandler extends UnmatchedTextHandler {
         }
     }
 
+    /**
+     * Check if the lang exists in this api.
+     *
+     * @param lang
+     * @return True if the language exists, otherwise false.
+     */
     private static boolean hasLanguage(String lang) {
         return LANGUAGE_CLASSES.containsKey(lang);
     }
 
     @Override
+    /**
+     * This method search matches with two diferents tools: JLanguageTool and
+     * JSpellMatcher
+     *
+     * @param lang The language of the original string
+     * @param text Is a pair with the original text and the match with this
+     * text. If the second one doesn't exists, the value is null
+     *
+     */
     public void handle(Pair<String, String> text, String lang) {
+        String originalString = "";
         try {
 
-            String originalString = text.getObj1();
-            String replacementString = text.getObj2();
-            //originalString = originalString.replaceAll("\\.()¿?!¡;,<>\"", "");
+            originalString = text.getObj1().toLowerCase();
+            originalString = originalString.replaceAll("\\p{Punct}", "");
 
+            String replacementString = text.getObj2();
+            if (originalString.equals("watchvkqnmtwh0nu")) {
+                System.out.println("org.ski4spam.util.unmatchedtexthandler.TyposHandler.handle()");
+            }
             lang = lang.toLowerCase();
-            if (replacementString == null) {
-                String matchedString = getJLanguageToolMatch(originalString, lang);
-                
-                if (matchedString != null) {
-                    text.setObj2(matchedString);
-                } else {
-                    matchedString = getJaSpellMatch(originalString, lang);
+            try {
+                if (originalString != null && !originalString.equals("") && replacementString == null) {
+                    String matchedString = getJLanguageToolMatch(originalString, lang);
                     if (matchedString != null) {
                         text.setObj2(matchedString);
-                        System.out.println("JaSpellMatch: " + text.getObj1() + " - " + text.getObj2());
+                        //System.out.println("JLanguageToolMatch: " + originalString + "<<>>" + text.getObj2() + "<<");
+                    } else {
+                        matchedString = getJaSpellMatch(originalString, lang);
+                        if (matchedString != null) {
+                            text.setObj2(matchedString);
+                            //System.out.println("JaSpellMatch>>" + originalString + "<<>>" + text.getObj2() + "<<");
+                        }
                     }
                 }
+            } catch (NullPointerException ex) {
+                logger.error("ERROR" + Main.class.getName() + ". originalString = " + originalString + ":" + ex.getMessage());
             }
+
         } catch (Exception ex) {
-            logger.error("ERROR " + Main.class.getName() + ". " + ex.getMessage());
+            logger.error("ERROR" + Main.class.getName() + ". originalString = " + originalString + ":" + ex.getMessage());
         }
     }
 
     /**
-     * Return the word that matches with the parameter, using JLanguageTool
+     * Return match with the parameter, using JLanguageTool
      *
      * @param originalString Word to get match in resources files
-     * @return String who contains , if exists, the match word. In other case,
-     * return String. If there aren't matches, return null.
+     * @return String who contains , if exists, the match with the original
+     * string. In other case, return null.
      */
     private String getJLanguageToolMatch(String originalString, String lang) {
         try {
@@ -128,16 +155,9 @@ public class TyposHandler extends UnmatchedTextHandler {
                 JLanguageTool langTool = new JLanguageTool(getLanguage(lang));
                 try {
                     List<RuleMatch> matches = langTool.check(originalString, false, JLanguageTool.ParagraphHandling.NORMAL);
-                    originalString = originalString.replaceAll("\\p{Punct}","");
                     if (!matches.isEmpty()) {
-                        /* Valorar si compensa perder el tiempo en la comprobación */
-//                        if (matches.get(0).getMessage().equals("This sentence does not start with an uppercase letter")){
-//                            return originalString;
-//                        }
-                        
                         List matchesList = matches.get(0).getSuggestedReplacements();
                         if (!matchesList.isEmpty()) {
-                            System.out.println("JLanguageToolMatch: " +lang.toUpperCase()+" >>"+ originalString + "<>" + matchesList.get(0).toString().toLowerCase());
                             return matchesList.get(0).toString().toLowerCase();
                         }
                     } else {
@@ -145,24 +165,25 @@ public class TyposHandler extends UnmatchedTextHandler {
                     }
 
                 } catch (IOException ex) {
-                    logger.warn(Main.class.getName() + ". " + ex.getMessage());
+                    logger.error(Main.class.getName() + ". " + ex.getMessage());
                 }
             }
+            return null;
+
         } catch (ExceptionInInitializerError | NoClassDefFoundError ex) {
             logger.error("ERROR " + Main.class.getName() + ". getJLanguageToolMatch: " + ex.getMessage());
+            return null;
         }
-
-        return null;
     }
 
     /**
      * Return the word that matches with the parameter, using JaSpell
      *
      * @param originalString Word to get match in resources files
-     * @return String who contains , if exists, the match word. In other case,
-     * return String. If there aren't matches, return null.
+     * @return String who contains , if exists, the match with word. In other
+     * case, return null.
      */
-    private String getJaSpellMatch(String originalString, String lang) {
+    private String getJaSpellMatch(String originalString, String lang) throws Exception {
         try (Reader dictionaryReader = new InputStreamReader(Main.class.getResourceAsStream("/dict/" + lang + ".txt"))) {
 
             SpellChecker spellCheck = new SpellChecker();
@@ -170,7 +191,11 @@ public class TyposHandler extends UnmatchedTextHandler {
             return spellCheck.findMostSimilar(originalString);
 
         } catch (Exception ex) {
-            logger.error("ERROR " + Main.class.getName() + ". getJaSpellMatch: " + ex.getMessage());
+            if (ex.getClass().getName().equals("java.lang.NullPointerException")) {
+                logger.info ("ERROR getJaSpellMatch - The lang " + lang.toUpperCase() + " doesn't exist.");
+            } else {
+                logger.error("ERROR " + Main.class.getName() + ". getJaSpellMatch: " + ex.getMessage());
+            }
             return null;
         }
     }

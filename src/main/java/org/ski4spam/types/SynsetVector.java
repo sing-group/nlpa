@@ -1,4 +1,4 @@
-package org.ski4spam.ia.types;
+package org.ski4spam.types;
 
 import java.util.ArrayList;
 import java.util.List;

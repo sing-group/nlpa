@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.ski4spam.ia.types;
+package org.ski4spam.types;
 
 import java.io.Serializable;
 import java.util.Map;
