@@ -21,7 +21,7 @@ lib/nblibraries\.properties
 manifest\.mf
 lib/CopyLibs/org-netbeans-modules-java-j2seproject-copylibstask\.jar
 dist/
-config/babelnet.var.properties
+config/
 /JSpellDictionary/nbproject/private/
 /JSpellDictionary/build/
 /JSpellDictionary/dist/
@@ -31,3 +31,4 @@ nbactions.xml
 
 
 outputsyns\.csv
+
