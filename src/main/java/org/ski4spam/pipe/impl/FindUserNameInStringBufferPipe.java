@@ -23,9 +23,13 @@ import org.ski4spam.util.Pair;
 @PropertyComputingPipe()
 public class FindUserNameInStringBufferPipe extends Pipe {
 	private static final Logger logger = LogManager.getLogger(FindUserNameInStringBufferPipe.class);
-        
-        
-        private static final Pattern userPattern = Pattern.compile("(?:^|[\\p{Space}\"¿¡])(@(?:[^\\p{Cntrl}\\p{Punct}\\p{Space}]|[.-])+)[;:?\"!,.]?(?=(?:\\s|$))");
+     /*  NOTE:
+     \p{Punct}-[.-_] 
+		  is equivalent to:
+	                         !\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~
+	  */
+	   
+    private static final Pattern userPattern = Pattern.compile("(?:\\s|^|[\"¿¡])(@[^\\p{Cntrl}\\p{Space}!\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~]+)[;:\\?\"!,.]?(?=(?:\\s|$))");
         
         
     

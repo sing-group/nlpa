@@ -26,8 +26,14 @@ import org.ski4spam.util.Pair;
 @PropertyComputingPipe()
 public class FindHashtagInStringBufferPipe extends Pipe {
 	private static final Logger logger = LogManager.getLogger(FindHashtagInStringBufferPipe.class);
-        
-        private static final Pattern hashtagPattern = Pattern.compile("(?:^|[\\p{Space}\"¿¡])(#(?:[^\\p{Cntrl}\\p{Punct}\\p{Space}]|_)+)[;:?\"!,.]?(?=(?:\\s|$))");
+
+   /*  NOTE:
+   \p{Punct}-[_] 
+	  is equivalent to:
+                         !\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~.-
+  */
+	        
+    private static final Pattern hashtagPattern = Pattern.compile("(?:\\s|^|[\"¿¡])(#[^\\p{Cntrl}\\p{Space}!\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~.-]+)[;:?\"!,.]?(?=(?:\\s|$))");
            
     /**
     * Return the input type included the data attribute of a Instance
