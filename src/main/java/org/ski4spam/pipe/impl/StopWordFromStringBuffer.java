@@ -36,8 +36,12 @@ public class StopWordFromStringBuffer extends Pipe {
     private static final Logger logger = LogManager.getLogger(StopWordFromStringBuffer.class);
 
     /**
-     * A hashset of stopwords in different languages thanks to
-     * https://www.npmjs.com/package/stopwords-json
+     * A hashset of stopwords in different languages.
+	  * Thanks to StopWords-Json Project available at
+	  * <a href="https://www.npmjs.com/package/stopwords-json">
+	  * https://www.npmjs.com/package/stopwords-json</a>
+	  * NOTE: All JSON files (listed below) containing these stopwords 
+	  * have been compiled from stopwords-json project (see previous link)
      */
     private static final HashSet<String> htStopwords = new HashSet<>();
 
