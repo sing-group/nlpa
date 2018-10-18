@@ -10,13 +10,13 @@ import java.util.regex.Pattern;
 import org.bdp4j.ia.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TransformationPipe;
-import org.ski4spam.ia.types.SynsetVector;
+import org.ski4spam.types.SynsetVector;
 import org.ski4spam.util.Pair;
 import org.ski4spam.util.unmatchedtexthandler.ObfuscationHandler;
 import org.ski4spam.util.unmatchedtexthandler.TyposHandler;
 import org.ski4spam.util.unmatchedtexthandler.UnmatchedTextHandler;
 import org.ski4spam.util.unmatchedtexthandler.UrbanDictionaryHandler;
-import org.ski4spam.util.SynsetDictionary;
+import org.ski4spam.types.SynsetDictionary;
 import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 import org.ski4spam.util.BabelUtils;
@@ -101,13 +101,13 @@ public class StringBuffer2SynsetVector extends Pipe {
     /**
      * List of puntuation marks accepted on the beggining of a word
      */
-    private static final String acceptedCharOnBeggining = "¿¡[(";
-    private static Pattern acceptedCharOnBegginingPattern= Pattern.compile("^[¿¡\\[\\(][¿¡\\[\\(]*");
+    private static final String acceptedCharOnBeggining = "¿¡[(\"\'";
+    private static Pattern acceptedCharOnBegginingPattern= Pattern.compile("^[¿¡\\[\\(\"\'][¿¡\\[\\(\"\']*");
     /**
      * List of puntuation marks accepted on the end of a word
      */
-    private static final String acceptedCharOnEnd = ".,!?)];:";
-    private static Pattern acceptedCharOnEndPattern= Pattern.compile("[\\.,!?\\)\\];:<>][\\.,!?\\)\\];:<>]*$");
+    private static final String acceptedCharOnEnd = ".,!?)];:\"\'";
+    private static Pattern acceptedCharOnEndPattern= Pattern.compile("[\\.,!?\\)\\];:<>\"\'][\\.,!?\\)\\];:<>\"\']*$");
 
     /**
      * List of puntuation marks accepted on the middle of a word
@@ -176,7 +176,7 @@ public class StringBuffer2SynsetVector extends Pipe {
                             if (!BabelUtils.getDefault().isTermInBabelNet(innerMatcher.replaceFirst(""), lang))
                                  returnValue.add(new Pair<String, String>(current, null));
                         }else{
-                            System.out.println("Term is "+current);
+                            //System.out.println("Term is "+current);
                             innerMatcher = acceptedCharOnMiddlePattern.matcher(new String (current));
                             if (innerMatcher.find()){
                                 String firstElement = current.substring(0, innerMatcher.start());
@@ -264,6 +264,13 @@ public class StringBuffer2SynsetVector extends Pipe {
     }
 
     @Override
+    /**
+     * Compute synsets from text. This method get data from StringBuffer and process instances:
+     * <li>Invalidate instance if the language is not present</li>
+     * <li>Get the list of unmatched texts</li>
+     * <li>Process this texts to get matches</li>
+     * <li>Build a synset vector</li>
+     */
     public Instance pipe(Instance carrier) {
         SynsetVector sv = new SynsetVector((StringBuffer) carrier.getData());
 

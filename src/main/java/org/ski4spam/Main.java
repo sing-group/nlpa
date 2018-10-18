@@ -25,7 +25,7 @@ import org.bdp4j.pipe.SerialPipes;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.*;
 import org.languagetool.rules.RuleMatch;
-import org.ski4spam.ia.types.SynsetFeatureVector;
+import org.ski4spam.types.SynsetFeatureVector;
 import org.ski4spam.pipe.impl.*;
 import org.ski4spam.util.textextractor.EMLTextExtractor;
 import pt.tumba.spell.SpellChecker;

@@ -1,11 +1,11 @@
 [twitter]
-ConsumerKey = 
-ConsumerSecret = 
-AccessToken = 
-AccessTokenSecret = 
+ConsumerKey = your_ConsumerKey
+ConsumerSecret = your_ConsumerSecret
+AccessToken = your_AccessToken
+AccessTokenSecret = your_AccessTokenSecret
 
 [youtube]
-APIKey = 
+APIKey = your_api_key
 
 [csv]
 CSVSep = ;

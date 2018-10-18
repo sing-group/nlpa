@@ -13,8 +13,8 @@ import java.util.Map;
 import org.bdp4j.ia.types.Instance;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.Pipe;
-import org.ski4spam.ia.types.SynsetFeatureVector;
-import org.ski4spam.ia.types.SynsetVector;
+import org.ski4spam.types.SynsetFeatureVector;
+import org.ski4spam.types.SynsetVector;
 import org.ski4spam.util.Pair;
 
 /**
