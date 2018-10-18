@@ -45,6 +45,11 @@
     </repositories>
 
     <dependencies>
+		 <dependency>
+		     <groupId>com.vdurmont</groupId>
+		     <artifactId>emoji-java</artifactId>
+		     <version>4.0.0</version>
+		 </dependency>	 
         <dependency>
             <groupId>org.bdp4j</groupId>
             <artifactId>bdp4j</artifactId>
