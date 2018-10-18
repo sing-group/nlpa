@@ -211,7 +211,7 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
         try {
             if (isFirst) {
                 outputFile = new FileWriter(output);
-                this.outputFile.write(getCSVHeader(saveData, carrier.getPropertyList()));
+                this.outputFile.write(getCSVHeader(saveData, carrier.getPropertyList())+ "\n");
                 isFirst = false;
             }
             outputFile.write(toCSV(saveData, carrier) + "\n");

@@ -68,7 +68,7 @@ public class Main {
         }
 
         /* Create an example to identify methods which have ParameterPipe annotations.*/
-        Method[] methods = SynsetVector2SynsetFeatureVector.class.getMethods();
+/*        Method[] methods = SynsetVector2SynsetFeatureVector.class.getMethods();
         PipeParameter parameterPipe;
         for (Method method : methods) {
             parameterPipe = method.getAnnotation(PipeParameter.class);//Obtienes los métodos que tengan alguna anotación de tipo ParameterPipe
@@ -80,7 +80,7 @@ public class Main {
                 //System.out.println(parameterName + " --> " + parameterDescription);
             }
         }
-
+*/
         /*create a example of pipe*/
         Pipe p = new SerialPipes(new Pipe[]{
             new TargetAssigningFromPathPipe(),
@@ -89,6 +89,10 @@ public class Main {
             new File2StringBufferPipe(),
             new MeasureLengthFromStringBufferPipe(),
             new StripHTMLFromStringBufferPipe(),
+            new FindUserNameInStringBufferPipe(FindUserNameInStringBufferPipe.DEFAULT_USERNAME_PROPERTY,true),
+       
+              new FindHashtagInStringBufferPipe(FindHashtagInStringBufferPipe.DEFAULT_HASHTAG_PROPERTY,true),
+,
             new MeasureLengthFromStringBufferPipe("length_after_html_drop"),
 				new StringBufferToLowerCasePipe(),
             new GuessLanguageFromStringBufferPipe(),
@@ -97,6 +101,7 @@ public class Main {
             new StringBuffer2SynsetVector(),
             new SynsetVector2SynsetFeatureVector(SynsetVectorGroupingStrategy.COUNT),
             new TeeCSVFromSynsetFeatureVector("outputsyns.csv")
+            
         });
 
         instances = InstanceListUtils.dropInvalid(instances);
