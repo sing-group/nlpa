@@ -90,9 +90,7 @@ public class Main {
             new MeasureLengthFromStringBufferPipe(),
             new StripHTMLFromStringBufferPipe(),
             new FindUserNameInStringBufferPipe(FindUserNameInStringBufferPipe.DEFAULT_USERNAME_PROPERTY,true),
-       
-              new FindHashtagInStringBufferPipe(FindHashtagInStringBufferPipe.DEFAULT_HASHTAG_PROPERTY,true),
-,
+            new FindHashtagInStringBufferPipe(FindHashtagInStringBufferPipe.DEFAULT_HASHTAG_PROPERTY,true),
             new MeasureLengthFromStringBufferPipe("length_after_html_drop"),
 				new StringBufferToLowerCasePipe(),
             new GuessLanguageFromStringBufferPipe(),
