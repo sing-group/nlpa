@@ -37,7 +37,7 @@ public class CSVUtils {
 		  boolean hasStrSep=(str.indexOf(getStrSep())!=-1);
 		  if (str.length()==0) 
 			  str_scape.append(" ").append( getCSVSep() );
-        else str_scape.append((hasCSVSep&&!hasStrSep?"\"":"")+StringEscapeUtils.escapeCsv(str)+(hasCSVSep&&!hasStrSep?"\"":"")).append(getCSVSep());
+        else str_scape.append((hasCSVSep&&!hasStrSep?"\"":"")+StringEscapeUtils.escapeCsv(str.replaceAll("[\\p{Cntrl}]",""))+(hasCSVSep&&!hasStrSep?"\"":"")).append(getCSVSep());
         return str_scape.toString();
     }
 	 
