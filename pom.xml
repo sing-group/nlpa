@@ -45,11 +45,6 @@
     </repositories>
 
     <dependencies>
-		 <dependency>
-		     <groupId>com.vdurmont</groupId>
-		     <artifactId>emoji-java</artifactId>
-		     <version>4.0.0</version>
-		 </dependency>	 
         <dependency>
             <groupId>org.bdp4j</groupId>
             <artifactId>bdp4j</artifactId>
@@ -122,6 +117,7 @@
             <version>4.4.10</version>
         </dependency>
         <!-- Fin poner sólo si no se incluyen en el POM del repositorio sing-->		
+
         <dependency>
             <groupId>it.uniroma1.lcl.babelnet</groupId>
             <artifactId>babelnet-api</artifactId>
@@ -155,6 +151,29 @@
             <artifactId>lucene-backward-codecs</artifactId>
             <version>7.2.0</version>
         </dependency>
+		  <dependency>
+		      <groupId>edu.stanford.nlp</groupId>
+		      <artifactId>stanford-corenlp</artifactId>
+		      <version>3.9.2</version>
+		  </dependency>
+		  <dependency>
+		      <groupId>edu.stanford.nlp</groupId>
+		      <artifactId>stanford-corenlp</artifactId>
+		      <version>3.9.2</version>
+		      <classifier>models</classifier>
+		  </dependency><!--
+		  <dependency>
+		      <groupId>edu.stanford.nlp</groupId>
+		      <artifactId>stanford-corenlp</artifactId>
+		      <version>3.9.2</version>
+		      <classifier>models-chinese</classifier>
+		  </dependency>
+		  -->	  
+ 		 <dependency>
+ 		     <groupId>com.vdurmont</groupId>
+ 		     <artifactId>emoji-java</artifactId>
+ 		     <version>4.0.0</version>
+ 		 </dependency>	 		  
     </dependencies>
 
     <build>

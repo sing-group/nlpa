@@ -97,6 +97,7 @@ public class Main {
             new FindEmojiInStringBufferPipe(),
             new MeasureLengthFromStringBufferPipe("length_after_cleaning_text"),
             new StringBufferToLowerCasePipe(),
+				new ComputePolarityFromStringBufferPipe(),
             new GuessLanguageFromStringBufferPipe(),
             new StopWordFromStringBuffer(),
             new TeeCSVFromStringBufferPipe("output.csv", true),
