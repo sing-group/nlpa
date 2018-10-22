@@ -161,7 +161,9 @@ public class EMLTextExtractor extends TextExtractor{
 					//Create a mime message
 					MimeMessage mimeMultipart = new MimeMessage(null,new FileInputStream(f));
 					
-					sbResult.append(mimeMultipart.getSubject()+"\n");
+					if (mimeMultipart.getSubject()!=null)
+					     sbResult.append(mimeMultipart.getSubject()+"\n");
+					else return null;
 					
 					//If it is not multipart, anotate the part to handle it later
 				    if (mimeMultipart.getContentType().indexOf("multipart/") == -1) 
