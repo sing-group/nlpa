@@ -171,14 +171,14 @@ public class FindHashtagInStringBufferPipe extends Pipe {
                                 replacements.push(new Pair<>(m.start(1),m.end(1)));
                     }
                     
-                    String newSb=carrier.getData().toString();
                     while(!replacements.empty()){
                         Pair<Integer,Integer> current=replacements.pop();
-                        newSb=(current.getObj1()>0?newSb.substring(0, current.getObj1()):"")+  //if startindex is 0 do not concatenate
-                              (current.getObj2()<(newSb.length()-1)?newSb.substring(current.getObj2()):""); //if endindex=newSb.length()-1 do not concatenate
+                        data=(current.getObj1()>0?data.substring(0, current.getObj1()):"")+  //if startindex is 0 do not concatenate
+                              (current.getObj2()<(data.length()-1)?data.substring(current.getObj2()):""); //if endindex=newSb.length()-1 do not concatenate
                     }
                                        
-                    carrier.setData(new StringBuffer(newSb));
+                    if (removeHashtag)
+                        carrier.setData(new StringBuffer(data));
                 } 
                 else logger.info("hashtag not found for instance "+carrier.toString());
                 
