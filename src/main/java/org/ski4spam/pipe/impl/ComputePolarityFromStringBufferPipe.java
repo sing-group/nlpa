@@ -1,6 +1,7 @@
 package org.ski4spam.pipe.impl;
 
 import java.io.File;
+import java.util.Properties;
 
 import org.bdp4j.ia.types.Instance;
 import org.bdp4j.pipe.Pipe;
@@ -29,8 +30,11 @@ public class ComputePolarityFromStringBufferPipe extends Pipe {
 	  * Initing a StandfordCoreNLP pipeline
 	  */
 	static StanfordCoreNLP pipeline;
+	static Properties props;
 	static {
-		pipeline = new StanfordCoreNLP("MyPropFile.properties");
+		props = new Properties();
+		props.setProperty("annotators", "tokenize, ssplit, parse, sentiment");
+		pipeline = new StanfordCoreNLP(props);
 	}
 
    /**
@@ -102,9 +106,12 @@ public class ComputePolarityFromStringBufferPipe extends Pipe {
     */
     @Override
     public Instance pipe(Instance carrier) {
+		  System.out.print("Processing: "+carrier.getName()+" ... ");
+		  int mainSentiment = 0;
         if (carrier.getData() instanceof StringBuffer) {
-	  		int mainSentiment = 0;
-			String text=carrier.getData().toString();
+
+			String text=carrier.getData().toString().replaceAll("[^\\p{Space}\\p{Print}]","");
+			System.out.print("(size: "+text.length()+") ");			
 	  		if (text != null && text.length() > 0) {
 	  			int longest = 0;
 	  			Annotation annotation = pipeline.process(text);
@@ -121,9 +128,9 @@ public class ComputePolarityFromStringBufferPipe extends Pipe {
 
 	  			}
 	  		}
-
-            carrier.setProperty(polProp, mainSentiment);
         }
+        carrier.setProperty(polProp, mainSentiment);		  
+		  System.out.println("done: polarity="+mainSentiment+".");
         return carrier;
     }
 }
