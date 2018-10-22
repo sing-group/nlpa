@@ -230,7 +230,7 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
                 isFirst = false;
             }
 				
-            outputFile.write(toCSV(carrier) + !isLast()?"\n":"");
+            outputFile.write(toCSV(carrier) + (!isLast()?"\n":""));
             
             if (isLast()) {
                 outputFile.close();
