@@ -21,7 +21,14 @@ import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 
 /**
  * This pipe adds the polarity of the text as instance property.
- *
+ * Possible resuts are
+ * <ul>
+ * <li>0: "Very Negative"</li>
+ * <li>1: "Negative" </li>
+ * <li> 2: "Neutral" </li>
+ * <li> 3: "Positive" </li>
+ * <li> 4: "Very Positive" </li>
+ * </ul>
  * @author José Ramón Méndez 
  */
 @PropertyComputingPipe()
