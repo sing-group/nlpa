@@ -20,6 +20,11 @@ public class CSVUtils {
 	  * The configured CSV Separator
 	  */
     private static String CSVSep = null;
+	
+	/**
+	  * The Str Sepatator
+	  */
+	 private static String strSep ="\"";
     
 	 /**
 		* Escape a CSV String to allow including texts into cells
@@ -28,7 +33,11 @@ public class CSVUtils {
 		*/
     public static String escapeCSV(String str){
         StringBuilder str_scape = new StringBuilder();
-        str_scape.append(StringEscapeUtils.escapeCsv(str.replaceAll(";", "\\;"))).append(CSVSep);
+		  boolean hasCSVSep=(str.indexOf(getCSVSep())!=-1);
+		  boolean hasStrSep=(str.indexOf(getStrSep())!=-1);
+		  if (str.length()==0) 
+			  str_scape.append(" ").append( getCSVSep() );
+        else str_scape.append((hasCSVSep&&!hasStrSep?"\"":"")+StringEscapeUtils.escapeCsv(str)+(hasCSVSep&&!hasStrSep?"\"":"")).append(getCSVSep());
         return str_scape.toString();
     }
 	 
@@ -42,4 +51,12 @@ public class CSVUtils {
 		 }
 		 return CSVSep;
 	 }
+	 
+	 /**
+		* Returns the CSV separator configured
+		* @return the configured separator for CSV files
+		*/
+	 public static String getStrSep(){
+		 return strSep;
+	 }	 
 }
