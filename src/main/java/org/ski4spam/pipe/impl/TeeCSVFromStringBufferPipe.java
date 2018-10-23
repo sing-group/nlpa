@@ -216,8 +216,10 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
                 isFirst = false;
             }
             outputFile.write(toCSV(saveData, carrier) + (!isLast()?"\n":""));
+				outputFile.flush();
             if (isLast()){
-                outputFile.close();
+					outputFile.flush();
+               outputFile.close();
             }
         } catch (IOException e) {
             e.printStackTrace();

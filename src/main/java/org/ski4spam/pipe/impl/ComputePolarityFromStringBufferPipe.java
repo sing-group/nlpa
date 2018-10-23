@@ -21,7 +21,7 @@ import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 
 /**
  * This pipe adds the polarity of the text as instance property.
- * Possible resuts are
+ * Possible resuts are:
  * <ul>
  * <li>0: "Very Negative"</li>
  * <li>1: "Negative" </li>
@@ -40,7 +40,8 @@ public class ComputePolarityFromStringBufferPipe extends Pipe {
 	static Properties props;
 	static {
 		props = new Properties();
-		props.setProperty("annotators", "tokenize, ssplit, parse, sentiment");
+		props.setProperty("annotators", "tokenize,ssplit,pos,parse,sentiment");
+		props.setProperty("parse.model", "edu/stanford/nlp/models/srparser/englishSR.ser.gz");
 		pipeline = new StanfordCoreNLP(props);
 	}
 
