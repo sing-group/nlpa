@@ -20,15 +20,17 @@ import org.bdp4j.pipe.PipeParameter;
 
 /**
  * This pipe finds the content Date from different formats
+ *
  * @author José Ramón Méndez Reboredo
  */
 @PropertyComputingPipe()
 public class GuessDateFromFile extends Pipe {
-	/**
-	  * The default name for the date property
-	  */
-	 public static final String DEFAULT_DATE_PROPERTY="date";
-	
+
+    /**
+     * The default name for the date property
+     */
+    public static final String DEFAULT_DATE_PROPERTY = "date";
+
     private static final Logger logger = LogManager.getLogger(GuessDateFromFile.class);
 
     @Override
@@ -42,58 +44,71 @@ public class GuessDateFromFile extends Pipe {
     }
 
     /**
-		* A collection of DateExtractors
-		*/
+     * A collection of DateExtractors
+     */
     private static HashMap<String, DateExtractor> htExtractors;
-	 
-	 static{
-       htExtractors = new HashMap<>();
 
-       //Add the extractors
-       for (String ext : EMLDateExtractor.getExtensions()) htExtractors.put(ext, EMLDateExtractor.getInstance());
-       for (String ext : WARCDateExtractor.getExtensions()) htExtractors.put(ext, WARCDateExtractor.getInstance());
-       for (String ext : TWTIDDateExtractor.getExtensions()) htExtractors.put(ext, TWTIDDateExtractor.getInstance());
-       for (String ext : YTBIDDateExtractor.getExtensions()) htExtractors.put(ext, YTBIDDateExtractor.getInstance());
-       for (String ext : NullDateExtractor.getExtensions()) htExtractors.put(ext, NullDateExtractor.getInstance());	 	
-	 }
+    static {
+        htExtractors = new HashMap<>();
+
+        //Add the extractors
+        for (String ext : EMLDateExtractor.getExtensions()) {
+            htExtractors.put(ext, EMLDateExtractor.getInstance());
+        }
+        for (String ext : WARCDateExtractor.getExtensions()) {
+            htExtractors.put(ext, WARCDateExtractor.getInstance());
+        }
+        for (String ext : TWTIDDateExtractor.getExtensions()) {
+            htExtractors.put(ext, TWTIDDateExtractor.getInstance());
+        }
+        for (String ext : YTBIDDateExtractor.getExtensions()) {
+            htExtractors.put(ext, YTBIDDateExtractor.getInstance());
+        }
+        for (String ext : NullDateExtractor.getExtensions()) {
+            htExtractors.put(ext, NullDateExtractor.getInstance());
+        }
+    }
 
     /**
-		* The property where the date is being stored
-		*/
+     * The property where the date is being stored
+     */
     String dateProp = DEFAULT_DATE_PROPERTY;
-    
-	 /**
-		* Set the the property where the date will be stored
-		* @param dateProp the name of the property for the date
-		*/
-	 @PipeParameter(name = "datepropname", description = "Indicates the property name to store the date", defaultValue=DEFAULT_DATE_PROPERTY)
-    public void setDateProp(String dateProp){
+
+    /**
+     * Set the the property where the date will be stored
+     *
+     * @param dateProp the name of the property for the date
+     */
+    @PipeParameter(name = "datepropname", description = "Indicates the property name to store the date", defaultValue = DEFAULT_DATE_PROPERTY)
+    public void setDateProp(String dateProp) {
         this.dateProp = dateProp;
     }
-	 
-	 /**
-		* Retrieves the name of the property to store the Date
-		* @return the name of the property to store the Date
-		*/
-    public String getDateProp(){
+
+    /**
+     * Retrieves the name of the property to store the Date
+     *
+     * @return the name of the property to store the Date
+     */
+    public String getDateProp() {
         return this.dateProp;
     }
-    
-	 /**
-		* Create a GuessDateFromFile which stores the date of the content in the property "date"
-		*/
+
+    /**
+     * Create a GuessDateFromFile which stores the date of the content in the
+     * property "date"
+     */
     public GuessDateFromFile() {
     }
 
-	 /**
-		* Create a GuessDateFromFile which stores the date of the content in the property
-		* indicated by dateProp
-		* @param dateProp The name of the property to store the date
-		*/
+    /**
+     * Create a GuessDateFromFile which stores the date of the content in the
+     * property indicated by dateProp
+     *
+     * @param dateProp The name of the property to store the date
+     */
     public GuessDateFromFile(String dateProp) {
         this.dateProp = dateProp;
     }
-
 
     @Override
     public Instance pipe(Instance carrier) {

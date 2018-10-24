@@ -36,7 +36,7 @@ public class SynsetVector implements Serializable {
     /**
      * The vector of detected synsets represented as Pairs where: + The first
      * element of the pair is the synsetId identified by babelfy + The second
-     * element of the pair is the porttion of the fixedText that matches the
+     * element of the pair is the portion of the fixedText that matches the
      * synsetId
      */
     List<Pair<String, String>> synsets = new ArrayList<Pair<String, String>>();
@@ -59,6 +59,7 @@ public class SynsetVector implements Serializable {
 
     /**
      * Constructs a SynsetVector from the original text given in a StringBuffer
+     *
      * @param originalText StringBuffer that is an object
      */
     public SynsetVector(StringBuffer originalText) {
@@ -66,72 +67,80 @@ public class SynsetVector implements Serializable {
     }
 
     /**
-		* Returns the original text
-		* @return the original text
-		*/
+     * Returns the original text
+     *
+     * @return the original text
+     */
     public String getOriginalText() {
         return originalText;
     }
 
     /**
-		* Sets the original text from which the synsets were computed
-		* @param originalText the original text
-		*/ 
+     * Sets the original text from which the synsets were computed
+     *
+     * @param originalText the original text
+     */
     public void setOriginalText(String originalText) {
         this.originalText = originalText;
     }
 
     /**
-		* Gets the list of incorrect fragments of text
-		* @return the list of incorrect fragments of text in the form of pairs (T,R)
-		* where T is the original fragment and R the replacement suggestion for it
-		* (null before computing it)
-		*/ 
+     * Gets the list of incorrect fragments of text
+     *
+     * @return the list of incorrect fragments of text in the form of pairs
+     * (T,R) where T is the original fragment and R the replacement suggestion
+     * for it (null before computing it)
+     */
     public List<Pair<String, String>> getUnmatchedTexts() {
         return unmatchedTexts;
     }
 
     /**
-		* Changes the list of incorrect fragments of the text
-		* @param unmatchedTexts The list of incorrect fragments of text in the form of pairs (T,R)
-		* where T is the original fragment and R the replacement suggestion for it
-		* (null before computing it)
-		*/
+     * Changes the list of incorrect fragments of the text
+     *
+     * @param unmatchedTexts The list of incorrect fragments of text in the form
+     * of pairs (T,R) where T is the original fragment and R the replacement
+     * suggestion for it (null before computing it)
+     */
     public void setUnmatchedTexts(List<Pair<String, String>> unmatchedTexts) {
         this.unmatchedTexts = unmatchedTexts;
     }
 
     /**
-		* Returns the fixed text achieved after executing the corrections
-		* @return the fixed text
-		*/
+     * Returns the fixed text achieved after executing the corrections
+     *
+     * @return the fixed text
+     */
     public String getFixedText() {
         return fixedText;
     }
 
     /**
-		* Changes the fixed text 
-		* @param fixedText the fixed text
-		*/
+     * Changes the fixed text
+     *
+     * @param fixedText the fixed text
+     */
     public void setFixedText(String fixedText) {
         this.fixedText = fixedText;
     }
 
     /**
-		* Achieves a list of synsets in the form (S, T) where S is the synset and T 
-		* the text that matched the synsets
-		* @return a list of synsets in the form (S, T) where S is the synset and T 
-		* the text that matched the synsets
-		*/
+     * Achieves a list of synsets in the form (S, T) where S is the synset and T
+     * the text that matched the synsets
+     *
+     * @return a list of synsets in the form (S, T) where S is the synset and T
+     * the text that matched the synsets
+     */
     public List<Pair<String, String>> getSynsets() {
         return synsets;
     }
 
     /**
-		* Changes the list of synsets for the current text
-		* @param synsets a list of synsets in the form (S, T) where S is the synset and T 
-		* the text that matched the synsets
-		*/
+     * Changes the list of synsets for the current text
+     *
+     * @param synsets a list of synsets in the form (S, T) where S is the synset
+     * and T the text that matched the synsets
+     */
     public void setSynsets(List<Pair<String, String>> synsets) {
         this.synsets = synsets;
     }
