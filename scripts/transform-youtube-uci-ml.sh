@@ -16,27 +16,34 @@
 #     $ ./transform-youtube-uci-ml.sh 
 # 5- The output will be generated in the folder youtube-uci-ml
 
-SPAM_DIR=youtube-uci-ml/_spam_/
-HAM_DIR=youtube-uci-ml/_ham_/
+SPAM_DIR="youtube-uci-ml/_spam_/"
+HAM_DIR="youtube-uci-ml/_ham_/"
 
 mkdir -p ${SPAM_DIR}
 mkdir -p ${HAM_DIR}
 
+(( cspam = 0 ))
+(( cham = 0 ))
+
 for file in *.csv
 do
-    tail -$(expr $(wc -l $file | sed -e "s/^[[:space:]]*//g" -e "s/[[:space:]].*$//g") - 1) $file | while read line 
+    while read line 
     do
       id=$(echo $line | sed "s/,.*//g")   #pick the first field
       class=$(echo $line | sed "s/^.*,//g")  #pick the last field
 
-      echo "La clase es: $class"
- 
       if [ $class -eq 0 ] 
       then
+          (( cham++ ))			
           echo "${id}" > ${HAM_DIR}/${id}.ytbid 
       else
+          (( cspam++ ))			
           echo "${id}" > ${SPAM_DIR}/${id}.ytbid
       fi
-    done 
-
+    done <<< "$(tail -$(expr $(wc -l $file | sed -e "s/^[[:space:]]*//g" -e "s/[[:space:]].*$//g") - 1) $file)"
 done
+
+echo "Done converting. Converted: "
+echo "+ ${cspam} spam messages in ${SPAM_DIR}"
+echo "+ ${cham} ham messages in ${HAM_DIR}"
+echo "TOTAL: $(expr $cspam + $cham )"
