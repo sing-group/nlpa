@@ -53,6 +53,7 @@ public class StringBuffer2SynsetVector extends Pipe {
 
     /**
      * Return the input type included the data attribute of a Instance
+     *
      * @return the input type for the data attribute of the Instances processed
      */
     @Override
@@ -60,10 +61,12 @@ public class StringBuffer2SynsetVector extends Pipe {
         return StringBuffer.class;
     }
 
-
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after processing
-     * @return the datatype expected in the data attribute of a Instance after processing
+     * Indicates the datatype expected in the data attribute of a Instance after
+     * processing
+     *
+     * @return the datatype expected in the data attribute of a Instance after
+     * processing
      */
     @Override
     public Class getOutputType() {
@@ -92,7 +95,7 @@ public class StringBuffer2SynsetVector extends Pipe {
     /**
      * Create the pipe and initialize the synset dictionary. Please note that
      * the synset dictionary can be achieved by using the corresponding getter.
-	  *
+     *
      */
     public StringBuffer2SynsetVector() {
 
@@ -102,24 +105,24 @@ public class StringBuffer2SynsetVector extends Pipe {
      * List of puntuation marks accepted on the beggining of a word
      */
     private static final String acceptedCharOnBeggining = "¿¡[(\"\'";
-    private static Pattern acceptedCharOnBegginingPattern= Pattern.compile("^[¿¡\\[\\(\"\'][¿¡\\[\\(\"\']*");
+    private static Pattern acceptedCharOnBegginingPattern = Pattern.compile("^[¿¡\\[\\(\"\'][¿¡\\[\\(\"\']*");
     /**
      * List of puntuation marks accepted on the end of a word
      */
     private static final String acceptedCharOnEnd = ".,!?)];:\"\'";
-    private static Pattern acceptedCharOnEndPattern= Pattern.compile("[\\.,!?\\)\\];:<>\"\'][\\.,!?\\)\\];:<>\"\']*$");
+    private static Pattern acceptedCharOnEndPattern = Pattern.compile("[\\.,!?\\)\\];:<>\"\'][\\.,!?\\)\\];:<>\"\']*$");
 
     /**
      * List of puntuation marks accepted on the middle of a word
      */
     private static final String acceptedCharOnMiddle = "/-.,;:";
-    private static Pattern acceptedCharOnMiddlePattern= Pattern.compile("[\\/\\()\\)\\-\\.,;:<>][\\/\\-\\.,;:<>]*");
-    
+    private static Pattern acceptedCharOnMiddlePattern = Pattern.compile("[\\/\\()\\)\\-\\.,;:<>][\\/\\-\\.,;:<>]*");
+
     /**
      * A pattern to detect puntuation marks
      */
     private Pattern puntMarkPattern = Pattern.compile("\\p{Punct}");
-    
+
     /**
      * This method find fagments in text (str) thar are incorrect.
      *
@@ -136,7 +139,7 @@ public class StringBuffer2SynsetVector extends Pipe {
 
         while (st.hasMoreTokens()) {
             String current = st.nextToken().trim();
-            
+
             Matcher matcher = puntMarkPattern.matcher(current);
             if (matcher.find()) { //We found a puntuation mark in the token
                 //matcher.start() <- here is the index of the puntuation mark
@@ -147,7 +150,6 @@ public class StringBuffer2SynsetVector extends Pipe {
                 //To check the exitence of the term in BabelNet, we will 
                 //create a class org.ski4spam.util.BabelNetUtils with  
                 //static methods.
-                
                 int indexOfPuntMark = matcher.start();
                 if (indexOfPuntMark == 0) { //The puntuation symbol is at the beggining
                     if (acceptedCharOnBeggining.indexOf(current.charAt(indexOfPuntMark)) == -1) {
@@ -171,21 +173,22 @@ public class StringBuffer2SynsetVector extends Pipe {
                     if (acceptedCharOnMiddle.indexOf(current.charAt(indexOfPuntMark)) == -1 && acceptedCharOnEnd.indexOf(current.charAt(indexOfPuntMark)) == -1) {
                         returnValue.add(new Pair<String, String>(current, null));
                     } else {
-                        Matcher innerMatcher = acceptedCharOnEndPattern.matcher(new String (current));
-                        if (innerMatcher.find(indexOfPuntMark)){
-                            if (!BabelUtils.getDefault().isTermInBabelNet(innerMatcher.replaceFirst(""), lang))
-                                 returnValue.add(new Pair<String, String>(current, null));
-                        }else{
+                        Matcher innerMatcher = acceptedCharOnEndPattern.matcher(new String(current));
+                        if (innerMatcher.find(indexOfPuntMark)) {
+                            if (!BabelUtils.getDefault().isTermInBabelNet(innerMatcher.replaceFirst(""), lang)) {
+                                returnValue.add(new Pair<String, String>(current, null));
+                            }
+                        } else {
                             //System.out.println("Term is "+current);
-                            innerMatcher = acceptedCharOnMiddlePattern.matcher(new String (current));
-                            if (innerMatcher.find()){
+                            innerMatcher = acceptedCharOnMiddlePattern.matcher(new String(current));
+                            if (innerMatcher.find()) {
                                 String firstElement = current.substring(0, innerMatcher.start());
                                 String lastElement = current.substring(innerMatcher.end(), current.length());
                                 if (!BabelUtils.getDefault().isTermInBabelNet(firstElement, lang)
-                                    || (innerMatcher.end() < current.length() - 1 && !BabelUtils.getDefault().isTermInBabelNet(lastElement, lang))) {
+                                        || (innerMatcher.end() < current.length() - 1 && !BabelUtils.getDefault().isTermInBabelNet(lastElement, lang))) {
                                     returnValue.add(new Pair<String, String>(current, null));
                                 }
-                            }else{
+                            } else {
                                 returnValue.add(new Pair<String, String>(current, null));
                             }
                         }
@@ -265,7 +268,8 @@ public class StringBuffer2SynsetVector extends Pipe {
 
     @Override
     /**
-     * Compute synsets from text. This method get data from StringBuffer and process instances:
+     * Compute synsets from text. This method get data from StringBuffer and
+     * process instances:
      * <li>Invalidate instance if the language is not present</li>
      * <li>Get the list of unmatched texts</li>
      * <li>Process this texts to get matches</li>
@@ -281,7 +285,7 @@ public class StringBuffer2SynsetVector extends Pipe {
             carrier.invalidate();
             return carrier;
         }
-
+      
         sv.setUnmatchedTexts(computeUnmatched(sv.getOriginalText(), ((String) carrier.getProperty(langProp)).toUpperCase()));
 
         if (sv.getUnmatchedTexts().size() > 0) {
