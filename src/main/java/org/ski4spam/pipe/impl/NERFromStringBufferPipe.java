@@ -212,7 +212,6 @@ public class NERFromStringBufferPipe extends Pipe {
 
                     // Iterate over NER identified entities
                     StringBuilder identifiedEntities = new StringBuilder();
-                    System.out.println(doc.entityMentions().size() + "");
                     if (doc.entityMentions().size() > 0) {
                         for (CoreEntityMention em : doc.entityMentions()) {
                             if (entityTypes.contains(em.entityType())) {
