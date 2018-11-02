@@ -81,7 +81,10 @@ public class Main {
             }
         }
          */
- /*create a example of pipe*/
+//        JavaML jml = new JavaML();
+//        jml.loadFile("test.csv");
+//        
+        /*create a example of pipe*/
         Pipe p = new SerialPipes(new Pipe[]{
             new TargetAssigningFromPathPipe(),
             new StoreFileExtensionPipe(),
@@ -99,7 +102,8 @@ public class Main {
             new StringBufferToLowerCasePipe(),
             new GuessLanguageFromStringBufferPipe(),
             new StopWordFromStringBuffer(),
-				new ComputePolarityFromStringBufferPipe(),					
+            new ComputePolarityFromStringBufferPipe(),
+            new NERFromStringBufferPipe(),
             new TeeCSVFromStringBufferPipe("output.csv", true),
             new StringBuffer2SynsetVector(),
             new SynsetVector2SynsetFeatureVector(SynsetVectorGroupingStrategy.COUNT),
