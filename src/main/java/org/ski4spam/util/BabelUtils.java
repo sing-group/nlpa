@@ -123,7 +123,7 @@ public class BabelUtils {
 		  }
 		  parts.add(remain);
 		  subtexts=parts.toArray(subtexts);
-		  if (subtexts.length>1) System.out.print("Instance text slitted: original size: "+fixedText.length()+" new zizes "); for (String i:subtexts){System.out.print(i.length()+", ");}; System.out.println();
+		  //if (subtexts.length>1) {System.out.print("Instance text slitted: original size: "+fixedText.length()+" new zizes "); for (String i:subtexts){System.out.print(i.length()+", ");}; System.out.println();}
 		  
 		  //Text is not splitted
 		  
