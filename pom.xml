@@ -42,6 +42,17 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+         <repository>
+            <id>icm</id>
+            <name>ICM Repository</name>
+            <url>http://maven.icm.edu.pl/artifactory/repo/</url>
+             <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -128,8 +139,6 @@
             <artifactId>babelfy-online</artifactId>
             <version>1.0</version>
         </dependency>
-
-		
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -151,37 +160,49 @@
             <artifactId>lucene-backward-codecs</artifactId>
             <version>7.2.0</version>
         </dependency>
-		  <dependency>
-		      <groupId>edu.stanford.nlp</groupId>
-		      <artifactId>stanford-corenlp</artifactId>
-		      <version>3.6.0</version>
-		  </dependency>
-		  <dependency>
-		      <groupId>edu.stanford.nlp</groupId>
-		      <artifactId>stanford-corenlp</artifactId>
-		      <version>3.6.0</version>
-		      <classifier>models</classifier>
-		  </dependency>
-		  <dependency>
-		  		<groupId>edu.stanford.nlp</groupId>
-		  		<artifactId>stanford-corenlp</artifactId>
-		  		<version>3.6.0</version>
-		  		<classifier>models-english</classifier>
-		  	</dependency>		  
-		  
-		  
-		  <dependency>
-		      <groupId>edu.stanford.nlp</groupId>
-		      <artifactId>stanford-corenlp</artifactId>
-		      <version>3.6.0</version>
-		      <classifier>models-chinese</classifier>
-		  </dependency>
-		  
- 		 <dependency>
- 		     <groupId>com.vdurmont</groupId>
- 		     <artifactId>emoji-java</artifactId>
- 		     <version>4.0.0</version>
- 		 </dependency>	 		  
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>3.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>3.9.2</version>
+            <classifier>models</classifier>
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>3.6.0</version>
+            <classifier>models-english</classifier>
+        </dependency>		  
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>3.6.0</version>
+            <classifier>models-chinese</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vdurmont</groupId>
+            <artifactId>emoji-java</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge</groupId>
+            <artifactId>javaml</artifactId>
+            <version>0.1.6-spnt</version>
+        </dependency>	 	  
     </dependencies>
 
     <build>
