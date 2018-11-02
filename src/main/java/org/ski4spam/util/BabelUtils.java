@@ -114,8 +114,8 @@ public class BabelUtils {
 		  String remain=new String(fixedText);
 		  List<String> parts=new ArrayList<>();
 		  while(remain.length()>MAX_BABELFY_QUERY){
-				  int splitPos=fixedText.lastIndexOf('.',MAX_BABELFY_QUERY); //Try to keep phrases in the same part
-				  if (splitPos==-1) fixedText.lastIndexOf(' ',MAX_BABELFY_QUERY); //but at least try to keep words
+				  int splitPos=fixedText.lastIndexOf('.',MAX_BABELFY_QUERY-1); //Try to keep phrases in the same part
+				  if (splitPos==-1) splitPos=fixedText.lastIndexOf(' ',MAX_BABELFY_QUERY-1); //but at least try to keep words
 				  if (splitPos==-1) splitPos=MAX_BABELFY_QUERY-1;	//if this is imposible lets with the max length
 				  			  
 				  parts.add(remain.substring(0,splitPos+1));
