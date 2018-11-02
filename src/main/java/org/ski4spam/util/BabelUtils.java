@@ -43,6 +43,11 @@ public class BabelUtils {
      * An instance of BabelNet object required to query BabelNet
      */
     private BabelNet bn;
+	 
+	 /**
+		* String limit for babelfy queries
+		*/
+	 public static final int MAX_BABELFY_QUERY=3000;
 
     /**
      * The private default constructor for this class
@@ -101,28 +106,50 @@ public class BabelUtils {
     public ArrayList<Pair<String, String>> buildSynsetVector(String fixedText, String lang) {
         //This is an arraylist of entries to check for duplicate results and nGrams
         ArrayList<BabelfyEntry> nGrams = new ArrayList<>();
-        List<SemanticAnnotation> bfyAnnotations = null;
+        List<SemanticAnnotation> bfyAnnotations = new ArrayList<>();
         boolean solved = false;
-        while (!solved) {
+		  String subtexts[]=new String[0];
+		  
+		  //Split text in 3500 (MAX_BABELFY_QUERY) characters string for querying
+		  String remain=new String(fixedText);
+		  List<String> parts=new ArrayList<>();
+		  while(remain.length()>MAX_BABELFY_QUERY){
+				  int splitPos=fixedText.lastIndexOf('.',MAX_BABELFY_QUERY); //Try to keep phrases in the same part
+				  if (splitPos==-1) fixedText.lastIndexOf(' ',MAX_BABELFY_QUERY); //but at least try to keep words
+				  if (splitPos==-1) splitPos=MAX_BABELFY_QUERY-1;	//if this is imposible lets with the max length
+				  			  
+				  parts.add(remain.substring(0,splitPos+1));
+				  remain=remain.substring(splitPos+1);
+		  }
+		  parts.add(remain);
+		  subtexts=parts.toArray(subtexts);
+		  if (subtexts.length>1) System.out.print("Instance text slitted: original size: "+fixedText.length()+" new zizes "); for (String i:subtexts){System.out.print(i.length()+", ");}; System.out.println();
+		  
+		  //Text is not splitted
+		  
+		  int currentSubtext=0;
+        while (currentSubtext<subtexts.length) {
             try {
-                bfyAnnotations = bfy.babelfy(fixedText, Language.valueOf(lang));
-                solved = true;
+                bfyAnnotations.addAll(bfy.babelfy(subtexts[currentSubtext], Language.valueOf(lang)));
+					 currentSubtext++;
             } catch (RuntimeException e) {
                 if (e.getMessage().equals("Your key is not valid or the daily requests limit has been reached. Please visit http://babelfy.org.")) {
-                    //Wait until 00:00
-                    Calendar c = Calendar.getInstance();
+                    //Wait until 01:01:01 of the next day (just after midnigth)
+						  Calendar c = Calendar.getInstance();
                     c.add(Calendar.DAY_OF_MONTH, 1);
-                    c.set(Calendar.HOUR_OF_DAY, 0);
+                    c.set(Calendar.HOUR_OF_DAY, 1); //Wait for an hour and a minute for the actualization of babelcoins
                     c.set(Calendar.MINUTE, 1);
                     c.set(Calendar.SECOND, 1);
                     long midnight = c.getTimeInMillis();
+						  
                     long now = System.currentTimeMillis();
+						  
                     long millis = midnight - now;
                     long hours = millis / (1000 * 60 * 60);
                     long minutes = (millis % (1000 * 60 * 60))/ (1000 * 60);
-                    System.out.println("--------------------------------------------------------------------------------------------------------------------------");
-                    System.out.println("INFO: Your key is not valid or the daily requests limit has been reached. The application will pause for " + hours+"h "+minutes+"m.");
-                    System.out.println("--------------------------------------------------------------------------------------------------------------------------");
+                    //System.out.println("--------------------------------------------------------------------------------------------------------------------------");
+                    //System.out.println("INFO: Your key is not valid or the daily requests limit has been reached. The application will pause for " + hours+"h "+minutes+"m.");
+                    //System.out.println("--------------------------------------------------------------------------------------------------------------------------");
                     logger.info("Your key is not valid or the daily requests limit has been reached. The application will pause for " + hours+"h "+minutes+"m.");
                     try {
                         Thread.sleep(millis);
