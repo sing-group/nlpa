@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bdp4j.ia.types.Instance;
+import org.bdp4j.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TransformationPipe;
 import org.ski4spam.types.SynsetVector;

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bdp4j.ia.types.Instance;
+import org.bdp4j.types.Instance;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.Pipe;
 import org.ski4spam.types.SynsetFeatureVector;
