@@ -2,7 +2,7 @@ package org.ski4spam.pipe.impl;
 
 import java.util.Properties;
 
-import org.bdp4j.ia.types.Instance;
+import org.bdp4j.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PropertyComputingPipe;
 
