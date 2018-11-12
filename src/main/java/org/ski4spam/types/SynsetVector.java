@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
 
-import org.ski4spam.util.Pair;
+import org.bdp4j.util.Pair;
 
 /**
  * A class to represent a vector of synsets and the asofiated information

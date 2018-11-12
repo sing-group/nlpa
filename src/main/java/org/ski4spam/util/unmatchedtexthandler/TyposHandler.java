@@ -17,7 +17,7 @@ import org.languagetool.Language;
 import org.languagetool.language.*;
 import org.languagetool.rules.RuleMatch;
 import org.ski4spam.Main;
-import org.ski4spam.util.Pair;
+import org.bdp4j.util.Pair;
 import pt.tumba.spell.SpellChecker;
 
 /**

@@ -8,7 +8,7 @@ import java.net.URL;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ski4spam.Main;
-import org.ski4spam.util.Pair;
+import org.bdp4j.util.Pair;
 
 /**
  * A class to get the match with the specific word from an Urban dictionary

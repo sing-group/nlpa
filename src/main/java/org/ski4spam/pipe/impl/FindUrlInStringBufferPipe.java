@@ -13,7 +13,7 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.ski4spam.util.EBoolean;
-import org.ski4spam.util.Pair;
+import org.bdp4j.util.Pair;
 
 /**
  * This pipe drops URLs The data of the instance should contain a StringBuffer
