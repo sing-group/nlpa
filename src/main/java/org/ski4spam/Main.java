@@ -23,6 +23,10 @@ import org.bdp4j.util.InstanceListUtils;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.SerialPipes;
+import org.bdp4j.transformers.Date2MillisTransformer;
+import org.bdp4j.transformers.Enum2IntTransformer;
+import org.bdp4j.types.Transformer;
+import org.bdp4j.util.Pair;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.*;
 import org.languagetool.rules.RuleMatch;
@@ -82,9 +86,20 @@ public class Main {
             }
         }
          */
-//        JavaML jml = new JavaML();
-//        jml.loadFile("test.csv");
-//        
+ /*
+        // Parámetro para el transformador Enum2IntTransformer de la propiedad target
+        Map<String, Integer> transformList = new HashMap<>();
+        transformList.put("ham", 1);
+        transformList.put("spam", 0);
+        //Se define la lista de transformadores
+        Map<String, Transformer> transformersList = new HashMap<>();
+        transformersList.put("date", new Date2MillisTransformer());
+        transformersList.put("target", new Enum2IntTransformer(transformList));
+
+        String filePath = DatasetFromFile.class.getResource("/outputsyns.csv").getPath();
+        DatasetFromFile jml = new DatasetFromFile(filePath, transformersList);
+        jml.loadFile();
+*/
         /*create a example of pipe*/
         Pipe p = new SerialPipes(new Pipe[]{
             new TargetAssigningFromPathPipe(),

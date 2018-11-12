@@ -11,7 +11,7 @@ import org.bdp4j.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TransformationPipe;
 import org.ski4spam.types.SynsetVector;
-import org.ski4spam.util.Pair;
+import org.bdp4j.util.Pair;
 import org.ski4spam.util.unmatchedtexthandler.ObfuscationHandler;
 import org.ski4spam.util.unmatchedtexthandler.TyposHandler;
 import org.ski4spam.util.unmatchedtexthandler.UnmatchedTextHandler;

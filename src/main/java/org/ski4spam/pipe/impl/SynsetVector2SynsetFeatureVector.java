@@ -15,7 +15,7 @@ import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.Pipe;
 import org.ski4spam.types.SynsetFeatureVector;
 import org.ski4spam.types.SynsetVector;
-import org.ski4spam.util.Pair;
+import org.bdp4j.util.Pair;
 
 /**
  * A pipe to transform a SynsetVector wich contains a list of synsets included
