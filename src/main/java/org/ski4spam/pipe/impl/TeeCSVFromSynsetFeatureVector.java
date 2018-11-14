@@ -190,7 +190,7 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
             csvHeader.append(synsetId).append(getCSVSep());
         }
 
-        csvHeader.append("target").append(getCSVSep());
+        csvHeader.append("target");
         return csvHeader.toString();
     }
 
@@ -225,7 +225,7 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
                 csvBody.append("0").append(getCSVSep());
             }
         }
-        csvBody.append(target.toString()).append(getCSVSep());
+        csvBody.append(target.toString());
         return csvBody.toString();
     }
 
