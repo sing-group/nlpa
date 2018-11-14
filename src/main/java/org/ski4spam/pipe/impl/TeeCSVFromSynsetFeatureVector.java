@@ -213,7 +213,7 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
 
         if (saveProps) { //Generate the props if required
             for (Object value : carrier.getValueList()) {
-                csvBody.append(value.equals("")?(" "+getCSVSep()):escapeCSV(value.toString()));
+                csvBody.append(value.equals("")?(" "):escapeCSV(value.toString())).append(getCSVSep());
             }
         }
 
