@@ -5,9 +5,10 @@
  */
 package org.ski4spam.util;
 
-import org.apache.commons.text.StringEscapeUtils;
+//import org.apache.commons.text.StringEscapeUtils;
 
 import org.ski4spam.util.Configuration;
+import java.util.regex.Pattern;
 
 /**
  * Several utilities to create and manage CSV files
@@ -25,8 +26,11 @@ public class CSVUtils {
     /**
      * The Str Sepatator
      */
-    private static String strSep = "\"";
+    private static String strQuote = null;
 
+
+    private static final Pattern quoteRequiredPattern=Pattern.compile("["+getCSVSep()+getStrQuote()+"\\n\\r\u0085'\u2028\u2029]");
+	 
     /**
      * Escape a CSV String to allow including texts into cells
      *
@@ -35,12 +39,25 @@ public class CSVUtils {
      */
     public static String escapeCSV(String str) {
         StringBuilder str_scape = new StringBuilder();
-        boolean hasCSVSep = (str.indexOf(getCSVSep()) != -1);
-        boolean hasStrSep = (str.indexOf(getStrSep()) != -1);
+        //boolean hasCSVSep = (str.indexOf(getCSVSep()) != -1);
+        //boolean hasStrQuote = (str.indexOf(getStrQuote()) != -1);
+		  //boolean hasLineBreak = (str.indexOf("\n") != -1)||(str.indexOf("\r") != -1);
+		  boolean quoteRequired=quoteRequiredPattern.matcher(str).find();
+
+		  
         if (str.length() == 0) {
-            str_scape.append(" ").append(getCSVSep());
+            str_scape.append(" ");
         } else {
-            str_scape.append((hasCSVSep && !hasStrSep ? "\"" : "") + StringEscapeUtils.escapeCsv(str.replaceAll("[\\p{Cntrl}]", "")) + (hasCSVSep && !hasStrSep ? "\"" : "")).append(getCSVSep());
+            //str_scape.append((hasCSVSep && !hasStrQuote ? "\"" : "") + StringEscapeUtils.escapeCsv(str.replaceAll("[\\p{Cntrl}]", "")) + (hasCSVSep && !hasStrQuote ? "\"" : ""));
+				if (/*hasCSVSep || hasStrQuote || hasLineBreak*/ quoteRequired){
+					str_scape.append("\"");
+					str_scape.append(
+					   str.replaceAll("[\\p{Cntrl}]", "").replaceAll("["+getStrQuote()+"]",getStrQuote()+getStrQuote())
+					);
+					str_scape.append("\"");
+				}else{
+					str_scape.append(str.replaceAll("[\\p{Cntrl}]", ""));
+				}
         }
         return str_scape.toString();
     }
@@ -62,7 +79,10 @@ public class CSVUtils {
      *
      * @return the configured separator for CSV files
      */
-    public static String getStrSep() {
-        return strSep;
+    public static String getStrQuote() {
+       if (strQuote == null) {
+           strQuote = Configuration.getSystemConfig().getConfigOption("csv", "CSVStrQuote");
+       }
+       return strQuote;
     }
 }

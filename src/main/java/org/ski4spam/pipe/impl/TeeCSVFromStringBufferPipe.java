@@ -11,7 +11,7 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TeePipe;
 import static org.ski4spam.util.CSVUtils.getCSVSep;
 import static org.ski4spam.util.CSVUtils.escapeCSV;
-import static org.ski4spam.util.CSVUtils.getStrSep;
+import static org.ski4spam.util.CSVUtils.getStrQuote;
 
 import org.bdp4j.pipe.PipeParameter;
 
@@ -208,11 +208,11 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
 
         builder.append(name).append(getCSVSep());
         if (withData) {
-            builder.append(escapeCSV(data.toString().replaceAll("[" + getCSVSep() + getStrSep() + "]", "")));
+            builder.append(escapeCSV(data.toString().replaceAll("[" + getCSVSep() + getStrQuote() + "]", ""))).append(getCSVSep());
         }
 
         for (Object value : carrier.getValueList()) {
-            builder.append(escapeCSV(value.toString()));
+            builder.append(escapeCSV(value.toString())).append(getCSVSep());
         }
         builder.append(target.toString());
 
