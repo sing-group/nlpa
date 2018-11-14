@@ -16,7 +16,7 @@ import org.bdp4j.pipe.Pipe;
 import org.ski4spam.types.SynsetFeatureVector;
 import org.ski4spam.types.SynsetDictionary;
 import static org.ski4spam.util.CSVUtils.getCSVSep;
-
+import static org.ski4spam.util.CSVUtils.escapeCSV;
 import org.bdp4j.pipe.PipeParameter;
 
 import org.ski4spam.util.EBoolean;
@@ -213,7 +213,7 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
 
         if (saveProps) { //Generate the props if required
             for (Object value : carrier.getValueList()) {
-                csvBody.append(value.equals("")?" ":value).append(getCSVSep());
+                csvBody.append(value.equals("")?(" "+getCSVSep()):escapeCSV(value.toString()));
             }
         }
 
