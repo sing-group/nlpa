@@ -9,6 +9,8 @@ package org.ski4spam.util;
 
 import org.ski4spam.util.Configuration;
 import java.util.regex.Pattern;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Several utilities to create and manage CSV files
@@ -17,18 +19,34 @@ import java.util.regex.Pattern;
  * @author José Ramón Méndez
  */
 public class CSVUtils {
-
+    /**
+     * For logging purposes
+     */
+    private static final Logger logger = LogManager.getLogger(CSVUtils.class);
+	
     /**
      * The configured CSV Separator
      */
     private static String CSVSep = null;
 
     /**
-     * The Str Sepatator
+     * The String Quote delimiter
      */
     private static String strQuote = null;
 
+    /**
+     * The Char to Escape String Quote delimiters
+     */
+    private static String strQuoteEscapeChar = null;
+	 
+	 /**
+		* The representation of a CSV VOID FIELD
+		*/
+	 private static String csvVoidField = null;
 
+    /**
+		* The pattern to require quotes
+		*/
     private static final Pattern quoteRequiredPattern=Pattern.compile("["+getCSVSep()+getStrQuote()+"\\n\\r\u0085'\u2028\u2029]");
 	 
     /**
@@ -45,16 +63,17 @@ public class CSVUtils {
 		  boolean quoteRequired=quoteRequiredPattern.matcher(str).find();
 
 		  
-        if (str.length() == 0) {
-            str_scape.append(" ");
+        if (str==null || str.length() == 0) {
+            str_scape.append(getStrVoidField());
         } else {
             //str_scape.append((hasCSVSep && !hasStrQuote ? "\"" : "") + StringEscapeUtils.escapeCsv(str.replaceAll("[\\p{Cntrl}]", "")) + (hasCSVSep && !hasStrQuote ? "\"" : ""));
 				if (/*hasCSVSep || hasStrQuote || hasLineBreak*/ quoteRequired){
-					str_scape.append("\"");
+					str_scape.append(getStrQuote());
 					str_scape.append(
-					   str.replaceAll("[\\p{Cntrl}]", "").replaceAll("["+getStrQuote()+"]",getStrQuote()+getStrQuote())
+					   str.replaceAll("[\\p{Cntrl}]", "").
+							 replaceAll("["+getStrQuote()+"]",getStrQuoteEscapeChar()+getStrQuote())
 					);
-					str_scape.append("\"");
+					str_scape.append(getStrQuote());
 				}else{
 					str_scape.append(str.replaceAll("[\\p{Cntrl}]", ""));
 				}
@@ -65,24 +84,66 @@ public class CSVUtils {
     /**
      * Returns the CSV separator configured
      *
-     * @return the configured separator for CSV files
+     * @return the configured field separator for CSV files
      */
     public static String getCSVSep() {
         if (CSVSep == null) {
             CSVSep = Configuration.getSystemConfig().getConfigOption("csv", "CSVSep");
+				logger.error("CSV field separator is \""+CSVSep+"\"");
         }
+        if (CSVSep == null) {
+            CSVSep = ",";
+        }		  
         return CSVSep;
     }
 
     /**
-     * Returns the CSV separator configured
+     * Returns the CSV String Quote Character configured
      *
-     * @return the configured separator for CSV files
+     * @return the configured String Quote Character for CSV files
      */
     public static String getStrQuote() {
        if (strQuote == null) {
            strQuote = Configuration.getSystemConfig().getConfigOption("csv", "CSVStrQuote");
+			  logger.error("CSV String Quote Character is \""+strQuote+"\"");
+       }
+       if (strQuote == null) {
+           strQuote = "\"";
        }
        return strQuote;
     }
+	 
+
+    /**
+     * Returns the CSV Escape Character for Quotes configured
+     *
+     * @return the CSV Escape Character for Quotes configured
+     */
+    public static String getStrQuoteEscapeChar() {
+       if (strQuoteEscapeChar == null) {
+           strQuoteEscapeChar = Configuration.getSystemConfig().getConfigOption("csv", "CSVStrQuoteEscapeChar");
+			  logger.error("CSV Escape Character for Quotes is \""+strQuoteEscapeChar+"\"");
+       }
+		 if (strQuoteEscapeChar == null) {
+			 strQuoteEscapeChar="\"";
+		 }
+       return strQuoteEscapeChar;
+    }
+	 
+    /**
+     * Returns the representation for a CSV void field
+     *
+     * @return the representation for a CSV void field
+     */
+    public static String getStrVoidField() {
+       if (csvVoidField == null) {
+           csvVoidField = Configuration.getSystemConfig().getConfigOption("csv", "CSVVoidField");
+			  logger.error("CSV Void field is represented as \""+csvVoidField+"\"");
+       }
+		 if (csvVoidField == null) {
+			 csvVoidField=" ";
+		 }
+       return csvVoidField;
+    }	 
+		 
 }

@@ -19,7 +19,6 @@ import org.bdp4j.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
-import org.ski4spam.Main;
 import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 /**
@@ -200,65 +199,57 @@ public class NERFromStringBufferPipe extends Pipe {
     @Override
     public Instance pipe(Instance carrier) {
         try {
-
-            if (carrier.getData() instanceof StringBuffer) {
                 StringBuffer newSb = new StringBuffer();
                 String data = carrier.getData().toString();
                 CoreDocument doc = new CoreDocument(data);
 
-                if (carrier.getData() instanceof StringBuffer) {
-                    // Annotate the document
-                    pipeline.annotate(doc);
+                // Annotate the document
+                pipeline.annotate(doc);
 
-                    // Iterate over NER identified entities
-                    StringBuilder identifiedEntities = new StringBuilder();
-                    if (doc.entityMentions().size() > 0) {
-                        for (CoreEntityMention em : doc.entityMentions()) {
-                            if (entityTypes.contains(em.entityType())) {
-                                int begin = data.indexOf(em.text()) - 1;
-                                int end = data.indexOf(em.text()) + (em.text().length());
+                // Iterate over NER identified entities
+                StringBuilder identifiedEntities = new StringBuilder();
+                if (doc.entityMentions().size() > 0) {
+                     for (CoreEntityMention em : doc.entityMentions()) {
+                        if (entityTypes.contains(em.entityType())) {
+                             int begin = data.indexOf(em.text()) - 1;
+                             int end = data.indexOf(em.text()) + (em.text().length());
 
-                                if (data.startsWith(em.text())) {
-                                    newSb.append(data.substring(end, data.length() - 1));
-                                } else if (data.endsWith(em.text())) {
-                                    newSb.append(data.substring(0, begin + 1));
-                                } else {
-                                    newSb.append(data.substring(0, begin) + data.substring(end, data.length()));
-                                }
+                             if (data.startsWith(em.text())) {
+                                newSb.append(data.substring(end, data.length() - 1));
+                             } else if (data.endsWith(em.text())) {
+                                newSb.append(data.substring(0, begin + 1));
+                             } else {
+                                newSb.append(data.substring(0, begin) + data.substring(end, data.length()));
+                             }
 
-                                if (identifiedEntities.indexOf(em.text()) < 0) {
-                                    identifiedEntities.append(em.text()).append("(").append(em.entityType()).append(")|");
-                                }
-                            } else {
-                                newSb.append(data);
-                            }
-//                   System.out.println("\tdetected entity: \t" + em.text() + "\t" + em.entityType() + "\t" + em.entityTypeConfidences());                    
+                             if (identifiedEntities.indexOf(em.text()) < 0) {
+                                identifiedEntities.append(em.text()).append("(").append(em.entityType()).append(")|");
+                             }
+                        } else {
+                             newSb.append(data);
                         }
-                    } else {
-                        newSb.append(data);
-                    }
+//                   System.out.println("\tdetected entity: \t" + em.text() + "\t" + em.entityType() + "\t" + em.entityTypeConfidences());                    
+                     }
+                } else {
+                    newSb.append(data);
+                }
 //                    if (identifiedEntities.length() > 0) {
 //                        System.out.println("carrier: " + carrier.getData().toString());
 //                        System.out.println("---------------------------------------------------");
 //                        System.out.println("identifiedEntitiesProp: " + identifiedEntities.toString());
 //                        System.out.println("---------------------------------------------------");
 //                    }
-                    carrier.setData(newSb);
+                carrier.setData(newSb);
 //                   if (identifiedEntities.length() > 0) {
 //                        System.out.println("carrier: " + carrier.getData().toString());
 //                        System.out.println("---------------------------------------------------");
 //                    }
-                    carrier.setProperty(identifiedEntitiesProp, identifiedEntities.toString());
+                carrier.setProperty(identifiedEntitiesProp, identifiedEntities.toString());
 
-                }
-
-            }
-            return carrier;
         } catch (Exception ex) {
-            logger.error(Main.class.getName() + ". " + ex.getMessage());
-
+            logger.error(ex.getMessage());
         }
-        return carrier;
 
+        return carrier;
     }
 }
