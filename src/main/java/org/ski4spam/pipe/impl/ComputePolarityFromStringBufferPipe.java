@@ -122,7 +122,7 @@ public class ComputePolarityFromStringBufferPipe extends Pipe {
      */
     @Override
     public Instance pipe(Instance carrier) {
-        System.out.print("Processing: " + carrier.getName() + " ... ");
+        //System.out.print("Processing: " + carrier.getName() + " ... ");
         int mainSentiment = 0;
         if (carrier.getData() instanceof StringBuffer) {
 
@@ -146,7 +146,7 @@ public class ComputePolarityFromStringBufferPipe extends Pipe {
             }
         }
         carrier.setProperty(polProp, mainSentiment);
-        System.out.println("done: polarity=" + mainSentiment + ".");
+        //System.out.println("done: polarity=" + mainSentiment + ".");
         return carrier;
     }
 }

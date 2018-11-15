@@ -11,6 +11,7 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +20,6 @@ import org.bdp4j.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
-import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 /**
  * This pipe finds named entity recognition, saves this entities as Instance
@@ -39,24 +39,23 @@ public class NERFromStringBufferPipe extends Pipe {
     /**
      * Initing entity types collection
      */
-    static Collection<String> entityTypes = new ArrayList<>();
+    List<String> entityTypes = null;
 
     /**
      * The default value to entityTypes
      */
     public static final String DEFAULT_ENTITY_TYPES = "DATE,MONEY,NUMBER,ADDRESS,LOCATION";
 
-    static {
-        StringTokenizer st = new StringTokenizer(DEFAULT_ENTITY_TYPES, ", \t");
-        while (st.hasMoreTokens()) {
-            entityTypes.add(st.nextToken());
-        }
-    }
-
+    List<String> identifiedEntitiesProperty = null;
     /**
      * The default property name to store the identified entities
      */
-    public static final String DEFAULT_IDENTIFIED_ENTITIES_PROPERTY = "identifiedEntitiesProp";
+    public static final String DEFAULT_IDENTIFIED_ENTITIES_PROPERTY = "NERDATE,NERMONEY,NERNUMBER,NERADDRESS,NERLOCATION";
+
+    private void init() {
+        setEntityTypes(DEFAULT_ENTITY_TYPES);
+        setIdentifiedEntitiesProperty(DEFAULT_IDENTIFIED_ENTITIES_PROPERTY);
+    }
 
     /**
      * The property name to store identified entities.
@@ -90,7 +89,7 @@ public class NERFromStringBufferPipe extends Pipe {
      *
      * @param entityTypes the name of the property for the polarity
      */
-    public void setEntityTypes(Collection<String> entityTypes) {
+    public void setEntityTypes(List<String> entityTypes) {
         this.entityTypes = entityTypes;
     }
 
@@ -103,7 +102,8 @@ public class NERFromStringBufferPipe extends Pipe {
             description = "Indicates the entity types to annotate through a list of comma-separated values",
             defaultValue = DEFAULT_ENTITY_TYPES)
     public void setEntityTypes(String entityTypes) {
-        StringTokenizer st = new StringTokenizer(entityTypes, ", ");
+        this.entityTypes = new ArrayList<>();
+        StringTokenizer st = new StringTokenizer(entityTypes, ", \t");
         while (st.hasMoreTokens()) {
             this.entityTypes.add(st.nextToken());
         }
@@ -112,12 +112,28 @@ public class NERFromStringBufferPipe extends Pipe {
     /**
      * Sets the property where the identified entities will be stored
      *
-     * @param identifiedEntitiesProp the name of the property for the identified
-     * entities
+     * @param identifiedEntitiesProperty the properties to identify
      */
-    @PipeParameter(name = "identitiespropname", description = "Indicates the property name to store the identified entities", defaultValue = DEFAULT_IDENTIFIED_ENTITIES_PROPERTY)
-    public void setIdentifiedEntitiesProp(String identifiedEntitiesProp) {
-        this.identifiedEntitiesProp = identifiedEntitiesProp;
+    @PipeParameter(name = "identifiedEntitiesProperty", description = "Indicates the property name to store the identified entities", defaultValue = DEFAULT_IDENTIFIED_ENTITIES_PROPERTY)
+    public void setIdentifiedEntitiesProp(List<String> identifiedEntitiesProperty) {
+        this.identifiedEntitiesProperty = identifiedEntitiesProperty;
+    }
+
+    /**
+     * Sets the properties to annotate
+     *
+     * @param identifiedEntitiesProperty the properties to identify
+     */
+    @PipeParameter(name = "identifiedEntitiesProperty",
+            description = "Indicates the identified entities through a list of comma-separated values",
+            defaultValue = DEFAULT_IDENTIFIED_ENTITIES_PROPERTY)
+    public void setIdentifiedEntitiesProperty(String identifiedEntitiesProperty) {
+        this.identifiedEntitiesProperty = new ArrayList<>();
+
+        StringTokenizer st = new StringTokenizer(identifiedEntitiesProperty, ", ");
+        while (st.hasMoreTokens()) {
+            this.identifiedEntitiesProperty.add(st.nextToken());
+        }
     }
 
     /**
@@ -126,8 +142,8 @@ public class NERFromStringBufferPipe extends Pipe {
      * @return String containing the property name for storing the identified
      * entities
      */
-    public String getIdentifiedEntitiesProp() {
-        return this.identifiedEntitiesProp;
+    public Collection<String> getIdentifiedEntitiesProperty() {
+        return this.identifiedEntitiesProperty;
     }
 
     /**
@@ -157,6 +173,7 @@ public class NERFromStringBufferPipe extends Pipe {
      * Default constructor
      */
     public NERFromStringBufferPipe() {
+        init();
     }
 
     // Indicate which annotators will be used (see: https://stanfordnlp.github.io/CoreNLP)
@@ -176,7 +193,7 @@ public class NERFromStringBufferPipe extends Pipe {
      *
      * @param entityTypes The list of the entity types to annotate
      */
-    public NERFromStringBufferPipe(Collection<String> entityTypes) {
+    public NERFromStringBufferPipe(List<String> entityTypes) {
         this.entityTypes = entityTypes;
     }
 
@@ -185,7 +202,7 @@ public class NERFromStringBufferPipe extends Pipe {
      *
      * @param entityTypes The list of the entity types to annotate
      */
-    public NERFromStringBufferPipe(String identifiedEntitiesProp, Collection<String> entityTypes) {
+    public NERFromStringBufferPipe(String identifiedEntitiesProp, List<String> entityTypes) {
         this.entityTypes = entityTypes;
     }
 
@@ -198,58 +215,58 @@ public class NERFromStringBufferPipe extends Pipe {
      */
     @Override
     public Instance pipe(Instance carrier) {
+        if (this.entityTypes.size() != this.identifiedEntitiesProperty.size()) {
+            logger.fatal("The number of entity types to detect is different to the number of property names. Unable to find a property store strategy for this.");
+            System.exit(0);
+        }
+
         try {
-                StringBuffer newSb = new StringBuffer();
-                String data = carrier.getData().toString();
-                CoreDocument doc = new CoreDocument(data);
+            StringBuffer newSb = new StringBuffer();
+            String data = carrier.getData().toString();
+            CoreDocument doc = new CoreDocument(data);
 
-                // Annotate the document
-                pipeline.annotate(doc);
+            // Annotate the document
+            pipeline.annotate(doc);
 
-                // Iterate over NER identified entities
-                StringBuilder identifiedEntities = new StringBuilder();
-                if (doc.entityMentions().size() > 0) {
-                     for (CoreEntityMention em : doc.entityMentions()) {
-                        if (entityTypes.contains(em.entityType())) {
-                             int begin = data.indexOf(em.text()) - 1;
-                             int end = data.indexOf(em.text()) + (em.text().length());
+            // Iterate over NER identified entities
+            if (doc.entityMentions().size() > 0) {
+                for (CoreEntityMention em : doc.entityMentions()) {
+                    int idx=entityTypes.indexOf(em.entityType());
+                    if (idx!=-1) {
+                        int begin = data.indexOf(em.text()) - 1;
+                        int end = data.indexOf(em.text()) + (em.text().length());
 
-                             if (data.startsWith(em.text())) {
-                                newSb.append(data.substring(end, data.length() - 1));
-                             } else if (data.endsWith(em.text())) {
-                                newSb.append(data.substring(0, begin + 1));
-                             } else {
-                                newSb.append(data.substring(0, begin) + data.substring(end, data.length()));
-                             }
-
-                             if (identifiedEntities.indexOf(em.text()) < 0) {
-                                identifiedEntities.append(em.text()).append("(").append(em.entityType()).append(")|");
-                             }
+                        if (data.startsWith(em.text())) {
+                            newSb.append(data.substring(end, data.length() - 1));
+                        } else if (data.endsWith(em.text())) {
+                            newSb.append(data.substring(0, begin + 1));
                         } else {
-                             newSb.append(data);
+                            newSb.append(data.substring(0, begin) + data.substring(end, data.length()));
                         }
-//                   System.out.println("\tdetected entity: \t" + em.text() + "\t" + em.entityType() + "\t" + em.entityTypeConfidences());                    
-                     }
-                } else {
-                    newSb.append(data);
+                        
+                        String property = this.identifiedEntitiesProperty.get(idx);
+
+                        String propertyValue = em.text();
+                        if (identifiedEntitiesProperty.contains(property)) {
+                            carrier.setProperty(property, propertyValue);
+                        }
+
+                    } else {
+                        newSb.append(data);
+                    }
                 }
-//                    if (identifiedEntities.length() > 0) {
-//                        System.out.println("carrier: " + carrier.getData().toString());
-//                        System.out.println("---------------------------------------------------");
-//                        System.out.println("identifiedEntitiesProp: " + identifiedEntities.toString());
-//                        System.out.println("---------------------------------------------------");
-//                    }
                 carrier.setData(newSb);
-//                   if (identifiedEntities.length() > 0) {
-//                        System.out.println("carrier: " + carrier.getData().toString());
-//                        System.out.println("---------------------------------------------------");
-//                    }
-                carrier.setProperty(identifiedEntitiesProp, identifiedEntities.toString());
+            }
 
         } catch (Exception ex) {
             logger.error(ex.getMessage());
         }
-
+        
+        identifiedEntitiesProperty.stream().filter((propName) -> (carrier.getProperty(propName)==null)).forEachOrdered((propName) -> {
+            carrier.setProperty(propName, "");
+        });
+        
         return carrier;
+
     }
 }
