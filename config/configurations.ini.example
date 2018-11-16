@@ -8,29 +8,30 @@ AccessTokenSecret = your_AccessTokenSecret
 APIKey = your_api_key
 
 [csv]
-; For RFC RFC4180
-     CSVSep = ;
-     CSVStrQuote = "
-     CSVStrQuoteEscapeChar = "
-     CSVVoidField = <space>
-     CSVEscapeCRChars = no
-	  CSVEscapeChars = "
-
+; For pure RFC RFC4180
+;     CSVSep = ,
+;     CSVStrQuote = "
+;     CSVStrQuoteEscapeChar = "
+;     CSVVoidField = <space>
+;     CSVEscapeCRChars = no
+;	   CSVEscapeChars = "
+;
 ; For Weka use: 
 ;     CSVSep = ,
 ;     CSVStrQuote = "
 ;     CSVStrQuoteEscapeChar = \
 ;     CSVVoidField = ?
 ;     CSVEscapeCRChars = yes
-;	  CSVEscapeChars = <space>'"
+;	   CSVEscapeChars = <space>'"
 ;	  
 ; For R using read.csv(file = "standard.csv",sep = ";", header = TRUE,  stringsAsFactors = FALSE)
-;     CSVSep = ;
-;     CSVStrQuote = "
-;     CSVStrQuoteEscapeChar = "
-;     CSVVoidField =  <space>
-;     CSVEscapeCRChars = no
-;	   CSVEscapeChars = "
+;       or csv.synset.fixed <- read.table("outputsyns_fixed.csv",header=TRUE, sep=";", dec=".", fill=FALSE, stringsAsFactors =FALSE)
+     CSVSep = ;
+     CSVStrQuote = "
+     CSVStrQuoteEscapeChar = "
+     CSVVoidField =  <space>
+     CSVEscapeCRChars = no
+     CSVEscapeChars = "
 
 [eml]
 PartSelectedOnMPAlternative = text/plain
