@@ -81,7 +81,7 @@ public class Configuration {
       String retValue;
 
       retValue = ini.get(group, option);
-		if (retValue!=null) retValue.replaceAll("<space>"," ");
+		if (retValue!=null) retValue=retValue.replaceAll("<space>"," ");
 		
 		return retValue;
 	}
