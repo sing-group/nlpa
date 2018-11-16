@@ -208,7 +208,7 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
 
         builder.append(name).append(getCSVSep());
         if (withData) {
-            builder.append(escapeCSV(data.toString().replaceAll("[" + getCSVSep() + getStrQuote() + "]", ""))).append(getCSVSep());
+            builder.append(escapeCSV(data.toString()/*.replaceAll("[" + getCSVSep() + getStrQuote() + "]", "")*/)).append(getCSVSep());
         }
 
         for (Object value : carrier.getValueList()) {

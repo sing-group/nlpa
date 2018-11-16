@@ -11,6 +11,7 @@ import org.ski4spam.util.Configuration;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.ski4spam.util.EBoolean;
 
 /**
  * Several utilities to create and manage CSV files
@@ -43,11 +44,21 @@ public class CSVUtils {
 		* The representation of a CSV VOID FIELD
 		*/
 	 private static String csvVoidField = null;
+	 
+	 /**
+		* Represents if \n \r and other non printable characters should be escaped
+		*/
+	 private static Boolean escapeCR=null;
 
+	 /**
+		* Chars that should be scapped
+		*/
+	 private static String charsToScape=null;
+	 
     /**
 		* The pattern to require quotes
 		*/
-    private static final Pattern quoteRequiredPattern=Pattern.compile("["+getCSVSep()+getStrQuote()+"\\n\\r\u0085'\u2028\u2029]");
+    private static final Pattern quoteRequiredPattern=Pattern.compile("["+getCSVSep()+getCharsToScape()+"\\n\\r\u0085'\u2028\u2029]");
 	 
     /**
      * Escape a CSV String to allow including texts into cells
@@ -57,21 +68,14 @@ public class CSVUtils {
      */
     public static String escapeCSV(String str) {
         StringBuilder str_scape = new StringBuilder();
-        //boolean hasCSVSep = (str.indexOf(getCSVSep()) != -1);
-        //boolean hasStrQuote = (str.indexOf(getStrQuote()) != -1);
-		  //boolean hasLineBreak = (str.indexOf("\n") != -1)||(str.indexOf("\r") != -1);
-		  boolean quoteRequired=quoteRequiredPattern.matcher(str).find();
 
-		  
         if (str==null || str.length() == 0) {
             str_scape.append(getStrVoidField());
         } else {
-            //str_scape.append((hasCSVSep && !hasStrQuote ? "\"" : "") + StringEscapeUtils.escapeCsv(str.replaceAll("[\\p{Cntrl}]", "")) + (hasCSVSep && !hasStrQuote ? "\"" : ""));
-				if (/*hasCSVSep || hasStrQuote || hasLineBreak*/ quoteRequired){
+				if (quoteRequiredPattern.matcher(str).find()){ //If quote is required
 					str_scape.append(getStrQuote());
 					str_scape.append(
-					   str.replaceAll("[\\p{Cntrl}]", "").
-							 replaceAll("["+getStrQuote()+"]",getStrQuoteEscapeChar()+getStrQuote())
+					   escapeAll(str.replaceAll("[\\p{Cntrl}]", ""))
 					);
 					str_scape.append(getStrQuote());
 				}else{
@@ -80,6 +84,26 @@ public class CSVUtils {
         }
         return str_scape.toString();
     }
+	 
+	 /**
+		* Escapes CR characters (if required) and quotes
+		*/
+	 private static String escapeAll(String in){
+	 	 StringBuilder strb=new StringBuilder();
+		 
+		 for(int i=0;i<in.length();i++){
+		 	 if (in.charAt(i)=='\n') strb.append(shouldEscapeCRChars()?"\\n":"\n"); 
+			 else if (in.charAt(i)=='\r') strb.append(shouldEscapeCRChars()?"\\r":"\r");
+			 else if (in.charAt(i)=='\u0085') strb.append(shouldEscapeCRChars()?"\\u0085":"\u0085");
+			 else if (in.charAt(i)=='\u2028') strb.append(shouldEscapeCRChars()?"\\u2028":"\u2028");
+			 else if (in.charAt(i)=='\u2029') strb.append(shouldEscapeCRChars()?"\\u2029":"\u2029");
+			 else if (getCharsToScape().indexOf(in.charAt(i))!=-1 || in.charAt(i)==getStrQuote().charAt(0)) strb.append(getStrQuoteEscapeChar()+in.charAt(i)); 
+			 else strb.append(in.charAt(i));
+			 //System.out.println("Char: "+in.charAt(i)+"("+getCharsToScape() +": "+ getCharsToScape().indexOf(in.charAt(i)) + ") - "+strb.toString());
+		 }
+		 //System.exit(0);
+		 return strb.toString();
+	 }
 
     /**
      * Returns the CSV separator configured
@@ -89,7 +113,7 @@ public class CSVUtils {
     public static String getCSVSep() {
         if (CSVSep == null) {
             CSVSep = Configuration.getSystemConfig().getConfigOption("csv", "CSVSep");
-				logger.error("CSV field separator is \""+CSVSep+"\"");
+				logger.info("CSV field separator is \""+CSVSep+"\"");
         }
         if (CSVSep == null) {
             CSVSep = ",";
@@ -105,7 +129,7 @@ public class CSVUtils {
     public static String getStrQuote() {
        if (strQuote == null) {
            strQuote = Configuration.getSystemConfig().getConfigOption("csv", "CSVStrQuote");
-			  logger.error("CSV String Quote Character is \""+strQuote+"\"");
+			  logger.info("CSV String Quote Character is \""+strQuote+"\"");
        }
        if (strQuote == null) {
            strQuote = "\"";
@@ -122,7 +146,7 @@ public class CSVUtils {
     public static String getStrQuoteEscapeChar() {
        if (strQuoteEscapeChar == null) {
            strQuoteEscapeChar = Configuration.getSystemConfig().getConfigOption("csv", "CSVStrQuoteEscapeChar");
-			  logger.error("CSV Escape Character for Quotes is \""+strQuoteEscapeChar+"\"");
+			  logger.info("CSV Escape Character for Quotes is \""+strQuoteEscapeChar+"\"");
        }
 		 if (strQuoteEscapeChar == null) {
 			 strQuoteEscapeChar="\"";
@@ -138,12 +162,45 @@ public class CSVUtils {
     public static String getStrVoidField() {
        if (csvVoidField == null) {
            csvVoidField = Configuration.getSystemConfig().getConfigOption("csv", "CSVVoidField");
-			  logger.error("CSV Void field is represented as \""+csvVoidField+"\"");
+			  logger.info("CSV Void field is represented as \""+csvVoidField+"\"");
        }
 		 if (csvVoidField == null) {
 			 csvVoidField=" ";
 		 }
        return csvVoidField;
     }	 
+	 
+    /**
+     * Returns if we should escape carriage returns
+     *
+     * @return if we should escape carriage returns
+     */
+    public static boolean shouldEscapeCRChars() {
+       if (escapeCR == null) {
+           String propVal = Configuration.getSystemConfig().getConfigOption("csv", "CSVEscapeCRChars");
+			  if (propVal!=null) escapeCR=EBoolean.getBoolean(propVal);
+			  logger.info("CSV carriage returns should be escaped: \""+escapeCR.toString()+"\"");
+       }
+		 if (escapeCR == null) {
+			 escapeCR=false;
+		 }
+       return escapeCR;
+    }
+	 
+    /**
+     * Returns if we should escape carriage returns
+     *
+     * @return if we should escape carriage returns
+     */
+    public static String getCharsToScape() {
+       if (charsToScape == null) {
+           charsToScape = Configuration.getSystemConfig().getConfigOption("csv", "CSVEscapeChars");
+			  logger.info("CSV chars that should be scapped: \""+charsToScape.toString()+"\"");
+       }
+		 if (charsToScape == null) {
+			 charsToScape="\"";
+		 }
+       return charsToScape;
+    }
 		 
 }
