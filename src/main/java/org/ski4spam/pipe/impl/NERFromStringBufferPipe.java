@@ -11,6 +11,7 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -34,7 +35,7 @@ public class NERFromStringBufferPipe extends Pipe {
     /**
      * For logging purposes
      */
-    private static final Logger logger = LogManager.getLogger(TeeCSVFromStringBufferPipe.class);
+    private static final Logger logger = LogManager.getLogger(NERFromStringBufferPipe.class);
 
     /**
      * Initing entity types collection
@@ -220,52 +221,66 @@ public class NERFromStringBufferPipe extends Pipe {
             System.exit(0);
         }
 
+        HashMap<String, String> hmProperties = new HashMap<>();
+
         try {
             StringBuffer newSb = new StringBuffer();
             String data = carrier.getData().toString();
             CoreDocument doc = new CoreDocument(data);
+            int lastIndex = 0;
 
             // Annotate the document
             pipeline.annotate(doc);
 
             // Iterate over NER identified entities
-            if (doc.entityMentions().size() > 0) {
+            if (doc.entityMentions() != null && doc.entityMentions().size() > 0) {
                 for (CoreEntityMention em : doc.entityMentions()) {
-                    int idx=entityTypes.indexOf(em.entityType());
-                    if (idx!=-1) {
+                    int idx = entityTypes.indexOf(em.entityType());
+                    if (idx > -1) {
                         int begin = data.indexOf(em.text()) - 1;
+
                         int end = data.indexOf(em.text()) + (em.text().length());
 
                         if (data.startsWith(em.text())) {
-                            newSb.append(data.substring(end, data.length() - 1));
+                            if (lastIndex < end + 1) {
+                                lastIndex = end;
+                            }
                         } else if (data.endsWith(em.text())) {
-                            newSb.append(data.substring(0, begin + 1));
-                        } else {
-                            newSb.append(data.substring(0, begin) + data.substring(end, data.length()));
+                            if (begin >= lastIndex) {
+                                newSb.append(data.substring(lastIndex, begin + 1));
+                                lastIndex = data.length() - 1;
+                            }
+                        } else if (begin > 0) {
+                            if (begin >= lastIndex) {
+                                newSb.append(data.substring(lastIndex, begin));
+                                lastIndex = end;
+                            }
                         }
-                        
+
                         String property = this.identifiedEntitiesProperty.get(idx);
 
                         String propertyValue = em.text();
                         if (identifiedEntitiesProperty.contains(property)) {
-                            carrier.setProperty(property, propertyValue);
+                            hmProperties.put(property, propertyValue);
                         }
 
-                    } else {
-                        newSb.append(data);
                     }
                 }
+                newSb.append(data.substring(lastIndex));
+
                 carrier.setData(newSb);
             }
 
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            ex.printStackTrace();
         }
-        
-        identifiedEntitiesProperty.stream().filter((propName) -> (carrier.getProperty(propName)==null)).forEachOrdered((propName) -> {
-            carrier.setProperty(propName, "");
+
+        identifiedEntitiesProperty.stream().filter((propName) -> (carrier.getProperty(propName) == null)).forEachOrdered((propName) -> {
+            String val = hmProperties.get(propName);
+            carrier.setProperty(propName, val == null ? "" : val);
         });
-        
+
         return carrier;
 
     }
