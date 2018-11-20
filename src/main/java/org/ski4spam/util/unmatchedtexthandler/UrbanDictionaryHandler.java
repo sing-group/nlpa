@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ski4spam.Main;
 import org.bdp4j.util.Pair;
+import java.util.HashMap;
 
 /**
  * A class to get the match with the specific word from an Urban dictionary
@@ -16,9 +17,9 @@ import org.bdp4j.util.Pair;
  * @author María Novo
  */
 public class UrbanDictionaryHandler extends UnmatchedTextHandler {
-
-    private String lang;
-     private static final Logger logger = LogManager.getLogger(UrbanDictionaryHandler.class);
+	 
+    private static final Logger logger = LogManager.getLogger(UrbanDictionaryHandler.class);
+	 private HashMap<String, HashMap<String,String>> urbanDictionaries=new HashMap<>();
 
     @Override
     /**
@@ -32,9 +33,8 @@ public class UrbanDictionaryHandler extends UnmatchedTextHandler {
     public void handle(Pair<String, String> text, String lang) {    
         String originalString = text.getObj1();
         String replacementString = text.getObj2();
-        this.lang = lang;
         if (replacementString == null) {
-            String matchedString = getMatch(originalString);
+            String matchedString = getMatch(originalString,lang);
             if (matchedString != null) {
                 text.setObj2(matchedString);
             }
@@ -47,8 +47,10 @@ public class UrbanDictionaryHandler extends UnmatchedTextHandler {
      * @param originalString Word to get match in resources files
      * @return String
      */
-    private String getMatch(String originalString) {
+    private String getMatch(String originalString, String lang) {
+		if (urbanDictionaries.get(lang)==null){
         URL url = Main.class.getResource("/urbandictionary/messages_" + lang.toUpperCase() + ".properties");
+		  HashMap<String,String> dict=new HashMap<>();
         if (url != null) {
             File resourceFile = new File(url.getPath());
             if (resourceFile.exists()) {
@@ -57,11 +59,10 @@ public class UrbanDictionaryHandler extends UnmatchedTextHandler {
                         BufferedReader buffer = new BufferedReader(resourceFileReader);
                         String linea;
                         while ((linea = buffer.readLine()) != null) {
-                            if (linea.contains(originalString)) {
+									 if (linea.contains("#")) linea=linea.substring(0,linea.indexOf("#")-1);
+                            if (linea.contains("=")) {
                                 String[] matches = linea.split("=");
-                                if (matches[0] == null ? originalString == null : matches[0].equals(originalString)) {
-                                    return matches[1];
-                                }
+										  dict.put(matches[0],matches[1]);
                             }
                         }
                     } catch (IOException ex) {
@@ -74,7 +75,10 @@ public class UrbanDictionaryHandler extends UnmatchedTextHandler {
             }
 
         }
-        return null;
+		  urbanDictionaries.put(lang,dict);
+		}
+      
+		return urbanDictionaries.get(lang).get(originalString);
     }
 
 }
