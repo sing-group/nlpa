@@ -18,7 +18,7 @@ import static org.ski4spam.pipe.impl.SlangFromStringBufferPipe.getReplacement4Sl
  * @author María Novo
  */
 public class UrbanDictionaryHandler extends UnmatchedTextHandler {
-
+	 
     private static final Logger logger = LogManager.getLogger(UrbanDictionaryHandler.class);
 
     @Override
@@ -30,7 +30,7 @@ public class UrbanDictionaryHandler extends UnmatchedTextHandler {
      * @param lang The language of the original string
      * @return String
      */
-    public void handle(Pair<String, String> text, String lang) {
+    public void handle(Pair<String, String> text, String lang) {    
         String originalString = text.getObj1();
         String replacementString = text.getObj2();
         if (replacementString == null) {
