@@ -114,9 +114,11 @@ public class Main {
             new FindUrlInStringBufferPipe(),
             new FindEmoticonInStringBufferPipe(),
             new FindEmojiInStringBufferPipe(),
+            new AbbreviationFromStringBufferPipe(), //They are case sensitive so should be called before StringBufferToLowerCasePipe
             new MeasureLengthFromStringBufferPipe("length_after_cleaning_text"),
             new StringBufferToLowerCasePipe(),
             new GuessLanguageFromStringBufferPipe(),
+            new InterjectionFromStringBufferPipe(),
             new StopWordFromStringBuffer(),
             new ComputePolarityFromStringBufferPipe(),
             new NERFromStringBufferPipe(),

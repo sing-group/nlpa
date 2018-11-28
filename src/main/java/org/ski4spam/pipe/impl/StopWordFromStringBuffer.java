@@ -16,8 +16,14 @@ import javax.json.JsonReader;
 import javax.json.JsonValue;
 import javax.json.JsonString;
 
+import org.bdp4j.util.Pair;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.StringTokenizer;
+
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
@@ -36,14 +42,14 @@ public class StopWordFromStringBuffer extends Pipe {
     private static final Logger logger = LogManager.getLogger(StopWordFromStringBuffer.class);
 
     /**
-     * A hashset of stopwords in different languages.
+     * A HashMap of stopwords in different languages.
 	  * Thanks to StopWords-Json Project available at
 	  * <a href="https://www.npmjs.com/package/stopwords-json">
 	  * https://www.npmjs.com/package/stopwords-json</a>
-	  * NOTE: All JSON files (listed below) containing these stopwords 
+	  * NOTE: All JSON files (listed below) containing these stopwords
 	  * have been compiled from stopwords-json project (see previous link)
      */
-    private static final HashSet<String> htStopwords = new HashSet<>();
+    private static final HashMap<String,LinkedList<Pattern>> hmStopWords = new HashMap<>();
 
     static {
         for (String i : new String[]{"/stopwords-json/af.json", "/stopwords-json/ar.json",
@@ -77,11 +83,14 @@ public class StopWordFromStringBuffer extends Pipe {
                 InputStream is = Main.class.getResourceAsStream(i);
                 JsonReader rdr = Json.createReader(is);
                 JsonArray array = rdr.readArray();
-
+                LinkedList<Pattern> currentStopwords=new LinkedList<>();
                 for (JsonValue v : array) {
-                    htStopwords.add(lang + ((JsonString)v).getString());
+                    currentStopwords.add(
+                      Pattern.compile( "(?:[\\p{Space}]\\p{Punct}]|^|¡)(" + Pattern.quote(((JsonString)v).getString()) + ")(?:[\\p{Space}\\p{Punct}]|$|!)" )
+                    );
                     //System.out.println("Adding: "+lang+((JsonString)v).getString());
                 }
+                hmStopWords.put(lang,currentStopwords);
             } catch (Exception e) {
                 System.out.println("Exception processing: " + i + " message " + e.getMessage());
             }
@@ -136,19 +145,11 @@ public class StopWordFromStringBuffer extends Pipe {
      *
      * @param langProp The name of the property where the language is stored
      */
-    @PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue = DEFAULT_LANG_PROPERTY)
+   @PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue = DEFAULT_LANG_PROPERTY)
     public void setLangProp(String langProp) {
         this.langProp = langProp;
     }
 
-    /**
-     * Returns the name of the property in which the language is stored
-     *
-     * @return the name of the property where the language is stored
-     */
-    public String getLangProp() {
-        return this.langProp;
-    }
 
     /**
      * Process an Instance. This method takes an input Instance, destructively
@@ -160,25 +161,26 @@ public class StopWordFromStringBuffer extends Pipe {
      */
     @Override
     public Instance pipe(Instance carrier) {
-        if (carrier.getData() instanceof StringBuffer) {
-            StringBuffer newSb = new StringBuffer();
-            String lang = (String) carrier.getProperty(langProp);
-            String data = carrier.getData().toString();
-            StringTokenizer st = new StringTokenizer(data, " \t\n\r\u000b\f");
-            while (st.hasMoreTokens()) {
-                String current = st.nextToken();
-					 String currentFixed=(new String (current)).replaceAll("[^a-zA-Z0-9]", "");
-					 //System.out.print("Replacing "+current+" codified as (" + currentFixed +") by searching for "+lang+currentFixed+"...");
-                if (!htStopwords.contains(lang + currentFixed)) {
-                    newSb.append(current + " ");
-						 //System.out.println("kept");						  
-                }/*else{
-						 System.out.println("dropped");
-                }*/
-            }
-            carrier.setData(newSb);
-        }
+      if (carrier.getData() instanceof StringBuffer) {
+          String lang = (String) carrier.getProperty(langProp);
+          StringBuffer data = new StringBuffer(carrier.getData().toString());
+          String value = "";
 
-        return carrier;
+          LinkedList<Pattern> setStopwords = hmStopWords.get(lang);
+          if (setStopwords==null) return carrier; //If dict is not available for the language of the texts
+
+          for (Pattern currentStopword:setStopwords){
+              Matcher m = currentStopword.matcher(data);
+              if (m.find()){
+                int last=0;
+                while (m.find(last)){
+                       data = data.replace(m.start(1), m.end(1), "");
+                       last=m.start(1);
+                }
+              }
+          }
+
+      }
+      return carrier;
     }
 }
