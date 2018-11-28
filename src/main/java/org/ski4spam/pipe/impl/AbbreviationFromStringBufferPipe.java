@@ -40,7 +40,7 @@ public class AbbreviationFromStringBufferPipe extends Pipe {
 
     /**
      * A hashset of abbreviations in different languages.
-     * NOTE: All JSON files (listed below) containing abbreviations 
+     * NOTE: All JSON files (listed below) containing abbreviations
      *
      */
     private static final HashMap<String, HashMap<String,Pair<Pattern,String>>> htAbbreviations = new HashMap<>();
@@ -64,7 +64,7 @@ public class AbbreviationFromStringBufferPipe extends Pipe {
             } catch (Exception e) {
                 System.out.println("Exception processing: " + i + " message " + e.getMessage());
             }
-          
+
         }
 
     }
@@ -131,10 +131,10 @@ public class AbbreviationFromStringBufferPipe extends Pipe {
     }
 
     /**
-     * Process an Instance. This method takes an input Instance, 
+     * Process an Instance. This method takes an input Instance,
      * modifies it extending abbreviations, and returns it. This is the method by which all
      * pipes are eventually run.
-     * 
+     *
      * LLAMARLO ANTES DE QUITAR MAYÚSCULAS *****************
      *
      * @param carrier Instance to be processed.
@@ -143,21 +143,25 @@ public class AbbreviationFromStringBufferPipe extends Pipe {
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
-            String lang = (String) carrier.getProperty(langProp);
-            StringBuffer sb = new StringBuffer(carrier.getData().toString());
-            for(String lg: htAbbreviations.keySet()){
-                if (lg.equals(lang)){
-                   HashMap<String,Pair<Pattern,String>> dict = htAbbreviations.get(lg);
-                   for(String abbrev:dict.keySet()){
-                        Pattern p=dict.get(abbrev).getObj1();
-                        Matcher m = p.matcher(sb);
-                        while (m.find()){
-                           sb = sb.replace(m.start(1), m.end(1), dict.get(abbrev).getObj2()); 
-                        }
-                   }
-                }
-            }
+
+             String lang = (String) carrier.getProperty(langProp);
+             StringBuffer sb = new StringBuffer(carrier.getData().toString());
+
+             HashMap<String,Pair<Pattern,String>> dict = htAbbreviations.get(lang);
+
+             if (dict==null) return carrier; //When there is not a dictionary for the language
+
+             for(String abbrev:dict.keySet()){
+                  Pattern p=dict.get(abbrev).getObj1();
+                  Matcher m = p.matcher(sb);
+                  while (m.find()){
+                     sb = sb.replace(m.start(1), m.end(1), dict.get(abbrev).getObj2());
+                  }
+             }
+
            carrier.setData(sb);
+        }else{
+          logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
         }
         return carrier;
     }

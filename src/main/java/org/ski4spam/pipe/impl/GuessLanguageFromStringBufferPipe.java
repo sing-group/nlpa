@@ -32,7 +32,7 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
 		* The default property name where the language will be stored
 		*/
     public final static String DEFAULT_LANG_PROPERTY="language";
-	 
+
 	 /**
 		* The default property name where the language guessing reliability is stored
 		*/
@@ -61,17 +61,17 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
 		* The name of the property to store the language
 		*/
     private String langProp = DEFAULT_LANG_PROPERTY;
-	 
+
 	 /**
 		* The name of the property to store the realiability of the language guessing
 		*/
     private String langReliabilityProp = DEFAULT_LANG_RELIABILITY_PROPERTY;
-	 
+
 	 /**
 		* A language detector to guess the language
 		*/
-    private LanguageDetector languageDetector; 
-    
+    private LanguageDetector languageDetector;
+
 	 /**
 		* Stablish the name of the property where the language will be stored
 		* @param langProp The name of the property where the language is stored
@@ -80,7 +80,7 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
     public void setLangProp(String langProp){
         this.langProp = langProp;
     }
-    
+
 	 /**
 		* Returns the name of the property in which the language is stored
 		* @return the name of the property where the language is stored
@@ -88,7 +88,7 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
     public String getLangProp(){
         return this.langProp;
     }
-   
+
 	 /**
 		* Store the property name for the reliability of the guessing
 		* @param langReliabilityProp The property name for storing the reliability
@@ -97,7 +97,7 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
     public void setLangReliabilityProp(String langReliabilityProp){
         this.langReliabilityProp = langReliabilityProp;
     }
-    
+
 	 /**
 		* Returns the reliability of the language guessing
 		* @return the reliability of the language guessing
@@ -105,7 +105,7 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
     public String getLangReliabilityProp(){
         return this.langReliabilityProp;
     }
-   
+
 	 /**
 		* The default constructor for the language guessing pipe
 		*/
@@ -138,7 +138,7 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
         }
     }
     /**
-		 
+
      * Process an Instance.  This method takes an input Instance,
      * destructively modifies it in some way, and returns it.
      * This is the method by which all pipes are eventually run.
@@ -172,13 +172,12 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
                     carrier.setProperty(langProp, "UND");
                     carrier.setProperty(langReliabilityProp, 0);
                 }
-                
-            //}
-        }
 
+            //}
+        }else{
+          logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
+        }
         return carrier;
     }
-
+    
 }
-	
-		
