@@ -158,6 +158,8 @@ public class FindEmojiInStringBufferPipe extends Pipe {
                 carrier.setData(new StringBuffer(EmojiParser.removeAllEmojis(data)));
             }
 
+        }else{
+          logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
         }
         return carrier;
     }

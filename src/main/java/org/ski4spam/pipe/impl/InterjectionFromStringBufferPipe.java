@@ -53,7 +53,7 @@ public class InterjectionFromStringBufferPipe extends Pipe {
                                      "/interjections-json/interj.fr.json",
                                      "/interjections-json/interj.gl.json",
                                      "/interjections-json/interj.eu.json"}) {
-        
+
             String lang = i.substring(27, 29).toUpperCase();
             try {
                 InputStream is = Main.class.getResourceAsStream(i);
@@ -61,13 +61,13 @@ public class InterjectionFromStringBufferPipe extends Pipe {
                 JsonArray array = rdr.readArray();
                 LinkedList<Pattern> setWords = new LinkedList<>();
 
-                for (JsonValue v : array) {  
+                for (JsonValue v : array) {
                     setWords.add(Pattern.compile( "(?:[\\p{Space}]|^)([¡]?(" + Pattern.quote(((JsonString)v).getString()) + ")[!]?)(?:[\\p{Space}]|$)" ));
                 }
-                    
+
                 hmInterjections.put(lang,setWords);
-                
-                
+
+
             } catch (Exception e) {
                 System.out.println("Exception processing: " + i + " message " + e.getMessage());
             }
@@ -101,7 +101,7 @@ public class InterjectionFromStringBufferPipe extends Pipe {
     public Class getOutputType() {
         return StringBuffer.class;
     }
-    
+
     /**
      * Indicates if interjections should be removed from data
      */
@@ -131,7 +131,7 @@ public class InterjectionFromStringBufferPipe extends Pipe {
     public void setRemoveInterjection(String removeInterjection) {
         this.removeInterjection = EBoolean.parseBoolean(removeInterjection);
     }
-    
+
     /**
      * Stablish the name of the property where the language will be stored
      *
@@ -178,7 +178,7 @@ public class InterjectionFromStringBufferPipe extends Pipe {
     public String getInterjectionProp() {
         return this.interjectionProp;
     }
-    
+
     /**
      * Construct a InterjectionFromStringBuffer instance with the default
      * configuration value
@@ -214,15 +214,18 @@ public class InterjectionFromStringBufferPipe extends Pipe {
         if (carrier.getData() instanceof StringBuffer) {
             String lang = (String) carrier.getProperty(langProp);
             StringBuffer data = new StringBuffer(carrier.getData().toString());
-            String value = "";  
+            String value = "";
 
             LinkedList<Pattern> setWords = hmInterjections.get(lang);
-            if (setWords == null) return carrier;
-            
-            for (Pattern interej :setWords){          
+            if (setWords == null) {
+              carrier.setProperty(interjectionProp, value);
+              return carrier;
+            }
+
+            for (Pattern interej :setWords){
                 Matcher m = interej.matcher(data);
                 int last =0;
-                if (m.find(last)){ 
+                if (m.find(last)){
                     value += m.group(1) + " -- ";
                     do{
                             data = data.replace(m.start(1), m.end(1),"");
@@ -230,17 +233,18 @@ public class InterjectionFromStringBufferPipe extends Pipe {
                     }while(m.find(last));
                 }
             }
-            
+
             if (removeInterjection)
                     carrier.setData(data);
-            
-            
+
+
             carrier.setProperty(interjectionProp, value);
-            
+
+        }else{
+          logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
         }
         return carrier;
     }
-    
+
 
 }
-

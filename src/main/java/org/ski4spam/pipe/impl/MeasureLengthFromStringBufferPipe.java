@@ -6,19 +6,27 @@ import org.bdp4j.pipe.PropertyComputingPipe;
 
 import org.bdp4j.pipe.PipeParameter;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
- * This pipe adds the length property that is computed by measuring 
+ * This pipe adds the length property that is computed by measuring
  * the length of a stringbuffer included in the data of the Instance
- * @author Rosalía Laza 
+ * @author Rosalía Laza
  * @author Reyes Pavón
  */
 @PropertyComputingPipe()
 public class MeasureLengthFromStringBufferPipe extends Pipe {
-	
+
+   /**
+	   * For logging purposes
+		 */
+    private static final Logger logger = LogManager.getLogger(MeasureLengthFromStringBufferPipe.class);
+
    /**
     * Return the input type included the data attribute of a Instance
     * @return the input type for the data attribute of the Instances processed
-    */   
+    */
     @Override
     public Class getInputType() {
         return StringBuffer.class;
@@ -33,12 +41,12 @@ public class MeasureLengthFromStringBufferPipe extends Pipe {
     public Class getOutputType() {
         return StringBuffer.class;
     }
-    
+
 	 /**
 		* The default name of the property to store the length of the text
 		*/
 	 public static final String DEFAULT_LENGTH_PROPERTY="length";
-		 
+
     /**
 		* The property to store the length of the text
 		*/
@@ -52,7 +60,7 @@ public class MeasureLengthFromStringBufferPipe extends Pipe {
     public void setLengthProp(String lengthProp) {
         this.lengthProp = lengthProp;
     }
-    
+
 	 /**
 		* Returns the name of the property to store the length
 		* @return the name of the property to store the length
@@ -76,7 +84,7 @@ public class MeasureLengthFromStringBufferPipe extends Pipe {
     public MeasureLengthFromStringBufferPipe(String lengthProp) {
         this.lengthProp = lengthProp;
     }
-	 
+
     /**
     * Process an Instance.  This method takes an input Instance,
     * destructively modifies it in some way, and returns it.
@@ -93,8 +101,9 @@ public class MeasureLengthFromStringBufferPipe extends Pipe {
             carrier.setProperty(lengthProp, lengthSb);
         } else {
         	carrier.setProperty(lengthProp, "null");
+        	logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
         }
-                    
+
         return carrier;
     }
 }

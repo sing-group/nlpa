@@ -191,6 +191,8 @@ public class FindEmoticonInStringBufferPipe extends Pipe {
 
             carrier.setProperty(emoticonProp, value);
 
+        }else{
+          logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
         }
         return carrier;
     }

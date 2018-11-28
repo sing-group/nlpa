@@ -26,7 +26,7 @@ public class FindUrlInStringBufferPipe extends Pipe {
 
     private static final Logger logger = LogManager.getLogger(FindUrlInStringBufferPipe.class);
     /*  NOTE:
-     \p{Punct}-[.-_] 
+     \p{Punct}-[.-_]
 		  is equivalent to:
 	                         !\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~
      */
@@ -199,6 +199,8 @@ public class FindUrlInStringBufferPipe extends Pipe {
                 logger.info("URL not found for instance " + carrier.toString());
             }
             carrier.setProperty(URLProp, value);
+        }else{
+          logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
         }
         return carrier;
     }

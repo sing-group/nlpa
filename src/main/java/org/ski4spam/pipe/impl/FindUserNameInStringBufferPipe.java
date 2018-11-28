@@ -24,7 +24,7 @@ public class FindUserNameInStringBufferPipe extends Pipe {
 
     private static final Logger logger = LogManager.getLogger(FindUserNameInStringBufferPipe.class);
     /*  NOTE:
-     \p{Punct}-[.-_] 
+     \p{Punct}-[.-_]
 		  is equivalent to:
 	                         !\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~
      */
@@ -185,6 +185,8 @@ public class FindUserNameInStringBufferPipe extends Pipe {
                 logger.info("@userName not found for instance " + carrier.toString());
             }
             carrier.setProperty(userNameProp, value);
+        }else{
+          logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
         }
         return carrier;
     }
