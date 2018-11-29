@@ -3,7 +3,6 @@ package org.ski4spam.pipe.impl;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import org.apache.logging.log4j.LogManager;
@@ -13,7 +12,6 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.ski4spam.util.EBoolean;
-import org.bdp4j.util.Pair;
 
 /**
  * This pipe drops URLs The data of the instance should contain a StringBuffer
@@ -33,7 +31,7 @@ public class FindUrlInStringBufferPipe extends Pipe {
 
     private static List<Pattern> URLPatterns;
 
-    private static final Pattern URLPattern = Pattern.compile("((?:[a-z0-9]+:)(?:\\/\\/|\\/|)?(?:[\\w-]+(?:(?:\\.[\\w-]+)+))(?:[\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])?(?=(?:,|;|!|:|\"|\\?|\\s|$)))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+    private static final Pattern URLPattern = Pattern.compile("((?:\\s|^)(?:(?:[a-z0-9]+:)(?:\\/\\/|\\/|)?|(www.))(?:[\\w-]+(?:(?:\\.[\\w-]+)+))(?:[\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])?(?=(?:,|;|!|:|\"|\\?|\\s|$)))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
     private static final Pattern emailPattern = Pattern.compile("(?:\\s|^|¡)([\\w!#$%&’*+-\\/=?^_`\\{|\\}~“(),:;<>@\\[\\]\"ç]+@[\\[\\w.-:]+([A-Z]{2,4}|\\]))[;:\\?\"!,.]?(?=(?:\\s|$))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 
     /**
@@ -122,7 +120,7 @@ public class FindUrlInStringBufferPipe extends Pipe {
      * @param s String to test
      * @return true if string contains URLs
      */
-    public static boolean isURL(String s) {
+    public static boolean isURL(StringBuffer s) {
         boolean ret = false;
         if (s != null) {
             Iterator<Pattern> it_p = URLPatterns.iterator();
@@ -168,33 +166,24 @@ public class FindUrlInStringBufferPipe extends Pipe {
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
 
-            String data = carrier.getData().toString();
-            Stack<Pair<Integer, Integer>> replacements = new Stack<>();
+            StringBuffer sb = (StringBuffer) carrier.getData();
             String value = "";
 
-            if (isURL(data)) {
+            if (isURL(sb)) {
 
                 for (Pattern URLPat : URLPatterns) {
-                    Matcher m = URLPat.matcher(data);
-
-                    while (m.find()) {
+                    Matcher m = URLPat.matcher(sb);
+                    int last = 0;
+                    
+                    while (m.find(last)) {
                         value += m.group(1) + " ";
+                        last=removeURL?m.start(1):m.end(1);
+                        
                         if (removeURL) {
-                            replacements.push(new Pair<>(m.start(1), m.end(1)));
+                            sb.replace(m.start(1),m.end(1),"");
                         }
                     }
-
-                    while (!replacements.empty()) {
-                        Pair<Integer, Integer> current = replacements.pop();
-                        data = (current.getObj1() > 0 ? data.substring(0, current.getObj1()) : "")
-                                + //if startindex is 0 do not concatenate
-                                (current.getObj2() < (data.length() - 1) ? data.substring(current.getObj2()) : ""); //if endindex=newSb.length()-1 do not concatenate
-                    }
-
-                }
-                if (removeURL) {
-                    carrier.setData(new StringBuffer(data));
-                }
+                }    
             } else {
                 logger.info("URL not found for instance " + carrier.toString());
             }
