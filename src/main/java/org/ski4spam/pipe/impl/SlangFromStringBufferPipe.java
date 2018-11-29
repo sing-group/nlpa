@@ -48,7 +48,8 @@ public class SlangFromStringBufferPipe extends Pipe {
     private static final HashMap<String, HashMap<String, SlangEntry>> hmSlangs = new HashMap<>();
 
     static {
-        for (String i : new String[]{"/slangs-json/slang.en.json","/slangs-json/slang.es.json" }) {
+        for (String i : new String[]{"/slangs-json/slang.en.json","/slangs-json/slang.es.json",
+                                     "/slangs-json/slang.gl.json" }) {
 
             String lang = i.substring(19, 21).toUpperCase();
             try {
