@@ -170,15 +170,16 @@ public class FindUserNameInStringBufferPipe extends Pipe {
                         replacements.push(new Pair<>(m.start(1), m.end(1)));
                     }
                 }
-
-                while (!replacements.empty()) {
-                    Pair<Integer, Integer> current = replacements.pop();
-                    data = (current.getObj1() > 0 ? data.substring(0, current.getObj1()) : "")
+                
+                if (removeUserName) {
+                    while (!replacements.empty()) {
+                        Pair<Integer, Integer> current = replacements.pop();
+                        data = (current.getObj1() > 0 ? data.substring(0, current.getObj1()) : "")
                             + //if startindex is 0 do not concatenate
                             (current.getObj2() < (data.length() - 1) ? data.substring(current.getObj2()) : ""); //if endindex=newSb.length()-1 do not concatenate
-                }
+                    }
 
-                if (removeUserName) {
+
                     carrier.setData(new StringBuffer(data));
                 }
             } else {
