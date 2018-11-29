@@ -23,6 +23,7 @@ import org.bdp4j.pipe.PropertyComputingPipe;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Stack;
+import org.bdp4j.util.Pair;
 
 import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 import org.ski4spam.util.EBoolean;
