@@ -109,23 +109,22 @@ public class Main {
             new MeasureLengthFromStringBufferPipe(),
             new StripHTMLFromStringBufferPipe(),
             new MeasureLengthFromStringBufferPipe("length_after_html_drop"),
-            new FindUserNameInStringBufferPipe(),
-            new FindHashtagInStringBufferPipe(),
-            new FindUrlInStringBufferPipe(),
-            new FindEmoticonInStringBufferPipe(),
-            new FindEmojiInStringBufferPipe(),
-            new AbbreviationFromStringBufferPipe(), //They are case sensitive so should be called before StringBufferToLowerCasePipe
+            //new FindUserNameInStringBufferPipe(),
+            //new FindHashtagInStringBufferPipe(),
+            //new FindUrlInStringBufferPipe(),
+            //new FindEmoticonInStringBufferPipe(),
+            //new FindEmojiInStringBufferPipe(),
             new MeasureLengthFromStringBufferPipe("length_after_cleaning_text"),
             new StringBufferToLowerCasePipe(),
             new SlangFromStringBufferPipe(),
             new InterjectionFromStringBufferPipe(),
             new StopWordFromStringBuffer(),
-            new ComputePolarityFromStringBufferPipe(),
-            new NERFromStringBufferPipe(),
+            //new ComputePolarityFromStringBufferPipe(),
+            //new NERFromStringBufferPipe(),
             new TeeCSVFromStringBufferPipe("output.csv", true),
-            new StringBuffer2SynsetVector(),
+            /*new StringBuffer2SynsetVector(),
             new SynsetVector2SynsetFeatureVector(SynsetVectorGroupingStrategy.COUNT),
-            new TeeCSVFromSynsetFeatureVector("outputsyns.csv")
+            new TeeCSVFromSynsetFeatureVector("outputsyns.csv")*/
 
         });
 

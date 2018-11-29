@@ -16,12 +16,8 @@ import javax.json.JsonReader;
 import javax.json.JsonValue;
 import javax.json.JsonString;
 
-import org.bdp4j.util.Pair;
-import java.util.Stack;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.StringTokenizer;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -164,27 +160,20 @@ public class StopWordFromStringBuffer extends Pipe {
     public Instance pipe(Instance carrier) {
       if (carrier.getData() instanceof StringBuffer) {
           String lang = (String) carrier.getProperty(langProp);
-          StringBuffer data = new StringBuffer(carrier.getData().toString());
-          String value = "";
-
+          StringBuffer sb = (StringBuffer) carrier.getData();
+          
           LinkedList<Pattern> setStopwords = hmStopWords.get(lang);
-          if (setStopwords==null) return carrier; //If dict is not available for the language of the texts
-
-          for (Pattern currentStopword:setStopwords){
-              Matcher m = currentStopword.matcher(data);
-              Stack<Pair<Integer, Integer>> replacements = new Stack<>();
-
-              while (m.find()) {
-                      replacements.push(new Pair<>(m.start(1), m.end(1)));
-              }
-
-              while (!replacements.empty()) {
-                  Pair<Integer, Integer> current = replacements.pop();
-                  data = data.replace(current.getObj1(),current.getObj2(),"");
-              }
+          
+          if (setStopwords!=null){
+            for (Pattern currentStopword:setStopwords){
+                Matcher m = currentStopword.matcher(sb);
+                int last=0;
+                while (m.find(last)) {
+                      last=m.start(1);
+                      sb.replace(m.start(1),m.end(1),"");
+                }
+            }
           }
-
-          carrier.setData(data);
       }else{
         logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
       }

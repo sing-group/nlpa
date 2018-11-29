@@ -22,8 +22,6 @@ import org.bdp4j.pipe.PropertyComputingPipe;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Stack;
-import org.bdp4j.util.Pair;
 
 import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 import org.ski4spam.util.EBoolean;
@@ -214,41 +212,29 @@ public class InterjectionFromStringBufferPipe extends Pipe {
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
             String lang = (String) carrier.getProperty(langProp);
-            StringBuffer data = new StringBuffer(carrier.getData().toString());
+            StringBuffer sb = (StringBuffer) carrier.getData();
             String value = "";
 
             LinkedList<Pattern> setWords = hmInterjections.get(lang);
-            if (setWords == null) {
-                carrier.setProperty(interjectionProp, value);
-                return carrier;
-            }
-
-            for (Pattern interej : setWords) {
-                Matcher m = interej.matcher(data);
-
-                Stack<Pair<Integer, Integer>> replacements = new Stack<>();
-
-                while (m.find()) {
-                    value += m.group(1) + " -- ";
-                    if (removeInterjection) replacements.push(new Pair<>(m.start(1), m.end(1)));
-                }
-
-                if (removeInterjection){
-                   while (!replacements.empty()) {
-                       Pair<Integer, Integer> current = replacements.pop();
-                       data = data.replace(current.getObj1(),current.getObj2(),"");
-                   }
+            if (setWords != null) {
+               for (Pattern interej :setWords){
+                    Matcher m = interej.matcher(sb);
+                    int last=0;
+                    
+                    if (m.find(last)){
+                       value += m.group(1) + " -- "; 
+                       if (removeInterjection){
+                           while (m.find(last)){
+                                last=m.start(1);
+                                sb.replace(m.start(1),m.end(1),"");
+                           }
+                       }                       
+                    }
                 }
             }
-
-            if (removeInterjection) {
-                carrier.setData(data);
-            }
-
             carrier.setProperty(interjectionProp, value);
-
-        } else {
-            logger.error("Data should be an StrinBuffer when processing " + carrier.getName() + " but is a " + carrier.getData().getClass().getName());
+        }else{
+          logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
         }
         return carrier;
     }
