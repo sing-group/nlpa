@@ -145,25 +145,23 @@ public class AbbreviationFromStringBufferPipe extends Pipe {
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
 
-            String lang = (String) carrier.getProperty(langProp);
-            StringBuffer sb = new StringBuffer(carrier.getData().toString());
+             String lang = (String) carrier.getProperty(langProp);
+             StringBuffer sb = (StringBuffer)carrier.getData();
 
-            HashMap<String, Pair<Pattern, String>> dict = htAbbreviations.get(lang);
+             HashMap<String,Pair<Pattern,String>> dict = htAbbreviations.get(lang);
+             if (dict==null) return carrier; //When there is not a dictionary for the language
 
-            if (dict == null) {
-                return carrier; //When there is not a dictionary for the language
-            }
-            for (String abbrev : dict.keySet()) {
-                Pattern p = dict.get(abbrev).getObj1();
-                Matcher m = p.matcher(sb);
-                while (m.find()) {
-                    sb = sb.replace(m.start(1), m.end(1), dict.get(abbrev).getObj2());
-                }
-            }
-
-            carrier.setData(sb);
-        } else {
-            logger.error("Data should be an StrinBuffer when processing " + carrier.getName() + " but is a " + carrier.getData().getClass().getName());
+             for(String abbrev:dict.keySet()){
+                  Pattern p=dict.get(abbrev).getObj1();
+                  Matcher m = p.matcher(sb);
+                  int last = 0;
+                  while (m.find(last)){
+                     last = m.start(1);
+                     sb = sb.replace(m.start(1), m.end(1), dict.get(abbrev).getObj2());
+                  }
+             }
+        }else{
+          logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
         }
         return carrier;
     }

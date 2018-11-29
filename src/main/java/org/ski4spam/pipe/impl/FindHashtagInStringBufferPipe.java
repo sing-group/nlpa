@@ -1,6 +1,5 @@
 package org.ski4spam.pipe.impl;
 
-import java.util.Stack;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import org.apache.logging.log4j.LogManager;
@@ -10,7 +9,6 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.ski4spam.util.EBoolean;
-import org.bdp4j.util.Pair;
 
 /**
  * This pipe drops hashtags The data of the instance should contain a
@@ -126,7 +124,7 @@ public class FindHashtagInStringBufferPipe extends Pipe {
      * @param s String to test
      * @return true if string contains hashtag
      */
-    public static boolean isHashtag(String s) {
+    public static boolean isHashtag(StringBuffer s) {
         boolean ret = false;
         if (s != null) {
             ret = hashtagPattern.matcher(s).find();
@@ -166,30 +164,18 @@ public class FindHashtagInStringBufferPipe extends Pipe {
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
 
-            String data = carrier.getData().toString();
-            Stack<Pair<Integer, Integer>> replacements = new Stack<>();
-
+            StringBuffer data = (StringBuffer)carrier.getData();
             String value = "";
 
             if (isHashtag(data)) {
                 Matcher m = hashtagPattern.matcher(data);
-
-                while (m.find()) {
+                int last = 0;
+                while (m.find(last)) {
                     value += m.group(1) + " ";
+                    last = removeHashtag?m.start(1):m.end(1);
                     if (removeHashtag) {
-                        replacements.push(new Pair<>(m.start(1), m.end(1)));
+                        data = data.replace(m.start(1), m.end(1), "");
                     }
-                }
-
-                while (!replacements.empty()) {
-                    Pair<Integer, Integer> current = replacements.pop();
-                    data = (current.getObj1() > 0 ? data.substring(0, current.getObj1()) : "")
-                            + //if startindex is 0 do not concatenate
-                            (current.getObj2() < (data.length() - 1) ? data.substring(current.getObj2()) : ""); //if endindex=newSb.length()-1 do not concatenate
-                }
-
-                if (removeHashtag) {
-                    carrier.setData(new StringBuffer(data));
                 }
             } else {
                 logger.info("hashtag not found for instance " + carrier.toString());

@@ -15,12 +15,9 @@ import javax.json.Json;
 import javax.json.JsonReader;
 import javax.json.JsonObject;
 
-import java.util.Stack;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.bdp4j.util.Pair;
 import java.util.Collection;
 
 import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
@@ -57,13 +54,10 @@ public class SlangFromStringBufferPipe extends Pipe {
                 JsonReader rdr = Json.createReader(is);
                 JsonObject jsonObject = rdr.readObject();
                 rdr.close();
-                HashMap<String, SlangEntry> dict = new HashMap<>();
-                for (String slang : jsonObject.keySet()) {
-                    dict.put(slang,
-                            new SlangEntry(
-                                    Pattern.compile("(?:[\\p{Space}]|^)(" + Pattern.quote(slang) + ")(?:[\\p{Space}]|$)"),
-                                    jsonObject.getString(slang))
-                    );
+                HashMap<String, SlangEntry> dict=new HashMap<>();
+                for(String slang:jsonObject.keySet()){
+                    dict.put(slang,new SlangEntry(Pattern.compile( "(?:[\\p{Space}]|^)(" + Pattern.quote(slang) + ")(?:[\\p{Space}]|$)"),
+                                   jsonObject.getString(slang)));
                 }
                 hmSlangs.put(lang, dict);
             } catch (Exception e) {
@@ -149,28 +143,19 @@ public class SlangFromStringBufferPipe extends Pipe {
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
             String lang = (String) carrier.getProperty(langProp);
-
+            StringBuffer data = (StringBuffer)carrier.getData();
             HashMap<String, SlangEntry> dict = hmSlangs.get(lang);
             if (dict==null) return carrier; //If dict is not available for the language of the texts
 
-            Collection<SlangEntry> dictEntries=dict.values();
-            StringBuffer data = new StringBuffer(carrier.getData().toString());
-
+            Collection<SlangEntry> dictEntries = dict.values();
             for(SlangEntry slang:dictEntries){
                Matcher m=slang.getWordPattern().matcher(data);
-
-               Stack<Pair<Pair<Integer,Integer>, SlangEntry>> replacements = new Stack<>();
-
-               while (m.find()) {
-                       replacements.push(new Pair<>(new Pair<>(m.start(1), m.end(1)),slang));
-               }
-
-               while (!replacements.empty()) {
-                   Pair<Pair<Integer,Integer>,SlangEntry> current = replacements.pop();
-                   data = data.replace(current.getObj1().getObj1(),current.getObj1().getObj2(),current.getObj2().getReplacement());
+               int last = 0;
+               while (m.find(last)) {
+                       last = m.start(1);
+                       data=data.replace(m.start(1), m.end(1), slang.getReplacement());
                }
             }
-           carrier.setData(data);
         }
         return carrier;
     }
