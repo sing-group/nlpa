@@ -23,6 +23,7 @@ import org.bdp4j.util.Pair;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Stack;
 
 import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 import org.ski4spam.util.EBoolean;
@@ -224,19 +225,24 @@ public class InterjectionFromStringBufferPipe extends Pipe {
 
             for (Pattern interej :setWords){
                 Matcher m = interej.matcher(data);
-                int last =0;
-                if (m.find(last)){
+
+                Stack<Pair<Integer, Integer>> replacements = new Stack<>();
+
+                while (m.find()) {
                     value += m.group(1) + " -- ";
-                    do{
-                            data = data.replace(m.start(1), m.end(1),"");
-                            last = m.start(1);
-                    }while(m.find(last));
+                    if (removeInterjection) replacements.push(new Pair<>(m.start(1), m.end(1)));
+                }
+
+                if (removeInterjection){
+                   while (!replacements.empty()) {
+                       Pair<Integer, Integer> current = replacements.pop();
+                       data = data.replace(current.getObj1(),current.getObj2(),"");
+                   }
                 }
             }
 
             if (removeInterjection)
                     carrier.setData(data);
-
 
             carrier.setProperty(interjectionProp, value);
 

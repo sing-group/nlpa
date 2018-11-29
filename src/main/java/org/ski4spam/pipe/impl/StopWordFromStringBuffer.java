@@ -17,6 +17,7 @@ import javax.json.JsonValue;
 import javax.json.JsonString;
 
 import org.bdp4j.util.Pair;
+import java.util.Stack;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -86,9 +87,9 @@ public class StopWordFromStringBuffer extends Pipe {
                 LinkedList<Pattern> currentStopwords=new LinkedList<>();
                 for (JsonValue v : array) {
                     currentStopwords.add(
-                      Pattern.compile( "(?:[\\p{Space}]\\p{Punct}]|^|¡)(" + Pattern.quote(((JsonString)v).getString()) + ")(?:[\\p{Space}\\p{Punct}]|$|!)" )
+                      Pattern.compile( "(?:[\\p{Space}\\p{Punct}]|^)(" + Pattern.quote(((JsonString)v).getString()) + ")(?:[\\p{Space}\\p{Punct}]|$)" )
                     );
-                    //System.out.println("Adding: "+lang+((JsonString)v).getString());
+                    //System.out.println("Adding: "+lang+" -> "+((JsonString)v).getString());
                 }
                 hmStopWords.put(lang,currentStopwords);
             } catch (Exception e) {
@@ -171,12 +172,15 @@ public class StopWordFromStringBuffer extends Pipe {
 
           for (Pattern currentStopword:setStopwords){
               Matcher m = currentStopword.matcher(data);
-              if (m.find()){
-                int last=0;
-                while (m.find(last)){
-                       data = data.replace(m.start(1), m.end(1), "");
-                       last=m.start(1);
-                }
+              Stack<Pair<Integer, Integer>> replacements = new Stack<>();
+
+              while (m.find()) {
+                      replacements.push(new Pair<>(m.start(1), m.end(1)));
+              }
+
+              while (!replacements.empty()) {
+                  Pair<Integer, Integer> current = replacements.pop();
+                  data = data.replace(current.getObj1(),current.getObj2(),"");
               }
           }
 

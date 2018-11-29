@@ -16,6 +16,7 @@ import javax.json.Json;
 import javax.json.JsonReader;
 import javax.json.JsonObject;
 
+import java.util.Stack;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
@@ -154,18 +155,23 @@ public class SlangFromStringBufferPipe extends Pipe {
             if (dict==null) return carrier; //If dict is not available for the language of the texts
 
             Collection<SlangEntry> dictEntries=dict.values();
-            StringBuffer sb = new StringBuffer(carrier.getData().toString());
+            StringBuffer data = new StringBuffer(carrier.getData().toString());
 
             for(SlangEntry slang:dictEntries){
-               Pattern p=slang.getWordPattern();
-               Matcher m = p.matcher(sb);
-               int last=0;
-               while (m.find(last)){
-                      sb = sb.replace(m.start(1), m.end(1), slang.getReplacement());
-                      last=m.start(1);
+               Matcher m=slang.getWordPattern().matcher(data);
+
+               Stack<Pair<Pair<Integer,Integer>, SlangEntry>> replacements = new Stack<>();
+
+               while (m.find()) {
+                       replacements.push(new Pair<>(new Pair<>(m.start(1), m.end(1)),slang));
+               }
+
+               while (!replacements.empty()) {
+                   Pair<Pair<Integer,Integer>,SlangEntry> current = replacements.pop();
+                   data = data.replace(current.getObj1().getObj1(),current.getObj1().getObj2(),current.getObj2().getReplacement());
                }
             }
-           carrier.setData(sb);
+           carrier.setData(data);
         }
         return carrier;
     }
