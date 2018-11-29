@@ -134,7 +134,7 @@ public class ComputePolarityFromStringBufferPipe extends Pipe {
         if (carrier.getData() instanceof StringBuffer) {
 
             String text = carrier.getData().toString().replaceAll("[^\\p{Space}\\p{Print}]", "");
-            System.out.print("(size: " + text.length() + ") ");
+            //System.out.print("(size: " + text.length() + ") ");
             if (text != null && text.length() > 0) {
                 int longest = 0;
                 Annotation annotation = pipeline.process(text);

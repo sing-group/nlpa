@@ -19,7 +19,6 @@ import javax.json.JsonString;
 
 import java.util.LinkedList;
 import org.bdp4j.pipe.PropertyComputingPipe;
-import org.bdp4j.util.Pair;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,8 +28,8 @@ import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_L
 import org.ski4spam.util.EBoolean;
 
 /**
- * This pipe drops interjections from texts The data of the instance should contain
- * a StringBuffer
+ * This pipe drops interjections from texts The data of the instance should
+ * contain a StringBuffer
  *
  * @author Reyes Pavón
  * @author Rosalía Laza
@@ -43,17 +42,17 @@ public class InterjectionFromStringBufferPipe extends Pipe {
      */
     private static final Logger logger = LogManager.getLogger(InterjectionFromStringBufferPipe.class);
 
-    private static final HashMap<String,LinkedList<Pattern>> hmInterjections = new HashMap<>();
+    private static final HashMap<String, LinkedList<Pattern>> hmInterjections = new HashMap<>();
 
     static {
         for (String i : new String[]{"/interjections-json/interj.es.json",
-                                     "/interjections-json/interj.en.json",
-                                     "/interjections-json/interj.ru.json",
-                                     "/interjections-json/interj.de.json",
-                                     "/interjections-json/interj.pt.json",
-                                     "/interjections-json/interj.fr.json",
-                                     "/interjections-json/interj.gl.json",
-                                     "/interjections-json/interj.eu.json"}) {
+            "/interjections-json/interj.en.json",
+            "/interjections-json/interj.ru.json",
+            "/interjections-json/interj.de.json",
+            "/interjections-json/interj.pt.json",
+            "/interjections-json/interj.fr.json",
+            "/interjections-json/interj.gl.json",
+            "/interjections-json/interj.eu.json"}) {
 
             String lang = i.substring(27, 29).toUpperCase();
             try {
@@ -63,11 +62,10 @@ public class InterjectionFromStringBufferPipe extends Pipe {
                 LinkedList<Pattern> setWords = new LinkedList<>();
 
                 for (JsonValue v : array) {
-                    setWords.add(Pattern.compile( "(?:[\\p{Space}]|^)([¡]?(" + Pattern.quote(((JsonString)v).getString()) + ")[!]?)(?:[\\p{Space}]|$)" ));
+                    setWords.add(Pattern.compile("(?:[\\p{Space}]|^)([¡]?(" + Pattern.quote(((JsonString) v).getString()) + ")[!]?)(?:[\\p{Space}]|$)"));
                 }
 
-                hmInterjections.put(lang,setWords);
-
+                hmInterjections.put(lang, setWords);
 
             } catch (Exception e) {
                 System.out.println("Exception processing: " + i + " message " + e.getMessage());
@@ -138,7 +136,7 @@ public class InterjectionFromStringBufferPipe extends Pipe {
      *
      * @param langProp The name of the property where the language is stored
      */
-   @PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue = DEFAULT_LANG_PROPERTY)
+    @PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue = DEFAULT_LANG_PROPERTY)
     public void setLangProp(String langProp) {
         this.langProp = langProp;
     }
@@ -185,12 +183,13 @@ public class InterjectionFromStringBufferPipe extends Pipe {
      * configuration value
      */
     public InterjectionFromStringBufferPipe() {
-        this(DEFAULT_LANG_PROPERTY,DEFAULT_INTERJECTION_PROPERTY, false);
+        this(DEFAULT_LANG_PROPERTY, DEFAULT_INTERJECTION_PROPERTY, false);
     }
 
     /**
-     * Construct a InterjectionFromStringBuffer instance given a language property
-     * that stores interjections of the StringBuffer in the property hashtagProp
+     * Construct a InterjectionFromStringBuffer instance given a language
+     * property that stores interjections of the StringBuffer in the property
+     * hashtagProp
      *
      * @param langProp The propertie that stores the language of text
      * @param interjectionProp The name of the property to store interjections
@@ -219,11 +218,11 @@ public class InterjectionFromStringBufferPipe extends Pipe {
 
             LinkedList<Pattern> setWords = hmInterjections.get(lang);
             if (setWords == null) {
-              carrier.setProperty(interjectionProp, value);
-              return carrier;
+                carrier.setProperty(interjectionProp, value);
+                return carrier;
             }
 
-            for (Pattern interej :setWords){
+            for (Pattern interej : setWords) {
                 Matcher m = interej.matcher(data);
 
                 Stack<Pair<Integer, Integer>> replacements = new Stack<>();
@@ -241,16 +240,16 @@ public class InterjectionFromStringBufferPipe extends Pipe {
                 }
             }
 
-            if (removeInterjection)
-                    carrier.setData(data);
+            if (removeInterjection) {
+                carrier.setData(data);
+            }
 
             carrier.setProperty(interjectionProp, value);
 
-        }else{
-          logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
+        } else {
+            logger.error("Data should be an StrinBuffer when processing " + carrier.getName() + " but is a " + carrier.getData().getClass().getName());
         }
         return carrier;
     }
-
 
 }

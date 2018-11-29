@@ -11,7 +11,6 @@ import org.ski4spam.Main;
 
 import java.io.InputStream;
 
-
 import javax.json.Json;
 import javax.json.JsonReader;
 import javax.json.JsonObject;
@@ -42,8 +41,8 @@ public class SlangFromStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(SlangFromStringBufferPipe.class);
 
     /**
-     * A hashmap of slangs in different languages.
-     * NOTE: All JSON files (listed below) containing slangs
+     * A hashmap of slangs in different languages. NOTE: All JSON files (listed
+     * below) containing slangs
      *
      */
     private static final HashMap<String, HashMap<String, SlangEntry>> hmSlangs = new HashMap<>();
@@ -58,15 +57,15 @@ public class SlangFromStringBufferPipe extends Pipe {
                 JsonReader rdr = Json.createReader(is);
                 JsonObject jsonObject = rdr.readObject();
                 rdr.close();
-                HashMap<String, SlangEntry> dict=new HashMap<>();
-                for(String slang:jsonObject.keySet()){
+                HashMap<String, SlangEntry> dict = new HashMap<>();
+                for (String slang : jsonObject.keySet()) {
                     dict.put(slang,
-							               new SlangEntry(
-								                   Pattern.compile( "(?:[\\p{Space}]|^)(" + Pattern.quote(slang) + ")(?:[\\p{Space}]|$)"),
-                                   jsonObject.getString(slang))
-						                 );
+                            new SlangEntry(
+                                    Pattern.compile("(?:[\\p{Space}]|^)(" + Pattern.quote(slang) + ")(?:[\\p{Space}]|$)"),
+                                    jsonObject.getString(slang))
+                    );
                 }
-                hmSlangs.put(lang,dict);
+                hmSlangs.put(lang, dict);
             } catch (Exception e) {
                 System.out.println("Exception processing: " + i + " message " + e.getMessage());
             }
@@ -137,9 +136,9 @@ public class SlangFromStringBufferPipe extends Pipe {
     }
 
     /**
-     * Process an Instance. This method takes an input Instance,
-     * modifies it extending langs, and returns it. This is the method by which all
-     * pipes are eventually run.
+     * Process an Instance. This method takes an input Instance, modifies it
+     * extending langs, and returns it. This is the method by which all pipes
+     * are eventually run.
      *
      * LLAMARLO ANTES DE QUITAR MAYÚSCULAS *****************
      *
@@ -177,78 +176,89 @@ public class SlangFromStringBufferPipe extends Pipe {
     }
 
     /**
-      * Find the replacement for a SlangTerm
-      * @param slangTerm The term written in SlangTerm
-      * @param lang The language used for slang
-      * @return The traduction of the slang
-      */
-    public static String getReplacement4SlangTerm(String slangTerm, String lang){
-      HashMap<String, SlangEntry> dict = hmSlangs.get(lang);
-      if (dict==null) return null;
-      SlangEntry entry=dict.get(slangTerm);
-      if (entry==null) return null;
-      return entry.getReplacement();
+     * Find the replacement for a SlangTerm
+     *
+     * @param slangTerm The term written in SlangTerm
+     * @param lang The language used for slang
+     * @return The traduction of the slang
+     */
+    public static String getReplacement4SlangTerm(String slangTerm, String lang) {
+        HashMap<String, SlangEntry> dict = hmSlangs.get(lang);
+        if (dict == null) {
+            return null;
+        }
+        SlangEntry entry = dict.get(slangTerm);
+        if (entry == null) {
+            return null;
+        }
+        return entry.getReplacement();
     }
 }
 
 /**
-  * Entry for slang
-  */
+ * Entry for slang
+ */
 class SlangEntry {
-   /**
-	  * The replacement string for the slang
-	  */
-	private String replacement;
 
-   /**
-	  * A pattern that is automatically compued from the word to quickly find the slang entry
-	  */
-	private Pattern wordPattern;
+    /**
+     * The replacement string for the slang
+     */
+    private String replacement;
 
-	/**
-	* Default SlangEntry constructor
-	*/
-	public SlangEntry(Pattern wordPattern, String replacement) {
-		super();
-		this.replacement = replacement;
-		this.wordPattern = wordPattern;
-	}
+    /**
+     * A pattern that is automatically compued from the word to quickly find the
+     * slang entry
+     */
+    private Pattern wordPattern;
 
-	/**
-	* Returns value of replacement
-	* @return the replacement value
-	*/
-	public String getReplacement() {
-		return replacement;
-	}
+    /**
+     * Default SlangEntry constructor
+     */
+    public SlangEntry(Pattern wordPattern, String replacement) {
+        super();
+        this.replacement = replacement;
+        this.wordPattern = wordPattern;
+    }
 
-	/**
-	* Sets new value of replacement
-	* @param the replacement value
-	*/
-	public void setReplacement(String replacement) {
-		this.replacement = replacement;
-	}
+    /**
+     * Returns value of replacement
+     *
+     * @return the replacement value
+     */
+    public String getReplacement() {
+        return replacement;
+    }
 
-	/**
-	* Returns value of wordPattern
-	* @return the pattern to detect the slang
-	*/
-	public Pattern getWordPattern() {
-		return wordPattern;
-	}
+    /**
+     * Sets new value of replacement
+     *
+     * @param the replacement value
+     */
+    public void setReplacement(String replacement) {
+        this.replacement = replacement;
+    }
 
-	/**
-	* Sets new value of wordPattern
-	* @param the pattern to detect the slang
-	*/
-	public void setWordPattern(Pattern wordPattern) {
-		this.wordPattern = wordPattern;
-	}
+    /**
+     * Returns value of wordPattern
+     *
+     * @return the pattern to detect the slang
+     */
+    public Pattern getWordPattern() {
+        return wordPattern;
+    }
 
-  /**
-   * Override default constructor to make it private
-   */
-	private SlangEntry() {
-	}
+    /**
+     * Sets new value of wordPattern
+     *
+     * @param the pattern to detect the slang
+     */
+    public void setWordPattern(Pattern wordPattern) {
+        this.wordPattern = wordPattern;
+    }
+
+    /**
+     * Override default constructor to make it private
+     */
+    private SlangEntry() {
+    }
 }
