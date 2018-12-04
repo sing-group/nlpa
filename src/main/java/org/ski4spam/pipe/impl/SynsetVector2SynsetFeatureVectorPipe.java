@@ -33,7 +33,7 @@ import org.bdp4j.util.Pair;
  *
  * @author María Novo
  */
-public class SynsetVector2SynsetFeatureVector extends Pipe {
+public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
 
     public static final String DEFAULT_GROUPTING_STRATEGY = "COUNT";
 
@@ -87,7 +87,7 @@ public class SynsetVector2SynsetFeatureVector extends Pipe {
      *
      * @param groupStrategy The selected grouping strategy
      */
-    public SynsetVector2SynsetFeatureVector(SynsetVectorGroupingStrategy groupStrategy) {
+    public SynsetVector2SynsetFeatureVectorPipe(SynsetVectorGroupingStrategy groupStrategy) {
         this.groupStrategy = groupStrategy;
     }
 

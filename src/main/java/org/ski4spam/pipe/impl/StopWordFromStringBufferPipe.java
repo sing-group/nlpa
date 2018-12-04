@@ -31,12 +31,12 @@ import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_L
  * @author José Ramón Méndez
  */
 @TransformationPipe()
-public class StopWordFromStringBuffer extends Pipe {
+public class StopWordFromStringBufferPipe extends Pipe {
 
     /**
      * For logging purposes
      */
-    private static final Logger logger = LogManager.getLogger(StopWordFromStringBuffer.class);
+    private static final Logger logger = LogManager.getLogger(StopWordFromStringBufferPipe.class);
 
     /**
      * A HashMap of stopwords in different languages.
@@ -125,7 +125,7 @@ public class StopWordFromStringBuffer extends Pipe {
     /**
      * Construct a StopWordFromStringBuffer instance
      */
-    public StopWordFromStringBuffer() {
+    public StopWordFromStringBufferPipe() {
     }
 
     /**
@@ -133,7 +133,7 @@ public class StopWordFromStringBuffer extends Pipe {
      *
      * @param langProp The propertie that stores the language of text
      */
-    public StopWordFromStringBuffer(String langProp) {
+    public StopWordFromStringBufferPipe(String langProp) {
         this.langProp = langProp;
     }
 
