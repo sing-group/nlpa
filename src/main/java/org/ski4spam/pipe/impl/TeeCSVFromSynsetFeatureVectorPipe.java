@@ -28,12 +28,12 @@ import org.ski4spam.util.EBoolean;
  * @author María Novo
  * @author José Ramón Méndez
  */
-public class TeeCSVFromSynsetFeatureVector extends Pipe {
+public class TeeCSVFromSynsetFeatureVectorPipe extends Pipe {
 
     /**
      * For logging purposes
      */
-    private static final Logger logger = LogManager.getLogger(TeeCSVFromSynsetFeatureVector.class);
+    private static final Logger logger = LogManager.getLogger(TeeCSVFromSynsetFeatureVectorPipe.class);
 
     /**
      * The default value for the output file
@@ -70,7 +70,7 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
     /**
      * Build a TeeCSVFromSynsetFeatureVector using the default information
      */
-    public TeeCSVFromSynsetFeatureVector() {
+    public TeeCSVFromSynsetFeatureVectorPipe() {
         this(DEFAULT_OUTPUT_FILE);
     }
 
@@ -80,7 +80,7 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
      *
      * @param output The filename to store the output
      */
-    public TeeCSVFromSynsetFeatureVector(String output) {
+    public TeeCSVFromSynsetFeatureVectorPipe(String output) {
         this(output, true);
     }
 
@@ -91,7 +91,7 @@ public class TeeCSVFromSynsetFeatureVector extends Pipe {
      * @param output The output filename to store the CSV
      * @param saveProps Indicates whether the props will be also saved
      */
-    public TeeCSVFromSynsetFeatureVector(String output, boolean saveProps) {
+    public TeeCSVFromSynsetFeatureVectorPipe(String output, boolean saveProps) {
         this.output = output;
         this.saveProps = saveProps;
     }

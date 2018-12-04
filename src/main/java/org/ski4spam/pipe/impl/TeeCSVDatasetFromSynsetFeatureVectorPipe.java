@@ -30,12 +30,12 @@ import org.ski4spam.types.SynsetFeatureVector;
  *
  * @author María Novo
  */
-public class TeeCSVDatasetFromSynsetFeatureVector extends Pipe {
+public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
 
     /**
      * For logging purposes
      */
-    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(TeeCSVDatasetFromSynsetFeatureVector.class);
+    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(TeeCSVDatasetFromSynsetFeatureVectorPipe.class);
     /**
      * The list of transformers. A transformer is a class used to transform a
      * non double value in double value.
@@ -57,7 +57,7 @@ public class TeeCSVDatasetFromSynsetFeatureVector extends Pipe {
     /**
      * Default constructor
      */
-    public TeeCSVDatasetFromSynsetFeatureVector() {
+    public TeeCSVDatasetFromSynsetFeatureVectorPipe() {
         transformersList = new HashMap<>();
     }
 

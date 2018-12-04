@@ -24,14 +24,14 @@ import org.bdp4j.pipe.PipeParameter;
  * @author José Ramón Méndez Reboredo
  */
 @PropertyComputingPipe()
-public class GuessDateFromFile extends Pipe {
+public class GuessDateFromFilePipe extends Pipe {
 
     /**
      * The default name for the date property
      */
     public static final String DEFAULT_DATE_PROPERTY = "date";
 
-    private static final Logger logger = LogManager.getLogger(GuessDateFromFile.class);
+    private static final Logger logger = LogManager.getLogger(GuessDateFromFilePipe.class);
 
     @Override
     public Class getInputType() {
@@ -97,7 +97,7 @@ public class GuessDateFromFile extends Pipe {
      * Create a GuessDateFromFile which stores the date of the content in the
      * property "date"
      */
-    public GuessDateFromFile() {
+    public GuessDateFromFilePipe() {
     }
 
     /**
@@ -106,7 +106,7 @@ public class GuessDateFromFile extends Pipe {
      *
      * @param dateProp The name of the property to store the date
      */
-    public GuessDateFromFile(String dateProp) {
+    public GuessDateFromFilePipe(String dateProp) {
         this.dateProp = dateProp;
     }
 

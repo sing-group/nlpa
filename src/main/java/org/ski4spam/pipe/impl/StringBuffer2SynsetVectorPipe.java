@@ -34,12 +34,12 @@ import org.apache.logging.log4j.Logger;
  * @author José Ramón Méndez
  */
 @TransformationPipe()
-public class StringBuffer2SynsetVector extends Pipe {
+public class StringBuffer2SynsetVectorPipe extends Pipe {
 
     /**
      * For loggins purposes
      */
-    private static final Logger logger = LogManager.getLogger(StringBuffer2SynsetVector.class);
+    private static final Logger logger = LogManager.getLogger(StringBuffer2SynsetVectorPipe.class);
 
     /**
      * An array of UnmatchedTextHandlers to fix incorrect text fragments
@@ -97,7 +97,7 @@ public class StringBuffer2SynsetVector extends Pipe {
      * the synset dictionary can be achieved by using the corresponding getter.
      *
      */
-    public StringBuffer2SynsetVector() {
+    public StringBuffer2SynsetVectorPipe() {
 
     }
 
