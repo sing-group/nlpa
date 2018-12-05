@@ -25,12 +25,12 @@ public class File2StringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(File2StringBufferPipe.class);
 
     @Override
-    public Class getInputType() {
+    public Class<?> getInputType() {
         return File.class;
     }
 
     @Override
-    public Class getOutputType() {
+    public Class<?> getOutputType() {
         return StringBuffer.class;
     }
 

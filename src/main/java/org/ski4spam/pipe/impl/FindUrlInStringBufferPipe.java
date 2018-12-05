@@ -40,7 +40,7 @@ public class FindUrlInStringBufferPipe extends Pipe {
      * @return the input type for the data attribute of the Instances processed
      */
     @Override
-    public Class getInputType() {
+    public Class<?> getInputType() {
         return StringBuffer.class;
     }
 
@@ -52,7 +52,7 @@ public class FindUrlInStringBufferPipe extends Pipe {
      * processing
      */
     @Override
-    public Class getOutputType() {
+    public Class<?> getOutputType() {
         return StringBuffer.class;
     }
 

@@ -5,9 +5,7 @@
  */
 package org.ski4spam.pipe.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bdp4j.types.Instance;
@@ -48,7 +46,7 @@ public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
      * @return the input type for the data attribute of the Instances processed
      */
     @Override
-    public Class getInputType() {
+    public Class<?> getInputType() {
         return SynsetVector.class;
     }
 	 
@@ -58,7 +56,7 @@ public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
      * @return the datatype expected in the data attribute of a Instance after processing
      */
     @Override
-    public Class getOutputType() {
+    public Class<?> getOutputType() {
         return SynsetFeatureVector.class;
     }
 
@@ -133,7 +131,6 @@ public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
     public Instance pipe(Instance carrier) {
         Map<String, Double> synsetFeatureVector;
 		  SynsetFeatureVector synsetFeatureVectorCountMatches=null;
-        List<Pair<String, Double>> sfv = new ArrayList<>();
 
         try {
             SynsetVector synsetVector = (SynsetVector) carrier.getData();

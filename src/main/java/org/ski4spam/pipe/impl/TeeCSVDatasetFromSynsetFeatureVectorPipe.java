@@ -41,7 +41,7 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * non double value in double value.
      *
      */
-    Map<String, Transformer> transformersList;
+    Map<String, Transformer<? super Object>> transformersList;
     List<Instance> instanceList = null;
     private Set<String> detectedTypes = null;
     List<Pair<String, String>> columnTypes = null;
@@ -67,7 +67,7 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * @param transformersList The list of transformers.
      */
     @PipeParameter(name = "transformersList", description = "The list of transformers", defaultValue = "")
-    public void setTransformersList(Map<String, Transformer> transformersList) {
+    public void setTransformersList(Map<String, Transformer<? super Object>> transformersList) {
         this.transformersList = transformersList;
     }
 
@@ -76,7 +76,7 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
      *
      * @return the transformersList
      */
-    public Map<String, Transformer> getTransformersList() {
+    public Map<String, Transformer<? super Object>> getTransformersList() {
         return this.transformersList;
     }
 
@@ -86,7 +86,7 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * @return the input type for the data attribute of the Instances processed
      */
     @Override
-    public Class getInputType() {
+    public Class<?> getInputType() {
         return SynsetFeatureVector.class;
     }
 
@@ -98,7 +98,7 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * processing
      */
     @Override
-    public Class getOutputType() {
+    public Class<?> getOutputType() {
         return CSVDataset.class;
     }
 
@@ -137,8 +137,8 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
 
         String field;
         String type;
-        Pair pair;
-        Pair newPair;
+        Pair<String, String> pair;
+        Pair<String, String> newPair;
         try {
 
             if (isFirst) {
@@ -163,12 +163,12 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
                         pair = columnTypes.get(columnTypeIndex);
                         if (pair.getObj2() != type) {
                             columnTypes.remove(columnTypeIndex);
-                            newPair = new Pair(propertyName, "String");
+                            newPair = new Pair<String,String>(propertyName, "String");
                             columnTypes.add(columnTypeIndex, newPair);
                         }
                     } else {
                         detectedTypes.add(propertyName);
-                        pair = new Pair(propertyName, type);
+                        pair = new Pair<String, String>(propertyName, type);
                         columnTypes.add(pair);
                         indexColumnTypes.put(propertyName, columnTypes.indexOf(pair));
                     }
@@ -180,9 +180,9 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
                 // Get transformes which parameter type is not Double
                 Set<String> noDoubleTransformers = new HashSet<>();
                 if (transformersList.size() > 0) {
-                    for (Map.Entry<String, Transformer> entry : transformersList.entrySet()) {
+                    for (Map.Entry<String, Transformer<? super Object>> entry : transformersList.entrySet()) {
                         String key = entry.getKey();
-                        Transformer value = entry.getValue();
+                        Transformer<? super Object> value = entry.getValue();
                         if (!SubClassParameterTypeIdentificator.findSubClassParameterType(value, Transformer.class, 0).getName().equals("Double")) {
                             noDoubleTransformers.add(key);
                         }
@@ -192,7 +192,7 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
                 // Get attribute list to generate CSVDataset. This list will contain the columns to add to the dataset.
                 if (!columnTypes.isEmpty()) {
                     for (Iterator<Pair<String, String>> iterator = columnTypes.iterator(); iterator.hasNext();) {
-                        Pair next = iterator.next();
+                        Pair<String, String> next = iterator.next();
                         if ((next.getObj2().equals("Double") || noDoubleTransformers.contains(next.getObj1().toString())) && !attributes.contains(next.getObj1().toString())) {
                             attributes.add(next.getObj1().toString());
                         }
@@ -213,7 +213,7 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
                 int indInstance = 0;
                 SynsetFeatureVector synsetFeatureVector = null;
 
-                Transformer t;
+                Transformer<? super Object> t;
                 for (Instance entry : instanceList) {
                     instanceIds.add(entry.getName().toString());
                     synsetFeatureVector = (SynsetFeatureVector) entry.getData();
@@ -262,9 +262,9 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
                 //---------------------------------------------------------------------------
                 // Se imprime el dataset
                 //---------------------------------------------------------------------------
-                System.out.println("-------------BEGIN DATASET PIPE-----------------------");
-                dataset.stream().forEach(System.out::println);
-                System.out.println("-------------END DATASET PIPE-----------------------");
+                logger.info("-------------BEGIN DATASET PIPE-----------------------");
+                dataset.stream().forEach(logger::info);
+                logger.info("-------------END DATASET PIPE-----------------------");
             }
             
         } catch (Exception ex) {

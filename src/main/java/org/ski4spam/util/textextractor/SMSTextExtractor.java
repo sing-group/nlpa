@@ -4,8 +4,7 @@ import java.io.File;
 /** 
   * A TextExtractor used to extract text from SMSs 
   * Files using this TextExtractor should contain the original 
-  * representation of SMS 
-  * TODO: Implement this
+  * representation of SMS
   * @author José Ramón Méndez
   */
 public class SMSTextExtractor extends TextExtractor{

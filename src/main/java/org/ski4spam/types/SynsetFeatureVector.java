@@ -13,9 +13,14 @@ import java.util.Map;
  * @author Maria Novo
  */
 public class SynsetFeatureVector implements Serializable {
-	 /**
-		* A map of synsets together with its values
-		*/
+    /**
+     * Serial Version UID
+     */
+     private static final long serialVersionUID = 1L;
+     
+    /**
+     * A map of synsets together with its values
+     */
     private Map<String, Double> synsetFeature;
     
 	 /**

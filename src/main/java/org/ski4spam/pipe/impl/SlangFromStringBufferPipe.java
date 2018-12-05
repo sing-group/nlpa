@@ -61,7 +61,7 @@ public class SlangFromStringBufferPipe extends Pipe {
                 }
                 hmSlangs.put(lang, dict);
             } catch (Exception e) {
-                System.out.println("Exception processing: " + i + " message " + e.getMessage());
+                logger.error("Exception processing: " + i + " message " + e.getMessage());
             }
 
         }
@@ -79,7 +79,7 @@ public class SlangFromStringBufferPipe extends Pipe {
      * @return the input type for the data attribute of the Instances processed
      */
     @Override
-    public Class getInputType() {
+    public Class<?> getInputType() {
         return StringBuffer.class;
     }
 
@@ -91,7 +91,7 @@ public class SlangFromStringBufferPipe extends Pipe {
      * processing
      */
     @Override
-    public Class getOutputType() {
+    public Class<?> getOutputType() {
         return StringBuffer.class;
     }
 

@@ -1,14 +1,11 @@
 package org.ski4spam.util.unmatchedtexthandler;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.languagetool.JLanguageTool;
@@ -156,7 +153,7 @@ public class TyposHandler extends UnmatchedTextHandler {
                 try {
                     List<RuleMatch> matches = langTool.check(originalString, false, JLanguageTool.ParagraphHandling.NORMAL);
                     if (!matches.isEmpty()) {
-                        List matchesList = matches.get(0).getSuggestedReplacements();
+                        List<String> matchesList = matches.get(0).getSuggestedReplacements();
                         if (!matchesList.isEmpty()) {
                             return matchesList.get(0).toString().toLowerCase();
                         }

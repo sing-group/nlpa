@@ -11,7 +11,6 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TeePipe;
 import static org.ski4spam.util.CSVUtils.getCSVSep;
 import static org.ski4spam.util.CSVUtils.escapeCSV;
-import static org.ski4spam.util.CSVUtils.getStrQuote;
 
 import org.bdp4j.pipe.PipeParameter;
 
@@ -101,7 +100,7 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
      * @return the input type for the data attribute of the Instances processed
      */
     @Override
-    public Class getInputType() {
+    public Class<?> getInputType() {
         return StringBuffer.class;
     }
 
@@ -113,7 +112,7 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
      * processing
      */
     @Override
-    public Class getOutputType() {
+    public Class<?> getOutputType() {
         return StringBuffer.class;
     }
 
@@ -241,7 +240,7 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
                 outputFile.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Exception cauth when processing instance "+carrier.getName()+" Message: "+e);
         }
         return carrier;
     }
