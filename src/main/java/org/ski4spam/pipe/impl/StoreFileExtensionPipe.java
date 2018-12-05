@@ -21,7 +21,7 @@ public class StoreFileExtensionPipe extends Pipe {
     * @return the input type for the data attribute of the Instances processed
     */
     @Override
-    public Class getInputType() {
+    public Class<?> getInputType() {
         return File.class;
     }
 
@@ -30,7 +30,7 @@ public class StoreFileExtensionPipe extends Pipe {
      * @return the datatype expected in the data attribute of a Instance after processing
      */
     @Override
-    public Class getOutputType() {
+    public Class<?> getOutputType() {
         return File.class;
     }
 

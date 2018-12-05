@@ -1,8 +1,5 @@
 package org.ski4spam.pipe.impl;
 
-import java.util.Stack;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.types.Instance;
@@ -10,7 +7,6 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.ski4spam.util.EBoolean;
-import org.bdp4j.util.Pair;
 
 //import com.vdurmont.emoji.EmojiManager;
 import com.vdurmont.emoji.EmojiParser;
@@ -33,7 +29,7 @@ public class FindEmojiInStringBufferPipe extends Pipe {
      * @return the input type for the data attribute of the Instances processed
      */
     @Override
-    public Class getInputType() {
+    public Class<?> getInputType() {
         return StringBuffer.class;
     }
 
@@ -45,7 +41,7 @@ public class FindEmojiInStringBufferPipe extends Pipe {
      * processing
      */
     @Override
-    public Class getOutputType() {
+    public Class<?> getOutputType() {
         return StringBuffer.class;
     }
 

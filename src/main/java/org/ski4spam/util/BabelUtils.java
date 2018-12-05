@@ -15,7 +15,6 @@ import it.uniroma1.lcl.babelnet.BabelNetQuery;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * This class encapsulates all required information to support Babelfy and
@@ -108,7 +107,7 @@ public class BabelUtils {
         //This is an arraylist of entries to check for duplicate results and nGrams
         ArrayList<BabelfyEntry> nGrams = new ArrayList<>();
         List<SemanticAnnotation> bfyAnnotations = new ArrayList<>();
-        boolean solved = false;
+        //boolean solved = false;
 		  String subtexts[]=new String[0];
 		  
 		  //Split text in 3500 (MAX_BABELFY_QUERY) characters string for querying

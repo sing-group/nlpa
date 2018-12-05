@@ -25,8 +25,7 @@ public class TargetAssigningFromPathPipe extends Pipe {
      * @return the input type for the data attribute of the Instances processed
      */
     @Override
-    public Class getInputType() {
-        //TODO what data type goes here?
+    public Class<?> getInputType() {
         return File.class;
     }
 
@@ -35,8 +34,7 @@ public class TargetAssigningFromPathPipe extends Pipe {
      * @return the datatype expected in the data attribute of a Instance after processing
      */
     @Override
-    public Class getOutputType() {
-        //TODO what data type goes here?
+    public Class<?> getOutputType() {
         return File.class;
     }
 
@@ -57,7 +55,7 @@ public class TargetAssigningFromPathPipe extends Pipe {
      * Create a TargetAssigningPipe using the default mapping ("_spam_" for target "spam" and "_ham_" for target "ham")
      */
     public TargetAssigningFromPathPipe() {
-        targets = new HashMap();
+        targets = new HashMap<>();
         targets.put("_ham_", "ham");
         targets.put("_spam_", "spam");
     }

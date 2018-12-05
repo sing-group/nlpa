@@ -13,7 +13,7 @@ import org.bdp4j.pipe.PropertyComputingPipe;
 import org.ski4spam.util.TwitterConfigurator;
 
 import twitter4j.Status;
-import twitter4j.TwitterFactory;
+//import twitter4j.TwitterFactory;
 
 /**
  * This pipe implements language guessing by using Twitter API
@@ -32,7 +32,7 @@ public class StoreTweetLangPipe extends Pipe {
     * @return the input type for the data attribute of the Instances processed
     */
     @Override
-    public Class getInputType() {
+    public Class<?> getInputType() {
         return File.class;
     }
 
@@ -41,11 +41,11 @@ public class StoreTweetLangPipe extends Pipe {
      * @return the datatype expected in the data attribute of a Instance after processing
      */
     @Override
-    public Class getOutputType() {
+    public Class<?> getOutputType() {
         return File.class;
     }
 
-    private TwitterFactory tf = TwitterConfigurator.getTwitterFactory();
+    //private TwitterFactory tf = TwitterConfigurator.getTwitterFactory();
 
     /**
     * Process an Instance.  This method takes an input Instance,

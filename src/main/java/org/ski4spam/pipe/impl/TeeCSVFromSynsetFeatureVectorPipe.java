@@ -151,7 +151,7 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends Pipe {
      * @return the input type for the data attribute of the Instances processed
      */
     @Override
-    public Class getInputType() {
+    public Class<?> getInputType() {
         return SynsetFeatureVector.class;
     }
 
@@ -163,7 +163,7 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends Pipe {
      * processing
      */
     @Override
-    public Class getOutputType() {
+    public Class<?> getOutputType() {
         return SynsetFeatureVector.class;
     }
 
@@ -252,7 +252,7 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends Pipe {
                 outputFile.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Exception caugth wile processing " +carrier.getName() + " Message: "+  e);
         }
         return carrier;
     }

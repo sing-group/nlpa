@@ -17,6 +17,11 @@ import org.bdp4j.util.Pair;
 public class SynsetVector implements Serializable {
 
     /**
+     * Serial Version UID
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * The original text
      */
     String originalText = null;

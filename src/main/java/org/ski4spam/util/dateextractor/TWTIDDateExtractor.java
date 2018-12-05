@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.ski4spam.util.TwitterConfigurator;
 
 import twitter4j.Status;
-import twitter4j.TwitterFactory;
+//import twitter4j.TwitterFactory;
 
 /**
   * This is a DateExtracfor for twtid files.
@@ -32,7 +32,7 @@ public class TWTIDDateExtractor extends DateExtractor {
 	/**
 	  * A instance of TwitterFactory
 	  */
-    private TwitterFactory tf = TwitterConfigurator.getTwitterFactory();
+    //private TwitterFactory tf = TwitterConfigurator.getTwitterFactory();
 
 	/**
 	   * The default constructor (converted to private to implement singleton)

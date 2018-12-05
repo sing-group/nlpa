@@ -1,6 +1,5 @@
 package org.ski4spam.pipe.impl;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class StringBuffer2SynsetVectorPipe extends Pipe {
      * @return the input type for the data attribute of the Instances processed
      */
     @Override
-    public Class getInputType() {
+    public Class<?> getInputType() {
         return StringBuffer.class;
     }
 
@@ -69,7 +68,7 @@ public class StringBuffer2SynsetVectorPipe extends Pipe {
      * processing
      */
     @Override
-    public Class getOutputType() {
+    public Class<?> getOutputType() {
         return SynsetVector.class;
     }
 
@@ -143,7 +142,7 @@ public class StringBuffer2SynsetVectorPipe extends Pipe {
             Matcher matcher = puntMarkPattern.matcher(current);
             if (matcher.find()) { //We found a puntuation mark in the token
                 //matcher.start() <- here is the index of the puntuation mark
-                //TODO develop rules checking also the existence of term/terms in Babelnet
+                //We developed rules checking also the existence of term/terms in Babelnet
 
                 //if do not fit the rules and/or not found in Babelnet
                 //    returnValue.add(new Pair<String,String>(current,null));
@@ -195,7 +194,7 @@ public class StringBuffer2SynsetVectorPipe extends Pipe {
                     }
                 }
             } else {
-                //TODO check if the term current exist in babelnet. 
+                //We check if the term current exist in babelnet. 
                 //if current is not found in Babelnet
                 //    returnValue.add(new Pair<String,String>(current,null));
                 if (!BabelUtils.getDefault().isTermInBabelNet(current, lang)) {

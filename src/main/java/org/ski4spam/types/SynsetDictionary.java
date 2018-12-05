@@ -5,7 +5,6 @@
  */
 package org.ski4spam.types;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -53,7 +52,6 @@ public class SynsetDictionary implements Iterable<String> {
      * @param synsetId the new id of synset to add to the dictionary
      */
     public void add(String synsetId) {
-        //TODO method not implemented yet.
         synsetIdsHashSet.add(synsetId);
     }
 

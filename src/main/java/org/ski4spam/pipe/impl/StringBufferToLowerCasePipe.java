@@ -18,7 +18,7 @@ public class StringBufferToLowerCasePipe extends Pipe {
     * @return the input type for the data attribute of the Instances processed
     */
     @Override
-    public Class getInputType() {
+    public Class<?> getInputType() {
         return StringBuffer.class;
     }
 
@@ -27,7 +27,7 @@ public class StringBufferToLowerCasePipe extends Pipe {
      * @return the datatype expected in the data attribute of a Instance after processing
      */
     @Override
-    public Class getOutputType() {
+    public Class<?> getOutputType() {
         return StringBuffer.class;
     }
     

@@ -33,9 +33,14 @@ import twitter4j.UserMentionEntity;
   * Note: Most javadoc documentation has been taken from the original interfaces from twitter4j API
   */
 public class TweetStatus implements Status {
-	/**
-	  * The creation date of the tweet
-	  */
+    /**
+     * Serial Version UID
+     */
+	private static final long serialVersionUID = 1L;
+
+    /**
+     * The creation date of the tweet
+     */
     private Date createdAt;
 	
 	/**

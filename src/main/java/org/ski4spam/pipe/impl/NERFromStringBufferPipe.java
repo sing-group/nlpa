@@ -99,9 +99,7 @@ public class NERFromStringBufferPipe extends Pipe {
      *
      * @param entityTypes the name of the property for the polarity
      */
-    @PipeParameter(name = "entityTypes",
-            description = "Indicates the entity types to annotate through a list of comma-separated values",
-            defaultValue = DEFAULT_ENTITY_TYPES)
+    @PipeParameter(name = "entityTypes", description = "Indicates the entity types to annotate through a list of comma-separated values", defaultValue = DEFAULT_ENTITY_TYPES)
     public void setEntityTypes(String entityTypes) {
         this.entityTypes = new ArrayList<>();
         StringTokenizer st = new StringTokenizer(entityTypes, ", \t");
@@ -111,12 +109,23 @@ public class NERFromStringBufferPipe extends Pipe {
     }
 
     /**
+     * Return the identified properties as string
+     * @return
+     */
+    public String getIdentifiedEntitiesProp(){
+        return identifiedEntitiesProp;
+    }
+
+    /**
      * Sets the property where the identified entities will be stored
      *
      * @param identifiedEntitiesProperty the properties to identify
      */
     @PipeParameter(name = "identifiedEntitiesProperty", description = "Indicates the property name to store the identified entities", defaultValue = DEFAULT_IDENTIFIED_ENTITIES_PROPERTY)
     public void setIdentifiedEntitiesProp(List<String> identifiedEntitiesProperty) {
+        this.identifiedEntitiesProp = "";
+        for (String p : identifiedEntitiesProperty)
+            this.identifiedEntitiesProp += (p + " ");
         this.identifiedEntitiesProperty = identifiedEntitiesProperty;
     }
 
@@ -125,10 +134,9 @@ public class NERFromStringBufferPipe extends Pipe {
      *
      * @param identifiedEntitiesProperty the properties to identify
      */
-    @PipeParameter(name = "identifiedEntitiesProperty",
-            description = "Indicates the identified entities through a list of comma-separated values",
-            defaultValue = DEFAULT_IDENTIFIED_ENTITIES_PROPERTY)
+    @PipeParameter(name = "identifiedEntitiesProperty", description = "Indicates the identified entities through a list of comma-separated values", defaultValue = DEFAULT_IDENTIFIED_ENTITIES_PROPERTY)
     public void setIdentifiedEntitiesProperty(String identifiedEntitiesProperty) {
+        this.identifiedEntitiesProp = identifiedEntitiesProperty;
         this.identifiedEntitiesProperty = new ArrayList<>();
 
         StringTokenizer st = new StringTokenizer(identifiedEntitiesProperty, ", ");
@@ -141,20 +149,19 @@ public class NERFromStringBufferPipe extends Pipe {
      * Retrieves the property name for storing the identified entities
      *
      * @return String containing the property name for storing the identified
-     * entities
+     *         entities
      */
     public Collection<String> getIdentifiedEntitiesProperty() {
         return this.identifiedEntitiesProperty;
     }
 
     /**
-     * Determines the input type for the data attribute of the Instances
-     * processed
+     * Determines the input type for the data attribute of the Instances processed
      *
      * @return the input type for the data attribute of the Instances processed
      */
     @Override
-    public Class getInputType() {
+    public Class<?> getInputType() {
         return StringBuffer.class;
     }
 
@@ -163,10 +170,10 @@ public class NERFromStringBufferPipe extends Pipe {
      * processing
      *
      * @return the datatype expected in the data attribute of a Instance after
-     * processing
+     *         processing
      */
     @Override
-    public Class getOutputType() {
+    public Class<?> getOutputType() {
         return StringBuffer.class;
     }
 
@@ -177,13 +184,14 @@ public class NERFromStringBufferPipe extends Pipe {
         init();
     }
 
-    // Indicate which annotators will be used (see: https://stanfordnlp.github.io/CoreNLP)
+    // Indicate which annotators will be used (see:
+    // https://stanfordnlp.github.io/CoreNLP)
     /**
-     * Build a NERFromStringBufferPipe that stores the identified entities in
-     * the property identifiedEntitiesProp
+     * Build a NERFromStringBufferPipe that stores the identified entities in the
+     * property identifiedEntitiesProp
      *
-     * @param identifiedEntitiesProp The name of the property to store
-     * identified entities
+     * @param identifiedEntitiesProp The name of the property to store identified
+     *                               entities
      */
     public NERFromStringBufferPipe(String identifiedEntitiesProp) {
         this.identifiedEntitiesProp = identifiedEntitiesProp;
@@ -200,8 +208,9 @@ public class NERFromStringBufferPipe extends Pipe {
 
     /**
      * Build a NERFromStringBufferPipe that stores the entity types to annotate
-     *
-     * @param entityTypes The list of the entity types to annotate
+     * 
+     * @param identifiedEntitiesProp The property names for the identified entities
+     * @param entityTypes            The list of the entity types to annotate
      */
     public NERFromStringBufferPipe(String identifiedEntitiesProp, List<String> entityTypes) {
         this.entityTypes = entityTypes;
@@ -217,7 +226,8 @@ public class NERFromStringBufferPipe extends Pipe {
     @Override
     public Instance pipe(Instance carrier) {
         if (this.entityTypes.size() != this.identifiedEntitiesProperty.size()) {
-            logger.fatal("The number of entity types to detect is different to the number of property names. Unable to find a property store strategy for this.");
+            logger.fatal(
+                    "The number of entity types to detect is different to the number of property names. Unable to find a property store strategy for this.");
             System.exit(0);
         }
 
@@ -276,10 +286,11 @@ public class NERFromStringBufferPipe extends Pipe {
             ex.printStackTrace();
         }
 
-        identifiedEntitiesProperty.stream().filter((propName) -> (carrier.getProperty(propName) == null)).forEachOrdered((propName) -> {
-            String val = hmProperties.get(propName);
-            carrier.setProperty(propName, val == null ? "" : val);
-        });
+        identifiedEntitiesProperty.stream().filter((propName) -> (carrier.getProperty(propName) == null))
+                .forEachOrdered((propName) -> {
+                    String val = hmProperties.get(propName);
+                    carrier.setProperty(propName, val == null ? "" : val);
+                });
 
         return carrier;
 

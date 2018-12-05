@@ -33,6 +33,7 @@ public class UrbanDictionaryHandler extends UnmatchedTextHandler {
         if (replacementString == null) {
             String matchedString = getReplacement4SlangTerm(originalString, lang);
             if (matchedString != null) {
+                logger.info("Sucessfull match for string "+ matchedString);
                 text.setObj2(matchedString);
             }
         }

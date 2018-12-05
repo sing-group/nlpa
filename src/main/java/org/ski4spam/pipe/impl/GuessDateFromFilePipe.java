@@ -34,12 +34,12 @@ public class GuessDateFromFilePipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(GuessDateFromFilePipe.class);
 
     @Override
-    public Class getInputType() {
+    public Class<?> getInputType() {
         return File.class;
     }
 
     @Override
-    public Class getOutputType() {
+    public Class<?> getOutputType() {
         return File.class;
     }
 
