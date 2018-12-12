@@ -12,19 +12,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.sf.javaml.core.DenseInstance;
+import java.util.function.Predicate;
 
 import org.apache.logging.log4j.LogManager;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PipeParameter;
-import org.bdp4j.types.CSVDataset;
-import org.bdp4j.types.Instance;
+import org.bdp4j.types.Dataset;
 import org.bdp4j.types.Transformer;
 import org.bdp4j.util.DateIdentifier;
+import org.bdp4j.types.Instance;
 import org.bdp4j.util.Pair;
 import org.bdp4j.util.SubClassParameterTypeIdentificator;
 import org.ski4spam.types.SynsetDictionary;
 import org.ski4spam.types.SynsetFeatureVector;
+//import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Attribute;
+import weka.core.DenseInstance;
 
 /**
  *
@@ -41,12 +45,11 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * non double value in double value.
      *
      */
-    Map<String, Transformer<? super Object>> transformersList;
+    Map<String, Transformer<? extends Object>> transformersList;
     List<Instance> instanceList = null;
     private Set<String> detectedTypes = null;
     List<Pair<String, String>> columnTypes = null;
-    List<String> attributes = null;
-    List<String> instanceIds = null;
+    ArrayList<Attribute> attributes = null;
     Map<String, Integer> indexColumnTypes = null;
 
     /**
@@ -67,7 +70,7 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * @param transformersList The list of transformers.
      */
     @PipeParameter(name = "transformersList", description = "The list of transformers", defaultValue = "")
-    public void setTransformersList(Map<String, Transformer<? super Object>> transformersList) {
+    public void setTransformersList(Map<String, Transformer<? extends Object>> transformersList) {
         this.transformersList = transformersList;
     }
 
@@ -76,7 +79,7 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
      *
      * @return the transformersList
      */
-    public Map<String, Transformer<? super Object>> getTransformersList() {
+    public Map<String, Transformer<? extends Object>> getTransformersList() {
         return this.transformersList;
     }
 
@@ -99,7 +102,7 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
      */
     @Override
     public Class<?> getOutputType() {
-        return CSVDataset.class;
+        return Dataset.class;
     }
 
     private String identifyType(String value) {
@@ -134,11 +137,11 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
     @Override
     public Instance pipe(Instance carrier) {
         Set<String> carrierPropertyList = carrier.getPropertyList();
-
         String field;
         String type;
         Pair<String, String> pair;
         Pair<String, String> newPair;
+
         try {
 
             if (isFirst) {
@@ -146,13 +149,14 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
                 detectedTypes = new HashSet<>();
                 columnTypes = new ArrayList<>();
                 instanceList = new ArrayList<>();
-                instanceIds = new ArrayList<>();
                 indexColumnTypes = new HashMap<>();
                 isFirst = false;
             }
 
             // Create an Instance list to save data
             instanceList.add(carrier);
+            Predicate<String> isDetectedColumnType = name -> columnTypes.stream().anyMatch(header -> header.getObj1().equals(name));
+               
             // Identified property data type
             for (String propertyName : carrierPropertyList) {
                 field = carrier.getProperty(propertyName).toString();
@@ -161,16 +165,28 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
                     if (detectedTypes.contains(propertyName)) {
                         int columnTypeIndex = indexColumnTypes.get(propertyName);
                         pair = columnTypes.get(columnTypeIndex);
-                        if (pair.getObj2() != type) {
+                        if (!pair.getObj2().equals(type)) {
                             columnTypes.remove(columnTypeIndex);
-                            newPair = new Pair<String,String>(propertyName, "String");
+                            newPair = new Pair<>(propertyName, "String");
                             columnTypes.add(columnTypeIndex, newPair);
                         }
                     } else {
-                        detectedTypes.add(propertyName);
-                        pair = new Pair<String, String>(propertyName, type);
-                        columnTypes.add(pair);
-                        indexColumnTypes.put(propertyName, columnTypes.indexOf(pair));
+                        if (isDetectedColumnType.test("target")) {
+                            // Target field always has to be the last one
+                            int lastColumnTypesPosition = columnTypes.size() - 1;
+                            Pair targetPair = columnTypes.get(lastColumnTypesPosition);
+                            columnTypes.remove(lastColumnTypesPosition);
+                            pair = new Pair<>(propertyName, type);
+                            columnTypes.add(pair);
+                            indexColumnTypes.put(propertyName, columnTypes.indexOf(pair));
+                            columnTypes.add(targetPair);
+                            indexColumnTypes.put("target", columnTypes.indexOf(pair));
+                        } else {
+                            detectedTypes.add(propertyName);
+                            pair = new Pair<>(propertyName, type);
+                            columnTypes.add(pair);
+                            indexColumnTypes.put(propertyName, columnTypes.indexOf(pair));
+                        }
                     }
                 }
             }
@@ -180,93 +196,101 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
                 // Get transformes which parameter type is not Double
                 Set<String> noDoubleTransformers = new HashSet<>();
                 if (transformersList.size() > 0) {
-                    for (Map.Entry<String, Transformer<? super Object>> entry : transformersList.entrySet()) {
+                    for (Map.Entry<String, Transformer<? extends Object>> entry : transformersList.entrySet()) {
                         String key = entry.getKey();
-                        Transformer<? super Object> value = entry.getValue();
+                        Transformer<? extends Object> value = entry.getValue();
                         if (!SubClassParameterTypeIdentificator.findSubClassParameterType(value, Transformer.class, 0).getName().equals("Double")) {
                             noDoubleTransformers.add(key);
                         }
                     }
                 }
 
-                // Get attribute list to generate CSVDataset. This list will contain the columns to add to the dataset.
+                // Get attribute list to generate Dataset. This list will contain the columns to add to the dataset.
+                Predicate<String> isAttribute = name -> attributes.stream()
+                        .anyMatch(attribute -> attribute.name().equals(name));
+
+                attributes.add(new Attribute("id", true));
                 if (!columnTypes.isEmpty()) {
-                    for (Iterator<Pair<String, String>> iterator = columnTypes.iterator(); iterator.hasNext();) {
-                        Pair<String, String> next = iterator.next();
-                        if ((next.getObj2().equals("Double") || noDoubleTransformers.contains(next.getObj1().toString())) && !attributes.contains(next.getObj1().toString())) {
-                            attributes.add(next.getObj1().toString());
+                    for (Pair<String, String> next : columnTypes) {
+                        final String header = next.getObj1();
+                        final String typeHeader = next.getObj2();
+
+                        if ((typeHeader.equals("Double") || noDoubleTransformers.contains(header)) && !isAttribute.test(header)) {
+                            attributes.add(new Attribute(header));
                         }
                     }
                 }
 
                 // Add synsetIds to attribute list
                 SynsetDictionary synsetsDictionary = SynsetDictionary.getDictionary();
-
                 for (String synsetId : synsetsDictionary) {
-                    attributes.add(synsetId);
+                    attributes.add(new Attribute(synsetId));
                 }
-                attributes.add("target");
+                attributes.add(new Attribute("target"));
 
-                CSVDataset dataset = new CSVDataset(attributes);
-
-                double[] instanceValues = new double[attributes.size()];
+                Dataset dataset = new Dataset("dataset", attributes, 0);
                 int indInstance = 0;
                 SynsetFeatureVector synsetFeatureVector = null;
-
-                Transformer<? super Object> t;
+                weka.core.Instance instance = null;
+                Transformer<? extends Object> t;
                 for (Instance entry : instanceList) {
-                    instanceIds.add(entry.getName().toString());
+                    instance = dataset.createDenseInstance();
                     synsetFeatureVector = (SynsetFeatureVector) entry.getData();
-                    for (String attribute : attributes) {
-                        if (attribute.startsWith("bn:")) {
-                            // Add synsetIds values
-                            for (String synsetId : synsetsDictionary) {
-                                Double frequency = synsetFeatureVector.getFrequencyValue(synsetId);
-                                if (frequency > 0) {
-                                    instanceValues[indInstance] = frequency;
+                    String attName = "";
+                    for (int index = 0; index < attributes.size(); index++) {
+                        attName = attributes.get(index).name();
+                        if (attName.equals("id")) {
+                            instance.setValue(indInstance, entry.getName().toString());
+                            indInstance++;
+                        } else {
+                            if (attName.startsWith("bn:")) {
+                                // Add synsetIds values
+                                for (String synsetId : synsetsDictionary) {
+                                    Double frequency = synsetFeatureVector.getFrequencyValue(synsetId);
+                                    if (frequency > 0) {
+                                        instance.setValue(indInstance, frequency);
+                                    } else {
+                                        instance.setValue(indInstance, 0d);
+                                    }
+                                    index = indInstance;
+                                    indInstance++;
+                                }
+                            } else {
+                                if (attName.equals("target")) {
+                                    field = entry.getTarget().toString();
                                 } else {
-                                    instanceValues[indInstance] = 0d;
+                                    field = entry.getProperty(attName).toString();
+                                }
+                                if ((t = transformersList.get(attName)) != null) {
+                                    if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
+                                        instance.setValue(indInstance, ((Transformer<String>) t).transform(field));
+                                    } else {
+                                        instance.setValue(indInstance, 0d);
+                                    }
+                                } else {
+                                    if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
+                                        instance.setValue(indInstance, Double.parseDouble(field));
+                                    } else {
+                                        instance.setValue(indInstance, 0d);
+                                    }
                                 }
                                 indInstance++;
                             }
-                            break;
-                        } else {
-                            field = entry.getProperty(attribute).toString();
-                            if ((t = transformersList.get(attribute)) != null) {
-                                if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
-                                    instanceValues[indInstance] = t.transform(field);
-                                } else {
-                                    instanceValues[indInstance] = 0d;
-                                }
-                            } else {
-                                if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
-                                    instanceValues[indInstance] = Double.parseDouble(field);
-                                } else {
-                                    instanceValues[indInstance] = 0d;
-                                }
-                            }
-                            indInstance++;
                         }
                     }
-                    // Asignar el valor de target, solo en caso de que hay un transformador definido para ese campo.
-                    if ((t = transformersList.get("target")) != null) {
-                        instanceValues[indInstance] = t.transform(entry.getTarget().toString());
-                    } else {
-                        instanceValues[indInstance] = 0d;
-                    }
-                    net.sf.javaml.core.Instance instance = new DenseInstance(instanceValues);
                     indInstance = 0;
-                    dataset.add(instance);
-                }
 
+                }
+                dataset.generateCSV();
                 //---------------------------------------------------------------------------
                 // Se imprime el dataset
                 //---------------------------------------------------------------------------
-                logger.info("-------------BEGIN DATASET PIPE-----------------------");
-                dataset.stream().forEach(logger::info);
-                logger.info("-------------END DATASET PIPE-----------------------");
+                System.out.println("-------------BEGIN DATASET PIPE-----------------------");
+                dataset.printLine();
+                System.out.println("-------------END DATASET PIPE-----------------------");
+                
             }
-            
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }

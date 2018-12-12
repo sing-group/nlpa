@@ -1,12 +1,7 @@
 package org.ski4spam;
 
-import org.bdp4j.ml.DatasetFromFile;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Method;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,22 +13,20 @@ import java.util.logging.Level;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bdp4j.ml.DatasetFromFile;
 import org.bdp4j.types.Instance;
 import org.bdp4j.util.InstanceListUtils;
-import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.SerialPipes;
 import org.bdp4j.transformers.Date2MillisTransformer;
 import org.bdp4j.transformers.Enum2IntTransformer;
 import org.bdp4j.types.Transformer;
-import org.bdp4j.util.Pair;
-import org.languagetool.JLanguageTool;
-import org.languagetool.language.*;
-import org.languagetool.rules.RuleMatch;
-import org.ski4spam.types.SynsetFeatureVector;
 import org.ski4spam.pipe.impl.*;
 import org.ski4spam.util.textextractor.EMLTextExtractor;
-import pt.tumba.spell.SpellChecker;
+import weka.core.FastVector;
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
+//import weka.core.converters.ConverterUtils.DataSource;
 
 /**
  * Main class for SKI4Spam project
@@ -73,7 +66,7 @@ public class Main {
         }
 
         /* Create an example to identify methods which have ParameterPipe annotations.*/
- /*        Method[] methods = SynsetVector2SynsetFeatureVector.class.getMethods();
+ /*        Method[] methods = SynsetVector2SynsetFeatureVectorPipe.class.getMethods();
         PipeParameter parameterPipe;
         for (Method method : methods) {
             parameterPipe = method.getAnnotation(PipeParameter.class);//Obtienes los métodos que tengan alguna anotación de tipo ParameterPipe
@@ -86,25 +79,29 @@ public class Main {
             }
         }
          */
- /*
-        // Parámetro para el transformador Enum2IntTransformer de la propiedad target
-        Map<String, Integer> transformList = new HashMap<>();
-        transformList.put("ham", 1);
-        transformList.put("spam", 0);
+ 
+         // Parámetro para el transformador Enum2IntTransformer de la propiedad target
+        /*Map<String, Integer> transformList = new HashMap<>();
+        transformList.put("ham", 0);
+        transformList.put("spam", 1);
         //Se define la lista de transformadores
-        Map<String, Transformer> transformersList = new HashMap<>();
+        Map<String, Transformer<? extends Object>> transformersList = new HashMap<>();
         transformersList.put("date", new Date2MillisTransformer());
-        transformersList.put("target", new Enum2IntTransformer(transformList));
-
-        String filePath = DatasetFromFile.class.getResource("/outputsyns.csv").getPath();
+        transformersList.put("target",  new Enum2IntTransformer(transformList));
+        
+        TeeCSVDatasetFromSynsetFeatureVectorPipe teeCSVDatasetFSV = new TeeCSVDatasetFromSynsetFeatureVectorPipe();
+        teeCSVDatasetFSV.setTransformersList(transformersList);
+  
+        String filePath = "outputsyns.csv";//Main.class.getResource("/outputsyns.csv").getPath();
         DatasetFromFile jml = new DatasetFromFile(filePath, transformersList);
-        jml.loadFile();
-*/
+        jml.loadFile();*/
+        
+
         /*create a example of pipe*/
         Pipe p = new SerialPipes(new Pipe[]{
             new TargetAssigningFromPathPipe(),
             new StoreFileExtensionPipe(),
-            new GuessDateFromFile(),
+            new GuessDateFromFilePipe(),
             new File2StringBufferPipe(),
             new MeasureLengthFromStringBufferPipe(),
             new StripHTMLFromStringBufferPipe(),
@@ -120,14 +117,14 @@ public class Main {
             new GuessLanguageFromStringBufferPipe(),
             new SlangFromStringBufferPipe(),
             new InterjectionFromStringBufferPipe(),
-            new StopWordFromStringBuffer(),
+            new StopWordFromStringBufferPipe(),
             new ComputePolarityFromStringBufferPipe(),
             new NERFromStringBufferPipe(),
             new TeeCSVFromStringBufferPipe("output.csv", true),
-            new StringBuffer2SynsetVector(),
-            new SynsetVector2SynsetFeatureVector(SynsetVectorGroupingStrategy.COUNT),
-            new TeeCSVFromSynsetFeatureVector("outputsyns.csv")
-
+            new StringBuffer2SynsetVectorPipe(),
+            new SynsetVector2SynsetFeatureVectorPipe(SynsetVectorGroupingStrategy.COUNT),
+            new TeeCSVFromSynsetFeatureVectorPipe("outputsyns.csv"), 
+            //teeCSVDatasetFSV
         });
 
         instances = InstanceListUtils.dropInvalid(instances);
