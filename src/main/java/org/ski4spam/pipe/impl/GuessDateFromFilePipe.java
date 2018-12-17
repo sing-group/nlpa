@@ -126,18 +126,22 @@ public class GuessDateFromFilePipe extends Pipe {
             }
 
             DateExtractor de = htExtractors.get(extension);
-
-            if (de != null) {
-                Date d = de.extractDate((File) (carrier.getData()));
-                if (d == null) {
-                    logger.warn("Invalid date " + carrier.toString() + " due to a fault in parsing.");
-                    carrier.setProperty(dateProp, "null");
+            try {
+                if (de != null) {
+                    Date d = de.extractDate((File) (carrier.getData()));
+                    if (d == null) {
+                        logger.warn("Invalid date " + carrier.toString() + " due to a fault in parsing.");
+                        carrier.setProperty(dateProp, "null");
+                    } else {
+                        carrier.setProperty(dateProp, d);
+                    }
                 } else {
-                    carrier.setProperty(dateProp, d);
+                    logger.warn("No parser available for instance " + carrier.toString() + ". Invalidating instance.");
+                    carrier.setProperty(dateProp, "null");
                 }
-            } else {
-                logger.warn("No parser available for instance " + carrier.toString() + ". Invalidating instance.");
-                carrier.setProperty(dateProp, "null");
+            } catch (Exception ex) {
+                System.out.println("date " + de + " -- " + carrier.getData());
+                ex.printStackTrace();
             }
         }
 

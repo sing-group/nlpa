@@ -43,17 +43,20 @@ public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
 
     /**
      * Return the input type included the data attribute of a Instance
+     *
      * @return the input type for the data attribute of the Instances processed
      */
     @Override
     public Class<?> getInputType() {
         return SynsetVector.class;
     }
-	 
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after processing
-     * @return the datatype expected in the data attribute of a Instance after processing
+     * Indicates the datatype expected in the data attribute of a Instance after
+     * processing
+     *
+     * @return the datatype expected in the data attribute of a Instance after
+     * processing
      */
     @Override
     public Class<?> getOutputType() {
@@ -120,17 +123,17 @@ public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
     }
 
     /**
-    * Process an Instance.  This method takes an input Instance,
-    * destructively modifies it in some way, and returns it.
-    * This is the method by which all pipes are eventually run.
-    *
-    * @param carrier Instance to be processed.
-    * @return Instancia procesada
-    */
+     * Process an Instance. This method takes an input Instance, destructively
+     * modifies it in some way, and returns it. This is the method by which all
+     * pipes are eventually run.
+     *
+     * @param carrier Instance to be processed.
+     * @return Instancia procesada
+     */
     @Override
     public Instance pipe(Instance carrier) {
         Map<String, Double> synsetFeatureVector;
-		  SynsetFeatureVector synsetFeatureVectorCountMatches=null;
+        SynsetFeatureVector synsetFeatureVectorCountMatches = null;
 
         try {
             SynsetVector synsetVector = (SynsetVector) carrier.getData();
@@ -139,9 +142,9 @@ public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
             switch (groupStrategy) {
                 case COUNT:
                     /* Generate a synsetFeatureVector with synsetId and synsetId appearance number in synsetVector*/
-                    synsetFeatureVectorCountMatches=countMatches(synsetVector);
-						  carrier.setData(synsetFeatureVectorCountMatches);
-						  
+                    synsetFeatureVectorCountMatches = countMatches(synsetVector);
+                    carrier.setData(synsetFeatureVectorCountMatches);
+
                     break;
                 case BOOLEAN:
                     /* Generate a synsetFeatureVector with synsetId and 0/1 if this synsetId is or not in synsetVector*/
@@ -151,8 +154,9 @@ public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
                         if (synsetFeatureVector.get(synsetId) == null) {
                             synsetFeatureVector.put(pairSV.getObj1(), 1d);
                         }
-                    };
-						  carrier.setData(new SynsetFeatureVector(synsetFeatureVector));
+                    }
+                    ;
+                    carrier.setData(new SynsetFeatureVector(synsetFeatureVector));
 
                     break;
                 case FREQUENCY:
@@ -164,11 +168,11 @@ public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
                         Double frequency = entry.getValue() / countSynsets;
                         synsets.put(entry.getKey(), frequency);
                     }
-						  carrier.setData(synsetFeatureVectorCountMatches);
+                    carrier.setData(synsetFeatureVectorCountMatches);
 
                     break;
             }
-				
+
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
