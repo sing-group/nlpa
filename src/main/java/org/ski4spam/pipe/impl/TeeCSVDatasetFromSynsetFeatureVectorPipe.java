@@ -8,7 +8,6 @@ package org.ski4spam.pipe.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,10 +24,7 @@ import org.bdp4j.util.Pair;
 import org.bdp4j.util.SubClassParameterTypeIdentificator;
 import org.ski4spam.types.SynsetDictionary;
 import org.ski4spam.types.SynsetFeatureVector;
-//import weka.core.Instance;
-import weka.core.Instances;
 import weka.core.Attribute;
-import weka.core.DenseInstance;
 
 /**
  *
@@ -141,7 +137,6 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
         String type;
         Pair<String, String> pair;
         Pair<String, String> newPair;
-
         try {
 
             if (isFirst) {
@@ -156,7 +151,7 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
             // Create an Instance list to save data
             instanceList.add(carrier);
             Predicate<String> isDetectedColumnType = name -> columnTypes.stream().anyMatch(header -> header.getObj1().equals(name));
-               
+
             // Identified property data type
             for (String propertyName : carrierPropertyList) {
                 field = carrier.getProperty(propertyName).toString();
@@ -279,21 +274,22 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
                         }
                     }
                     indInstance = 0;
-
                 }
                 dataset.generateCSV();
+                carrier.setData(dataset);
                 //---------------------------------------------------------------------------
                 // Se imprime el dataset
                 //---------------------------------------------------------------------------
-                System.out.println("-------------BEGIN DATASET PIPE-----------------------");
-                dataset.printLine();
-                System.out.println("-------------END DATASET PIPE-----------------------");
-                
+//                System.out.println("-------------BEGIN DATASET PIPE-----------------------");
+//                dataset.printLine();
+//                System.out.println("-------------END DATASET PIPE-----------------------");
+
             }
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
         return carrier;
     }
 }
