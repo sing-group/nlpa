@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.types.Dataset;
@@ -30,12 +32,12 @@ import weka.core.Attribute;
  *
  * @author María Novo
  */
-public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
+public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
 
     /**
      * For logging purposes
      */
-    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(TeeCSVDatasetFromSynsetFeatureVectorPipe.class);
+    private static final Logger logger = LogManager.getLogger(TeeDatasetFromSynsetFeatureVectorPipe.class);
     /**
      * The list of transformers. A transformer is a class used to transform a
      * non double value in double value.
@@ -56,7 +58,7 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
     /**
      * Default constructor
      */
-    public TeeCSVDatasetFromSynsetFeatureVectorPipe() {
+    public TeeDatasetFromSynsetFeatureVectorPipe() {
         transformersList = new HashMap<>();
     }
 
@@ -131,6 +133,7 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * @return Processed Instance
      */
     @Override
+    @SuppressWarnings("unchecked")
     public Instance pipe(Instance carrier) {
         Set<String> carrierPropertyList = carrier.getPropertyList();
         String field;
@@ -169,7 +172,7 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
                         if (isDetectedColumnType.test("target")) {
                             // Target field always has to be the last one
                             int lastColumnTypesPosition = columnTypes.size() - 1;
-                            Pair targetPair = columnTypes.get(lastColumnTypesPosition);
+                            Pair<String, String> targetPair = columnTypes.get(lastColumnTypesPosition);
                             columnTypes.remove(lastColumnTypesPosition);
                             pair = new Pair<>(propertyName, type);
                             columnTypes.add(pair);
@@ -287,7 +290,8 @@ public class TeeCSVDatasetFromSynsetFeatureVectorPipe extends Pipe {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
+
         }
 
         return carrier;
