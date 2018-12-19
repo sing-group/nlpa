@@ -240,10 +240,4 @@ class SlangEntry {
     public void setWordPattern(Pattern wordPattern) {
         this.wordPattern = wordPattern;
     }
-
-    /**
-     * Override default constructor to make it private
-     */
-    private SlangEntry() {
-    }
 }

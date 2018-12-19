@@ -47,13 +47,6 @@ public class SynsetVector implements Serializable {
     List<Pair<String, String>> synsets = new ArrayList<Pair<String, String>>();
 
     /**
-     * Default constructor. Please note that it was avoided by declaring it
-     * private.
-     */
-    private SynsetVector() {
-    }
-
-    /**
      * Constructs a SynsetVector from the original text
      *
      * @param originalText This is the original text parameter
