@@ -279,7 +279,7 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
                                 }
                                 if ((t = transformersList.get(attName)) != null) {
                                     if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
-                                        instance.setValue(indInstance, ((Transformer<Object>) t).transform((Object)field));
+                                        instance.setValue(indInstance, t.transform(field));
                                     } else {
                                         instance.setValue(indInstance, 0d);
                                     }
