@@ -33,3 +33,4 @@ nbactions.xml
 outputsyns\.csv
 
 .factorypath
+.vscode/settings.json

@@ -23,7 +23,6 @@ import org.bdp4j.transformers.Enum2IntTransformer;
 import org.bdp4j.types.Transformer;
 import org.ski4spam.pipe.impl.*;
 import org.ski4spam.util.textextractor.EMLTextExtractor;
-import weka.core.FastVector;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 //import weka.core.converters.ConverterUtils.DataSource;
@@ -89,8 +88,8 @@ public class Main {
         transformersList.put("date", new Date2MillisTransformer());
         transformersList.put("target",  new Enum2IntTransformer(transformList));
         
-        TeeCSVDatasetFromSynsetFeatureVectorPipe teeCSVDatasetFSV = new TeeCSVDatasetFromSynsetFeatureVectorPipe();
-        teeCSVDatasetFSV.setTransformersList(transformersList);
+        //TeeCSVDatasetFromSynsetFeatureVectorPipe teeCSVDatasetFSV = new TeeCSVDatasetFromSynsetFeatureVectorPipe();
+        //teeCSVDatasetFSV.setTransformersList(transformersList);
   
         String filePath = "outputsyns.csv";//Main.class.getResource("/outputsyns.csv").getPath();
         DatasetFromFile jml = new DatasetFromFile(filePath, transformersList);
