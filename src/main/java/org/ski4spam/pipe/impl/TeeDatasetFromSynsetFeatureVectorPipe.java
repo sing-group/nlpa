@@ -43,7 +43,7 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * non double value in double value.
      *
      */
-    Map<String, Transformer<? extends Object>> transformersList;
+    Map<String, Transformer<Object>> transformersList;
     List<Instance> instanceList = null;
     private Set<String> detectedTypes = null;
     List<Pair<String, String>> columnTypes = null;
@@ -68,7 +68,7 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * @param transformersList The list of transformers.
      */
     @PipeParameter(name = "transformersList", description = "The list of transformers", defaultValue = "")
-    public void setTransformersList(Map<String, Transformer<? extends Object>> transformersList) {
+    public void setTransformersList(Map<String, Transformer<Object>> transformersList) {
         this.transformersList = transformersList;
     }
 
@@ -77,7 +77,7 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
      *
      * @return the transformersList
      */
-    public Map<String, Transformer<? extends Object>> getTransformersList() {
+    public Map<String, Transformer<Object>> getTransformersList() {
         return this.transformersList;
     }
 
@@ -133,7 +133,6 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * @return Processed Instance
      */
     @Override
-    @SuppressWarnings("unchecked")
     public Instance pipe(Instance carrier) {
         Set<String> carrierPropertyList = carrier.getPropertyList();
         String field;
@@ -194,7 +193,7 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
                 // Get transformes which parameter type is not Double
                 Set<String> noDoubleTransformers = new HashSet<>();
                 if (transformersList.size() > 0) {
-                    for (Map.Entry<String, Transformer<? extends Object>> entry : transformersList.entrySet()) {
+                    for (Map.Entry<String, Transformer<Object>> entry : transformersList.entrySet()) {
                         String key = entry.getKey();
                         Transformer<? extends Object> value = entry.getValue();
                         if (!SubClassParameterTypeIdentificator.findSubClassParameterType(value, Transformer.class, 0).getName().equals("Double")) {
@@ -230,7 +229,7 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
                 int indInstance = 0;
                 SynsetFeatureVector synsetFeatureVector = null;
                 weka.core.Instance instance = null;
-                Transformer<? extends Object> t;
+                Transformer<Object> t;
                 for (Instance entry : instanceList) {
                     instance = dataset.createDenseInstance();
                     synsetFeatureVector = (SynsetFeatureVector) entry.getData();
@@ -261,7 +260,7 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
                                 }
                                 if ((t = transformersList.get(attName)) != null) {
                                     if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
-                                        instance.setValue(indInstance, ((Transformer<String>) t).transform(field));
+                                        instance.setValue(indInstance, ((Transformer<Object>) t).transform((Object)field));
                                     } else {
                                         instance.setValue(indInstance, 0d);
                                     }
