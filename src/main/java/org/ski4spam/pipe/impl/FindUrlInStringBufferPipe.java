@@ -23,15 +23,43 @@ import org.ski4spam.util.EBoolean;
 public class FindUrlInStringBufferPipe extends Pipe {
 
     private static final Logger logger = LogManager.getLogger(FindUrlInStringBufferPipe.class);
+
+    /**
+     * Dependencies of the type alwaysAfter
+     * These dependences indicate what pipes should be  
+     * executed before the current one. So this pipe
+     * shoudl be executed always after other dependant pipes
+     * included in this variable
+     */
+    final Class<?> alwaysAftterDeps[]={};
+
+    /**
+     * Dependencies of the type notAfter
+     * These dependences indicate what pipes should not be  
+     * executed before the current one. So this pipe
+     * shoudl be executed before other dependant pipes
+     * included in this variable
+     */
+    final Class<?> notAftterDeps[]={};
+
     /*  NOTE:
      \p{Punct}-[.-_]
 		  is equivalent to:
 	                         !\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~
      */
-
+    /**
+     * List of the URL Patterns to use
+     */
     private static List<Pattern> URLPatterns;
 
+    /**
+     * Pattern for URLs
+     */
     private static final Pattern URLPattern = Pattern.compile("((?:\\s|^)(?:(?:[a-z0-9]+:)(?:\\/\\/|\\/|)?|(www.))(?:[\\w-]+(?:(?:\\.[\\w-]+)+))(?:[\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])?(?=(?:,|;|!|:|\"|\\?|\\s|$)))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+
+    /**
+     * Pattern for e-mail addresses
+     */
     private static final Pattern emailPattern = Pattern.compile("(?:\\s|^|¡)([\\w!#$%&’*+-\\/=?^_`\\{|\\}~“(),:;<>@\\[\\]\"ç]+@[\\[\\w.-:]+([A-Z]{2,4}|\\]))[;:\\?\"!,.]?(?=(?:\\s|$))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 
     /**

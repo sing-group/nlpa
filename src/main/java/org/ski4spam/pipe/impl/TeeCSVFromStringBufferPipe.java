@@ -34,6 +34,24 @@ public class TeeCSVFromStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(TeeCSVFromStringBufferPipe.class);
 
     /**
+     * Dependencies of the type alwaysAfter
+     * These dependences indicate what pipes should be  
+     * executed before the current one. So this pipe
+     * shoudl be executed always after other dependant pipes
+     * included in this variable
+     */
+    final Class<?> alwaysAftterDeps[]={};
+
+    /**
+     * Dependencies of the type notAfter
+     * These dependences indicate what pipes should not be  
+     * executed before the current one. So this pipe
+     * shoudl be executed before other dependant pipes
+     * included in this variable
+     */
+    final Class<?> notAftterDeps[]={};
+
+    /**
      * Indicates the output filename/path for CSV storing
      */
     private String output;
