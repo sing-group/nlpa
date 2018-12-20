@@ -21,6 +21,17 @@
 
     <repositories>
         <repository>
+            <id>icm</id>
+            <name>ICM Repository</name>
+            <url>http://maven.icm.edu.pl/artifactory/repo/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>    
+        <repository>
             <id>Archive</id>
             <url>http://builds.archive.org/maven2/</url>
             <releases>
@@ -45,11 +56,11 @@
     </repositories>
 
     <dependencies>
-       <dependency>
+        <dependency>
             <groupId>nz.ac.waikato.cms.weka</groupId>
             <artifactId>weka-stable</artifactId>
             <version>3.8.3</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>org.bdp4j</groupId>
             <artifactId>bdp4j</artifactId>

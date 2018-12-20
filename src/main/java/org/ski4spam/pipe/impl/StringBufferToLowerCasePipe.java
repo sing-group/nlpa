@@ -12,7 +12,25 @@ import org.bdp4j.pipe.TransformationPipe;
  */
 @TransformationPipe()
 public class StringBufferToLowerCasePipe extends Pipe {
-	
+    
+    /**
+     * Dependencies of the type alwaysAfter
+     * These dependences indicate what pipes should be  
+     * executed before the current one. So this pipe
+     * shoudl be executed always after other dependant pipes
+     * included in this variable
+     */
+    final Class<?> alwaysAftterDeps[]={};
+
+    /**
+     * Dependencies of the type notAfter
+     * These dependences indicate what pipes should not be  
+     * executed before the current one. So this pipe
+     * shoudl be executed before other dependant pipes
+     * included in this variable
+     */
+    final Class<?> notAftterDeps[]={};
+
    /**
     * Return the input type included the data attribute of a Instance
     * @return the input type for the data attribute of the Instances processed

@@ -80,7 +80,7 @@ public class Main {
          */
  
          // Parámetro para el transformador Enum2IntTransformer de la propiedad target
-        /*Map<String, Integer> transformList = new HashMap<>();
+        Map<String, Integer> transformList = new HashMap<>();
         transformList.put("ham", 0);
         transformList.put("spam", 1);
         //Se define la lista de transformadores
@@ -93,7 +93,7 @@ public class Main {
   
         String filePath = "outputsyns.csv";//Main.class.getResource("/outputsyns.csv").getPath();
         DatasetFromFile jml = new DatasetFromFile(filePath, transformersList);
-        jml.loadFile();*/
+        jml.loadFile();
         
 
         /*create a example of pipe*/

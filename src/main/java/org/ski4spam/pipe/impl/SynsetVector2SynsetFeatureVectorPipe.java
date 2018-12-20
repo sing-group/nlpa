@@ -32,8 +32,28 @@ import org.bdp4j.util.Pair;
  * @author María Novo
  */
 public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
-
+    /**
+     * For logging purposes
+     */
     public static final String DEFAULT_GROUPTING_STRATEGY = "COUNT";
+
+    /**
+     * Dependencies of the type alwaysAfter
+     * These dependences indicate what pipes should be  
+     * executed before the current one. So this pipe
+     * shoudl be executed always after other dependant pipes
+     * included in this variable
+     */
+    final Class<?> alwaysAftterDeps[]={};
+
+    /**
+     * Dependencies of the type notAfter
+     * These dependences indicate what pipes should not be  
+     * executed before the current one. So this pipe
+     * shoudl be executed before other dependant pipes
+     * included in this variable
+     */
+    final Class<?> notAftterDeps[]={};
 
     /**
      * Indicates the group strategy to create the synsetFeatureVector

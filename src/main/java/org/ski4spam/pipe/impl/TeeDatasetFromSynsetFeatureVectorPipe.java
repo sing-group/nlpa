@@ -29,7 +29,7 @@ import org.ski4spam.types.SynsetFeatureVector;
 import weka.core.Attribute;
 
 /**
- *
+ * Create a Dataset from Instanced containing a SynsetFeatureVector as data
  * @author María Novo
  */
 public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
@@ -38,6 +38,25 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * For logging purposes
      */
     private static final Logger logger = LogManager.getLogger(TeeDatasetFromSynsetFeatureVectorPipe.class);
+ 
+     /**
+     * Dependencies of the type alwaysAfter
+     * These dependences indicate what pipes should be  
+     * executed before the current one. So this pipe
+     * shoudl be executed always after other dependant pipes
+     * included in this variable
+     */
+    final Class<?> alwaysAftterDeps[]={};
+
+    /**
+     * Dependencies of the type notAfter
+     * These dependences indicate what pipes should not be  
+     * executed before the current one. So this pipe
+     * shoudl be executed before other dependant pipes
+     * included in this variable
+     */
+    final Class<?> notAftterDeps[]={};
+
     /**
      * The list of transformers. A transformer is a class used to transform a
      * non double value in double value.
