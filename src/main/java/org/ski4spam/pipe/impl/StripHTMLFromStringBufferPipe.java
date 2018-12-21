@@ -133,7 +133,7 @@ public class StripHTMLFromStringBufferPipe extends Pipe {
 					Elements elements = doc.getAllElements();
 					for(Element element : elements) {
 					  for(TextNode node : element.textNodes()){
-					    newSb.append( StringEscapeUtils.unescapeHtml4(node.text()) + "\n");
+					    newSb.append(StringEscapeUtils.unescapeHtml4(node.text()) + "\n");
 					  }
 				    }
 

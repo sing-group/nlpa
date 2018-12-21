@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,8 +22,6 @@ import org.bdp4j.transformers.Enum2IntTransformer;
 import org.bdp4j.types.Transformer;
 import org.ski4spam.pipe.impl.*;
 import org.ski4spam.util.textextractor.EMLTextExtractor;
-import weka.core.Instances;
-import weka.core.converters.ConverterUtils.DataSource;
 //import weka.core.converters.ConverterUtils.DataSource;
 
 /**
@@ -78,13 +75,13 @@ public class Main {
             }
         }
          */
- 
-         // Parámetro para el transformador Enum2IntTransformer de la propiedad target
+ /*
+          // Parámetro para el transformador Enum2IntTransformer de la propiedad target
         Map<String, Integer> transformList = new HashMap<>();
         transformList.put("ham", 0);
         transformList.put("spam", 1);
         //Se define la lista de transformadores
-        Map<String, Transformer<? extends Object>> transformersList = new HashMap<>();
+        Map<String, Transformer<Object>> transformersList = new HashMap<>();
         transformersList.put("date", new Date2MillisTransformer());
         transformersList.put("target",  new Enum2IntTransformer(transformList));
         
@@ -94,8 +91,7 @@ public class Main {
         String filePath = "outputsyns.csv";//Main.class.getResource("/outputsyns.csv").getPath();
         DatasetFromFile jml = new DatasetFromFile(filePath, transformersList);
         jml.loadFile();
-        
-
+*/
         /*create a example of pipe*/
         Pipe p = new SerialPipes(new Pipe[]{
             new TargetAssigningFromPathPipe(),
