@@ -38,24 +38,6 @@ public class NERFromStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(NERFromStringBufferPipe.class);
 
     /**
-     * Dependencies of the type alwaysAfter
-     * These dependences indicate what pipes should be  
-     * executed before the current one. So this pipe
-     * shoudl be executed always after other dependant pipes
-     * included in this variable
-     */
-    final Class<?> alwaysAftterDeps[]={};
-
-    /**
-     * Dependencies of the type notAfter
-     * These dependences indicate what pipes should not be  
-     * executed before the current one. So this pipe
-     * shoudl be executed before other dependant pipes
-     * included in this variable
-     */
-    final Class<?> notAftterDeps[]={};
-
-    /**
      * Initing entity types collection
      */
     List<String> entityTypes = null;
@@ -199,6 +181,8 @@ public class NERFromStringBufferPipe extends Pipe {
      * Default constructor
      */
     public NERFromStringBufferPipe() {
+        super(new Class<?>[0],new Class<?>[0]);
+        
         init();
     }
 
@@ -212,6 +196,8 @@ public class NERFromStringBufferPipe extends Pipe {
      *                               entities
      */
     public NERFromStringBufferPipe(String identifiedEntitiesProp) {
+        super(new Class<?>[0],new Class<?>[0]);
+
         this.identifiedEntitiesProp = identifiedEntitiesProp;
     }
 
@@ -221,6 +207,8 @@ public class NERFromStringBufferPipe extends Pipe {
      * @param entityTypes The list of the entity types to annotate
      */
     public NERFromStringBufferPipe(List<String> entityTypes) {
+        super(new Class<?>[0],new Class<?>[0]);
+
         this.entityTypes = entityTypes;
     }
 
@@ -231,6 +219,8 @@ public class NERFromStringBufferPipe extends Pipe {
      * @param entityTypes            The list of the entity types to annotate
      */
     public NERFromStringBufferPipe(String identifiedEntitiesProp, List<String> entityTypes) {
+        super(new Class<?>[0],new Class<?>[0]);
+
         this.entityTypes = entityTypes;
     }
 

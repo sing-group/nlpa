@@ -32,24 +32,6 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(GuessLanguageFromStringBufferPipe.class);
 
     /**
-     * Dependencies of the type alwaysAfter
-     * These dependences indicate what pipes should be  
-     * executed before the current one. So this pipe
-     * shoudl be executed always after other dependant pipes
-     * included in this variable
-     */
-    final Class<?> alwaysAftterDeps[]={};
-
-    /**
-     * Dependencies of the type notAfter
-     * These dependences indicate what pipes should not be  
-     * executed before the current one. So this pipe
-     * shoudl be executed before other dependant pipes
-     * included in this variable
-     */
-    final Class<?> notAftterDeps[]={};
-
-    /**
     * The default property name where the language will be stored
     */
     public final static String DEFAULT_LANG_PROPERTY="language";
@@ -131,10 +113,12 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
 		* The default constructor for the language guessing pipe
 		*/
     public GuessLanguageFromStringBufferPipe() {
-        init();
+        this(DEFAULT_LANG_PROPERTY, DEFAULT_LANG_RELIABILITY_PROPERTY);
     }
 
     public GuessLanguageFromStringBufferPipe(String langProp, String langReliabilityProp) {
+        super(new Class<?>[0],new Class<?>[0]);
+        
         this.langProp = langProp;
         this.langReliabilityProp = langReliabilityProp;
         init();

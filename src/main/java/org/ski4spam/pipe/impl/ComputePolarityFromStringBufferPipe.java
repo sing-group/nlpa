@@ -40,24 +40,6 @@ public class ComputePolarityFromStringBufferPipe extends Pipe {
   private static final Logger logger = LogManager.getLogger(ComputePolarityFromStringBufferPipe.class);
 
     /**
-     * Dependencies of the type alwaysAfter
-     * These dependences indicate what pipes should be  
-     * executed before the current one. So this pipe
-     * shoudl be executed always after other dependant pipes
-     * included in this variable
-     */
-    final Class<?> alwaysAftterDeps[]={};
-
-    /**
-     * Dependencies of the type notAfter
-     * These dependences indicate what pipes should not be  
-     * executed before the current one. So this pipe
-     * shoudl be executed before other dependant pipes
-     * included in this variable
-     */
-    final Class<?> notAftterDeps[]={};
-
-    /**
      * Initing a StandfordCoreNLP pipeline
      */
     static StanfordCoreNLP pipeline;
@@ -125,6 +107,7 @@ public class ComputePolarityFromStringBufferPipe extends Pipe {
      * Default constructor
      */
     public ComputePolarityFromStringBufferPipe() {
+        this (DEFAULT_POLARITY_PROPERTY);
     }
 
     /**
@@ -134,6 +117,8 @@ public class ComputePolarityFromStringBufferPipe extends Pipe {
      * @param polProp The name of the property to extore the file polarity
      */
     public ComputePolarityFromStringBufferPipe(String polProp) {
+        super(new Class<?>[0],new Class<?>[0]);
+
         this.polProp = polProp;
     }
 

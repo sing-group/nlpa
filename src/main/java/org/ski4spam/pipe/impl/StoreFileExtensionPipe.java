@@ -65,6 +65,7 @@ public class StoreFileExtensionPipe extends Pipe {
 		* Default constructor
 		*/
     public StoreFileExtensionPipe() {
+        this(DEFAULT_EXTENSION_PROPERTY);
     }
 
     /**
@@ -72,6 +73,8 @@ public class StoreFileExtensionPipe extends Pipe {
 		* @param extProp The name of the property to extore the file extension
 		*/
     public StoreFileExtensionPipe(String extProp) {
+        super(new Class<?>[0],new Class<?>[0]);
+        
         this.extProp = extProp;
     }
 

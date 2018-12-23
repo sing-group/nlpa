@@ -38,35 +38,36 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * For logging purposes
      */
     private static final Logger logger = LogManager.getLogger(TeeDatasetFromSynsetFeatureVectorPipe.class);
- 
-     /**
-     * Dependencies of the type alwaysAfter
-     * These dependences indicate what pipes should be  
-     * executed before the current one. So this pipe
-     * shoudl be executed always after other dependant pipes
-     * included in this variable
-     */
-    final Class<?> alwaysAftterDeps[]={};
-
-    /**
-     * Dependencies of the type notAfter
-     * These dependences indicate what pipes should not be  
-     * executed before the current one. So this pipe
-     * shoudl be executed before other dependant pipes
-     * included in this variable
-     */
-    final Class<?> notAftterDeps[]={};
 
     /**
      * The list of transformers. A transformer is a class used to transform a
      * non double value in double value.
-     *
      */
     Map<String, Transformer<Object>> transformersList;
+
+    /**
+     * A list of instances
+     */
     List<Instance> instanceList = null;
+
+    /**
+     * The types that are currently detected
+     */
     private Set<String> detectedTypes = null;
+
+    /**
+     * The types por columns
+     */
     List<Pair<String, String>> columnTypes = null;
+
+    /**
+     * The attributes
+     */
     ArrayList<Attribute> attributes = null;
+
+    /**
+     * A Map with integer fields mapped to its types
+     */
     Map<String, Integer> indexColumnTypes = null;
 
     /**
@@ -78,6 +79,8 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * Default constructor
      */
     public TeeDatasetFromSynsetFeatureVectorPipe() {
+        super(new Class<?>[0],new Class<?>[0]);
+        
         transformersList = new HashMap<>();
     }
 

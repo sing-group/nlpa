@@ -24,24 +24,6 @@ public class TargetAssigningFromPathPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(TargetAssigningPipe.class);
 
     /**
-     * Dependencies of the type alwaysAfter
-     * These dependences indicate what pipes should be  
-     * executed before the current one. So this pipe
-     * shoudl be executed always after other dependant pipes
-     * included in this variable
-     */
-    final Class<?> alwaysAftterDeps[]={};
-
-    /**
-     * Dependencies of the type notAfter
-     * These dependences indicate what pipes should not be  
-     * executed before the current one. So this pipe
-     * shoudl be executed before other dependant pipes
-     * included in this variable
-     */
-    final Class<?> notAftterDeps[]={};
-
-    /**
      * Return the input type included the data attribute of a Instance
      * @return the input type for the data attribute of the Instances processed
      */
@@ -76,9 +58,11 @@ public class TargetAssigningFromPathPipe extends Pipe {
      * Create a TargetAssigningPipe using the default mapping ("_spam_" for target "spam" and "_ham_" for target "ham")
      */
     public TargetAssigningFromPathPipe() {
-        targets = new HashMap<>();
+        this(new HashMap<String,String>());
+
         targets.put("_ham_", "ham");
         targets.put("_spam_", "spam");
+        
     }
 
     /**
@@ -87,6 +71,8 @@ public class TargetAssigningFromPathPipe extends Pipe {
      * @param targets Map of targets. The key represents the substring of the path and the value the specific target.
      */
     public TargetAssigningFromPathPipe(Map<String, String> targets) {
+        super(new Class<?>[0],new Class<?>[0]);
+
         this.targets = targets;
     }
 

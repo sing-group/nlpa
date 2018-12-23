@@ -23,24 +23,6 @@ public class MeasureLengthFromStringBufferPipe extends Pipe {
 	 */
     private static final Logger logger = LogManager.getLogger(MeasureLengthFromStringBufferPipe.class);
 
-    /**
-     * Dependencies of the type alwaysAfter
-     * These dependences indicate what pipes should be  
-     * executed before the current one. So this pipe
-     * shoudl be executed always after other dependant pipes
-     * included in this variable
-     */
-    final Class<?> alwaysAftterDeps[]={};
-
-    /**
-     * Dependencies of the type notAfter
-     * These dependences indicate what pipes should not be  
-     * executed before the current one. So this pipe
-     * shoudl be executed before other dependant pipes
-     * included in this variable
-     */
-    final Class<?> notAftterDeps[]={};
-
    /**
     * Return the input type included the data attribute of a Instance
     * @return the input type for the data attribute of the Instances processed
@@ -92,6 +74,7 @@ public class MeasureLengthFromStringBufferPipe extends Pipe {
 		* default property ("length")
 		*/
     public MeasureLengthFromStringBufferPipe() {
+        this(DEFAULT_LENGTH_PROPERTY);
     }
 
     /**
@@ -100,6 +83,8 @@ public class MeasureLengthFromStringBufferPipe extends Pipe {
 		* @param lengthProp the name of te property to store the text length
 		*/
     public MeasureLengthFromStringBufferPipe(String lengthProp) {
+        super(new Class<?>[0],new Class<?>[0]);
+        
         this.lengthProp = lengthProp;
     }
 
