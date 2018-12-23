@@ -26,24 +26,6 @@ import org.bdp4j.pipe.PipeParameter;
 @PropertyComputingPipe()
 public class GuessDateFromFilePipe extends Pipe {
     /**
-     * Dependencies of the type alwaysAfter
-     * These dependences indicate what pipes should be  
-     * executed before the current one. So this pipe
-     * shoudl be executed always after other dependant pipes
-     * included in this variable
-     */
-    final Class<?> alwaysAftterDeps[]={};
-
-    /**
-     * Dependencies of the type notAfter
-     * These dependences indicate what pipes should not be  
-     * executed before the current one. So this pipe
-     * shoudl be executed before other dependant pipes
-     * included in this variable
-     */
-    final Class<?> notAftterDeps[]={};
-
-    /**
      * The default name for the date property
      */
     public static final String DEFAULT_DATE_PROPERTY = "date";
@@ -118,6 +100,7 @@ public class GuessDateFromFilePipe extends Pipe {
      * property "date"
      */
     public GuessDateFromFilePipe() {
+        this(DEFAULT_DATE_PROPERTY);
     }
 
     /**
@@ -127,6 +110,8 @@ public class GuessDateFromFilePipe extends Pipe {
      * @param dateProp The name of the property to store the date
      */
     public GuessDateFromFilePipe(String dateProp) {
+        super(new Class<?>[0],new Class<?>[0]);
+
         this.dateProp = dateProp;
     }
 

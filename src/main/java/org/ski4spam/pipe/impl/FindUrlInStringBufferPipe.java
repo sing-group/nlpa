@@ -24,24 +24,6 @@ public class FindUrlInStringBufferPipe extends Pipe {
 
     private static final Logger logger = LogManager.getLogger(FindUrlInStringBufferPipe.class);
 
-    /**
-     * Dependencies of the type alwaysAfter
-     * These dependences indicate what pipes should be  
-     * executed before the current one. So this pipe
-     * shoudl be executed always after other dependant pipes
-     * included in this variable
-     */
-    final Class<?> alwaysAftterDeps[]={};
-
-    /**
-     * Dependencies of the type notAfter
-     * These dependences indicate what pipes should not be  
-     * executed before the current one. So this pipe
-     * shoudl be executed before other dependant pipes
-     * included in this variable
-     */
-    final Class<?> notAftterDeps[]={};
-
     /*  NOTE:
      \p{Punct}-[.-_]
 		  is equivalent to:
@@ -175,6 +157,8 @@ public class FindUrlInStringBufferPipe extends Pipe {
      */
 
     public FindUrlInStringBufferPipe(String URLProp, boolean removeURL) {
+        super(new Class<?>[0],new Class<?>[0]);
+
         this.URLProp = URLProp;
         this.removeURL = removeURL;
         URLPatterns = new LinkedList<>();

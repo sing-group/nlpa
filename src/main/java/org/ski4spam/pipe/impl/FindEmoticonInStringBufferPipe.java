@@ -27,24 +27,6 @@ public class FindEmoticonInStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(FindEmoticonInStringBufferPipe.class);
 
     /**
-     * Dependencies of the type alwaysAfter
-     * These dependences indicate what pipes should be  
-     * executed before the current one. So this pipe
-     * shoudl be executed always after other dependant pipes
-     * included in this variable
-     */
-    final Class<?> alwaysAftterDeps[]={};
-
-    /**
-     * Dependencies of the type notAfter
-     * These dependences indicate what pipes should not be  
-     * executed before the current one. So this pipe
-     * shoudl be executed before other dependant pipes
-     * included in this variable
-     */
-    final Class<?> notAftterDeps[]={};
-
-    /**
      * Pattern for detecting emoticons
      */
     private static final Pattern emoticonPattern = Pattern.compile("(\\:\\w+\\:|\\<[\\/\\\\]?3|[\\(\\)\\\\\\D|\\*\\$][\\-\\^]?[\\:\\;\\=]|[\\:\\;\\=B8][\\-\\^]?[3DOPp\\@\\$\\*\\\\\\)\\(\\/\\|])(?=\\s|[\\!\\.\\?]|$)");
@@ -168,6 +150,8 @@ public class FindEmoticonInStringBufferPipe extends Pipe {
      * @param removeEmoticon tells if emoticons should be removed
      */
     public FindEmoticonInStringBufferPipe(String emoticonProp, boolean removeEmoticon) {
+        super(new Class<?>[0],new Class<?>[0]);
+
         this.emoticonProp = emoticonProp;
         this.removeEmoticon = removeEmoticon;
     }

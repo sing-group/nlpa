@@ -38,24 +38,6 @@ public class SlangFromStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(SlangFromStringBufferPipe.class);
 
     /**
-     * Dependencies of the type alwaysAfter
-     * These dependences indicate what pipes should be  
-     * executed before the current one. So this pipe
-     * shoudl be executed always after other dependant pipes
-     * included in this variable
-     */
-    final Class<?> alwaysAftterDeps[]={};
-
-    /**
-     * Dependencies of the type notAfter
-     * These dependences indicate what pipes should not be  
-     * executed before the current one. So this pipe
-     * shoudl be executed before other dependant pipes
-     * included in this variable
-     */
-    final Class<?> notAftterDeps[]={};
-
-    /**
      * A hashmap of slangs in different languages. NOTE: All JSON files (listed
      * below) containing slangs
      *
@@ -117,6 +99,7 @@ public class SlangFromStringBufferPipe extends Pipe {
      * Construct a SlangFromStringBuffer instance
      */
     public SlangFromStringBufferPipe() {
+        this(DEFAULT_LANG_PROPERTY);
     }
 
     /**
@@ -125,6 +108,8 @@ public class SlangFromStringBufferPipe extends Pipe {
      * @param langProp The propertie that stores the language of text
      */
     public SlangFromStringBufferPipe(String langProp) {
+        super(new Class<?>[0],new Class<?>[0]);
+        
         this.langProp = langProp;
     }
 

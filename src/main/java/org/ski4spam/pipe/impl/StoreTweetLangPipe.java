@@ -22,28 +22,17 @@ import twitter4j.Status;
  */
 @PropertyComputingPipe()
 public class StoreTweetLangPipe extends Pipe {
+    /**
+     * Default constructor
+     */
+    public StoreTweetLangPipe(){
+        super(new Class<?>[0],new Class<?>[0]);
+    }
+
 	/**
 	  * For loging purposes
 	  */
     private static final Logger logger = LogManager.getLogger(StoreTweetLangPipe.class);
-
-    /**
-     * Dependencies of the type alwaysAfter
-     * These dependences indicate what pipes should be  
-     * executed before the current one. So this pipe
-     * shoudl be executed always after other dependant pipes
-     * included in this variable
-     */
-    final Class<?> alwaysAftterDeps[]={};
-
-    /**
-     * Dependencies of the type notAfter
-     * These dependences indicate what pipes should not be  
-     * executed before the current one. So this pipe
-     * shoudl be executed before other dependant pipes
-     * included in this variable
-     */
-    final Class<?> notAftterDeps[]={};
 
    /**
     * Return the input type included the data attribute of a Instance

@@ -38,24 +38,6 @@ public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
     public static final String DEFAULT_GROUPTING_STRATEGY = "COUNT";
 
     /**
-     * Dependencies of the type alwaysAfter
-     * These dependences indicate what pipes should be  
-     * executed before the current one. So this pipe
-     * shoudl be executed always after other dependant pipes
-     * included in this variable
-     */
-    final Class<?> alwaysAftterDeps[]={};
-
-    /**
-     * Dependencies of the type notAfter
-     * These dependences indicate what pipes should not be  
-     * executed before the current one. So this pipe
-     * shoudl be executed before other dependant pipes
-     * included in this variable
-     */
-    final Class<?> notAftterDeps[]={};
-
-    /**
      * Indicates the group strategy to create the synsetFeatureVector
      */
     private SynsetVectorGroupingStrategy groupStrategy
@@ -102,6 +84,10 @@ public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
         return this.groupStrategy;
     }
 
+    public SynsetVector2SynsetFeatureVectorPipe(){
+        this(SynsetVectorGroupingStrategy.valueOf(DEFAULT_GROUPTING_STRATEGY));
+    }
+
     /**
      * Creates a SynsetVector2SynsetFeatureVector Pipe using an specific
      * grouping strategy
@@ -109,6 +95,8 @@ public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
      * @param groupStrategy The selected grouping strategy
      */
     public SynsetVector2SynsetFeatureVectorPipe(SynsetVectorGroupingStrategy groupStrategy) {
+        super(new Class<?>[0],new Class<?>[0]);
+
         this.groupStrategy = groupStrategy;
     }
 

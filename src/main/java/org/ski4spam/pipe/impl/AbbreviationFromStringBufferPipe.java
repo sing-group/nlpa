@@ -39,24 +39,6 @@ public class AbbreviationFromStringBufferPipe extends Pipe {
     private static final Logger logger = LogManager.getLogger(AbbreviationFromStringBufferPipe.class);
 
     /**
-     * Dependencies of the type alwaysAfter
-     * These dependences indicate what pipes should be  
-     * executed before the current one. So this pipe
-     * shoudl be executed always after other dependant pipes
-     * included in this variable
-     */
-    final Class<?> alwaysAftterDeps[]={};
-
-    /**
-     * Dependencies of the type notAfter
-     * These dependences indicate what pipes should not be  
-     * executed before the current one. So this pipe
-     * shoudl be executed before other dependant pipes
-     * included in this variable
-     */
-    final Class<?> notAftterDeps[]={};
-
-    /**
      * A hashset of abbreviations in different languages. NOTE: All JSON files
      * (listed below) containing abbreviations
      *
@@ -118,6 +100,7 @@ public class AbbreviationFromStringBufferPipe extends Pipe {
      * Construct a AbbreviationFromStringBuffer instance
      */
     public AbbreviationFromStringBufferPipe() {
+        this(DEFAULT_LANG_PROPERTY);
     }
 
     /**
@@ -127,6 +110,8 @@ public class AbbreviationFromStringBufferPipe extends Pipe {
      * @param langProp The propertie that stores the language of text
      */
     public AbbreviationFromStringBufferPipe(String langProp) {
+        super(new Class<?>[0],new Class<?>[0]);
+
         this.langProp = langProp;
     }
 
