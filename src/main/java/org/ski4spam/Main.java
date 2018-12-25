@@ -122,6 +122,11 @@ public class Main {
             //teeCSVDatasetFSV
         });
 
+        if (!p.checkDependencies())
+          System.out.println("Dependencies are not satisfied");
+        else
+          System.out.println("Dependencies are satisfied");
+
         instances = InstanceListUtils.dropInvalid(instances);
 
         /*Pipe all instances*/
