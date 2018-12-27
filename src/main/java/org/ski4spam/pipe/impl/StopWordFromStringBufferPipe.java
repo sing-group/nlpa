@@ -135,7 +135,7 @@ public class StopWordFromStringBufferPipe extends Pipe {
      * @param langProp The propertie that stores the language of text
      */
     public StopWordFromStringBufferPipe(String langProp) {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class},new Class<?>[]{AbbreviationFromStringBufferPipe.class});
         
         this.langProp = langProp;
     }

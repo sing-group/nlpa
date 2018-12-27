@@ -108,7 +108,7 @@ public class SlangFromStringBufferPipe extends Pipe {
      * @param langProp The propertie that stores the language of text
      */
     public SlangFromStringBufferPipe(String langProp) {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class},new Class<?>[0]);
         
         this.langProp = langProp;
     }

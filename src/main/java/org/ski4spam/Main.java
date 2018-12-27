@@ -107,9 +107,9 @@ public class Main {
             new FindEmoticonInStringBufferPipe(),
             new FindEmojiInStringBufferPipe(),
             new MeasureLengthFromStringBufferPipe("length_after_cleaning_text"),
+            new GuessLanguageFromStringBufferPipe(),
             new AbbreviationFromStringBufferPipe(),
             new StringBufferToLowerCasePipe(),
-            new GuessLanguageFromStringBufferPipe(),
             new SlangFromStringBufferPipe(),
             new InterjectionFromStringBufferPipe(),
             new StopWordFromStringBufferPipe(),
@@ -122,10 +122,12 @@ public class Main {
             //teeCSVDatasetFSV
         });
 
-        if (!p.checkDependencies())
-          System.out.println("Dependencies are not satisfied");
-        else
-          System.out.println("Dependencies are satisfied");
+        if (!p.checkDependencies()){
+          System.out.println("Pipe dependencies are not satisfied");
+          System.out.println(Pipe.getErrorMesage());
+          System.exit(1);
+        }else
+          System.out.println("Pipe dependencies are satisfied");
 
         instances = InstanceListUtils.dropInvalid(instances);
 

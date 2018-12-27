@@ -198,7 +198,7 @@ public class InterjectionFromStringBufferPipe extends Pipe {
      * @param removeInterjection tells if hashtags should be removed
      */
     public InterjectionFromStringBufferPipe(String langProp, String interjectionProp, boolean removeInterjection) {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class},new Class<?>[0]);
         
         this.langProp = langProp;
         this.interjectionProp = interjectionProp;
