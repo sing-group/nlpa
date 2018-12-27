@@ -150,7 +150,7 @@ public class FindEmoticonInStringBufferPipe extends Pipe {
      * @param removeEmoticon tells if emoticons should be removed
      */
     public FindEmoticonInStringBufferPipe(String emoticonProp, boolean removeEmoticon) {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[0],new Class<?>[]{FindHashtagInStringBufferPipe.class});
 
         this.emoticonProp = emoticonProp;
         this.removeEmoticon = removeEmoticon;

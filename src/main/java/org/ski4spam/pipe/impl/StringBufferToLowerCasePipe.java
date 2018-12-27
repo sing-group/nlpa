@@ -34,7 +34,7 @@ public class StringBufferToLowerCasePipe extends Pipe {
 		* Build a StringBufferToLowerCasePipe
 		*/
     public StringBufferToLowerCasePipe() {
-        super(new Class<?>[0],new Class<?>[0]);        
+        super(new Class<?>[0],new Class<?>[]{AbbreviationFromStringBufferPipe.class});        
     }
 
     /**

@@ -157,7 +157,7 @@ public class FindUrlInStringBufferPipe extends Pipe {
      */
 
     public FindUrlInStringBufferPipe(String URLProp, boolean removeURL) {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[0],new Class<?>[]{FindUserNameInStringBufferPipe.class});
 
         this.URLProp = URLProp;
         this.removeURL = removeURL;

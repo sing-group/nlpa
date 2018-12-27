@@ -117,7 +117,7 @@ public class GuessLanguageFromStringBufferPipe extends Pipe {
     }
 
     public GuessLanguageFromStringBufferPipe(String langProp, String langReliabilityProp) {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[]{StripHTMLFromStringBufferPipe.class},new Class<?>[0]);
         
         this.langProp = langProp;
         this.langReliabilityProp = langReliabilityProp;
