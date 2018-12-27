@@ -1,0 +1,126 @@
+package org.ski4spam.pipe.impl;
+
+import java.io.IOException;
+
+import com.google.gson.JsonObject;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+import org.bdp4j.pipe.Pipe;
+import org.bdp4j.types.Instance;
+
+/**
+ * This class allows to compute polarity by querying Textblob-ws implemented by Enaitz Ezpeleta
+ * Example: 
+ * wget -O- -q --header "Content-Type: application/json" --post-data '{"text": "Hello World"}' http://172.18.0.2/postjson
+ * @author José Ramón Méndez Reboredo
+ * @author Enaitz Ezpeleta
+ */
+public class ComputePolarityTBWSFromStringBuffer extends Pipe {
+    /**
+     * Contains the default URI for accessing textblob-service
+     */
+    private static String URI="http://textblob-ws/postjson";
+
+    /**
+     * Creates an instance of this pipe
+     */
+    public ComputePolarityTBWSFromStringBuffer(){
+        super(new Class<?>[0], new Class<?>[0]);
+    }
+
+    @Override
+    public Class<?> getInputType() {
+        return StringBuffer.class;
+    }
+
+    @Override
+    public Class<?> getOutputType() {
+        return StringBuffer.class;
+    }
+
+    @Override
+    public Instance pipe(Instance carrier) {
+        JsonObject jsonObj = new JsonObject();
+        jsonObj.addProperty("text", carrier.getData().toString());
+
+        carrier.setProperty("PolarityTBWS", http(URI,jsonObj.getAsString()));
+
+        return carrier;
+	}
+
+
+    /**
+     * Makes a json request to the textblob-ws
+     * @param url The URL for the textblob-ws
+     * @param body The body of the query
+     * @return The polarity of the text
+     */
+    private double http(String url, String body) {
+
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+            HttpPost request = new HttpPost(url);
+            StringEntity params = new StringEntity(body);
+            request.addHeader("content-type", "application/json");
+            request.setEntity(params);
+            HttpResponse result = httpClient.execute(request);
+            String json = EntityUtils.toString(result.getEntity(), "UTF-8");
+
+            com.google.gson.Gson gson = new com.google.gson.Gson();
+            Response respuesta = gson.fromJson(json, Response.class);
+            return respuesta.getPolarity();
+
+        } catch (IOException ex) {
+        }
+        return 0d;
+    }   
+}
+
+/**
+ * Handles the response for the json query to the textblob-ws
+ */
+class Response{
+
+    /**
+     * The polaroty
+     */
+    private double polarity;
+
+    /**
+     * The subjectivity
+     */
+    private double subjectivity;
+
+    /**
+     * @return the polarity
+     */
+    public double getPolarity() {
+        return polarity;
+    }
+
+    /**
+     * @param polarity the polarity to set
+     */
+    public void setPolarity(double polarity) {
+        this.polarity = polarity;
+    }
+
+    /**
+     * @return the subjectivity
+     */
+    public double getSubjectivity() {
+        return subjectivity;
+    }
+
+    /**
+     * @param subjectivity the subjectivity to set
+     */
+    public void setSubjectivity(double subjectivity) {
+        this.subjectivity = subjectivity;
+    }
+
+}
