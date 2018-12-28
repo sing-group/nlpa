@@ -33,3 +33,4 @@ outputsyns\.csv
 
 .factorypath
 .vscode/settings.json
+.vscode/launch.json
