@@ -115,6 +115,7 @@ public class Main {
             new StopWordFromStringBufferPipe(),
             new ComputePolarityFromStringBufferPipe(),
             new NERFromStringBufferPipe(),
+            new ComputePolarityTBWSFromStringBuffer("http://localhost/postjson"),
             new TeeCSVFromStringBufferPipe("output.csv", true),
             new StringBuffer2SynsetVectorPipe(),
             new SynsetVector2SynsetFeatureVectorPipe(SynsetVectorGroupingStrategy.COUNT),
