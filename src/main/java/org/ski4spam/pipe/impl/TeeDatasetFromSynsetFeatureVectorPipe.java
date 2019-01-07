@@ -43,7 +43,7 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * The list of transformers. A transformer is a class used to transform a
      * non double value in double value.
      */
-    Map<String, Transformer<Object>> transformersList;
+    Map<String, Transformer> transformersList;
 
     /**
      * A list of instances
@@ -90,7 +90,7 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
      * @param transformersList The list of transformers.
      */
     @PipeParameter(name = "transformersList", description = "The list of transformers", defaultValue = "")
-    public void setTransformersList(Map<String, Transformer<Object>> transformersList) {
+    public void setTransformersList(Map<String, Transformer> transformersList) {
         this.transformersList = transformersList;
     }
 
@@ -99,7 +99,7 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
      *
      * @return the transformersList
      */
-    public Map<String, Transformer<Object>> getTransformersList() {
+    public Map<String, Transformer> getTransformersList() {
         return this.transformersList;
     }
 
@@ -215,9 +215,9 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
                 // Get transformes which parameter type is not Double
                 Set<String> noDoubleTransformers = new HashSet<>();
                 if (transformersList.size() > 0) {
-                    for (Map.Entry<String, Transformer<Object>> entry : transformersList.entrySet()) {
+                    for (Map.Entry<String, Transformer> entry : transformersList.entrySet()) {
                         String key = entry.getKey();
-                        Transformer<? extends Object> value = entry.getValue();
+                        Transformer value = entry.getValue();
                         if (!SubClassParameterTypeIdentificator.findSubClassParameterType(value, Transformer.class, 0).getName().equals("Double")) {
                             noDoubleTransformers.add(key);
                         }
@@ -251,7 +251,7 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
                 int indInstance = 0;
                 SynsetFeatureVector synsetFeatureVector = null;
                 weka.core.Instance instance = null;
-                Transformer<Object> t;
+                Transformer t;
                 for (Instance entry : instanceList) {
                     instance = dataset.createDenseInstance();
                     synsetFeatureVector = (SynsetFeatureVector) entry.getData();
