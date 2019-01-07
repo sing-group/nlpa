@@ -27,7 +27,7 @@ public class TestDatasetFromFile {
         transformList.put("ham", 0);
         transformList.put("spam", 1);
         //Se define la lista de transformadores
-        Map<String, Transformer<Object>> transformersList = new HashMap<>();
+        Map<String, Transformer> transformersList = new HashMap<>();
         transformersList.put("date", new Date2MillisTransformer());
         transformersList.put("target", new Enum2IntTransformer(transformList));
 
