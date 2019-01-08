@@ -25,13 +25,20 @@ dist/
 /JSpellDictionary/nbproject/private/
 /JSpellDictionary/build/
 /JSpellDictionary/dist/
+babelfy.var.properties
+babelnet.var.properties
+configurations.ini
 
 # Netbeans
 nbactions.xml
 
-
 outputsyns\.csv
-
 .factorypath
 .vscode/settings.json
 .vscode/launch.json
+
+CSVDataset\.csv
+FicherosDataset_17\.12\.18/outputsyns_old\.csv
+outputsyns_mini\.csv
+WEKADatasetWithComments\.arff
+outputsyns_\.csv
