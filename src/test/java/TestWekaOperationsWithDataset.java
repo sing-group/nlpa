@@ -147,6 +147,9 @@ public class TestWekaOperationsWithDataset {
             System.out.println("------------------------------------------");
             try {
                 int k = 10;
+                if (numInstances<k){
+                	k = numInstances;
+                }
                 Evaluation eval = new Evaluation(data);
                 eval.crossValidateModel(new SMO(), data, k, new Random(1));
 
