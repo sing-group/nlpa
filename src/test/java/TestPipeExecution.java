@@ -44,8 +44,9 @@ public class TestPipeExecution {
 	 * The main method for the running application
      */
     public static void main(String[] args) {
+        String testPath = "src/test/java/resources/";
         if (args.length == 0) {
-            generateInstances("tests/");
+            generateInstances(testPath + "tests3");
         } else {
             generateInstances(args[0]);
         }

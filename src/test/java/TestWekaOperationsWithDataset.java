@@ -45,22 +45,37 @@ public class TestWekaOperationsWithDataset {
         Dataset dataset = jml.loadFile();
 //        System.out.println(" ----- DATASET -----");
 //        dataset.printLine();
+
         dataset.generateARFFWithComments(transformersList);
         System.out.println(" ----- Arff file with comments generated-----");
         System.out.println("");
+        
+        /* Creating dataset replacing synsets with hypernonyms*/
+        Map<String, String> hyperonymList = new HashMap<>();
+        hyperonymList.put("bn:00082876v", "bn:00082876V");
+        hyperonymList.put("bn:00019763n", "bn:00019763N");
+        hyperonymList.put("bn:01532284n", "bn:01532284P");
+        hyperonymList.put("bn:00095665v", "bn:00095665B");
+        Dataset d = dataset.replaceSynsetWithHyperonym(hyperonymList);
+        d.generateARFFWithComments(transformersList);
+        /***********************************************/
+        
         Instances data = dataset.getWekaDataset();
+        
         data.deleteStringAttributes();
         data.setClassIndex(data.numAttributes() - 1);
+        
         System.out.println("num data: " + data.numInstances());
         int numInstances = data.numInstances();
         int beginInt = (numInstances * 80) / 100;
         int endInt = numInstances - beginInt;
+        
         Instances trainingData = new Instances(data, 0, beginInt);
         System.out.println("num trainingData: " + trainingData.numInstances());
         Instances testingData = new Instances(data, beginInt, endInt);
         System.out.println("num testingData: " + testingData.numInstances());
         System.out.println("");
-        
+
         try {
             System.out.println("------------------------------------------");
             System.out.println("--------- Random Forest Classifier ---------");
@@ -81,7 +96,7 @@ public class TestWekaOperationsWithDataset {
             Logger.getLogger(TestWekaOperationsWithDataset.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
         }
-        
+
         try {
             System.out.println("------------------------------------------");
             System.out.println("--------- Bayes Net Classifier ---------");
