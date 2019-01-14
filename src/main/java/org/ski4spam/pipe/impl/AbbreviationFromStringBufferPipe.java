@@ -46,7 +46,12 @@ public class AbbreviationFromStringBufferPipe extends Pipe {
     private static final HashMap<String, HashMap<String, Pair<Pattern, String>>> htAbbreviations = new HashMap<>();
 
     static {
-        for (String i : new String[]{"/abbreviations-json/abbrev.es.json", "/abbreviations-json/abbrev.en.json"}) {
+        for (String i : new String[]{"/abbreviations-json/abbrev.es.json", 
+                                     "/abbreviations-json/abbrev.en.json",
+                                     "/abbreviations-json/abbrev.fr.json",
+                                     "/abbreviations-json/abbrev.gl.json",
+                                     "/abbreviations-json/abbrev.eu.json",
+                                     "/abbreviations-json/abbrev.ru.json"}) {
 
             String lang = i.substring(27, 29).toUpperCase();
             try {
@@ -138,8 +143,6 @@ public class AbbreviationFromStringBufferPipe extends Pipe {
      * Process an Instance. This method takes an input Instance, modifies it
      * extending abbreviations, and returns it. This is the method by which all
      * pipes are eventually run.
-     *
-     * LLAMARLO ANTES DE QUITAR MAYÚSCULAS *****************
      *
      * @param carrier Instance to be processed.
      * @return Instancia procesada
