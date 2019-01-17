@@ -25,7 +25,7 @@ import java.util.Map;
  * This class encapsulates all required information to support Babelfy and
  * Babelnet queryies
  *
- * @author Iñaki Velez
+ * @author Iñaki Velez de Mendizabal
  */
 public class BabelUtils {
 
@@ -98,7 +98,14 @@ public class BabelUtils {
         }
         return (resultNo > 0);
     }
-
+    
+    
+    /**
+     * Returns a Map with Synsets and their first hypernym from BabelNet. Only builds a pair if synset hypernym exists.
+     *
+     * @param originalSynsetList The synset list to obtain hypernyms
+     * @return A Map with pairs of synset as key and hypernym as value
+     */
     public Map<String, String> getHypernymsFromBabelnet(List<String> originalSynsetList) {
         List<BabelSynsetRelation> elementsInAnyHypernymPointer, elementsInHypernymPointer;
         String hypernym;
