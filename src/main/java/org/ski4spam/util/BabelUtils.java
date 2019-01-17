@@ -11,10 +11,15 @@ import it.uniroma1.lcl.jlt.util.Language;
 import it.uniroma1.lcl.babelnet.BabelSynset;
 import it.uniroma1.lcl.babelnet.BabelNet;
 import it.uniroma1.lcl.babelnet.BabelNetQuery;
+import it.uniroma1.lcl.babelnet.BabelSynsetID;
+import it.uniroma1.lcl.babelnet.BabelSynsetRelation;
+import it.uniroma1.lcl.babelnet.data.BabelPointer;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class encapsulates all required information to support Babelfy and
@@ -43,11 +48,11 @@ public class BabelUtils {
      * An instance of BabelNet object required to query BabelNet
      */
     private BabelNet bn;
-	 
-	 /**
-		* String limit for babelfy queries
-		*/
-	 public static final int MAX_BABELFY_QUERY=3000;
+
+    /**
+     * String limit for babelfy queries
+     */
+    public static final int MAX_BABELFY_QUERY = 3000;
 
     /**
      * The private default constructor for this class
@@ -94,6 +99,30 @@ public class BabelUtils {
         return (resultNo > 0);
     }
 
+    public Map<String, String> getHypernymsFromBabelnet(List<String> originalSynsetList) {
+        List<BabelSynsetRelation> elementsInAnyHypernymPointer, elementsInHypernymPointer;
+        String hypernym;
+        Map<String, String> synsetHypernymMap = new HashMap<>();
+        BabelNet bn = BabelNet.getInstance();
+
+        for (String synsetListElement : originalSynsetList) {
+            BabelSynset by = bn.getSynset(new BabelSynsetID(synsetListElement));
+            elementsInAnyHypernymPointer = by.getOutgoingEdges(BabelPointer.ANY_HYPERNYM);
+            elementsInHypernymPointer = by.getOutgoingEdges(BabelPointer.HYPERNYM);
+            // If HYPERNYM returns values, it takes first and add to synsetHypernymMap
+            if (elementsInHypernymPointer.size() >= 1) {
+                hypernym = elementsInHypernymPointer.get(0).getBabelSynsetIDTarget().toString();
+                synsetHypernymMap.put(synsetListElement, hypernym);
+            } // else if ANY_HYPERNYM returns values, it takes first and add to synsetHypernymMap
+            else if (elementsInAnyHypernymPointer.size() >= 1) {
+                hypernym = elementsInAnyHypernymPointer.get(0).getBabelSynsetIDTarget().toString();
+                synsetHypernymMap.put(synsetListElement, hypernym);
+            }
+        }
+        return synsetHypernymMap;
+
+    }
+
     /**
      * Build a list of sysntets from a text
      *
@@ -108,53 +137,55 @@ public class BabelUtils {
         ArrayList<BabelfyEntry> nGrams = new ArrayList<>();
         List<SemanticAnnotation> bfyAnnotations = new ArrayList<>();
         //boolean solved = false;
-		  String subtexts[]=new String[0];
-		  
-		  //Split text in 3500 (MAX_BABELFY_QUERY) characters string for querying
-		  String remain=new String(fixedText);
-		  List<String> parts=new ArrayList<>();
-		  while(remain.length()>MAX_BABELFY_QUERY){
-				  int splitPos=fixedText.lastIndexOf('.',MAX_BABELFY_QUERY-1); //Try to keep phrases in the same part
-				  if (splitPos==-1) splitPos=fixedText.lastIndexOf(' ',MAX_BABELFY_QUERY-1); //but at least try to keep words
-				  if (splitPos==-1) splitPos=MAX_BABELFY_QUERY-1;	//if this is imposible lets with the max length
-				  			  
-				  parts.add(remain.substring(0,splitPos+1));
-				  remain=remain.substring(splitPos+1);
-		  }
-		  parts.add(remain);
-		  subtexts=parts.toArray(subtexts);
-		  //if (subtexts.length>1) {System.out.print("Instance text slitted: original size: "+fixedText.length()+" new zizes "); for (String i:subtexts){System.out.print(i.length()+", ");}; System.out.println();}
-		  
-		  //Text is not splitted
-		  
-		  int currentSubtext=0;
-        while (currentSubtext<subtexts.length) {
+        String subtexts[] = new String[0];
+
+        //Split text in 3500 (MAX_BABELFY_QUERY) characters string for querying
+        String remain = new String(fixedText);
+        List<String> parts = new ArrayList<>();
+        while (remain.length() > MAX_BABELFY_QUERY) {
+            int splitPos = fixedText.lastIndexOf('.', MAX_BABELFY_QUERY - 1); //Try to keep phrases in the same part
+            if (splitPos == -1) {
+                splitPos = fixedText.lastIndexOf(' ', MAX_BABELFY_QUERY - 1); //but at least try to keep words
+            }
+            if (splitPos == -1) {
+                splitPos = MAX_BABELFY_QUERY - 1;	//if this is imposible lets with the max length
+            }
+            parts.add(remain.substring(0, splitPos + 1));
+            remain = remain.substring(splitPos + 1);
+        }
+        parts.add(remain);
+        subtexts = parts.toArray(subtexts);
+        //if (subtexts.length>1) {System.out.print("Instance text slitted: original size: "+fixedText.length()+" new zizes "); for (String i:subtexts){System.out.print(i.length()+", ");}; System.out.println();}
+
+        //Text is not splitted
+        int currentSubtext = 0;
+        while (currentSubtext < subtexts.length) {
             try {
                 bfyAnnotations.addAll(bfy.babelfy(subtexts[currentSubtext], Language.valueOf(lang)));
-					 currentSubtext++;
+                currentSubtext++;
             } catch (RuntimeException e) {
                 if (e.getMessage().equals("Your key is not valid or the daily requests limit has been reached. Please visit http://babelfy.org.")) {
                     //Wait until 01:01:01 of the next day (just after midnigth)
-						  Calendar c = Calendar.getInstance();
+                    Calendar c = Calendar.getInstance();
                     c.add(Calendar.DAY_OF_MONTH, 1);
                     c.set(Calendar.HOUR_OF_DAY, 1); //Wait for an hour and a minute for the actualization of babelcoins
                     c.set(Calendar.MINUTE, 1);
                     c.set(Calendar.SECOND, 1);
                     long midnight = c.getTimeInMillis();
-						  
+
                     long now = System.currentTimeMillis();
-						  
+
                     long millis = midnight - now;
                     long hours = millis / (1000 * 60 * 60);
-                    long minutes = (millis % (1000 * 60 * 60))/ (1000 * 60);
+                    long minutes = (millis % (1000 * 60 * 60)) / (1000 * 60);
                     //System.out.println("--------------------------------------------------------------------------------------------------------------------------");
                     //System.out.println("INFO: Your key is not valid or the daily requests limit has been reached. The application will pause for " + hours+"h "+minutes+"m.");
                     //System.out.println("--------------------------------------------------------------------------------------------------------------------------");
-                    logger.info("Your key is not valid or the daily requests limit has been reached. The application will pause for " + hours+"h "+minutes+"m.");
+                    logger.info("Your key is not valid or the daily requests limit has been reached. The application will pause for " + hours + "h " + minutes + "m.");
                     try {
                         Thread.sleep(millis);
                     } catch (InterruptedException ie) {
-                        logger.error("Unable to sleep "+millis+". " + ie.getMessage());
+                        logger.error("Unable to sleep " + millis + ". " + ie.getMessage());
                     }
                 }
             }
