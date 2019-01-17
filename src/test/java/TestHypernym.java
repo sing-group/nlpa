@@ -1,5 +1,4 @@
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,73 +12,53 @@ import it.uniroma1.lcl.babelnet.BabelSynsetID;
 import it.uniroma1.lcl.babelnet.data.BabelPointer;
 
 public class TestHypernym {
-//	Map<String, String> synsetMap; 
-	
-	public TestHypernym() {
-//		synsetMap = new HashMap<String, String>();
-	}
-	
-	public HashMap<String, String> searchHypernymsInBabelnet (HashMap<String, String> originalSynsetMap) {
-		int ElementsInAnyHypernymPointer, ElementsInHypernymPointer;
-		String hypernym;
-		
-		//First we make a copy of the original Map to work with the copy quiet
-		HashMap<String, String> hyperonymizedSynsetMap = new HashMap<String, String>();
-		//LA SIGUIENTE LINEA ME DA UN WARNING!!!!
-		hyperonymizedSynsetMap = (HashMap) originalSynsetMap.clone();
 
-    	BabelNet bn = BabelNet.getInstance();
-    	
-		for(Map.Entry<String, String> tupla : hyperonymizedSynsetMap.entrySet())
-		{
-    		BabelSynset by = bn.getSynset(new BabelSynsetID(tupla.getKey()));
-            ElementsInAnyHypernymPointer = by.getOutgoingEdges(BabelPointer.ANY_HYPERNYM).size();
-            ElementsInHypernymPointer = by.getOutgoingEdges(BabelPointer.HYPERNYM).size();
-            if ( (ElementsInHypernymPointer==0) && (ElementsInAnyHypernymPointer==0) )
-        		{ 
-            	 break;
-            	} 
-            else 
-        		{
-            	if (ElementsInHypernymPointer >= 1)
-        			{ hypernym = by.getOutgoingEdges(BabelPointer.HYPERNYM).get(0).getBabelSynsetIDTarget().toString(); }
-            	else { hypernym = by.getOutgoingEdges(BabelPointer.ANY_HYPERNYM).get(0).getBabelSynsetIDTarget().toString(); }
-        		}
-            tupla.setValue(hypernym);
-          }
-		
-		return hyperonymizedSynsetMap;
+	public TestHypernym() {
+
 	}
-	
-	
-	
+
+	public Map<String, String> GetHypernymsFromBabelnet(List<String> originalSynsetList) {
+		int elementsInAnyHypernymPointer, elementsInHypernymPointer;
+		String hypernym;
+		Map<String, String> synsetHypernymMap = new HashMap<String, String>();
+		BabelNet bn = BabelNet.getInstance();
+
+		for (String synsetListElement : originalSynsetList) {
+			BabelSynset by = bn.getSynset(new BabelSynsetID(synsetListElement));
+			elementsInAnyHypernymPointer = by.getOutgoingEdges(BabelPointer.ANY_HYPERNYM).size();
+			elementsInHypernymPointer = by.getOutgoingEdges(BabelPointer.HYPERNYM).size();
+			// Si hay listado de hiperónimos en la relación HYPERNYM cogemos el primero de la
+			// lista y metemos la pareja (synset original , hyperónimo) en el mapa
+			if (elementsInHypernymPointer >= 1) {
+				hypernym = by.getOutgoingEdges(BabelPointer.HYPERNYM).get(0).getBabelSynsetIDTarget().toString();
+				synsetHypernymMap.put(synsetListElement, hypernym);
+			}
+			// Si no hay nada en la relación HIPERNYM miramos en ANY_HYPERNYM y si hay listado de hiperónimos,
+			// cogemos el primero de la lista y metemos la pareja (synset original , hyperónimo) en el mapa
+			else if (elementsInAnyHypernymPointer >= 1) {
+				hypernym = by.getOutgoingEdges(BabelPointer.ANY_HYPERNYM).get(0).getBabelSynsetIDTarget().toString();
+				synsetHypernymMap.put(synsetListElement, hypernym);
+			}
+			//Si no se cumple ninguna de las dos condiciones anteriores, pasamos al siguiente elemento de la lista
+		}
+
+		return synsetHypernymMap;
+
+	}
 
 	public static void main(String[] args) throws IOException {
-    	TestHypernym programa = new TestHypernym();
-		
-    	String texto = "bn:00015556n bn:00000356n bn:03095983n bn:01808357n bn:00877124n bn:00079972n bn:00032558n " +
-    				"bn:00108806a bn:00888759n bn:00060436n bn:00084385v bn:13611274a bn:00114203r " +
-    				"bn:00113457a bn:00052907n bn:00061450n";
-    	List<String> synsetList = Arrays.asList(texto.split(" "));
 
-    	HashMap<String, String> originalSynsetMap = new HashMap<String, String>();
-    	HashMap<String, String> finalSynsetMap = new HashMap<String, String>();
-    	
-    	//Rellenamos la clave del mapa. El campo valor lo dejamos a null
-    	for (String e : synsetList)
-		{
-		originalSynsetMap.put(e, null);
-		}
-    	
-    	finalSynsetMap = programa.searchHypernymsInBabelnet(originalSynsetMap);
-    	//Para imprimir el mapa
-		System.out.println("Original:" + originalSynsetMap);
-		System.out.println("Ultimo:  " + finalSynsetMap);
+		String textoParaTest = "bn:00015556n bn:00000356n bn:03095983n bn:01808357n bn:00877124n bn:00079972n bn:00032558n "
+				+ "bn:00108806a bn:00888759n bn:00060436n bn:00084385v bn:13611274a bn:00114203r "
+				+ "bn:00113457a bn:00052907n bn:00061450n";
+		List<String> synsetListParaTest = Arrays.asList(textoParaTest.split(" "));
 
-    }	
-    	
-	
-	
+		Map<String, String> salida;
+		TestHypernym lista = new TestHypernym();
+		salida = lista.GetHypernymsFromBabelnet(synsetListParaTest);
+		System.out.println(synsetListParaTest);
+		System.out.println(salida);
 
-	
+	}
+
 }
