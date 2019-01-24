@@ -33,6 +33,6 @@ do
 done
 
 echo "Done converting. Converted: "
-echo "+ $(find ${SPAM_DIR} -type f | wc -l)  spam messages in ${SPAM_DIR}"
-echo "+ $(find ${HAM_DIR} -type f | wc -l) ham messages in ${HAM_DIR}"
+echo "+ $(find ${SPAM_DIR} -type f -print -exec mv {} {}.eml \; | wc -l)  spam messages in ${SPAM_DIR}"
+echo "+ $(find ${HAM_DIR} -type f -print -exec mv {} {}.eml \; | wc -l) ham messages in ${HAM_DIR}"
 echo "TOTAL: $(find ${OUTPUT_DIR} -type f | wc -l)"
