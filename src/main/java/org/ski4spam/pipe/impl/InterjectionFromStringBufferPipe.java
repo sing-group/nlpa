@@ -64,7 +64,7 @@ public class InterjectionFromStringBufferPipe extends Pipe {
                 LinkedList<Pattern> setWords = new LinkedList<>();
 
                 for (JsonValue v : array) {
-                    setWords.add(Pattern.compile("(?:[\\p{Space}]|^)([¡]?(" + Pattern.quote(((JsonString) v).getString()) + ")[!]?)(?:[\\p{Space}]|$)"));
+                    setWords.add(Pattern.compile("(?:[\\p{Space}]|^)([¡]?(" + Pattern.quote(((JsonString) v).getString()) + ")[!]?)(?=(?:[\\p{Space}]|$))"));
                 }
 
                 hmInterjections.put(lang, setWords);

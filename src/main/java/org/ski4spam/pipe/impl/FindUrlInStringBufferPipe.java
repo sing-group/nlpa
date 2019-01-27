@@ -24,11 +24,6 @@ public class FindUrlInStringBufferPipe extends Pipe {
 
     private static final Logger logger = LogManager.getLogger(FindUrlInStringBufferPipe.class);
 
-    /*  NOTE:
-     \p{Punct}-[.-_]
-		  is equivalent to:
-	                         !\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~
-     */
     /**
      * List of the URL Patterns to use
      */
@@ -37,12 +32,12 @@ public class FindUrlInStringBufferPipe extends Pipe {
     /**
      * Pattern for URLs
      */
-    private static final Pattern URLPattern = Pattern.compile("((?:\\s|^)(?:(?:[a-z0-9]+:)(?:\\/\\/|\\/|)?|(www.))(?:[\\w-]+(?:(?:\\.[\\w-]+)+))(?:[\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])?(?=(?:,|;|!|:|\"|\\?|\\s|$)))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+    private static final Pattern URLPattern = Pattern.compile("(?:\\s|[\"><]|^)((?:(?:[a-z0-9]+:)(?:\\/\\/|\\/|)?|(www.))(?:[\\w-]+(?:(?:\\.[\\w-]+)+))(?:[\\w.;,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])?)(?=(?:[<\\\\,;!:\"?]|\\s|$))", Pattern.MULTILINE);
 
     /**
      * Pattern for e-mail addresses
      */
-    private static final Pattern emailPattern = Pattern.compile("(?:\\s|^|¡)([\\w!#$%&’*+-\\/=?^_`\\{|\\}~“(),:;<>@\\[\\]\"ç]+@[\\[\\w.-:]+([A-Z]{2,4}|\\]))[;:\\?\"!,.]?(?=(?:\\s|$))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+    private static final Pattern emailPattern = Pattern.compile("(?:\\s|[\"><¡]|^)([\\w!#$%&’*+-\\/=?^_`\\{|\\}~“(),:;<>@\\[\\]\"ç]+@[\\[\\w.-:]+([A-Z]{2,4}|\\]))[;:\\?\"!,.]?(?=(?:\\s|$))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 
     /**
      * Return the input type included the data attribute of a Instance
