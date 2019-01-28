@@ -98,11 +98,35 @@ public class BabelUtils {
 		}
 		return (resultNo > 0);
 	}
+	
+	/**
+	 * Determines whether a synset is included in Babelnet or not
+	 *
+	 * @param synsetToCheck
+	 *            The Synset to check
+	 * @param textToLink
+	 *            The word which corresponds with the Synset in Babelfy.
+	 *            This word is provided only to create a log report.
+	 * @return true if is possible to obtain information about synset in Babelnet,
+	 *  so the synset is included in Babelnet ontological dictionary.
+	 */
+
+	public boolean checkSynsetInBabelnet (String synsetToCheck, String textToLink) {
+		try {
+			//Tray to obtain some information about the synset. If is not possible it generates a exception
+			bn.getSynset(new BabelSynsetID(synsetToCheck)).toString();
+			return true;
+
+		} catch (Exception e) {
+			logger.error("The text [" + textToLink + "] obtained in Babelfy as [" + synsetToCheck + "] does not exists in Babelnet. " + e.getMessage());
+			return false;
+		}
+	}
 
 	/**
      * Returns a Map with Synsets and their first hypernym from BabelNet. Only builds a pair if synset hypernym exists.
      *
-     * @param originalSynsetList The synset list to obtain hypernyms
+     * @param originalSynsetList The synsets list to obtain hypernyms
      * @return A Map with pairs of synset as key and hypernym as value
      */
     public Map<String, String> getHypernymsFromBabelnet(List<String> originalSynsetList) {
@@ -110,12 +134,9 @@ public class BabelUtils {
         String hypernym;
         Map<String, String> synsetHypernymMap = new HashMap<>();
 
-        BabelNet bn = BabelNet.getInstance();
-
         for (String synsetListElement : originalSynsetList) {
         	try {
         		BabelSynset by = bn.getSynset(new BabelSynsetID(synsetListElement));
-        		//System.out.println("synsetListElement= " + synsetListElement + " El by=" + by);
         		elementsInAnyHypernymPointer = by.getOutgoingEdges(BabelPointer.ANY_HYPERNYM);
         		elementsInHypernymPointer = by.getOutgoingEdges(BabelPointer.HYPERNYM);
         		// If HYPERNYM returns values, it takes first and add to synsetHypernymMap
@@ -257,9 +278,11 @@ public class BabelUtils {
 		// The value that will be returned
 		ArrayList<Pair<String, String>> returnValue = new ArrayList<Pair<String, String>>();
 		for (BabelfyEntry entry : nGrams) {
+			if ( checkSynsetInBabelnet(entry.getSynsetId(), entry.getText()) )
+			{
 			returnValue.add(new Pair<String, String>(entry.getSynsetId(), entry.getText()));
-			// System.out.println("synset= " + entry.getSynsetId() + "text= " +
-			// entry.getText());
+			}
+
 		}
 		return returnValue;
 	}
