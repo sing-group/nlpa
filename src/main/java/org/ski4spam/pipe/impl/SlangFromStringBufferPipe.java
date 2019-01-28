@@ -46,7 +46,8 @@ public class SlangFromStringBufferPipe extends Pipe {
 
     static {
         for (String i : new String[]{"/slangs-json/slang.en.json","/slangs-json/slang.es.json",
-                                     "/slangs-json/slang.gl.json" }) {
+                                     "/slangs-json/slang.gl.json","/slangs-json/slang.fr.json",
+                                     "/slangs-json/slang.pt.json"}) {
 
             String lang = i.substring(19, 21).toUpperCase();
             try {
