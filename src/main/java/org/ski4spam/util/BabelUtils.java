@@ -122,6 +122,44 @@ public class BabelUtils {
 			return false;
 		}
 	}
+	
+	/**
+	 * Gets an hypernym of a synset that is n levels above
+	 *
+	 * @param synsetToScale
+	 *            The Synset to search its hypernym.
+	 * @param levels
+	 *            The number of levels to be scaled.
+	 * @return a string with the hypernym synset ID 
+	 */
+	
+	public String getSynsetHypernymFromLevel (String synsetToScale, int levels)
+	{
+		String tmpHypernym=synsetToScale;
+		try {
+			List<BabelSynsetRelation> elementsInAnyHypernymPointer, elementsInHypernymPointer;
+			BabelSynset by;
+
+			for (int l=0; l<levels ; l++)
+			{
+				by = bn.getSynset(new BabelSynsetID(tmpHypernym));
+				elementsInAnyHypernymPointer = by.getOutgoingEdges(BabelPointer.ANY_HYPERNYM);
+				elementsInHypernymPointer = by.getOutgoingEdges(BabelPointer.HYPERNYM);
+				// If HYPERNYM returns values, it takes first synset and add to tmpHypernym
+				if (elementsInHypernymPointer.size() >= 1) {
+					tmpHypernym = elementsInHypernymPointer.get(0).getBabelSynsetIDTarget().toString();
+				} // else if ANY_HYPERNYM returns values, it takes first synset and add to tmpHypernym
+				else if (elementsInAnyHypernymPointer.size() >= 1) {
+					tmpHypernym = elementsInAnyHypernymPointer.get(0).getBabelSynsetIDTarget().toString();
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Hypernym search problem. The synset " + synsetToScale + " does not exists in Babelnet." + e.getMessage());
+		}
+		return tmpHypernym;
+	}
+		
+
 
 	/**
      * Returns a Map with Synsets and their first hypernym from BabelNet. Only builds a pair if synset hypernym exists.
