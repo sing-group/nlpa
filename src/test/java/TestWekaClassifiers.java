@@ -32,7 +32,7 @@ public class TestWekaClassifiers {
         
         // Con este código, se genera un archivo arff a partir del dataset anterior
         System.out.println(" ----- Generating arff file -----");
-        dataset.generateARFFWithComments(transformersList);
+        dataset.generateARFFWithComments(transformersList, "");
         
         // Con este código, se obtiene el dataset con el que tienes que trabajar en WEKA,
         // a partir de nuestro dataset

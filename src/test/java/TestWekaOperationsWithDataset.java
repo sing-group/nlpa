@@ -46,7 +46,7 @@ public class TestWekaOperationsWithDataset {
 //        System.out.println(" ----- DATASET -----");
 //        dataset.printLine();
 
-        dataset.generateARFFWithComments(transformersList);
+        dataset.generateARFFWithComments(transformersList, "");
         System.out.println(" ----- Arff file with comments generated-----");
         System.out.println("");
         
@@ -57,7 +57,7 @@ public class TestWekaOperationsWithDataset {
         hyperonymList.put("bn:01532284n", "bn:01532284P");
         hyperonymList.put("bn:00095665v", "bn:00095665B");
         Dataset d = dataset.replaceSynsetWithHyperonym(hyperonymList);
-        d.generateARFFWithComments(transformersList);
+        d.generateARFFWithComments(transformersList, "");
         /***********************************************/
         
         Instances data = dataset.getWekaDataset();

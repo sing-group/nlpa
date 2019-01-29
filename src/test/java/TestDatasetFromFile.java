@@ -37,7 +37,7 @@ public class TestDatasetFromFile {
         System.out.println(" ----- DATASET -----");
         dataset.printLine();
         System.out.println(" ----- Generating arff file with comments -----");
-        dataset.generateARFFWithComments(transformersList);
+        dataset.generateARFFWithComments(transformersList, "");
     }
 
 }
