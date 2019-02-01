@@ -2,6 +2,7 @@ package org.ski4spam.util;
 
 import org.bdp4j.util.Pair;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,7 +54,7 @@ public class BabelUtils {
 	/**
 	 * A stop synset to navigate in Babelnet hierarchy. The synset means entity
 	 */
-	private static String stopSynset = "bn:00031027n"; 
+	private static String stopSynset = "bn:00031027n";
 
 	/**
 	 * String limit for babelfy queries
@@ -210,17 +211,23 @@ public class BabelUtils {
      * @return True if synsetOnTop if hypernym of synsetToCheck.
      */
 	public boolean isSynsetHypernymOf(String synsetToCheck, String synsetOnTop) {
+		String scaledSynsetToCheck;
+
 		if (synsetToCheck.equals(synsetOnTop)) {
 			return false;
 		} else {
 			boolean isHypernym = false;
-			BabelUtils babel = new BabelUtils();
 			do {
-				synsetToCheck = babel.getSynsetHypernymFromLevel(synsetToCheck, 1);
-				if (synsetToCheck.equals(synsetOnTop)) {
-					isHypernym = true;
+				scaledSynsetToCheck = bu.getSynsetHypernymFromLevel(synsetToCheck, 1);
+				if (scaledSynsetToCheck.equals(synsetToCheck)) {
+					return false;
+				} else {
+					if (scaledSynsetToCheck.equals(synsetOnTop)) {
+						return true;
+					} else {
+						synsetToCheck = scaledSynsetToCheck;
+					}
 				}
-
 			} while (!isHypernym && !synsetToCheck.equals(stopSynset));
 
 			return isHypernym;
