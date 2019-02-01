@@ -83,7 +83,7 @@ public class StopWordFromStringBufferPipe extends Pipe {
                 LinkedList<Pattern> currentStopwords=new LinkedList<>();
                 for (JsonValue v : array) {
                     currentStopwords.add(
-                      Pattern.compile( "(?:[\\p{Space}\\p{Punct}]|^)(" + Pattern.quote(((JsonString)v).getString()) + ")(?=(?:[\\p{Space}\\p{Punct}]|$))" )
+                      Pattern.compile( "(?:\\p{Space}|[\"><¡?¿!;:,.'-]|^)(" + Pattern.quote(((JsonString)v).getString()) + ")[;:?\"!,.'>-]?(?=(?:\\p{Space}|$|>))" )
                     );
                     //System.out.println("Adding: "+lang+" -> "+((JsonString)v).getString());
                 }

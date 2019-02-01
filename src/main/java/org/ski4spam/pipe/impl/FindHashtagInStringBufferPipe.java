@@ -30,7 +30,7 @@ public class FindHashtagInStringBufferPipe extends Pipe {
 	  is equivalent to:
                          !\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~.-
      */
-    private static final Pattern hashtagPattern = Pattern.compile("(?:\\s|^|[\"¿¡])(#[^\\p{Cntrl}\\p{Space}!\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~.-]+)[;:?\"!,.]?(?=(?:\\s|$))");
+    private static final Pattern hashtagPattern = Pattern.compile("(?:\\s|^|[\"><¡?¿!;:,.'-])(#[^\\p{Cntrl}\\p{Space}!\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~.-]+)[;:?\"!,.'>-]?(?=(?:\\s|$|>))");
 
     /**
      * Return the input type included the data attribute of a Instance

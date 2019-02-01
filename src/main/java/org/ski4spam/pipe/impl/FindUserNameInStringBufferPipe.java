@@ -35,7 +35,7 @@ public class FindUserNameInStringBufferPipe extends Pipe {
     /**
      * Pattern to detect a user
      */
-    private static final Pattern userPattern = Pattern.compile("(?:\\s|^|[\"¿¡])(@[^\\p{Cntrl}\\p{Space}!\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~]+)[;:\\?\"!,.]?(?=(?:\\s|$))");
+    private static final Pattern userPattern = Pattern.compile("(?:\\s|^|[\"><¡?¿!;:,.'-])(@[^\\p{Cntrl}\\p{Space}!\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~]+)[;:?\"!,.'>-]?(?=(?:\\s|$|>))");
 
     /**
      * Return the input type included the data attribute of a Instance

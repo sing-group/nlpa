@@ -57,7 +57,7 @@ public class SlangFromStringBufferPipe extends Pipe {
                 rdr.close();
                 HashMap<String, SlangEntry> dict=new HashMap<>();
                 for(String slang:jsonObject.keySet()){
-                    dict.put(slang,new SlangEntry(Pattern.compile( "(?:[\\p{Space}]|^)(" + Pattern.quote(slang) + ")(?=(?:[\\p{Space}]|$))"),
+                    dict.put(slang,new SlangEntry(Pattern.compile( "(?:[\\p{Space}]|[\"><¡?¿!;:,.']|^)(" + Pattern.quote(slang) + ")[;:?\"!,.'>]?(?=(?:[\\p{Space}]|$|>))"),
                                    jsonObject.getString(slang)));
                 }
                 hmSlangs.put(lang, dict);

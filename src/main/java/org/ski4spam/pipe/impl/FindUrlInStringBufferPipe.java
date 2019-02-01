@@ -32,12 +32,14 @@ public class FindUrlInStringBufferPipe extends Pipe {
     /**
      * Pattern for URLs
      */
-    private static final Pattern URLPattern = Pattern.compile("(?:\\s|[\"><]|^)((?:(?:[a-z0-9]+:)(?:\\/\\/|\\/|)?|(www.))(?:[\\w-]+(?:(?:\\.[\\w-]+)+))(?:[\\w.;,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])?)(?=(?:[<\\\\,;!:\"?]|\\s|$))", Pattern.MULTILINE);
-
+                                                     //regex used: (?:\s|["><¡?¿!;:,.'(]|^)((?:(?:[[:alnum:]]+:(?:\/{1,2}))|\/{0,2}www\.)(?:[\w-]+(?:(?:\.[\w-]+)*))(?:(?:[\w~?=-][.;,@?^=%&:\/~+#-]?)*)[\w@?^=%&\/~+#,;!:<\\"?\-]?(?=(?:[<\\,;!"?)]|\s|$)))
+        private static final Pattern URLPattern = Pattern.compile("(?:\\s|[\"><¡?¿!;:,.'\\(]|^)((?:(?:[\\p{Alnum}]+:(?:\\/{1,2}))|\\/{0,2}www\\.)(?:[\\w-]+(?:(?:\\.[\\w-]+)*))(?:(?:[\\w~?=-][.;,@?^=%&:\\/~+#-]?)*)[\\w@?^=%&\\/~+#,;!:<\\\\\"?-]?(?=(?:[<\\\\,;!\"?\\)]|\\s|$)))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
     /**
      * Pattern for e-mail addresses
      */
-    private static final Pattern emailPattern = Pattern.compile("(?:\\s|[\"><¡]|^)([\\w!#$%&’*+-\\/=?^_`\\{|\\}~“(),:;<>@\\[\\]\"ç]+@[\\[\\w.-:]+([A-Z]{2,4}|\\]))[;:\\?\"!,.]?(?=(?:\\s|$))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+    
+                                                  // regex used: (?:\s|["><¡?¿!;:,.'(]|^)((?:[\w_.çñ+-]+)(?:@|\(at\)|<at>)(?:(?:\w[\\.:ñ-]?)*)[[:alnum:]ñ](?:\.[A-Z]{2,4}))[;:?"!,.'>)]?(?=(?:\s|$|>))
+    private static final Pattern emailPattern = Pattern.compile("(?:\\s|[\"><¡?¿!;:,.'\\(]|^)((?:[\\w_.çñ+-]+)(?:@|\\(at\\)|<at>)(?:(?:\\w[\\\\.:ñ-]?)*)[\\p{Alnum}ñ](?:\\.[A-Z]{2,4}))[;:?\"!,.'>\\)]?(?=(?:\\s|$|>))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 
     /**
      * Return the input type included the data attribute of a Instance
@@ -69,7 +71,7 @@ public class FindUrlInStringBufferPipe extends Pipe {
     /**
      * The default value for removing @userName
      */
-    public static final String DEFAULT_REMOVE_URL = "yes";
+    public static final String DEFAULT_REMOVE_URL = "no";
 
     /**
      * The default property name to store @userName

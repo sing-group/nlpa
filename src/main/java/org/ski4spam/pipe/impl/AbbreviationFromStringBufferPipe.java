@@ -65,7 +65,7 @@ public class AbbreviationFromStringBufferPipe extends Pipe {
                 HashMap<String, Pair<Pattern, String>> dict = new HashMap<>();
                 for (String abbrev : jsonObject.keySet()) {
                     dict.put(abbrev, new Pair<>(
-                            Pattern.compile("(?:[\\p{Space}]|^)(" + Pattern.quote(abbrev) + ")(?=(?:[\\p{Space}]|$))"),
+                            Pattern.compile("(?:[\\p{Space}]|[\"><¡?¿!;:,.'-]|^)(" + Pattern.quote(abbrev) + ")[;:?\"!,.'>-]?(?=(?:[\\p{Space}]|$|>))"),
                             jsonObject.getString(abbrev))); 
                 }
                 htAbbreviations.put(lang, dict);
