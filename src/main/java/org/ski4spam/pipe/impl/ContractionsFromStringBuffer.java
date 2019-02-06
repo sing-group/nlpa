@@ -23,6 +23,7 @@ import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_L
 /**
  * Pipe that replaces the contactions in the original text
  * Example "i can't" -%gt; "i cannot"
+ * @author José Ramón Méndez Reboredo
  */
 public class ContractionsFromStringBuffer extends Pipe {
 

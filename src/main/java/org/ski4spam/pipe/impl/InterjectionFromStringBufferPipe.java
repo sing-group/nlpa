@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Logger;
 import org.bdp4j.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PipeParameter;
-import org.ski4spam.Main;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -58,7 +57,7 @@ public class InterjectionFromStringBufferPipe extends Pipe {
 
             String lang = i.substring(27, 29).toUpperCase();
             try {
-                InputStream is = Main.class.getResourceAsStream(i);
+                InputStream is = InterjectionFromStringBufferPipe.class.getResourceAsStream(i);
                 JsonReader rdr = Json.createReader(is);
                 JsonArray array = rdr.readArray();
                 LinkedList<Pattern> setWords = new LinkedList<>();

@@ -7,7 +7,6 @@ import org.bdp4j.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TransformationPipe;
 import org.bdp4j.pipe.PipeParameter;
-import org.ski4spam.Main;
 
 import java.io.InputStream;
 
@@ -51,7 +50,7 @@ public class SlangFromStringBufferPipe extends Pipe {
 
             String lang = i.substring(19, 21).toUpperCase();
             try {
-                InputStream is = Main.class.getResourceAsStream(i);
+                InputStream is = SlangFromStringBufferPipe.class.getResourceAsStream(i);
                 JsonReader rdr = Json.createReader(is);
                 JsonObject jsonObject = rdr.readObject();
                 rdr.close();

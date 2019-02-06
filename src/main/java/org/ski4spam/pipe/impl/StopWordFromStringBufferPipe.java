@@ -6,7 +6,6 @@ import org.bdp4j.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TransformationPipe;
 import org.bdp4j.pipe.PipeParameter;
-import org.ski4spam.Main;
 
 import java.io.InputStream;
 
@@ -77,7 +76,7 @@ public class StopWordFromStringBufferPipe extends Pipe {
 
             String lang = i.substring(16, 18).toUpperCase();
             try {
-                InputStream is = Main.class.getResourceAsStream(i);
+                InputStream is = StopWordFromStringBufferPipe.class.getResourceAsStream(i);
                 JsonReader rdr = Json.createReader(is);
                 JsonArray array = rdr.readArray();
                 LinkedList<Pattern> currentStopwords=new LinkedList<>();
