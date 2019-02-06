@@ -108,6 +108,7 @@ public class Main {
             new FindEmojiInStringBufferPipe(),
             new MeasureLengthFromStringBufferPipe("length_after_cleaning_text"),
             new GuessLanguageFromStringBufferPipe(),
+            new ContractionsFromStringBuffer(),
             new AbbreviationFromStringBufferPipe(),
             new StringBufferToLowerCasePipe(),
             new SlangFromStringBufferPipe(),

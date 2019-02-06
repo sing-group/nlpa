@@ -9,7 +9,6 @@ import org.bdp4j.types.Instance;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TransformationPipe;
 import org.bdp4j.pipe.PipeParameter;
-import org.ski4spam.Main;
 
 import java.io.InputStream;
 
@@ -58,7 +57,7 @@ public class AbbreviationFromStringBufferPipe extends Pipe {
 
             String lang = i.substring(27, 29).toUpperCase();
             try {
-                InputStream is = Main.class.getResourceAsStream(i);
+                InputStream is = AbbreviationFromStringBufferPipe.class.getResourceAsStream(i);
                 JsonReader rdr = Json.createReader(is);
                 JsonObject jsonObject = rdr.readObject();
                 rdr.close();
@@ -70,7 +69,7 @@ public class AbbreviationFromStringBufferPipe extends Pipe {
                 }
                 htAbbreviations.put(lang, dict);
             } catch (Exception e) {
-                System.out.println("Exception processing: " + i + " message " + e.getMessage());
+                logger.error("Exception processing: " + i + " message " + e.getMessage());
             }
 
         }
