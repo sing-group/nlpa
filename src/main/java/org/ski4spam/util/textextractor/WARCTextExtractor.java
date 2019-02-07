@@ -147,22 +147,25 @@ public class WARCTextExtractor extends TextExtractor{
                                 //comprueba que en la cabecera del resource y otra vez que en la respuesta del servidor del response content-type = text/...  
                                 if (value.toLowerCase().contains("text/plain") || value.toLowerCase().contains("text/html")){
                                     String rawDataAsStr=new String(rawData);
-                                    String charsetName=getCharsetFromContentType(rawDataAsStr); //busca charSet en data
-                                    if (charsetName==null)
-                                       charsetName=getCharsetFromContentType(value); //busca charSet en respuesta del servidor (response) o en la etiqueta ContentType de resource 
-                                    if (charsetName!=null){
-                                            logger.info("charset found in content-type: "+charsetName);
-                                            sbResult.append(new String(rawData, Charset.forName(charsetName)));
-                                    }else{ //Detect the charset using CharsetDetector Library
-                                            CharsetDetector detector = new CharsetDetector(); 
-                                            detector.setText(rawData);
-                                            CharsetMatch cm = detector.detect();
-                                            logger.warn("Charset guesed: "+cm.getName()+" [confidence="+cm.getConfidence()+"/100]for "+f.getAbsolutePath()+" Content type: "+value);                                    
-                                            sbResult.append(new String(rawData, Charset.forName(cm.getName())));
-                                    }
+                                    String charsetNameFromWarcContentType=getCharsetFromContentType(rawDataAsStr); //busca charSet en data
+                                    //if (charsetName==null)
+                                    String charsetNameFromHTTPContentType=getCharsetFromContentType(value); //busca charSet en respuesta del servidor (response) o en la etiqueta ContentType de resource 
+                                    //if (charsetName!=null){
+                                    CharsetDetector detector = new CharsetDetector(); 
+                                    detector.setText(rawData);
+                                    CharsetMatch cm = detector.detect();
+                                    String charsetNameFromHTMLContent=cm.getName();
+                                    logger.info("Charset found for file "+f.getName()+" in WARC content-type: "+charsetNameFromWarcContentType);
+                                    logger.info("Charset found for file "+f.getName()+" in HTML content-type: "+charsetNameFromHTTPContentType);
+                                    logger.info("Charset guesed for file "+f.getName()+" from contents: "+cm.getName()+" (prob: "+cm.getConfidence()+"/100)");
+                                    
+                                    
+                                    String charsetName=charsetNameFromHTMLContent;
+                                    logger.info("Assigning "+charsetName+" for "+f.getName());
 
+                                    sbResult.append(new String(rawData, Charset.forName(charsetName)));
                                 }
-                                ar.close();                    
+                                ar.close();
                             }catch(IOException e) {
                                 logger.error(e.getMessage() + " while processing " + f.getAbsolutePath());
                                 return null;
