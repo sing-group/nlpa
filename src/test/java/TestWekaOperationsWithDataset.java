@@ -52,12 +52,12 @@ public class TestWekaOperationsWithDataset {
         
         /* Creating dataset replacing synsets with hypernonyms*/
         Map<String, String> hyperonymList = new HashMap<>();
-        hyperonymList.put("bn:00082876v", "bn:00082876V");
         hyperonymList.put("bn:00019763n", "bn:00019763N");
         hyperonymList.put("bn:01532284n", "bn:01532284P");
         hyperonymList.put("bn:00095665v", "bn:00095665B");
-        Dataset d = dataset.replaceSynsetWithHyperonym(hyperonymList);
-        d.generateARFFWithComments(transformersList, "");
+        dataset.generateARFFWithComments(transformersList, "");
+        Dataset d = dataset.replaceColumnNames(hyperonymList, Dataset.COMBINE_SUM);
+        d.generateARFFWithComments(transformersList, "replaceColumnsNames.arff");
         /***********************************************/
         
         Instances data = dataset.getWekaDataset();
