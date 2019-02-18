@@ -165,6 +165,43 @@ public class BabelUtils {
 		}
 		return tmpHypernym;
 	}
+	
+	/**
+	 * Returns a list with all the hypernyms of a Synset until "entity" element. If synset does not hypernyms, the list
+	 * only returns the original synset.
+	 *
+	 * @param synsetToScale
+	 *            The Synset to search its hypernyms.
+	 * @return the list with the synset and all of hypernyms
+	 */
+	
+	public List<String> getAllHypernyms (String synsetToScale)
+	{	
+		List<String> allHypernymsList = new ArrayList<String>();
+		try {
+			List<BabelSynsetRelation> elementsInAnyHypernymPointer, elementsInHypernymPointer;
+			BabelSynset by;
+			do
+			{
+				//Meto o no meto su hiperonimo si solo tiene uno?
+				allHypernymsList.add(synsetToScale);
+				by = bn.getSynset(new BabelSynsetID(synsetToScale));
+				elementsInAnyHypernymPointer = by.getOutgoingEdges(BabelPointer.ANY_HYPERNYM);
+				elementsInHypernymPointer = by.getOutgoingEdges(BabelPointer.HYPERNYM);
+				// If HYPERNYM returns values, it takes first synset and add to tmpHypernym
+				if (elementsInHypernymPointer.size() >= 1) {
+					synsetToScale = elementsInHypernymPointer.get(0).getBabelSynsetIDTarget().toString();
+				} // else if ANY_HYPERNYM returns values, it takes first synset and add to tmpHypernym
+				else if (elementsInAnyHypernymPointer.size() >= 1) {
+					synsetToScale = elementsInAnyHypernymPointer.get(0).getBabelSynsetIDTarget().toString();
+				}
+
+			} while (!synsetToScale.equals(stopSynset) && !allHypernymsList.contains(synsetToScale) );
+		} catch (Exception e) {
+			logger.error("Hypernym search problem. The synset " + synsetToScale + " does not exists in Babelnet." + e.getMessage());
+		}
+		return allHypernymsList;
+	}
 		
 
 
