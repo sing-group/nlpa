@@ -5,21 +5,21 @@
  */
 package org.ski4spam.pipe.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bdp4j.pipe.AbstractPipe;
+import org.bdp4j.pipe.PipeParameter;
+import org.bdp4j.types.Instance;
+import org.ski4spam.types.SynsetDictionary;
+import org.ski4spam.types.SynsetFeatureVector;
+import org.ski4spam.util.EBoolean;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bdp4j.types.Instance;
-import org.bdp4j.pipe.Pipe;
-import org.ski4spam.types.SynsetFeatureVector;
-import org.ski4spam.types.SynsetDictionary;
-import static org.ski4spam.util.CSVUtils.getCSVSep;
 import static org.ski4spam.util.CSVUtils.escapeCSV;
-import org.bdp4j.pipe.PipeParameter;
-
-import org.ski4spam.util.EBoolean;
+import static org.ski4spam.util.CSVUtils.getCSVSep;
 
 /**
  * Create a CSV file from a SynsetFeatureVector object located in the data field
@@ -28,7 +28,7 @@ import org.ski4spam.util.EBoolean;
  * @author María Novo
  * @author José Ramón Méndez
  */
-public class TeeCSVFromSynsetFeatureVectorPipe extends Pipe {
+public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe {
 
     /**
      * For logging purposes

@@ -5,34 +5,28 @@
  */
 package org.ski4spam.pipe.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Predicate;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import org.bdp4j.pipe.Pipe;
+import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.types.Dataset;
+import org.bdp4j.types.Instance;
 import org.bdp4j.types.Transformer;
 import org.bdp4j.util.DateIdentifier;
-import org.bdp4j.types.Instance;
 import org.bdp4j.util.Pair;
 import org.bdp4j.util.SubClassParameterTypeIdentificator;
 import org.ski4spam.types.SynsetDictionary;
 import org.ski4spam.types.SynsetFeatureVector;
 import weka.core.Attribute;
 
+import java.util.*;
+import java.util.function.Predicate;
+
 /**
  * Create a Dataset from Instanced containing a SynsetFeatureVector as data
  * @author María Novo
  */
-public class TeeDatasetFromSynsetFeatureVectorPipe extends Pipe {
+public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
 
     /**
      * For logging purposes

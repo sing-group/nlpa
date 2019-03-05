@@ -8,19 +8,14 @@ package org.ski4spam.pipe.impl;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreEntityMention;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
-import java.util.StringTokenizer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bdp4j.types.Instance;
-import org.bdp4j.pipe.Pipe;
+import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
+import org.bdp4j.types.Instance;
+
+import java.util.*;
 
 /**
  * This pipe finds named entity recognition, saves this entities as Instance
@@ -30,7 +25,7 @@ import org.bdp4j.pipe.PropertyComputingPipe;
  * @author María Novo
  */
 @PropertyComputingPipe()
-public class NERFromStringBufferPipe extends Pipe {
+public class NERFromStringBufferPipe extends AbstractPipe {
 
     /**
      * For logging purposes
@@ -265,12 +260,12 @@ public class NERFromStringBufferPipe extends Pipe {
                             }
                         } else if (data.endsWith(em.text())) {
                             if (begin >= lastIndex) {
-                                newSb.append(data.substring(lastIndex, begin + 1));
+                                newSb.append(data, lastIndex, begin + 1);
                                 lastIndex = data.length() - 1;
                             }
                         } else if (begin > 0) {
                             if (begin >= lastIndex) {
-                                newSb.append(data.substring(lastIndex, begin));
+                                newSb.append(data, lastIndex, begin);
                                 lastIndex = end;
                             }
                         }

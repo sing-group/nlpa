@@ -1,8 +1,8 @@
 package org.ski4spam.pipe.impl;
 
-import org.bdp4j.types.Instance;
-import org.bdp4j.pipe.Pipe;
+import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.TransformationPipe;
+import org.bdp4j.types.Instance;
 
 /**
  * This pipe modifies the data of an Insatance to lowercase
@@ -11,7 +11,7 @@ import org.bdp4j.pipe.TransformationPipe;
  * @author Reyes Pavón
  */
 @TransformationPipe()
-public class StringBufferToLowerCasePipe extends Pipe {
+public class StringBufferToLowerCasePipe extends AbstractPipe {
    /**
     * Return the input type included the data attribute of a Instance
     * @return the input type for the data attribute of the Instances processed

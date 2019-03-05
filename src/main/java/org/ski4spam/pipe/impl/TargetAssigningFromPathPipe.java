@@ -1,15 +1,15 @@
 package org.ski4spam.pipe.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bdp4j.pipe.AbstractPipe;
+import org.bdp4j.pipe.TargetAssigningPipe;
+import org.bdp4j.types.Instance;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bdp4j.types.Instance;
-import org.bdp4j.pipe.Pipe;
-import org.bdp4j.pipe.TargetAssigningPipe;
 
 /**
  * This pipe assign a target to an instance keeping in mind the file path of the instance
@@ -17,7 +17,7 @@ import org.bdp4j.pipe.TargetAssigningPipe;
  * @author José Ramón Méndez
  */
 @TargetAssigningPipe()
-public class TargetAssigningFromPathPipe extends Pipe {
+public class TargetAssigningFromPathPipe extends AbstractPipe {
     /**
      * For logging purposes
      */

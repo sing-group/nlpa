@@ -5,15 +5,15 @@
  */
 package org.ski4spam.pipe.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.bdp4j.types.Instance;
+import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
-import org.bdp4j.pipe.Pipe;
+import org.bdp4j.types.Instance;
+import org.bdp4j.util.Pair;
 import org.ski4spam.types.SynsetFeatureVector;
 import org.ski4spam.types.SynsetVector;
-import org.bdp4j.util.Pair;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A pipe to transform a SynsetVector wich contains a list of synsets included
@@ -31,7 +31,7 @@ import org.bdp4j.util.Pair;
  *
  * @author María Novo
  */
-public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
+public class SynsetVector2SynsetFeatureVectorPipe extends AbstractPipe {
     /**
      * For logging purposes
      */
@@ -163,7 +163,6 @@ public class SynsetVector2SynsetFeatureVectorPipe extends Pipe {
                             synsetFeatureVector.put(pairSV.getObj1(), 1d);
                         }
                     }
-                    ;
                     carrier.setData(new SynsetFeatureVector(synsetFeatureVector));
 
                     break;

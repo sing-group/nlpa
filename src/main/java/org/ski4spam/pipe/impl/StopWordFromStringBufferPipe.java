@@ -2,24 +2,17 @@ package org.ski4spam.pipe.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bdp4j.types.Instance;
-import org.bdp4j.pipe.Pipe;
-import org.bdp4j.pipe.TransformationPipe;
+import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
+import org.bdp4j.pipe.TransformationPipe;
+import org.bdp4j.types.Instance;
 
+import javax.json.*;
 import java.io.InputStream;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
-import javax.json.JsonString;
-
 import java.util.HashMap;
 import java.util.LinkedList;
-
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
@@ -30,7 +23,7 @@ import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_L
  * @author José Ramón Méndez
  */
 @TransformationPipe()
-public class StopWordFromStringBufferPipe extends Pipe {
+public class StopWordFromStringBufferPipe extends AbstractPipe {
 
     /**
      * For logging purposes

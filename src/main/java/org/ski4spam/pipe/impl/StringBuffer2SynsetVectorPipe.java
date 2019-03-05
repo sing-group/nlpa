@@ -1,29 +1,27 @@
 package org.ski4spam.pipe.impl;
 
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.bdp4j.types.Instance;
-import org.bdp4j.pipe.Pipe;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bdp4j.pipe.AbstractPipe;
+import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.TransformationPipe;
-import org.ski4spam.types.SynsetVector;
+import org.bdp4j.types.Instance;
 import org.bdp4j.util.Pair;
+import org.ski4spam.types.SynsetDictionary;
+import org.ski4spam.types.SynsetVector;
+import org.ski4spam.util.BabelUtils;
 import org.ski4spam.util.unmatchedtexthandler.ObfuscationHandler;
 import org.ski4spam.util.unmatchedtexthandler.TyposHandler;
 import org.ski4spam.util.unmatchedtexthandler.UnmatchedTextHandler;
 import org.ski4spam.util.unmatchedtexthandler.UrbanDictionaryHandler;
-import org.ski4spam.types.SynsetDictionary;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
-
-import org.ski4spam.util.BabelUtils;
-
-import org.bdp4j.pipe.PipeParameter;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * A pipe to compute synsets from text
@@ -33,7 +31,7 @@ import org.apache.logging.log4j.Logger;
  * @author José Ramón Méndez
  */
 @TransformationPipe()
-public class StringBuffer2SynsetVectorPipe extends Pipe {
+public class StringBuffer2SynsetVectorPipe extends AbstractPipe {
     /**
      * For loggins purposes
      */
@@ -42,7 +40,7 @@ public class StringBuffer2SynsetVectorPipe extends Pipe {
     /**
      * An array of UnmatchedTextHandlers to fix incorrect text fragments
      */
-    UnmatchedTextHandler vUTH[] = {new UrbanDictionaryHandler(), new TyposHandler(), new ObfuscationHandler()};
+    UnmatchedTextHandler[] vUTH = {new UrbanDictionaryHandler(), new TyposHandler(), new ObfuscationHandler()};
 
     /**
      * The name of the property where the language is stored
@@ -153,7 +151,7 @@ public class StringBuffer2SynsetVectorPipe extends Pipe {
                     if (acceptedCharOnBeggining.indexOf(current.charAt(indexOfPuntMark)) == -1) {
                         returnValue.add(new Pair<String, String>(current, null));
                     } else {
-                        Matcher innerMatcher = acceptedCharOnBegginingPattern.matcher(new String(current));
+                        Matcher innerMatcher = acceptedCharOnBegginingPattern.matcher(current);
                         if (!BabelUtils.getDefault().isTermInBabelNet(innerMatcher.replaceFirst(""), lang)) {
                             returnValue.add(new Pair<String, String>(current, null));
                         }
@@ -171,17 +169,17 @@ public class StringBuffer2SynsetVectorPipe extends Pipe {
                     if (acceptedCharOnMiddle.indexOf(current.charAt(indexOfPuntMark)) == -1 && acceptedCharOnEnd.indexOf(current.charAt(indexOfPuntMark)) == -1) {
                         returnValue.add(new Pair<String, String>(current, null));
                     } else {
-                        Matcher innerMatcher = acceptedCharOnEndPattern.matcher(new String(current));
+                        Matcher innerMatcher = acceptedCharOnEndPattern.matcher(current);
                         if (innerMatcher.find(indexOfPuntMark)) {
                             if (!BabelUtils.getDefault().isTermInBabelNet(innerMatcher.replaceFirst(""), lang)) {
                                 returnValue.add(new Pair<String, String>(current, null));
                             }
                         } else {
                             //System.out.println("Term is "+current);
-                            innerMatcher = acceptedCharOnMiddlePattern.matcher(new String(current));
+                            innerMatcher = acceptedCharOnMiddlePattern.matcher(current);
                             if (innerMatcher.find()) {
                                 String firstElement = current.substring(0, innerMatcher.start());
-                                String lastElement = current.substring(innerMatcher.end(), current.length());
+                                String lastElement = current.substring(innerMatcher.end());
                                 if (!BabelUtils.getDefault().isTermInBabelNet(firstElement, lang)
                                         || (innerMatcher.end() < current.length() - 1 && !BabelUtils.getDefault().isTermInBabelNet(lastElement, lang))) {
                                     returnValue.add(new Pair<String, String>(current, null));
@@ -222,7 +220,7 @@ public class StringBuffer2SynsetVectorPipe extends Pipe {
         //+ UrbanDictionaryHandler
         //+ TyposHandler
         //+ ObfuscationHandler
-        String returnValue = new String(originalText);
+        String returnValue = originalText;
 
         //The replacement should be done here
         //DONE develop these things (Moncho)

@@ -1,22 +1,19 @@
 package org.ski4spam.pipe.impl;
 
-import java.io.InputStream;
-import java.util.HashMap;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.bdp4j.pipe.Pipe;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.types.Instance;
 import org.bdp4j.util.Pair;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
@@ -25,7 +22,7 @@ import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_L
  * Example "i can't" -%gt; "i cannot"
  * @author José Ramón Méndez Reboredo
  */
-public class ContractionsFromStringBuffer extends Pipe {
+public class ContractionsFromStringBuffer extends AbstractPipe {
 
     /**
      * For logging purposes

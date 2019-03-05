@@ -1,27 +1,21 @@
 package org.ski4spam;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bdp4j.pipe.AbstractPipe;
+import org.bdp4j.pipe.SerialPipes;
+import org.bdp4j.types.Instance;
+import org.bdp4j.util.InstanceListUtils;
+import org.ski4spam.pipe.impl.*;
+import org.ski4spam.util.textextractor.EMLTextExtractor;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bdp4j.ml.DatasetFromFile;
-import org.bdp4j.types.Instance;
-import org.bdp4j.util.InstanceListUtils;
-import org.bdp4j.pipe.Pipe;
-import org.bdp4j.pipe.SerialPipes;
-import org.bdp4j.transformers.Date2MillisTransformer;
-import org.bdp4j.transformers.Enum2IntTransformer;
-import org.bdp4j.types.Transformer;
-import org.ski4spam.pipe.impl.*;
-import org.ski4spam.util.textextractor.EMLTextExtractor;
 //import weka.core.converters.ConverterUtils.DataSource;
 
 /**
@@ -93,7 +87,7 @@ public class Main {
         jml.loadFile();
 */
         /*create a example of pipe*/
-        Pipe p = new SerialPipes(new Pipe[]{
+        AbstractPipe p = new SerialPipes(new AbstractPipe[]{
             new TargetAssigningFromPathPipe(),
             new StoreFileExtensionPipe(),
             new GuessDateFromFilePipe(),
@@ -127,7 +121,7 @@ public class Main {
 
         if (!p.checkDependencies()){
           System.out.println("Pipe dependencies are not satisfied");
-          System.out.println(Pipe.getErrorMesage());
+//          System.out.println(AbstractPipe.getErrorMesage()); // TODO why is this an error?
           System.exit(1);
         }else
           System.out.println("Pipe dependencies are satisfied");

@@ -1,22 +1,16 @@
 package org.ski4spam.pipe.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bdp4j.pipe.AbstractPipe;
+import org.bdp4j.pipe.PipeParameter;
+import org.bdp4j.pipe.PropertyComputingPipe;
+import org.bdp4j.types.Instance;
+import org.ski4spam.util.dateextractor.*;
+
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bdp4j.types.Instance;
-import org.bdp4j.pipe.Pipe;
-import org.bdp4j.pipe.PropertyComputingPipe;
-import org.ski4spam.util.dateextractor.DateExtractor;
-import org.ski4spam.util.dateextractor.EMLDateExtractor;
-import org.ski4spam.util.dateextractor.NullDateExtractor;
-import org.ski4spam.util.dateextractor.TWTIDDateExtractor;
-import org.ski4spam.util.dateextractor.WARCDateExtractor;
-import org.ski4spam.util.dateextractor.YTBIDDateExtractor;
-
-import org.bdp4j.pipe.PipeParameter;
 
 /**
  * This pipe finds the content Date from different formats
@@ -24,7 +18,7 @@ import org.bdp4j.pipe.PipeParameter;
  * @author José Ramón Méndez Reboredo
  */
 @PropertyComputingPipe()
-public class GuessDateFromFilePipe extends Pipe {
+public class GuessDateFromFilePipe extends AbstractPipe {
     /**
      * The default name for the date property
      */

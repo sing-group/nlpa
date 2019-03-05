@@ -1,20 +1,19 @@
 package org.ski4spam.pipe.impl;
 
-import java.nio.charset.Charset;
-import java.util.regex.Pattern;
-
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bdp4j.types.Instance;
-import org.bdp4j.pipe.Pipe;
+import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.TransformationPipe;
+import org.bdp4j.types.Instance;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
-import org.apache.commons.text.StringEscapeUtils;
+import java.nio.charset.Charset;
+import java.util.regex.Pattern;
 
 /**
  * This pipe drops HTML tags and changes entities by their corresponding character
@@ -22,7 +21,7 @@ import org.apache.commons.text.StringEscapeUtils;
  * @author José Ramón Méndez 
  */
 @TransformationPipe()
-public class StripHTMLFromStringBufferPipe extends Pipe {
+public class StripHTMLFromStringBufferPipe extends AbstractPipe {
     /**
      * For logging purposes
      */

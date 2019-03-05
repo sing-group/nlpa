@@ -1,12 +1,11 @@
 package org.ski4spam.pipe.impl;
 
-import java.io.File;
-
-import org.bdp4j.types.Instance;
-import org.bdp4j.pipe.Pipe;
-import org.bdp4j.pipe.PropertyComputingPipe;
-
+import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
+import org.bdp4j.pipe.PropertyComputingPipe;
+import org.bdp4j.types.Instance;
+
+import java.io.File;
 
 /**
  * This pipe adds the extension of a file as instance property.
@@ -15,7 +14,7 @@ import org.bdp4j.pipe.PipeParameter;
  * @author Reyes Pavón
  */
 @PropertyComputingPipe()
-public class StoreFileExtensionPipe extends Pipe {
+public class StoreFileExtensionPipe extends AbstractPipe {
    /**
     * Return the input type included the data attribute of a Instance
     * @return the input type for the data attribute of the Instances processed

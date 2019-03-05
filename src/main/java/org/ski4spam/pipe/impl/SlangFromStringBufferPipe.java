@@ -2,22 +2,19 @@ package org.ski4spam.pipe.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import org.bdp4j.types.Instance;
-import org.bdp4j.pipe.Pipe;
-import org.bdp4j.pipe.TransformationPipe;
+import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
-
-import java.io.InputStream;
+import org.bdp4j.pipe.TransformationPipe;
+import org.bdp4j.types.Instance;
 
 import javax.json.Json;
-import javax.json.JsonReader;
 import javax.json.JsonObject;
-
+import javax.json.JsonReader;
+import java.io.InputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Collection;
 
 import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
@@ -29,7 +26,7 @@ import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_L
  * @author Rosalía Laza Fidalgo
  */
 @TransformationPipe()
-public class SlangFromStringBufferPipe extends Pipe {
+public class SlangFromStringBufferPipe extends AbstractPipe {
 
     /**
      * For logging purposes
@@ -220,7 +217,7 @@ class SlangEntry {
     /**
      * Sets new value of replacement
      *
-     * @param the replacement value
+     * @param replacement the replacement value
      */
     public void setReplacement(String replacement) {
         this.replacement = replacement;
@@ -238,7 +235,7 @@ class SlangEntry {
     /**
      * Sets new value of wordPattern
      *
-     * @param the pattern to detect the slang
+     * @param wordPattern the pattern to detect the slang
      */
     public void setWordPattern(Pattern wordPattern) {
         this.wordPattern = wordPattern;

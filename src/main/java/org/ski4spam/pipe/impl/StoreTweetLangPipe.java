@@ -1,18 +1,17 @@
 package org.ski4spam.pipe.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bdp4j.pipe.AbstractPipe;
+import org.bdp4j.pipe.PropertyComputingPipe;
+import org.bdp4j.types.Instance;
+import org.ski4spam.util.TwitterConfigurator;
+import twitter4j.Status;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bdp4j.types.Instance;
-import org.bdp4j.pipe.Pipe;
-import org.bdp4j.pipe.PropertyComputingPipe;
-import org.ski4spam.util.TwitterConfigurator;
-
-import twitter4j.Status;
 //import twitter4j.TwitterFactory;
 
 /**
@@ -21,7 +20,7 @@ import twitter4j.Status;
  * @author Yeray Lage Freitas
  */
 @PropertyComputingPipe()
-public class StoreTweetLangPipe extends Pipe {
+public class StoreTweetLangPipe extends AbstractPipe {
     /**
      * Default constructor
      */

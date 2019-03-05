@@ -1,3 +1,15 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bdp4j.pipe.AbstractPipe;
+import org.bdp4j.pipe.SerialPipes;
+import org.bdp4j.transformers.Date2MillisTransformer;
+import org.bdp4j.transformers.Enum2IntTransformer;
+import org.bdp4j.types.Instance;
+import org.bdp4j.types.Transformer;
+import org.bdp4j.util.InstanceListUtils;
+import org.ski4spam.pipe.impl.*;
+import org.ski4spam.util.textextractor.EMLTextExtractor;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,17 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bdp4j.types.Instance;
-import org.bdp4j.util.InstanceListUtils;
-import org.bdp4j.pipe.Pipe;
-import org.bdp4j.pipe.SerialPipes;
-import org.bdp4j.transformers.Date2MillisTransformer;
-import org.bdp4j.transformers.Enum2IntTransformer;
-import org.bdp4j.types.Transformer;
-import org.ski4spam.pipe.impl.*;
-import org.ski4spam.util.textextractor.EMLTextExtractor;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -30,7 +31,7 @@ import org.ski4spam.util.textextractor.EMLTextExtractor;
  * @author María Novo
  */
 public class TestPipeExecution {
-     /**
+    /**
      * A logger for logging purposes
      */
     private static final Logger logger = LogManager.getLogger(TestPipeExecution.class);
@@ -41,7 +42,7 @@ public class TestPipeExecution {
     private static List<Instance> instances = new ArrayList<Instance>();
 
     /*
-	 * The main method for the running application
+     * The main method for the running application
      */
     public static void main(String[] args) {
         String testPath = "src/test/java/resources/";
@@ -62,7 +63,7 @@ public class TestPipeExecution {
             logger.info("Instance data before pipe: " + i.getData().toString());
         }
 
-          // Parámetro para el transformador Enum2IntTransformer de la propiedad target
+        // Parámetro para el transformador Enum2IntTransformer de la propiedad target
         Map<String, Integer> transformList = new HashMap<>();
         transformList.put("ham", 0);
         transformList.put("spam", 1);
@@ -70,38 +71,38 @@ public class TestPipeExecution {
         Map<String, Transformer> transformersList = new HashMap<>();
         transformersList.put("date", new Date2MillisTransformer());
         transformersList.put("target",  new Enum2IntTransformer(transformList));
-        
+
         TeeDatasetFromSynsetFeatureVectorPipe teeDatasetFSV = new TeeDatasetFromSynsetFeatureVectorPipe();
         teeDatasetFSV.setTransformersList(transformersList);
-  
+
         /*create a example of pipe*/
-        Pipe p = new SerialPipes(new Pipe[]{
-            new TargetAssigningFromPathPipe(),
-            new StoreFileExtensionPipe(),
-            new GuessDateFromFilePipe(),
-            new File2StringBufferPipe(),
-            new MeasureLengthFromStringBufferPipe(),
-            new StripHTMLFromStringBufferPipe(),
-            new MeasureLengthFromStringBufferPipe("length_after_html_drop"),
-            new FindUserNameInStringBufferPipe(),
-            new FindHashtagInStringBufferPipe(),
-            new FindUrlInStringBufferPipe(),
-            new FindEmoticonInStringBufferPipe(),
-            new FindEmojiInStringBufferPipe(),
-            new MeasureLengthFromStringBufferPipe("length_after_cleaning_text"),
-            new AbbreviationFromStringBufferPipe(),
-            new StringBufferToLowerCasePipe(),
-            new GuessLanguageFromStringBufferPipe(),
-            new SlangFromStringBufferPipe(),
-            new InterjectionFromStringBufferPipe(),
-            new StopWordFromStringBufferPipe(),
-            new ComputePolarityFromStringBufferPipe(),
-            new NERFromStringBufferPipe(),
-            new TeeCSVFromStringBufferPipe("output.csv", true),
-            new StringBuffer2SynsetVectorPipe(),
-            new SynsetVector2SynsetFeatureVectorPipe(SynsetVectorGroupingStrategy.COUNT),
-            new TeeCSVFromSynsetFeatureVectorPipe("outputsyns.csv"), 
-            teeDatasetFSV
+        AbstractPipe p = new SerialPipes(new AbstractPipe[]{
+                new TargetAssigningFromPathPipe(),
+                new StoreFileExtensionPipe(),
+                new GuessDateFromFilePipe(),
+                new File2StringBufferPipe(),
+                new MeasureLengthFromStringBufferPipe(),
+                new StripHTMLFromStringBufferPipe(),
+                new MeasureLengthFromStringBufferPipe("length_after_html_drop"),
+                new FindUserNameInStringBufferPipe(),
+                new FindHashtagInStringBufferPipe(),
+                new FindUrlInStringBufferPipe(),
+                new FindEmoticonInStringBufferPipe(),
+                new FindEmojiInStringBufferPipe(),
+                new MeasureLengthFromStringBufferPipe("length_after_cleaning_text"),
+                new AbbreviationFromStringBufferPipe(),
+                new StringBufferToLowerCasePipe(),
+                new GuessLanguageFromStringBufferPipe(),
+                new SlangFromStringBufferPipe(),
+                new InterjectionFromStringBufferPipe(),
+                new StopWordFromStringBufferPipe(),
+                new ComputePolarityFromStringBufferPipe(),
+                new NERFromStringBufferPipe(),
+                new TeeCSVFromStringBufferPipe("output.csv", true),
+                new StringBuffer2SynsetVectorPipe(),
+                new SynsetVector2SynsetFeatureVectorPipe(SynsetVectorGroupingStrategy.COUNT),
+                new TeeCSVFromSynsetFeatureVectorPipe("outputsyns.csv"),
+                teeDatasetFSV
         });
 
         instances = InstanceListUtils.dropInvalid(instances);

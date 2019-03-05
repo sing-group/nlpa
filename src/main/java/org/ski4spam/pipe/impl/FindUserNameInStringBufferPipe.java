@@ -1,16 +1,17 @@
 package org.ski4spam.pipe.impl;
 
-import java.util.Stack;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bdp4j.types.Instance;
-import org.bdp4j.pipe.Pipe;
+import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
-import org.ski4spam.util.EBoolean;
+import org.bdp4j.types.Instance;
 import org.bdp4j.util.Pair;
+import org.ski4spam.util.EBoolean;
+
+import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This pipe drops @userName The data of the instance should contain a
@@ -20,7 +21,7 @@ import org.bdp4j.util.Pair;
  * @author Rosalía Laza
  */
 @PropertyComputingPipe()
-public class FindUserNameInStringBufferPipe extends Pipe {
+public class FindUserNameInStringBufferPipe extends AbstractPipe {
 
     /**
      * For logging purposes

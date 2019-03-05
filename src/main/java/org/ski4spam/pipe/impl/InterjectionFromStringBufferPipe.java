@@ -2,28 +2,20 @@ package org.ski4spam.pipe.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import org.bdp4j.types.Instance;
-import org.bdp4j.pipe.Pipe;
+import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
+import org.bdp4j.pipe.PropertyComputingPipe;
+import org.bdp4j.types.Instance;
+import org.ski4spam.util.EBoolean;
 
+import javax.json.*;
 import java.io.InputStream;
 import java.util.HashMap;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
-import javax.json.JsonString;
-
 import java.util.LinkedList;
-import org.bdp4j.pipe.PropertyComputingPipe;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
-import org.ski4spam.util.EBoolean;
 
 /**
  * This pipe drops interjections from texts The data of the instance should
@@ -33,7 +25,7 @@ import org.ski4spam.util.EBoolean;
  * @author Rosalía Laza
  */
 @PropertyComputingPipe()
-public class InterjectionFromStringBufferPipe extends Pipe {
+public class InterjectionFromStringBufferPipe extends AbstractPipe {
 
     /**
      * For logging purposes

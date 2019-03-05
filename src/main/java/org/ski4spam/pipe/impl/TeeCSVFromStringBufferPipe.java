@@ -1,20 +1,19 @@
 package org.ski4spam.pipe.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bdp4j.pipe.AbstractPipe;
+import org.bdp4j.pipe.PipeParameter;
+import org.bdp4j.pipe.TeePipe;
+import org.bdp4j.types.Instance;
+import org.ski4spam.util.EBoolean;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bdp4j.types.Instance;
-import org.bdp4j.pipe.Pipe;
-import org.bdp4j.pipe.TeePipe;
-import static org.ski4spam.util.CSVUtils.getCSVSep;
 import static org.ski4spam.util.CSVUtils.escapeCSV;
-
-import org.bdp4j.pipe.PipeParameter;
-
-import org.ski4spam.util.EBoolean;
+import static org.ski4spam.util.CSVUtils.getCSVSep;
 
 /**
  * This pipe parses Instances to csv format. It can be for showing it on
@@ -26,7 +25,7 @@ import org.ski4spam.util.EBoolean;
  * @author María Novo
  */
 @TeePipe()
-public class TeeCSVFromStringBufferPipe extends Pipe {
+public class TeeCSVFromStringBufferPipe extends AbstractPipe {
 
     /**
      * For logging purposes

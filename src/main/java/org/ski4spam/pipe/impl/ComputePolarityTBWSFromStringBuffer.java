@@ -1,10 +1,7 @@
 package org.ski4spam.pipe.impl;
 
-import java.io.IOException;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -13,9 +10,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.bdp4j.pipe.Pipe;
+import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.types.Instance;
+
+import java.io.IOException;
 
 /**
  * This class allows to compute polarity by querying Textblob-ws implemented by Enaitz Ezpeleta
@@ -24,7 +23,7 @@ import org.bdp4j.types.Instance;
  * @author José Ramón Méndez Reboredo
  * @author Enaitz Ezpeleta
  */
-public class ComputePolarityTBWSFromStringBuffer extends Pipe {
+public class ComputePolarityTBWSFromStringBuffer extends AbstractPipe {
     static Logger logger=LogManager.getLogger(ComputePolarityTBWSFromStringBuffer.class);
 
     /**
