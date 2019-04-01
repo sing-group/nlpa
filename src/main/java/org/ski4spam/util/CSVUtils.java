@@ -11,7 +11,7 @@ import org.ski4spam.util.Configuration;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.ski4spam.util.EBoolean;
+import org.bdp4j.util.EBoolean;
 
 /**
  * Several utilities to create and manage CSV files

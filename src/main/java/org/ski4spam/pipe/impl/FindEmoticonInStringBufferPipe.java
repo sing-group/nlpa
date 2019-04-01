@@ -7,7 +7,7 @@ import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
 import org.bdp4j.util.Pair;
-import org.ski4spam.util.EBoolean;
+import org.bdp4j.util.EBoolean;
 
 import java.util.Stack;
 import java.util.regex.Matcher;

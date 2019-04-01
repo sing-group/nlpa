@@ -12,7 +12,7 @@ import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.types.Instance;
 import org.ski4spam.types.SynsetDictionary;
 import org.ski4spam.types.SynsetFeatureVector;
-import org.ski4spam.util.EBoolean;
+import org.bdp4j.util.EBoolean;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

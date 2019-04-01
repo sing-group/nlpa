@@ -10,23 +10,28 @@ import java.io.File;
 /**
  * This pipe adds the extension of a file as instance property.
  *
- * @author Rosalía Laza 
+ * @author Rosalía Laza
  * @author Reyes Pavón
  */
 @PropertyComputingPipe()
-public class StoreFileExtensionPipe extends AbstractPipe {
-   /**
-    * Return the input type included the data attribute of a Instance
-    * @return the input type for the data attribute of the Instances processed
-    */
+public class StoreFileExtensionPipe extends AbstractPipe{
+
+    /**
+     * Return the input type included the data attribute of a Instance
+     *
+     * @return the input type for the data attribute of the Instances processed
+     */
     @Override
     public Class<?> getInputType() {
         return File.class;
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after processing
-     * @return the datatype expected in the data attribute of a Instance after processing
+     * Indicates the datatype expected in the data attribute of a Instance after
+     * processing
+     *
+     * @return the datatype expected in the data attribute of a Instance after
+     * processing
      */
     @Override
     public Class<?> getOutputType() {
@@ -34,57 +39,62 @@ public class StoreFileExtensionPipe extends AbstractPipe {
     }
 
     /**
-		* The default property name to store the extension
-		*/
-    public static final String DEFAULT_EXTENSION_PROPERTY="extension";
+     * The default property name to store the extension
+     */
+    public static final String DEFAULT_EXTENSION_PROPERTY = "extension";
 
     /**
-		* The property name to store the extension
-		*/
-    private String extProp=DEFAULT_EXTENSION_PROPERTY;
+     * The property name to store the extension
+     */
+    private String extProp = DEFAULT_EXTENSION_PROPERTY;
 
-	 /**
-		* Sets the property where the extension will be stored
-		* @param extProp the name of the property for the extension
-		*/
-	 @PipeParameter(name = "extpropname", description = "Indicates the property name to store the extension", defaultValue=DEFAULT_EXTENSION_PROPERTY)    
+    /**
+     * Sets the property where the extension will be stored
+     *
+     * @param extProp the name of the property for the extension
+     */
+    @PipeParameter(name = "extpropname", description = "Indicates the property name to store the extension", defaultValue = DEFAULT_EXTENSION_PROPERTY)
     public void setExtensionProp(String extProp) {
         this.extProp = extProp;
     }
-	 
-	 /**
-		* Retrieves the property name for storing the file extension
-		* @return String containing the property name for storing the file extension
-		*/
-    public String getExtenstionProp(){
+
+    /**
+     * Retrieves the property name for storing the file extension
+     *
+     * @return String containing the property name for storing the file
+     * extension
+     */
+    public String getExtenstionProp() {
         return this.extProp;
     }
 
     /**
-		* Default constructor
-		*/
+     * Default constructor
+     */
     public StoreFileExtensionPipe() {
         this(DEFAULT_EXTENSION_PROPERTY);
     }
 
     /**
-		* Build a StoreFileExtensionPipe that stores the extension of the file in the property extProp
-		* @param extProp The name of the property to extore the file extension
-		*/
+     * Build a StoreFileExtensionPipe that stores the extension of the file in
+     * the property extProp
+     *
+     * @param extProp The name of the property to extore the file extension
+     */
     public StoreFileExtensionPipe(String extProp) {
-        super(new Class<?>[0],new Class<?>[0]);
-        
+        super(new Class<?>[0], new Class<?>[0]);
+
         this.extProp = extProp;
     }
 
     /**
-    * Process an Instance.  This method takes an input Instance,
-    * destructively modifies it in some way, and returns it.
-    * This is the method by which all pipes are eventually run.
-    *
-    * @param carrier Instance to be processed.
-    * @return Instancia procesada
-    */
+     * Process an Instance. This method takes an input Instance, destructively
+     * modifies it in some way, and returns it. This is the method by which all
+     * pipes are eventually run.
+     *
+     * @param carrier Instance to be processed.
+     * @return Instancia procesada
+     */
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof File) {

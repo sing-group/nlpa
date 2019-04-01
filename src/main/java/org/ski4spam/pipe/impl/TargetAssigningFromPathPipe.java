@@ -17,7 +17,7 @@ import java.util.Set;
  * @author José Ramón Méndez
  */
 @TargetAssigningPipe()
-public class TargetAssigningFromPathPipe extends AbstractPipe {
+public class TargetAssigningFromPathPipe extends AbstractPipe{
     /**
      * For logging purposes
      */
@@ -57,6 +57,7 @@ public class TargetAssigningFromPathPipe extends AbstractPipe {
     /**
      * Create a TargetAssigningPipe using the default mapping ("_spam_" for target "spam" and "_ham_" for target "ham")
      */
+
     public TargetAssigningFromPathPipe() {
         this(new HashMap<String,String>());
 
