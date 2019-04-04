@@ -21,9 +21,11 @@ import weka.core.Attribute;
 
 import java.util.*;
 import java.util.function.Predicate;
+import org.bdp4j.util.DateTimeIdentifier;
 
 /**
  * Create a Dataset from Instanced containing a SynsetFeatureVector as data
+ *
  * @author María Novo
  */
 public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
@@ -73,8 +75,8 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
      * Default constructor
      */
     public TeeDatasetFromSynsetFeatureVectorPipe() {
-        super(new Class<?>[0],new Class<?>[0]);
-        
+        super(new Class<?>[0], new Class<?>[0]);
+
         transformersList = new HashMap<>();
     }
 
@@ -130,7 +132,7 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
         }
         // Check if the field is Date                            
         try {
-            if (DateIdentifier.getDefault().checkDate(value) != null) {
+            if (DateIdentifier.getDefault().checkDate(value) != null || DateTimeIdentifier.getDefault().checkDateTime(value) != null) {
                 return "Date";
             }
         } catch (Exception ex) {

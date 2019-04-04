@@ -1,3 +1,5 @@
+package DefaultTest;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,24 +54,32 @@ public class TestWekaOperationsWithDataset {
         
         /* Creating dataset replacing synsets with hypernonyms*/
         Map<String, String> hyperonymList = new HashMap<>();
-        hyperonymList.put("bn:00019763n", "bn:00019763N");
-        hyperonymList.put("bn:01532284n", "bn:01532284P");
-        hyperonymList.put("bn:00095665v", "bn:00095665B");
-        dataset.generateARFFWithComments(transformersList, "");
-        Dataset d = dataset.replaceColumnNames(hyperonymList, Dataset.COMBINE_SUM);
-        d.generateARFFWithComments(transformersList, "replaceColumnsNames.arff");
-        /***********************************************/
-        
+        hyperonymList.put("bn:00115153r", "bn:00062164n");//**
+        hyperonymList.put("bn:01946589n", "bn:00086370v");
+        hyperonymList.put("bn:00093287v", "bn:00062164n");//**
+        hyperonymList.put("bn:00079944n", "bn:00062164n");//**
+        hyperonymList.put("bn:00095482v", "bn:00062164n");//**
+        hyperonymList.put("bn:00024712n", "bn:00000492n");
+        hyperonymList.put("bn:00019763n", "bn:00062164n");//**
+
+//        clone.generateARFFWithComments(transformersList, "");
+//        clone.replaceColumnNames(hyperonymList, Dataset.COMBINE_SUM);
+//        clone.generateARFFWithComments(transformersList, "replaceColumnsNames.arff");
+        /**
+         * ********************************************
+         */
+
+        /*
         Instances data = dataset.getWekaDataset();
-        
+
         data.deleteStringAttributes();
         data.setClassIndex(data.numAttributes() - 1);
-        
+
         System.out.println("num data: " + data.numInstances());
         int numInstances = data.numInstances();
         int beginInt = (numInstances * 80) / 100;
         int endInt = numInstances - beginInt;
-        
+
         Instances trainingData = new Instances(data, 0, beginInt);
         System.out.println("num trainingData: " + trainingData.numInstances());
         Instances testingData = new Instances(data, beginInt, endInt);
@@ -162,8 +172,8 @@ public class TestWekaOperationsWithDataset {
             System.out.println("------------------------------------------");
             try {
                 int k = 10;
-                if (numInstances<k){
-                	k = numInstances;
+                if (numInstances < k) {
+                    k = numInstances;
                 }
                 Evaluation eval = new Evaluation(data);
                 eval.crossValidateModel(new SMO(), data, k, new Random(1));
@@ -185,7 +195,7 @@ public class TestWekaOperationsWithDataset {
             Logger.getLogger(TestWekaOperationsWithDataset.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
         }
-
+         */
     }
 
 }
