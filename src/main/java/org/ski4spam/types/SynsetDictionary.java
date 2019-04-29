@@ -8,6 +8,7 @@ package org.ski4spam.types;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import org.bdp4j.util.CSVUtils;
 
 /**
  * A dictionary of Synsets

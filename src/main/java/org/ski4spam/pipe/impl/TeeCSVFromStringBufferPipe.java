@@ -12,8 +12,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Set;
 
-import static org.ski4spam.util.CSVUtils.escapeCSV;
-import static org.ski4spam.util.CSVUtils.getCSVSep;
+import static org.ski4spam.util.CSVUtilsConfiguration.escapeCSV;
+import static org.ski4spam.util.CSVUtilsConfiguration.getCSVSep;
 
 /**
  * This pipe parses Instances to csv format. It can be for showing it on

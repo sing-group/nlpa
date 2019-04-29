@@ -18,8 +18,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static org.ski4spam.util.CSVUtils.escapeCSV;
-import static org.ski4spam.util.CSVUtils.getCSVSep;
+import static org.ski4spam.util.CSVUtilsConfiguration.*;
 
 /**
  * Create a CSV file from a SynsetFeatureVector object located in the data field
@@ -92,8 +91,8 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe {
      * @param saveProps Indicates whether the props will be also saved
      */
     public TeeCSVFromSynsetFeatureVectorPipe(String output, boolean saveProps) {
-        super(new Class<?>[0],new Class<?>[0]);
-        
+        super(new Class<?>[0], new Class<?>[0]);
+
         this.output = output;
         this.saveProps = saveProps;
     }
@@ -215,7 +214,7 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe {
 
         if (saveProps) { //Generate the props if required
             for (Object value : carrier.getValueList()) {
-                csvBody.append(value.equals("")?(" "):escapeCSV(value.toString())).append(getCSVSep());
+                csvBody.append(value.equals("") ? (" ") : escapeCSV(value.toString())).append(getCSVSep());
             }
         }
 
@@ -242,19 +241,20 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe {
     @Override
     public Instance pipe(Instance carrier) {
         try {
+
             if (isFirst) {
                 outputFile = new BufferedWriter(new FileWriter(output));
                 outputFile.write(getCSVHeader(carrier) + "\n");
                 isFirst = false;
             }
-				
-            outputFile.write(toCSV(carrier) + (!isLast()?"\n":""));
-            
+
+            outputFile.write(toCSV(carrier) + (!isLast() ? "\n" : ""));
+
             if (isLast()) {
                 outputFile.close();
             }
         } catch (IOException e) {
-            logger.error("Exception caugth wile processing " +carrier.getName() + " Message: "+  e);
+            logger.error("Exception caugth wile processing " + carrier.getName() + " Message: " + e);
         }
         return carrier;
     }
