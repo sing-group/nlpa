@@ -8,7 +8,7 @@ package org.ski4spam.util;
 import java.util.regex.Pattern;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.bdp4j.util.CSVUtils;
+import org.bdp4j.util.CSVDataset;
 import org.bdp4j.util.EBoolean;
 
 /**
@@ -17,7 +17,7 @@ import org.bdp4j.util.EBoolean;
  * @author María Novo
  * @author José Ramón Méndez
  */
-public class CSVUtilsConfiguration extends CSVUtils{
+public class CSVUtilsConfiguration extends CSVDataset{
 
     /**
      * For logging purposes
