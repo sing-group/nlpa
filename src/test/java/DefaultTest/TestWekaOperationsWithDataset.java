@@ -3,19 +3,10 @@ package DefaultTest;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.bdp4j.ml.DatasetFromFile;
+import org.bdp4j.dataset.CSVDatasetReader;
 import org.bdp4j.transformers.Date2MillisTransformer;
 import org.bdp4j.transformers.Enum2IntTransformer;
 import org.bdp4j.types.*;
-import weka.classifiers.Evaluation;
-import weka.classifiers.bayes.BayesNet;
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.functions.SMO;
-import weka.classifiers.trees.RandomForest;
-import weka.core.Instances;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -43,7 +34,7 @@ public class TestWekaOperationsWithDataset {
         transformersList.put("target", new Enum2IntTransformer(transformList));
 
         String filePath = "outputsyns.csv";
-        DatasetFromFile jml = new DatasetFromFile(filePath, transformersList);
+        CSVDatasetReader jml = new CSVDatasetReader(filePath, transformersList);
         Dataset dataset = jml.loadFile();
 //        System.out.println(" ----- DATASET -----");
 //        dataset.printLine();

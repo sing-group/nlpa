@@ -48,3 +48,11 @@ sms-spam-collection/
 spamassassin_corpus/
 trec2007/
 
+
+*.csv
+
+*.zip
+
+*.txt
+
+*.ser

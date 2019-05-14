@@ -3,7 +3,7 @@ package DefaultTest;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bdp4j.ml.DatasetFromFile;
+import org.bdp4j.dataset.CSVDatasetReader;
 import org.bdp4j.transformers.Date2MillisTransformer;
 import org.bdp4j.transformers.Enum2IntTransformer;
 import org.bdp4j.types.Dataset;
@@ -25,7 +25,7 @@ public class TestWekaClassifiers {
         transformersList.put("target", new Enum2IntTransformer(transformList));
 
         String filePath = "outputsyns.csv";
-        DatasetFromFile jml = new DatasetFromFile(filePath, transformersList);
+        CSVDatasetReader jml = new CSVDatasetReader(filePath, transformersList);
         // Este sería nuestro dataset, generado a partir del fichero outputsyns.csv. Con él puedes usar todos los métodos de la clase Dataset que está en 
         // bdp4j/types/Dataset.java
         Dataset dataset = jml.loadFile();
@@ -45,7 +45,6 @@ public class TestWekaClassifiers {
         
         /* Una vez realizadas las pruebas con los clasificadores, partiendo del dataset sin escalar, para hacer la generalización de synsets, lo más sencillo sería que usases nuestro dataset inicial "dataset", y 
          * cuando hayas terminado, lo convirtieses de nuevo en un dataset de WEKA (usando dataset.getWekaDataset()), para poder ejecutar de nuevo los clasificadores sobre él */
-        
 
 	}
 

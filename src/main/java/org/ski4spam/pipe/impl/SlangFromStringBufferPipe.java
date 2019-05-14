@@ -41,9 +41,9 @@ public class SlangFromStringBufferPipe extends AbstractPipe {
     private static final HashMap<String, HashMap<String, SlangEntry>> hmSlangs = new HashMap<>();
 
     static {
-        for (String i : new String[]{"/slangs-json/slang.en.json","/slangs-json/slang.es.json",
-                                     "/slangs-json/slang.gl.json","/slangs-json/slang.fr.json",
-                                     "/slangs-json/slang.pt.json"}) {
+        for (String i : new String[]{"/slangs-json/slang.en.json", "/slangs-json/slang.es.json",
+            "/slangs-json/slang.gl.json", "/slangs-json/slang.fr.json",
+            "/slangs-json/slang.pt.json"}) {
 
             String lang = i.substring(19, 21).toUpperCase();
             try {
@@ -51,10 +51,10 @@ public class SlangFromStringBufferPipe extends AbstractPipe {
                 JsonReader rdr = Json.createReader(is);
                 JsonObject jsonObject = rdr.readObject();
                 rdr.close();
-                HashMap<String, SlangEntry> dict=new HashMap<>();
-                for(String slang:jsonObject.keySet()){
-                    dict.put(slang,new SlangEntry(Pattern.compile( "(?:[\\p{Space}]|[\"><¡?¿!;:,.']|^)(" + Pattern.quote(slang) + ")[;:?\"!,.'>]?(?=(?:[\\p{Space}]|$|>))",Pattern.CASE_INSENSITIVE),
-                                   jsonObject.getString(slang)));
+                HashMap<String, SlangEntry> dict = new HashMap<>();
+                for (String slang : jsonObject.keySet()) {
+                    dict.put(slang, new SlangEntry(Pattern.compile("(?:[\\p{Space}]|[\"><¡?¿!;:,.']|^)(" + Pattern.quote(slang) + ")[;:?\"!,.'>]?(?=(?:[\\p{Space}]|$|>))", Pattern.CASE_INSENSITIVE),
+                            jsonObject.getString(slang)));
                 }
                 hmSlangs.put(lang, dict);
             } catch (Exception e) {
@@ -105,8 +105,8 @@ public class SlangFromStringBufferPipe extends AbstractPipe {
      * @param langProp The propertie that stores the language of text
      */
     public SlangFromStringBufferPipe(String langProp) {
-        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class},new Class<?>[0]);
-        
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[0]);
+
         this.langProp = langProp;
     }
 
@@ -143,18 +143,19 @@ public class SlangFromStringBufferPipe extends AbstractPipe {
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
             String lang = (String) carrier.getProperty(langProp);
-            StringBuffer data = (StringBuffer)carrier.getData();
+            StringBuffer data = (StringBuffer) carrier.getData();
             HashMap<String, SlangEntry> dict = hmSlangs.get(lang);
-            if (dict==null) return carrier; //If dict is not available for the language of the texts
-
+            if (dict == null) {
+                return carrier; //If dict is not available for the language of the texts
+            }
             Collection<SlangEntry> dictEntries = dict.values();
-            for(SlangEntry slang:dictEntries){
-               Matcher m=slang.getWordPattern().matcher(data);
-               int last = 0;
-               while (m.find(last)) {
-                       last = m.start(1);
-                       data=data.replace(m.start(1), m.end(1), slang.getReplacement());
-               }
+            for (SlangEntry slang : dictEntries) {
+                Matcher m = slang.getWordPattern().matcher(data);
+                int last = 0;
+                while (m.find(last)) {
+                    last = m.start(1);
+                    data = data.replace(m.start(1), m.end(1), slang.getReplacement());
+                }
             }
         }
         return carrier;

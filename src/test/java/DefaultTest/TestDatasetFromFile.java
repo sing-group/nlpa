@@ -3,7 +3,7 @@ package DefaultTest;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.bdp4j.ml.DatasetFromFile;
+import org.bdp4j.dataset.CSVDatasetReader;
 import org.bdp4j.transformers.Date2MillisTransformer;
 import org.bdp4j.transformers.Enum2IntTransformer;
 import org.bdp4j.types.*;
@@ -34,12 +34,14 @@ public class TestDatasetFromFile {
         transformersList.put("target", new Enum2IntTransformer(transformList));
 
         String filePath = "outputsyns.csv";//Main.class.getResource("/outputsyns.csv").getPath();
-        DatasetFromFile jml = new DatasetFromFile(filePath, transformersList);
+        CSVDatasetReader jml = new CSVDatasetReader(filePath, transformersList);
         Dataset dataset =  jml.loadFile();
         System.out.println(" ----- DATASET -----");
         dataset.printLine();
         System.out.println(" ----- Generating arff file with comments -----");
         dataset.generateARFFWithComments(transformersList, "");
+        
+        
     }
 
 }
