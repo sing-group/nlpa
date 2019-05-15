@@ -15,7 +15,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
-import org.bdp4j.pipe.ParallelPipes;
 import org.bdp4j.pipe.ResumableParallelPipes;
 import org.bdp4j.pipe.ResumableSerialPipes;
 import org.bdp4j.types.Instance;
@@ -27,11 +26,9 @@ import org.ski4spam.pipe.impl.FindEmojiInStringBufferPipe;
 import org.ski4spam.pipe.impl.FindEmoticonInStringBufferPipe;
 import org.ski4spam.pipe.impl.FindUserNameInStringBufferPipe;
 import org.ski4spam.pipe.impl.GuessDateFromFilePipe;
-import org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe;
 import org.ski4spam.pipe.impl.MeasureLengthFromStringBufferPipe;
-import org.ski4spam.pipe.impl.SlangFromStringBufferPipe;
-import org.ski4spam.pipe.impl.StoreFileExtensionPipe;
-import org.ski4spam.pipe.impl.TeeCSVFromStringBufferPipe;
+import org.ski4spam.pipe.impl.StripHTMLFromStringBufferPipe;
+import org.ski4spam.pipe.impl.TargetAssigningFromPathPipe;
 import org.ski4spam.util.textextractor.EMLTextExtractor;
 
 /**
@@ -39,7 +36,7 @@ import org.ski4spam.util.textextractor.EMLTextExtractor;
  * @author María Novo
  */
 public class TestDebugModeParallelPipes {
-    
+
     /**
      * A logger for logging purposes
      */
@@ -73,36 +70,35 @@ public class TestDebugModeParallelPipes {
         configurator.setProp(Configurator.RESUMABLE_MODE, "yes");
         configurator.setProp(Configurator.DEBUG_MODE, "yes");
         configurator.setProp(Configurator.TEMP_FOLDER, "./tmp/");
-        
-        
-        FindUserNameInStringBufferPipe fufsb = new FindUserNameInStringBufferPipe();
-       
-        /*AbstractPipe p1 = new ResumableSerialPipes(new AbstractPipe[]{
-            f2sb,
-            new MeasureLengthFromStringBufferPipe(),
-            new TeeCSVFromStringBufferPipe("output.csv", true),
-        });*/
-        
+
         AbstractPipe p1 = new ResumableParallelPipes(new AbstractPipe[]{
             new FindUserNameInStringBufferPipe(),
             new MeasureLengthFromStringBufferPipe()
         });
-        
-        FindEmojiInStringBufferPipe feisb =  new FindEmojiInStringBufferPipe();
-        FindEmoticonInStringBufferPipe fetisb =  new FindEmoticonInStringBufferPipe();
-       // glfsb.setDebugging(true);
-       feisb.setDebugging(true);
+
+        FindEmojiInStringBufferPipe feisb = new FindEmojiInStringBufferPipe();
+        FindEmoticonInStringBufferPipe fetisb = new FindEmoticonInStringBufferPipe();
+        StripHTMLFromStringBufferPipe shfsb = new StripHTMLFromStringBufferPipe();
+        //feisb.setDebugging(true);
         AbstractPipe pp = new ResumableParallelPipes(new AbstractPipe[]{
             fetisb,
             feisb,
-            //f2sb
-            //p1
+            shfsb
         });
-       AbstractPipe p = new ResumableSerialPipes(new AbstractPipe[]{
-           new File2StringBufferPipe(),
-           pp
-       });
-       
+        TargetAssigningFromPathPipe tafp = new TargetAssigningFromPathPipe();
+        File2StringBufferPipe f2sb = new File2StringBufferPipe();
+        f2sb.setDebugging(true);
+        
+        AbstractPipe sp = new ResumableSerialPipes(new AbstractPipe[]{
+            tafp,
+            f2sb
+        });
+ 
+        AbstractPipe p = new ResumableSerialPipes(new AbstractPipe[]{
+            sp,
+            pp
+        });
+
         if (!p.checkDependencies()) {
             System.out.println("Pipe dependencies are not satisfied");
             System.exit(1);

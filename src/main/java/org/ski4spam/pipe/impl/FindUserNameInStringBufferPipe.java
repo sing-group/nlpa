@@ -146,10 +146,9 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
      * @param userNameProp The name of the property to store @userName
      * @param removeUserName tells if @userName should be removed
      */
-
     public FindUserNameInStringBufferPipe(String userNameProp, boolean removeUserName) {
-        super(new Class<?>[0],new Class<?>[0]);
-        
+        super(new Class<?>[0], new Class<?>[0]);
+
         this.userNameProp = userNameProp;
         this.removeUserName = removeUserName;
     }
@@ -179,15 +178,14 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
                         replacements.push(new Pair<>(m.start(1), m.end(1)));
                     }
                 }
-                
+
                 if (removeUserName) {
                     while (!replacements.empty()) {
                         Pair<Integer, Integer> current = replacements.pop();
                         data = (current.getObj1() > 0 ? data.substring(0, current.getObj1()) : "")
-                            + //if startindex is 0 do not concatenate
-                            (current.getObj2() < (data.length() - 1) ? data.substring(current.getObj2()) : ""); //if endindex=newSb.length()-1 do not concatenate
+                                + //if startindex is 0 do not concatenate
+                                (current.getObj2() < (data.length() - 1) ? data.substring(current.getObj2()) : ""); //if endindex=newSb.length()-1 do not concatenate
                     }
-
 
                     carrier.setData(new StringBuffer(data));
                 }
@@ -195,8 +193,8 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
                 logger.info("@userName not found for instance " + carrier.toString());
             }
             carrier.setProperty(userNameProp, value);
-        }else{
-          logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
+        } else {
+            logger.error("Data should be an StrinBuffer when processing " + carrier.getName() + " but is a " + carrier.getData().getClass().getName());
         }
         return carrier;
     }

@@ -69,9 +69,11 @@ public class TestDebugModeSerialPipes {
         
         StoreFileExtensionPipe sfep = new StoreFileExtensionPipe();
         //sfep.setDebugging(true);
+         GuessDateFromFilePipe gdff = new GuessDateFromFilePipe();
+        gdff.setDebugging(true);
         AbstractPipe p0 = new ResumableSerialPipes(new AbstractPipe[]{
             sfep,
-            new GuessDateFromFilePipe()
+            gdff
         });
 
         File2StringBufferPipe f2sb = new File2StringBufferPipe();
