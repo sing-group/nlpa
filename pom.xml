@@ -54,6 +54,18 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>sing-maven</id>
+            <name>Spring Maven</name>
+            <url>http://repo.spring.io/plugins-release/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>        
     </repositories>
 
     <dependencies>
