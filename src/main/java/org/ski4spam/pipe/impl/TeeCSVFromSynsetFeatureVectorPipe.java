@@ -17,6 +17,7 @@ import org.bdp4j.util.EBoolean;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import org.bdp4j.pipe.SharedDataConsumer;
 
 import static org.ski4spam.util.CSVUtilsConfiguration.*;
 
@@ -27,7 +28,7 @@ import static org.ski4spam.util.CSVUtilsConfiguration.*;
  * @author María Novo
  * @author José Ramón Méndez
  */
-public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe {
+public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements SharedDataConsumer{
 
     /**
      * For logging purposes
@@ -257,5 +258,15 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe {
             logger.error("Exception caugth wile processing " + carrier.getName() + " Message: " + e);
         }
         return carrier;
+    }
+
+    @Override
+     /**
+     * Retrieve data from directory
+     *
+     * @param dir Directory name to retrieve data
+     */
+    public void readFromDisk(String dir) {
+        SynsetDictionary.getDictionary().readFromDisk(dir+System.getProperty("file.separator")+"synsetDictionary.ser");
     }
 }

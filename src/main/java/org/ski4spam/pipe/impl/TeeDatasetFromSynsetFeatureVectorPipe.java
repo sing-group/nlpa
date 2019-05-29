@@ -12,7 +12,6 @@ import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.types.Dataset;
 import org.bdp4j.types.Instance;
 import org.bdp4j.types.Transformer;
-import org.bdp4j.util.DateIdentifier;
 import org.bdp4j.util.Pair;
 import org.bdp4j.util.SubClassParameterTypeIdentificator;
 import org.ski4spam.types.SynsetDictionary;
@@ -126,17 +125,14 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
         try {
             Double.parseDouble(value);
             return "Double";
-        } catch (Exception ex) {
-            if (ex.getClass().getName().equals("java.lang.NumberFormatException")) {
-            }
-        }
-        // Check if the field is Date                            
-        try {
-            if (DateIdentifier.getDefault().checkDate(value) != null || DateTimeIdentifier.getDefault().checkDateTime(value) != null) {
-                return "Date";
-            }
-        } catch (Exception ex) {
-            if (ex.getClass().getName().equals("java.text.ParseException")) {
+        } catch (NumberFormatException nfex) {
+            // Check if the field is Date                            
+            try {
+                if (DateTimeIdentifier.getDefault().checkDateTime(value) != null) {
+                    return "Date";
+                }
+            } catch (Exception ex) {
+                return "String";
             }
         }
         return "String";
@@ -297,20 +293,11 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
                 }
                 dataset.generateCSV();
                 carrier.setData(dataset);
-                //---------------------------------------------------------------------------
-                // Se imprime el dataset
-                //---------------------------------------------------------------------------
-//                System.out.println("-------------BEGIN DATASET PIPE-----------------------");
-//                dataset.printLine();
-//                System.out.println("-------------END DATASET PIPE-----------------------");
-
             }
 
         } catch (Exception ex) {
-            logger.error(ex.getMessage());
-
+            logger.error("[PIPE] " + ex.getMessage());
         }
-
         return carrier;
     }
 }

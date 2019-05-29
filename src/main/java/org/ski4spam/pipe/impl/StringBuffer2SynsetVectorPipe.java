@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.bdp4j.pipe.SharedDataProducer;
 
 import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
@@ -31,7 +32,8 @@ import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_L
  * @author José Ramón Méndez
  */
 @TransformationPipe()
-public class StringBuffer2SynsetVectorPipe extends AbstractPipe {
+public class StringBuffer2SynsetVectorPipe extends AbstractPipe implements SharedDataProducer {
+
     /**
      * For loggins purposes
      */
@@ -94,7 +96,7 @@ public class StringBuffer2SynsetVectorPipe extends AbstractPipe {
      *
      */
     public StringBuffer2SynsetVectorPipe() {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[0], new Class<?>[0]);
     }
 
     /**
@@ -281,7 +283,7 @@ public class StringBuffer2SynsetVectorPipe extends AbstractPipe {
             carrier.invalidate();
             return carrier;
         }
-      
+
         sv.setUnmatchedTexts(computeUnmatched(sv.getOriginalText(), ((String) carrier.getProperty(langProp)).toUpperCase()));
 
         if (sv.getUnmatchedTexts().size() > 0) {
@@ -302,5 +304,16 @@ public class StringBuffer2SynsetVectorPipe extends AbstractPipe {
         logger.info("Instance processed: " + carrier.getName());
 
         return carrier;
+    }
+
+    /**
+     * Save data to a file
+     *
+     * @param dir Directory name where the data is saved
+     */
+    @Override
+    public void writeToDisk(String dir) {
+        System.out.println("path " + dir + System.getProperty("file.separator") + "synsetDictionary.ser");
+        SynsetDictionary.getDictionary().writeToDisk(dir + System.getProperty("file.separator") + "synsetDictionary.ser");
     }
 }

@@ -5,10 +5,18 @@
  */
 package org.ski4spam.types;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-//import org.ski4spam.util.CSVUtilsConfiguration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A dictionary of Synsets
@@ -16,6 +24,11 @@ import java.util.Set;
  * @author María Novo
  */
 public class SynsetDictionary implements Iterable<String> {
+
+    /**
+     * A logger for logging purposes
+     */
+    private static final Logger logger = LogManager.getLogger(SynsetDictionary.class);
 
     /**
      * The information storage for the dictionary. Only a Hashset of synsetsId
@@ -76,5 +89,39 @@ public class SynsetDictionary implements Iterable<String> {
     @Override
     public Iterator<String> iterator() {
         return this.synsetIdsHashSet.iterator();
+    }
+
+    /**
+     * Save data to a file
+     *
+     * @param filename File name where the data is saved
+     */
+    public void writeToDisk(String filename) {
+        try (FileOutputStream outputFile = new FileOutputStream(filename);
+                BufferedOutputStream buffer = new BufferedOutputStream(outputFile);
+                ObjectOutputStream output = new ObjectOutputStream(buffer);) {
+
+            output.writeObject(this.synsetIdsHashSet);
+            output.flush();
+            output.close();
+        } catch (Exception ex) {
+            logger.error("[WRITE TO DISK] " + ex.getMessage());
+        }
+    }
+
+    /**
+     * Retrieve data from file
+     *
+     * @param filename File name to retrieve data
+     */
+    public void readFromDisk(String filename) {
+        File file = new File(filename);
+        try (BufferedInputStream buffer = new BufferedInputStream(new FileInputStream(file))) {
+            ObjectInputStream input = new ObjectInputStream(buffer);
+
+            this.synsetIdsHashSet = (LinkedHashSet<String>) input.readObject();
+        } catch (Exception ex) {
+            logger.error("[READ FROM DISK] " + ex.getMessage());
+        }
     }
 }
