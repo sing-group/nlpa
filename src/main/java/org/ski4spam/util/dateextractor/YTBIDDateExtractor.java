@@ -19,6 +19,7 @@ import javax.json.JsonReader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.ski4spam.util.Configuration;
 
 /**
   * A DateExtractor for ytbid files (that stands for youtube comments)
@@ -82,9 +83,11 @@ public class YTBIDDateExtractor extends DateExtractor {
             return null; //Return a null will cause a fuerther invalidation of the instance
         }
 
+        String apiKey =  Configuration.getSystemConfig().getConfigOption("youtube", "APIKey");
+        
         //Extracting and returning the youtube data or error if not available.
         try {
-            URL url = new URL("https://www.googleapis.com/youtube/v3/comments?part=snippet&id=" + youtubeId + "&textFormat=html&key=AIzaSyAgGPiyeKbC7xnY3eTmRXU22lxc2TpyQoE");
+            URL url = new URL("https://www.googleapis.com/youtube/v3/comments?part=snippet&id=" + youtubeId + "&textFormat=html&key="+apiKey);
             InputStream is = url.openStream();
             JsonReader rdr = Json.createReader(is);
             JsonObject obj = rdr.readObject();
