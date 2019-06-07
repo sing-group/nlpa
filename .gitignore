@@ -13,6 +13,7 @@ outputSFV\.csv
 
 tests2/
 tests3/
+tests4/
 *.bak
 build\.xml
 build/built-jar\.properties

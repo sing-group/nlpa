@@ -106,6 +106,8 @@ public class TwitterConfigurator {
             logger.error("Tweet error / " + et.getError() + " | Current tweet: " + et.getTweetId());
         } else {
             // If not on cache
+            if (tf==null) tf=getTwitterFactory();
+            
             Twitter twitter = tf.getInstance();
             try {
                 toret = twitter.showStatus(Long.parseLong(tweetId));
