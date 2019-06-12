@@ -1,5 +1,6 @@
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -10,12 +11,14 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.bdp4j.pipe.Pipe;
 
 /**
  * This pipe assign a target to an instance keeping in mind the file path of the instance
  *
  * @author José Ramón Méndez
  */
+@AutoService(Pipe.class)
 @TargetAssigningPipe()
 public class TargetAssigningFromPathPipe extends AbstractPipe{
     /**

@@ -22,6 +22,7 @@ import weka.core.Attribute;
 import java.util.*;
 import java.util.function.Predicate;
 import org.bdp4j.pipe.Pipe;
+import org.bdp4j.pipe.TeePipe;
 import org.bdp4j.util.DateTimeIdentifier;
 
 /**
@@ -30,6 +31,7 @@ import org.bdp4j.util.DateTimeIdentifier;
  * @author María Novo
  */
 @AutoService(Pipe.class)
+@TeePipe
 public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
 
     /**

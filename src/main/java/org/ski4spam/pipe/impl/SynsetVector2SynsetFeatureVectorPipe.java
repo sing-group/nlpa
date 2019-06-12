@@ -14,6 +14,7 @@ import org.ski4spam.types.SynsetVector;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.bdp4j.pipe.TransformationPipe;
 
 /**
  * A pipe to transform a SynsetVector wich contains a list of synsets included
@@ -31,6 +32,7 @@ import java.util.Map;
  *
  * @author María Novo
  */
+@TransformationPipe
 public class SynsetVector2SynsetFeatureVectorPipe extends AbstractPipe {
     /**
      * For logging purposes

@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.Iterator;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.SharedDataConsumer;
+import org.bdp4j.pipe.TeePipe;
 import org.bdp4j.util.CSVDatasetWriter;
 
 
@@ -31,6 +32,7 @@ import org.bdp4j.util.CSVDatasetWriter;
  * @author José Ramón Méndez
  */
 @AutoService(Pipe.class)
+@TeePipe
 public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements SharedDataConsumer {
 
     /**
