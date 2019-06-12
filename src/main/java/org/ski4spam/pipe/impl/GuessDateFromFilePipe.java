@@ -1,5 +1,6 @@
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -11,12 +12,14 @@ import org.ski4spam.util.dateextractor.*;
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
+import org.bdp4j.pipe.Pipe;
 
 /**
  * This pipe finds the content Date from different formats
  *
  * @author José Ramón Méndez Reboredo
  */
+@AutoService(Pipe.class)
 @PropertyComputingPipe()
 public class GuessDateFromFilePipe extends AbstractPipe {
     /**

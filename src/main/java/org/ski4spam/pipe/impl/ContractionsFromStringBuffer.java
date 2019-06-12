@@ -1,5 +1,6 @@
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -14,6 +15,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.bdp4j.pipe.Pipe;
+import org.bdp4j.pipe.TransformationPipe;
 
 import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
@@ -22,6 +25,8 @@ import static org.ski4spam.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_L
  * Example "i can't" -%gt; "i cannot"
  * @author José Ramón Méndez Reboredo
  */
+@AutoService(Pipe.class)
+@TransformationPipe()
 public class ContractionsFromStringBuffer extends AbstractPipe {
 
     /**

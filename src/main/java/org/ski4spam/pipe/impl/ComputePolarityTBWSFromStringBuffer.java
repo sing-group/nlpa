@@ -17,6 +17,7 @@ import org.bdp4j.types.Instance;
 
 import java.io.IOException;
 import org.bdp4j.pipe.Pipe;
+import org.bdp4j.pipe.PropertyComputingPipe;
 
 /**
  * This class allows to compute polarity by querying Textblob-ws implemented by Enaitz Ezpeleta
@@ -26,6 +27,7 @@ import org.bdp4j.pipe.Pipe;
  * @author Enaitz Ezpeleta
  */
 @AutoService(Pipe.class)
+@PropertyComputingPipe()
 public class ComputePolarityTBWSFromStringBuffer extends AbstractPipe {
     static Logger logger=LogManager.getLogger(ComputePolarityTBWSFromStringBuffer.class);
 

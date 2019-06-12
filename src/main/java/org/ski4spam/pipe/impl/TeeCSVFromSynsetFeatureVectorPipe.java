@@ -32,7 +32,7 @@ import org.bdp4j.util.CSVDatasetWriter;
  * @author José Ramón Méndez
  */
 @AutoService(Pipe.class)
-@TeePipe
+@TeePipe()
 public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements SharedDataConsumer {
 
     /**

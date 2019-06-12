@@ -31,7 +31,7 @@ import org.bdp4j.util.DateTimeIdentifier;
  * @author María Novo
  */
 @AutoService(Pipe.class)
-@TeePipe
+@TeePipe()
 public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
 
     /**

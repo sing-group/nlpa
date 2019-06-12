@@ -5,6 +5,7 @@
  */
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.types.Instance;
@@ -14,6 +15,7 @@ import org.ski4spam.types.SynsetVector;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TransformationPipe;
 
 /**
@@ -32,7 +34,8 @@ import org.bdp4j.pipe.TransformationPipe;
  *
  * @author María Novo
  */
-@TransformationPipe
+@AutoService(Pipe.class)
+@TransformationPipe()
 public class SynsetVector2SynsetFeatureVectorPipe extends AbstractPipe {
     /**
      * For logging purposes

@@ -1,5 +1,6 @@
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -9,11 +10,13 @@ import org.ski4spam.util.textextractor.*;
 
 import java.io.File;
 import java.util.HashMap;
+import org.bdp4j.pipe.Pipe;
 
 /**
  * This pipe reads text and html contents from different file formats
  * @author José Ramón Méndez Reboredo
  */
+@AutoService(Pipe.class)
 @TransformationPipe()
 public class File2StringBufferPipe extends AbstractPipe {
     /**
