@@ -104,7 +104,7 @@ public class GuessDateFromFilePipe extends AbstractPipe {
      * @param dateProp The name of the property to store the date
      */
     public GuessDateFromFilePipe(String dateProp) {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[0], new Class<?>[0]);
 
         this.dateProp = dateProp;
     }
@@ -139,9 +139,8 @@ public class GuessDateFromFilePipe extends AbstractPipe {
                     carrier.setProperty(dateProp, "null");
                 }
             } catch (Exception ex) {
-                System.out.println("date " + de + " -- " + carrier.getData());
-                ex.printStackTrace();
-            }
+                logger.error("[GUESS DATE FROM FILE PIPE ] " + ex.getMessage());
+             }
         }
 
         return carrier;

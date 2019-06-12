@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
  * A dictionary of Synsets
  *
  * @author María Novo
+ * @author José Ramón Méndez Reboredo
  */
 public class SynsetDictionary implements Iterable<String> {
 
@@ -89,6 +90,14 @@ public class SynsetDictionary implements Iterable<String> {
     @Override
     public Iterator<String> iterator() {
         return this.synsetIdsHashSet.iterator();
+    }
+
+     /**
+     * Returns the size of the dictionary
+     * @return the size of the dictionary
+     */
+    public int size(){
+        return this.synsetIdsHashSet.size();
     }
 
     /**

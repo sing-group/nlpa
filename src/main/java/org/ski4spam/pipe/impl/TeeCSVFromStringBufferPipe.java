@@ -1,5 +1,6 @@
 package org.ski4spam.pipe.impl;
 
+import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -9,11 +10,7 @@ import org.bdp4j.types.Instance;
 import org.bdp4j.util.EBoolean;
 
 import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Set;
-
-import static org.ski4spam.util.CSVUtilsConfiguration.escapeCSV;
-import static org.ski4spam.util.CSVUtilsConfiguration.getCSVSep;
+import org.bdp4j.util.CSVDatasetWriter;
 
 /**
  * This pipe parses Instances to csv format. It can be for showing it on
@@ -77,7 +74,14 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
      * @param output The filename/path for the output file
      */
     public TeeCSVFromStringBufferPipe(String output) {
-        this(output, true);
+        super(new Class<?>[0], new Class<?>[0]);
+
+        this.output = output;
+        File f = new File(output);
+        if (f.exists()) {
+            f.delete();
+        }
+        this.dataset = new CSVDatasetWriter(output);
     }
 
     /**
@@ -88,12 +92,32 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
      * @param saveData tells if the data should be also saved in CSV
      */
     public TeeCSVFromStringBufferPipe(String output, boolean saveData) {
-        super(new Class<?>[0],new Class<?>[0]);
-        
-        this.setOutput(output);
+        super(new Class<?>[0], new Class<?>[0]);
+
+        this.output = output;
+        File f = new File(output);
+        if (f.exists()) {
+            f.delete();
+        }
+        this.dataset = new CSVDatasetWriter(output);
         this.setSaveData(saveData);
         this.isFirst = true;
     }
+
+    /**
+     * Csv DAtaset to store data
+     */
+    CSVDatasetWriter dataset = null;
+
+    /**
+     * Number of properties
+     */
+    int nprops = 0;
+
+    /**
+     * Length of the dictionary
+     */
+    int dictLength = 0;
 
     /**
      * Return the input type included the data attribute of a Instance
@@ -117,6 +141,15 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
         return StringBuffer.class;
     }
 
+    private static boolean contains(String[] arr, String targetValue) {
+        for (String s : arr) {
+            if (s.equals(targetValue)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Set the output fileName to store the CSV contents
      *
@@ -124,7 +157,13 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
      */
     @PipeParameter(name = "output", description = "Indicates the output filename/path for saving CSV", defaultValue = DEFAULT_OUTPUT_FILE)
     public void setOutput(String output) {
+        this.dataset.flushAndClose();
         this.output = output;
+        File f = new File(output);
+        if (f.exists()) {
+            f.delete();
+        }
+        this.dataset = new CSVDatasetWriter(output);
     }
 
     /**
@@ -167,59 +206,6 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Computes the CSV header for the instance
-     *
-     * @param withData Indicates whether include or not the data of the instance
-     * in the output
-     * @param propertyList a list of properties to be included in the CSV header
-     * @return The CSV header
-     */
-    public static String getCSVHeader(boolean withData, Set<String> propertyList) {
-        StringBuilder builder = new StringBuilder();
-
-        builder.append("id").append(getCSVSep());
-
-        if (withData) {
-            builder.append("data").append(getCSVSep());
-        }
-
-        for (String key : propertyList) {
-            builder.append(key).append(getCSVSep());
-        }
-
-        builder.append("target");
-
-        return builder.toString();
-    }
-
-    /**
-     * Converts this instance toCSV string representation
-     *
-     * @param withData Indicates whether include or not the data of the instance
-     * in the output
-     * @param carrier Indicates the instance to be represented in the CSV line
-     * @return The string representation o the instance carrier
-     */
-    public static String toCSV(boolean withData, Instance carrier) {
-        StringBuilder builder = new StringBuilder();
-        Object name = carrier.getName();
-        Object data = carrier.getData();
-        Object target = carrier.getTarget();
-
-        builder.append(name).append(getCSVSep());
-        if (withData) {
-            builder.append(escapeCSV(data.toString()/*.replaceAll("[" + getCSVSep() + getStrQuote() + "]", "")*/)).append(getCSVSep());
-        }
-
-        for (Object value : carrier.getValueList()) {
-            builder.append(escapeCSV(value.toString())).append(getCSVSep());
-        }
-        builder.append(target.toString());
-
-        return builder.toString();
-    }
-
-    /**
      * Process an Instance. This method takes an input Instance, destructively
      * modifies it in some way, and returns it. This is the method by which all
      * pipes are eventually run.
@@ -229,20 +215,54 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
      */
     @Override
     public Instance pipe(Instance carrier) {
-        try {
-            if (isFirst) {
-                outputFile = new FileWriter(output);
-                this.outputFile.write(getCSVHeader(saveData, carrier.getPropertyList()) + "\n");
-                isFirst = false;
+        //Ensure the columns of the dataset fits with the instance
+        if (dataset.getColumnCount() == 0) {
+            String columnsToAdd[] = new String[3 + carrier.getPropertyList().size()];
+            Object defaultValues[] = new Object[3 + carrier.getPropertyList().size()];
+            columnsToAdd[0] = "id";
+            defaultValues[0] = "0";
+            columnsToAdd[1] = "data";
+            defaultValues[0] = "";
+            int j = 2;
+
+            //dataset.addColumn("id", "0");
+            //dataset.addColumn("data", "0");
+            for (String i : carrier.getPropertyList()) {
+                columnsToAdd[j] = i;
+                defaultValues[j] = "";
+                //this.dataset.addColumn(i, "0");
+                j++;
             }
-            outputFile.write(toCSV(saveData, carrier) + (!isLast() ? "\n" : ""));
-            outputFile.flush();
-            if (isLast()) {
-                outputFile.close();
+
+            columnsToAdd[j] = "target";
+            defaultValues[j] = "";
+            dataset.addColumns(columnsToAdd, defaultValues);
+        } else if (dataset.getColumnCount() != (carrier.getPropertyList().size() + 3)) {
+            String currentProps[] = dataset.getColumnNames();
+            for (String prop : carrier.getPropertyList()) {
+                if (!contains(currentProps, prop)) {
+                    dataset.insertColumnAt(prop, "0", dataset.getColumnCount() - 1);
+                }
             }
-        } catch (IOException e) {
-            logger.error("Exception cauth when processing instance "+carrier.getName()+" Message: "+e);
+        }
+
+        //Create and add the new row
+        Object newRow[] = new Object[carrier.getPropertyList().size() + 3];
+        newRow[0] = carrier.getName();
+        newRow[1] = (StringBuffer) carrier.getData();
+        int i = 2;
+        for (Object current : carrier.getValueList()) {
+            newRow[i] = current;
+            i++;
+        }
+        newRow[newRow.length - 1] = carrier.getTarget();
+        dataset.addRow(newRow);
+
+        //If islast on the current burst close the dataset
+        if (isLast()) {
+            dataset.flushAndClose();
         }
         return carrier;
+
     }
 }

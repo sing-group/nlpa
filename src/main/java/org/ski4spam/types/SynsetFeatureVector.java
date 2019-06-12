@@ -57,6 +57,21 @@ public class SynsetFeatureVector implements Serializable {
     }
 
     /**
+     * Get the value for a feature
+     *
+     * @param feature Returns the value for a feature
+     * @return the value for a feature
+     */
+    public double getValue(String feature) {
+        Double retVal = synsetFeature.get(feature);
+        if (retVal == null) {
+            retVal = 0d;
+        }
+
+        return retVal;
+    }
+
+    /**
      * Checks for the value stored for the synset synsetId
      *
      * @param synsetId The target synset

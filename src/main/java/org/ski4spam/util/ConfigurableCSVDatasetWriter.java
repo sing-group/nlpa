@@ -5,6 +5,7 @@
  */
 package org.ski4spam.util;
 
+import java.io.File;
 import java.util.regex.Pattern;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -12,113 +13,60 @@ import org.bdp4j.util.CSVDatasetWriter;
 import org.bdp4j.util.EBoolean;
 
 /**
- * Several utilities to create and manage CSV files
+ * Configurable CSV Dataset.
+ * The CSV parameters are configured through system configuration 
+ * (config/configurations.ini by default)
  *
  * @author María Novo
  * @author José Ramón Méndez
  */
-public class CSVUtilsConfiguration extends CSVDatasetWriter{
+public class ConfigurableCSVDatasetWriter extends CSVDatasetWriter {
 
     /**
      * For logging purposes
      */
-    private static final Logger logger = LogManager.getLogger(CSVUtilsConfiguration.class);
+    private static final Logger logger = LogManager.getLogger(ConfigurableCSVDatasetWriter.class);
 
     /**
-     * The configured CSV Separator
+     * Disable the access to the default constructor (with no parameters
      */
-    private static String CSVSep = null;
-
-    /**
-     * The String Quote delimiter
-     */
-    private static String strQuote = null;
-
-    /**
-     * The Char to Escape String Quote delimiters
-     */
-    private static String strQuoteEscapeChar = null;
-
-    /**
-     * The representation of a CSV VOID FIELD
-     */
-    private static String csvVoidField = null;
-
-    /**
-     * Represents if \n \r and other non printable characters should be escaped
-     */
-    private static Boolean escapeCR = null;
-
-    /**
-     * Chars that should be scapped
-     */
-    private static String charsToScape = null;
-
-    /**
-     * The pattern to require quotes
-     */
-    public CSVUtilsConfiguration(){
-        super();
+    private ConfigurableCSVDatasetWriter() {
+        this(DEFAULT_CSV_FILE);
     }
-   private static final Pattern quoteRequiredPattern = Pattern.compile("[" + getCSVSep() + getCharsToScape() + "\\n\\r\u0085'\u2028\u2029]");
-
+   
     /**
-     * Escape a CSV String to allow including texts into cells
-     *
-     * @param str The string to scape
-     * @return the scaped string
+     * Construct a ConfigurableCSVDatasetWriter specifiying the file
+     * @param csvDataset The file (java.io.File) where the dataset will be stored
      */
-    public static String escapeCSV(String str) {
-        StringBuilder str_scape = new StringBuilder();
-
-        if (str == null || str.length() == 0) {
-            str_scape.append(getStrVoidField());
-        } else {
-            if (quoteRequiredPattern.matcher(str).find()) { //If quote is required
-                str_scape.append(getStrQuote());
-                str_scape.append(
-                        escapeAll(str.replaceAll("[\\p{Cntrl}]", ""))
-                );
-                str_scape.append(getStrQuote());
-            } else {
-                str_scape.append(str.replaceAll("[\\p{Cntrl}]", ""));
-            }
-        }
-        return str_scape.toString();
+    public ConfigurableCSVDatasetWriter(File csvDataset) {
+        CSVSep = Configuration.getSystemConfig().getConfigOption("csv", "CSVSep");
+        strQuote = Configuration.getSystemConfig().getConfigOption("csv", "CSVStrQuote");
+        strQuoteEscapeChar =  Configuration.getSystemConfig().getConfigOption("csv", "CSVStrQuoteEscapeChar");
+        csvVoidField = Configuration.getSystemConfig().getConfigOption("csv", "CSVVoidField");
+        escapeCR = EBoolean.parseBoolean(Configuration.getSystemConfig().getConfigOption("csv", "CSVEscapeCRChars"));
+        charsToScape = Configuration.getSystemConfig().getConfigOption("csv", "CSVEscapeChars");
+        this.csvDataset=csvDataset;
     }
-
+    
     /**
-     * Escapes CR characters (if required) and quotes
+     * Construct a ConfigurableCSVDatasetWriter specifiying the path to CSV file to be created
+     * @param csvDatasetPath The path to the CSV file that is being created
      */
-    private static String escapeAll(String in) {
-        StringBuilder strb = new StringBuilder();
-
-        for (int i = 0; i < in.length(); i++) {
-            if (in.charAt(i) == '\n') {
-                strb.append(shouldEscapeCRChars() ? "\\n" : "\n");
-            } else if (in.charAt(i) == '\r') {
-                strb.append(shouldEscapeCRChars() ? "\\r" : "\r");
-            } else if (in.charAt(i) == '\u0085') {
-                strb.append(shouldEscapeCRChars() ? "\\u0085" : "\u0085");
-            } else if (in.charAt(i) == '\u2028') {
-                strb.append(shouldEscapeCRChars() ? "\\u2028" : "\u2028");
-            } else if (in.charAt(i) == '\u2029') {
-                strb.append(shouldEscapeCRChars() ? "\\u2029" : "\u2029");
-            } else if (getCharsToScape().indexOf(in.charAt(i)) != -1 || in.charAt(i) == getStrQuote().charAt(0)) {
-                strb.append(getStrQuoteEscapeChar()).append(in.charAt(i));
-            } else {
-                strb.append(in.charAt(i));
-            }
-        }
-        return strb.toString();
+    public ConfigurableCSVDatasetWriter(String csvDatasetPath) {
+        this(new File(csvDatasetPath));
     }
+    
+    /**
+     * Pattern to determine if quotation is required
+     */    
+    private Pattern quoteRequiredPattern = Pattern.compile("[" + getCSVSep() + getCharsToScape() + "\\n\\r\u0085'\u2028\u2029]");
 
     /**
      * Returns the CSV separator configured
      *
      * @return the configured field separator for CSV files
      */
-    public static String getCSVSep() {
+    public String getCSVSep() {
         if (CSVSep == null) {
             CSVSep = Configuration.getSystemConfig().getConfigOption("csv", "CSVSep");
             logger.info("CSV field separator is \"" + CSVSep + "\"");
@@ -129,13 +77,12 @@ public class CSVUtilsConfiguration extends CSVDatasetWriter{
         return CSVSep;
     }
     
-
     /**
      * Returns the CSV String Quote Character configured
      *
      * @return the configured String Quote Character for CSV files
      */
-    public static String getStrQuote() {
+    public  String getStrQuote() {
         if (strQuote == null) {
             strQuote = Configuration.getSystemConfig().getConfigOption("csv", "CSVStrQuote");
             logger.info("CSV String Quote Character is \"" + strQuote + "\"");
@@ -151,7 +98,7 @@ public class CSVUtilsConfiguration extends CSVDatasetWriter{
      *
      * @return the CSV Escape Character for Quotes configured
      */
-    public static String getStrQuoteEscapeChar() {
+    public String getStrQuoteEscapeChar() {
         if (strQuoteEscapeChar == null) {
             strQuoteEscapeChar = Configuration.getSystemConfig().getConfigOption("csv", "CSVStrQuoteEscapeChar");
             logger.info("CSV Escape Character for Quotes is \"" + strQuoteEscapeChar + "\"");
@@ -167,7 +114,7 @@ public class CSVUtilsConfiguration extends CSVDatasetWriter{
      *
      * @return the representation for a CSV void field
      */
-    public static String getStrVoidField() {
+    public  String getStrVoidField() {
         if (csvVoidField == null) {
             csvVoidField = Configuration.getSystemConfig().getConfigOption("csv", "CSVVoidField");
             logger.info("CSV Void field is represented as \"" + csvVoidField + "\"");
@@ -183,7 +130,7 @@ public class CSVUtilsConfiguration extends CSVDatasetWriter{
      *
      * @return if we should escape carriage returns
      */
-    public static boolean shouldEscapeCRChars() {
+    public boolean shouldEscapeCRChars() {
         if (escapeCR == null) {
             String propVal = Configuration.getSystemConfig().getConfigOption("csv", "CSVEscapeCRChars");
             if (propVal != null) {
@@ -202,7 +149,7 @@ public class CSVUtilsConfiguration extends CSVDatasetWriter{
      *
      * @return if we should escape carriage returns
      */
-    public static String getCharsToScape() {
+    public String getCharsToScape() {
         if (charsToScape == null) {
             charsToScape = Configuration.getSystemConfig().getConfigOption("csv", "CSVEscapeChars");
             logger.info("CSV chars that should be scapped: \"" + charsToScape.toString() + "\"");
@@ -212,6 +159,5 @@ public class CSVUtilsConfiguration extends CSVDatasetWriter{
         }
         return charsToScape;
     }
-
 
 }

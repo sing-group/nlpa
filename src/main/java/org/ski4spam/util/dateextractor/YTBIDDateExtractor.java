@@ -1,5 +1,7 @@
 package org.ski4spam.util.dateextractor;
 
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -7,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,43 +23,49 @@ import javax.json.JsonReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ski4spam.util.Configuration;
+import org.ski4spam.util.YouTubeConfigurator;
 
 /**
-  * A DateExtractor for ytbid files (that stands for youtube comments)
-  * These files only contains the identifier of the youtube comment
-  * @author Reyes Pavón
-  * @author Rosalía Laza
-  */
+ * A DateExtractor for ytbid files (that stands for youtube comments) These
+ * files only contains the identifier of the youtube comment
+ *
+ * @author Reyes Pavón
+ * @author Rosalía Laza
+ */
 public class YTBIDDateExtractor extends DateExtractor {
-	/**
-	  * For loging purposes
-	  */	
-	private static final Logger logger = LogManager.getLogger(YTBIDDateExtractor.class);
 
-	/**
-	  * An instance to implement a singleton pattern
-	  */
+    /**
+     * For loging purposes
+     */
+    private static final Logger logger = LogManager.getLogger(YTBIDDateExtractor.class);
+
+    /**
+     * An instance to implement a singleton pattern
+     */
     static DateExtractor instance = null;
 
-	/**
-	   * The default constructor (converted to private to implement singleton)
-	   */
+    /**
+     * The default constructor (converted to private to implement singleton)
+     */
     private YTBIDDateExtractor() {
 
     }
 
     /**
-		* Retrieve a list of file extensions that can be processed
-		* @return an array of file extensions that can be handled with this DateExtractor
-		*/
+     * Retrieve a list of file extensions that can be processed
+     *
+     * @return an array of file extensions that can be handled with this
+     * DateExtractor
+     */
     public static String[] getExtensions() {
-        return new String[] {"ytbid"};
+        return new String[]{"ytbid"};
     }
 
     /**
-		* Retrieve an instance of the current DateExtractor
-		* @return an instance of the current DateExtractor
-		*/
+     * Retrieve an instance of the current DateExtractor
+     *
+     * @return an instance of the current DateExtractor
+     */
     public static DateExtractor getInstance() {
         if (instance == null) {
             instance = new YTBIDDateExtractor();
@@ -64,14 +73,15 @@ public class YTBIDDateExtractor extends DateExtractor {
         return instance;
     }
 
-  	/**
-  	  * Finds the content date from a file
-  	  * @param f The file to use to retrieve the content date
- 	  * @return the date of the content
-  	  */
- 		@Override
+    /**
+     * Finds the content date from a file
+     *
+     * @param f The file to use to retrieve the content date
+     * @return the date of the content
+     */
+    @Override
     public Date extractDate(File f) {
-		String youtubeId;
+        String youtubeId;
         Date dateResult = null;
         try {
             FileReader file = new FileReader(f);
@@ -83,35 +93,57 @@ public class YTBIDDateExtractor extends DateExtractor {
             return null; //Return a null will cause a fuerther invalidation of the instance
         }
 
-        String apiKey =  Configuration.getSystemConfig().getConfigOption("youtube", "APIKey");
-        
+        String apiKey = Configuration.getSystemConfig().getConfigOption("youtube", "APIKey");
+
         //Extracting and returning the youtube data or error if not available.
         try {
-            URL url = new URL("https://www.googleapis.com/youtube/v3/comments?part=snippet&id=" + youtubeId + "&textFormat=html&key="+apiKey);
-            InputStream is = url.openStream();
-            JsonReader rdr = Json.createReader(is);
-            JsonObject obj = rdr.readObject();
-            JsonArray arr = obj.getJsonArray("items");
-            if (arr.isEmpty()){
-                logger.error("empty array while processing " + f.getAbsolutePath());
-                return null;
+            YouTubeConfigurator youTubeConfigurator = YouTubeConfigurator.getYouTubeData();
+            if (youTubeConfigurator.size() == 0) {
+                youTubeConfigurator.retrieveYoutubeCache();
             }
-            else {
-                String text = arr.getJsonObject(0).getJsonObject("snippet").getString("publishedAt");   
-                SimpleDateFormat sdf = new SimpleDateFormat();
-                sdf.applyPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                sdf.setTimeZone(TimeZone.getTimeZone("GMT+1"));
-                dateResult = sdf.parse(text, new ParsePosition(0));
+            boolean existsData = youTubeConfigurator.isIncluded(youtubeId);
+            if (!existsData) {
+                URL url = new URL("https://www.googleapis.com/youtube/v3/comments?part=snippet&id=" + youtubeId + "&textFormat=html&key=" + apiKey);
+                InputStream is = url.openStream();
+                JsonReader rdr = Json.createReader(is);
+                JsonObject obj = rdr.readObject();
+                JsonArray arr = obj.getJsonArray("items");
+                if (arr.isEmpty()) {
+                    logger.error("empty array while processing " + f.getAbsolutePath());
+                    youTubeConfigurator.add(youtubeId, null, null);
+                    youTubeConfigurator.saveYoutubeCache();
+                    return null;
+                } else {
+                    // Get date
+                    String text = arr.getJsonObject(0).getJsonObject("snippet").getString("publishedAt");
+                    SimpleDateFormat sdf = new SimpleDateFormat();
+                    sdf.applyPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                    sdf.setTimeZone(TimeZone.getTimeZone("GMT+1"));
+                    dateResult = sdf.parse(text, new ParsePosition(0));
+
+                    // Get text to save in cache
+                    text = arr.getJsonObject(0).getJsonObject("snippet").getString("textOriginal");
+                    //detecting charset with library
+                    byte[] rawData = text.getBytes();
+                    CharsetDetector detector = new CharsetDetector();
+                    detector.setText(rawData);
+                    CharsetMatch cm = detector.detect();
+                    String youTubeText = new String(rawData, Charset.forName(cm.getName()));
+
+                    youTubeConfigurator.add(youtubeId, youTubeText, dateResult);
+                    youTubeConfigurator.saveYoutubeCache();
+                }
+            } else {
+                dateResult = youTubeConfigurator.isIncludedDate(youtubeId);
             }
-        } 
-        catch (MalformedURLException e) {
+        } catch (MalformedURLException e) {
             logger.error(e.getMessage() + " while processing " + f.getAbsolutePath());
             return null;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage() + " while processing " + f.getAbsolutePath());
             return null;
         }
         return dateResult;
     }
+
 }

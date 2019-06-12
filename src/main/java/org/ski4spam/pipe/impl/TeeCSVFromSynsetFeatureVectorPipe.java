@@ -15,11 +15,15 @@ import org.ski4spam.types.SynsetFeatureVector;
 import org.bdp4j.util.EBoolean;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Base64;
+import java.util.Iterator;
 import org.bdp4j.pipe.SharedDataConsumer;
+import org.bdp4j.util.CSVDatasetWriter;
 
-import static org.ski4spam.util.CSVUtilsConfiguration.*;
+import static org.ski4spam.util.ConfigurableCSVDatasetWriter.*;
 
 /**
  * Create a CSV file from a SynsetFeatureVector object located in the data field
@@ -28,7 +32,7 @@ import static org.ski4spam.util.CSVUtilsConfiguration.*;
  * @author María Novo
  * @author José Ramón Méndez
  */
-public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements SharedDataConsumer{
+public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements SharedDataConsumer {
 
     /**
      * For logging purposes
@@ -56,6 +60,21 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
     private BufferedWriter outputFile;
 
     /**
+     * Csv DAtaset to store data
+     */
+    CSVDatasetWriter dataset = null;
+
+    /**
+     * Number of properties
+     */
+    int nprops = 0;
+
+    /**
+     * Length of the dictionary
+     */
+    int dictLength = 0;
+
+    /**
      * Indicates whether if the props will be created or not
      */
     private boolean saveProps = true;
@@ -81,7 +100,14 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
      * @param output The filename to store the output
      */
     public TeeCSVFromSynsetFeatureVectorPipe(String output) {
-        this(output, true);
+        super(new Class<?>[0], new Class<?>[0]);
+
+        this.output = output;
+        File f = new File(output);
+        if (f.exists()) {
+            f.delete();
+        }
+        this.dataset = new CSVDatasetWriter(output);
     }
 
     /**
@@ -157,6 +183,15 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
         return SynsetFeatureVector.class;
     }
 
+    private static boolean contains(String[] arr, String targetValue) {
+        for (String s : arr) {
+            if (s.equals(targetValue)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Indicates the datatype expected in the data attribute of a Instance after
      * processing
@@ -170,68 +205,6 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
     }
 
     /**
-     * Computes the CSV header for the instance
-     *
-     * @param carrier A example of instance to extract the properties that will
-     * be represented
-     * @return the CSV header for representing all instances
-     */
-    public String getCSVHeader(Instance carrier) {
-        SynsetDictionary synsetsDictionary = SynsetDictionary.getDictionary();
-
-        StringBuilder csvHeader = new StringBuilder();
-        csvHeader.append("id").append(getCSVSep());
-
-        if (saveProps) { //Generate the props if required
-            for (String key : carrier.getPropertyList()) {
-                csvHeader.append(key).append(getCSVSep());
-            }
-        }
-
-        for (String synsetId : synsetsDictionary) {
-            csvHeader.append(synsetId).append(getCSVSep());
-        }
-
-        csvHeader.append("target");
-        return csvHeader.toString();
-    }
-
-    /**
-     * Converts this instance to a CSV string representation (a single line)
-     *
-     * @param carrier The instance to be represented
-     * @return The string representation of the instance
-     */
-    public String toCSV(Instance carrier) {
-        SynsetDictionary synsetsDictionary = SynsetDictionary.getDictionary();
-        SynsetFeatureVector synsetFeatureVector = (SynsetFeatureVector) carrier.getData();
-
-        StringBuilder csvBody = new StringBuilder();
-
-        Object name = carrier.getName();
-        Object target = carrier.getTarget();
-
-        csvBody.append(name).append(getCSVSep());
-
-        if (saveProps) { //Generate the props if required
-            for (Object value : carrier.getValueList()) {
-                csvBody.append(value.equals("") ? (" ") : escapeCSV(value.toString())).append(getCSVSep());
-            }
-        }
-
-        for (String synsetId : synsetsDictionary) {
-            Double frequency = synsetFeatureVector.getFrequencyValue(synsetId);
-            if (frequency > 0) {
-                csvBody.append(frequency.toString()).append(getCSVSep());
-            } else {
-                csvBody.append("0").append(getCSVSep());
-            }
-        }
-        csvBody.append(target.toString());
-        return csvBody.toString();
-    }
-
-    /**
      * Process an Instance. This method takes an input Instance, destructively
      * modifies it in some way, and returns it. This is the method by which all
      * pipes are eventually run.
@@ -241,32 +214,105 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
      */
     @Override
     public Instance pipe(Instance carrier) {
-        try {
+        SynsetFeatureVector fsv = (SynsetFeatureVector) carrier.getData();
 
-            if (isFirst) {
-                outputFile = new BufferedWriter(new FileWriter(output));
-                outputFile.write(getCSVHeader(carrier) + "\n");
-                isFirst = false;
+        //Ensure the columns of the dataset fits with the instance
+        if (dataset.getColumnCount() == 0) {
+            nprops = carrier.getPropertyList().size();
+            dictLength = SynsetDictionary.getDictionary().size();
+
+            String columnsToAdd[] = new String[2 + nprops + dictLength];
+            Object defaultValues[] = new Object[2 + nprops + dictLength];
+            columnsToAdd[0] = "id";
+            defaultValues[0] = "0";
+
+            int j = 1;
+            for (String i : carrier.getPropertyList()) {
+                columnsToAdd[j] = i;
+                defaultValues[j] = "0";
+                j++;
             }
 
-            outputFile.write(toCSV(carrier) + (!isLast() ? "\n" : ""));
-
-            if (isLast()) {
-                outputFile.close();
+            Iterator<String> it = SynsetDictionary.getDictionary().iterator();
+            while (it.hasNext()) {
+                String dictEntry = it.next();
+               // columnsToAdd[j] = encodeFeat(dictEntry);
+                columnsToAdd[j] = dictEntry;
+                defaultValues[j] = "0";
+                j++;
             }
-        } catch (IOException e) {
-            logger.error("Exception caugth wile processing " + carrier.getName() + " Message: " + e);
+
+            columnsToAdd[j] = "target";
+            defaultValues[j] = "";
+            dataset.addColumns(columnsToAdd, defaultValues);
+
+        } else if (dataset.getColumnCount() != SynsetDictionary.getDictionary().size() + 2 + carrier.getPropertyList().size()) {
+            String currentProps[] = dataset.getColumnNames();
+
+            String newProps[] = new String[carrier.getPropertyList().size() - nprops];
+            Object newDefaultValues[] = new Object[carrier.getPropertyList().size() - nprops];
+            int j = 0;
+            for (String prop : carrier.getPropertyList()) {
+                if (!contains(currentProps, prop)) {
+                    newProps[j] = prop;
+                    newDefaultValues[j] = "0";
+                    j++;
+                }
+            }
+            dataset.insertColumnsAt(newProps, newDefaultValues, nprops + 1);
+            nprops += newProps.length;
+
+            newProps = new String[SynsetDictionary.getDictionary().size() - dictLength];
+            newDefaultValues = new Object[SynsetDictionary.getDictionary().size() - dictLength];
+            j = 0;
+            int currentEntryIdx = 0;
+            Iterator<String> it = SynsetDictionary.getDictionary().iterator();
+            while (it.hasNext()) {
+                String dictEntry = it.next();
+                if (currentEntryIdx >= dictLength) {
+                    //newProps[j] = encodeFeat(dictEntry);
+                    newProps[j] = dictEntry;
+                    newDefaultValues[j] = "0";
+                    j++;
+                }
+                currentEntryIdx++;
+            }
+
+            dataset.insertColumnsAt(newProps, newDefaultValues, dataset.getColumnCount() - 1);
+            dictLength += newProps.length;
         }
+
+        //Create and add the new row
+        Object newRow[] = new Object[nprops + dictLength + 2];
+        newRow[0] = carrier.getName();
+        int i = 1;
+        for (Object current : carrier.getValueList()) {
+            newRow[i] = current;
+            i++;
+        }
+        Iterator<String> it = SynsetDictionary.getDictionary().iterator();
+        while (it.hasNext()) {
+            newRow[i] = fsv.getValue(it.next());
+            i++;
+        }
+        newRow[i] = carrier.getTarget();
+        dataset.addRow(newRow);
+
+        //If islast on the current burst close the dataset
+        if (isLast()) {
+            dataset.flushAndClose();
+        }
+
         return carrier;
     }
 
     @Override
-     /**
+    /**
      * Retrieve data from directory
      *
      * @param dir Directory name to retrieve data
      */
     public void readFromDisk(String dir) {
-        SynsetDictionary.getDictionary().readFromDisk(dir+System.getProperty("file.separator")+"synsetDictionary.ser");
+        SynsetDictionary.getDictionary().readFromDisk(dir + System.getProperty("file.separator") + "synsetDictionary.ser");
     }
 }
