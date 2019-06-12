@@ -1,11 +1,13 @@
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
 
 import java.io.File;
+import org.bdp4j.pipe.Pipe;
 
 /**
  * This pipe adds the extension of a file as instance property.
@@ -13,6 +15,7 @@ import java.io.File;
  * @author Rosalía Laza
  * @author Reyes Pavón
  */
+@AutoService(Pipe.class)
 @PropertyComputingPipe()
 public class StoreFileExtensionPipe extends AbstractPipe{
 

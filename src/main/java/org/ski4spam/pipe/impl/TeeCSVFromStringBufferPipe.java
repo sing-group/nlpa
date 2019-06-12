@@ -1,5 +1,6 @@
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +11,7 @@ import org.bdp4j.types.Instance;
 import org.bdp4j.util.EBoolean;
 
 import java.io.FileWriter;
+import org.bdp4j.pipe.Pipe;
 import org.bdp4j.util.CSVDatasetWriter;
 
 /**
@@ -21,6 +23,7 @@ import org.bdp4j.util.CSVDatasetWriter;
  * @author Yeray Lage Freitas
  * @author María Novo
  */
+@AutoService(Pipe.class)
 @TeePipe()
 public class TeeCSVFromStringBufferPipe extends AbstractPipe {
 

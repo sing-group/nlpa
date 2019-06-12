@@ -1,5 +1,6 @@
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import com.optimaize.langdetect.DetectedLanguage;
 import com.optimaize.langdetect.LanguageDetector;
 import com.optimaize.langdetect.LanguageDetectorBuilder;
@@ -16,6 +17,7 @@ import org.bdp4j.types.Instance;
 
 import java.io.IOException;
 import java.util.List;
+import org.bdp4j.pipe.Pipe;
 
 /**
  * This pipe implements language guessing by using language detector library
@@ -23,6 +25,7 @@ import java.util.List;
  *
  * @author José Ramón Méndez Reboredo
  */
+@AutoService(Pipe.class)
 @PropertyComputingPipe()
 public class GuessLanguageFromStringBufferPipe extends AbstractPipe {
 

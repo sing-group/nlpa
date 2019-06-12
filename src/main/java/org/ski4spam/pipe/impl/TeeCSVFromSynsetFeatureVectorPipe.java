@@ -5,6 +5,7 @@
  */
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -16,14 +17,11 @@ import org.bdp4j.util.EBoolean;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Base64;
 import java.util.Iterator;
+import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.SharedDataConsumer;
 import org.bdp4j.util.CSVDatasetWriter;
 
-import static org.ski4spam.util.ConfigurableCSVDatasetWriter.*;
 
 /**
  * Create a CSV file from a SynsetFeatureVector object located in the data field
@@ -32,6 +30,7 @@ import static org.ski4spam.util.ConfigurableCSVDatasetWriter.*;
  * @author María Novo
  * @author José Ramón Méndez
  */
+@AutoService(Pipe.class)
 public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements SharedDataConsumer {
 
     /**

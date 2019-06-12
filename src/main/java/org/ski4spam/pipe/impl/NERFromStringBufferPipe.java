@@ -5,6 +5,7 @@
  */
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreEntityMention;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
@@ -16,6 +17,7 @@ import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
 
 import java.util.*;
+import org.bdp4j.pipe.Pipe;
 
 /**
  * This pipe finds named entity recognition, saves this entities as Instance
@@ -24,6 +26,7 @@ import java.util.*;
  *
  * @author María Novo
  */
+@AutoService(Pipe.class)
 @PropertyComputingPipe()
 public class NERFromStringBufferPipe extends AbstractPipe {
 

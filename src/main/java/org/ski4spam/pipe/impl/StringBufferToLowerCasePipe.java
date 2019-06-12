@@ -1,6 +1,8 @@
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import org.bdp4j.pipe.AbstractPipe;
+import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TransformationPipe;
 import org.bdp4j.types.Instance;
 
@@ -10,6 +12,7 @@ import org.bdp4j.types.Instance;
  * @author Rosalía Laza 
  * @author Reyes Pavón
  */
+@AutoService(Pipe.class)
 @TransformationPipe()
 public class StringBufferToLowerCasePipe extends AbstractPipe {
    /**

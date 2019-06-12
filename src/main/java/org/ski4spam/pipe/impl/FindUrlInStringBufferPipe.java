@@ -1,5 +1,6 @@
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -13,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.bdp4j.pipe.Pipe;
 
 /**
  * This pipe drops URLs The data of the instance should contain a StringBuffer
@@ -20,6 +22,7 @@ import java.util.regex.Pattern;
  * @author Reyes Pavón
  * @author Rosalía Laza
  */
+@AutoService(Pipe.class)
 @PropertyComputingPipe()
 public class FindUrlInStringBufferPipe extends AbstractPipe {
 

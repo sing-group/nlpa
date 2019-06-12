@@ -5,6 +5,7 @@
  */
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -20,6 +21,7 @@ import weka.core.Attribute;
 
 import java.util.*;
 import java.util.function.Predicate;
+import org.bdp4j.pipe.Pipe;
 import org.bdp4j.util.DateTimeIdentifier;
 
 /**
@@ -27,6 +29,7 @@ import org.bdp4j.util.DateTimeIdentifier;
  *
  * @author María Novo
  */
+@AutoService(Pipe.class)
 public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
 
     /**

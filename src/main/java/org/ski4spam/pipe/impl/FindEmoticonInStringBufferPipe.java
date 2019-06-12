@@ -1,5 +1,6 @@
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -12,6 +13,7 @@ import org.bdp4j.util.EBoolean;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.bdp4j.pipe.Pipe;
 
 /**
  * This pipe finds and eventually drops emoticons The data of the instance
@@ -19,6 +21,7 @@ import java.util.regex.Pattern;
  *
  * @author José Ramón Méndez
  */
+@AutoService(Pipe.class)
 @PropertyComputingPipe()
 public class FindEmoticonInStringBufferPipe extends AbstractPipe {
 

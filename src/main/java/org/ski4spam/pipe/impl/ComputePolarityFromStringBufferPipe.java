@@ -1,5 +1,6 @@
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -15,6 +16,7 @@ import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
 
 import java.util.Properties;
+import org.bdp4j.pipe.Pipe;
 
 /**
  * This pipe adds the polarity of the text as instance property. Possible resuts
@@ -29,6 +31,7 @@ import java.util.Properties;
  *
  * @author José Ramón Méndez
  */
+@AutoService(Pipe.class)
 @PropertyComputingPipe()
 public class ComputePolarityFromStringBufferPipe extends AbstractPipe {
   /**

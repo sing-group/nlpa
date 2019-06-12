@@ -1,5 +1,6 @@
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,6 +15,7 @@ import org.jsoup.select.Elements;
 
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
+import org.bdp4j.pipe.Pipe;
 
 /**
  * This pipe drops HTML tags and changes entities by their corresponding
@@ -21,6 +23,7 @@ import java.util.regex.Pattern;
  *
  * @author José Ramón Méndez
  */
+@AutoService(Pipe.class)
 @TransformationPipe()
 public class StripHTMLFromStringBufferPipe extends AbstractPipe {
 

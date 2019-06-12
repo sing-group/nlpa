@@ -1,8 +1,10 @@
 package org.ski4spam.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
+import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
@@ -14,6 +16,7 @@ import org.bdp4j.types.Instance;
  * @author Rosalía Laza
  * @author Reyes Pavón
  */
+@AutoService(Pipe.class)
 @PropertyComputingPipe()
 public class MeasureLengthFromStringBufferPipe extends AbstractPipe {
 
