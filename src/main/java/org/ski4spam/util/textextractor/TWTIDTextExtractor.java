@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ski4spam.util.TwitterConfigurator;
+import twitter4j.Status;
 
 /**
  * A TextExtractor to extract text from tweets. The files that handle this
@@ -79,7 +80,7 @@ public class TWTIDTextExtractor extends TextExtractor {
 
         //Extracting and returning the tweet status text or error if not available.
         try {
-            return new StringBuffer(TwitterConfigurator.getStatus(tweetId).getText());
+            return new StringBuffer(TwitterConfigurator.getTwitterData().getStatus(tweetId).getText());
         } catch (NullPointerException e) {
             return null;
         }

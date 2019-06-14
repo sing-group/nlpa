@@ -14,7 +14,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,8 +33,7 @@ public class YouTubeConfigurator {
     /**
      * The default file name where youttube cache will be saved
      */
-    public static final String DEFAULT_OUTPUT_FILE = "./youtubecache.txt";
-//    public static final String DEFAULT_OUTPUT_FILE = System.getProperty("java.io.tmpdir") + "youtubecache.txt";
+    public static final String DEFAULT_OUTPUT_FILE = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + "youtubecache.txt";
 
     /**
      * The file name where youttube cache will be saved
@@ -58,6 +56,7 @@ public class YouTubeConfigurator {
      */
     private YouTubeConfigurator() {
         youTubeDataInstances = new LinkedHashMap<>();
+         
     }
 
     /**
@@ -192,8 +191,8 @@ public class YouTubeConfigurator {
             logger.warn("[SAVE YOUTUBE CACHE ] " + ex.getMessage());
         }
     }
-    
-    public int size(){
+
+    public int size() {
         return this.youTubeDataInstances.size();
     }
 }

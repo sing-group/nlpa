@@ -82,7 +82,7 @@ public class StoreTweetLangPipe extends AbstractPipe {
                 }
 
                 //Extracting and returning the tweet status date or error if not available.
-                Status status = TwitterConfigurator.getStatus(tweetId);
+                Status status = TwitterConfigurator.getTwitterData().getStatus(tweetId);
                 if (status != null) {
                     carrier.setProperty("language", status.getLang());
                     carrier.setProperty("language-reliability", 1.0);

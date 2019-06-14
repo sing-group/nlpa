@@ -22,7 +22,7 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.SharedDataConsumer;
 import org.bdp4j.pipe.TeePipe;
 import org.bdp4j.util.CSVDatasetWriter;
-
+import org.bdp4j.util.Configurator;
 
 /**
  * Create a CSV file from a SynsetFeatureVector object located in the data field
@@ -39,6 +39,11 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
      * For logging purposes
      */
     private static final Logger logger = LogManager.getLogger(TeeCSVFromSynsetFeatureVectorPipe.class);
+
+    /**
+     * The default value for the output dir
+     */
+    public static final String DEFAULT_OUTPUT_FOLDER = Configurator.DEFAULT_OUTPUT_FOLDER + System.getProperty("file.separator");
 
     /**
      * The default value for the output file
@@ -103,7 +108,7 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
     public TeeCSVFromSynsetFeatureVectorPipe(String output) {
         super(new Class<?>[0], new Class<?>[0]);
 
-        this.output = output;
+        this.output = DEFAULT_OUTPUT_FOLDER + output;
         File f = new File(output);
         if (f.exists()) {
             f.delete();
@@ -121,7 +126,7 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
     public TeeCSVFromSynsetFeatureVectorPipe(String output, boolean saveProps) {
         super(new Class<?>[0], new Class<?>[0]);
 
-        this.output = output;
+        this.output = DEFAULT_OUTPUT_FOLDER + output;
         this.saveProps = saveProps;
     }
 
@@ -132,7 +137,7 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
      */
     @PipeParameter(name = "output", description = "Indicates the output filename/path for saving CSV", defaultValue = DEFAULT_OUTPUT_FILE)
     public void setOutput(String output) {
-        this.output = output;
+        this.output = DEFAULT_OUTPUT_FOLDER + output;
     }
 
     /**
@@ -237,7 +242,7 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
             Iterator<String> it = SynsetDictionary.getDictionary().iterator();
             while (it.hasNext()) {
                 String dictEntry = it.next();
-               // columnsToAdd[j] = encodeFeat(dictEntry);
+                // columnsToAdd[j] = encodeFeat(dictEntry);
                 columnsToAdd[j] = dictEntry;
                 defaultValues[j] = "0";
                 j++;

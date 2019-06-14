@@ -9,6 +9,7 @@ import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ski4spam.util.TwitterConfigurator;
+import org.ski4spam.util.YouTubeConfigurator;
 
 import twitter4j.Status;
 //import twitter4j.TwitterFactory;
@@ -86,7 +87,7 @@ public class TWTIDDateExtractor extends DateExtractor {
         }
         try {
             //Extracting and returning the tweet status date or error if not available.
-            Status status = TwitterConfigurator.getStatus(tweetId);
+            Status status = TwitterConfigurator.getTwitterData().getStatus(tweetId);
             if (status != null) {
                 return status.getCreatedAt();
             } else {

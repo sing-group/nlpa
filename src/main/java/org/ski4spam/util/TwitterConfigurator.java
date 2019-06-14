@@ -14,13 +14,22 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.bdp4j.util.Pair;
 
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
-
 
 /**
  * Handle all functionality of accessing tweets by using Twitter Java API
@@ -35,6 +44,26 @@ public class TwitterConfigurator {
     private static final Logger logger = LogManager.getLogger(TwitterConfigurator.class);
 
     /**
+     * The default file name where tweet cache will be saved
+     */
+    public static final String DEFAULT_TWEETS_CACHE_FILE = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + "tweetsCache.json";
+
+    /**
+     * The file name where tweet cache will be saved
+     */
+    private static final String outputFile = DEFAULT_TWEETS_CACHE_FILE;
+
+    /**
+     * A hashmap with a cache of valid tweets
+     */
+    private static HashMap<Long, TweetStatus> tweetsCache = new HashMap<>();
+
+    /**
+     * A instance of tweet configurator to implement a singleton pattern
+     */
+    private static TwitterConfigurator twitterConfigurator = null;
+
+    /**
      * A twitterFactory instance
      */
     private static TwitterFactory tf;
@@ -45,29 +74,10 @@ public class TwitterConfigurator {
     private static TwitterConfigurator tc;
 
     /**
-     * A hashmap with a cache of valid tweets
-     */
-    private static HashMap<Long, TweetStatus> validTweetsCache = new HashMap<>();
-
-    /**
-     * A Hashmap witha a cache of valid tweets
-     */
-    private static HashMap<Long, ErrorTweet> errorTweetsCache = new HashMap<>();
-
-    /**
-     * A file to store valid tweets
-     */
-    private static File validTweetsCacheFile = new File(System.getProperty("java.io.tmpdir"), "validTweetsCache.json");
-
-    /**
-     * A file to store invalid twits
-     */
-    private static File errorTweetsCacheFile = new File(System.getProperty("java.io.tmpdir"), "errorTweetsCache.json");
-
-    /**
-     * Build a TwitterConfigurator instance
+     * The default constructor
      */
     private TwitterConfigurator() {
+        tweetsCache = new LinkedHashMap<>();
         //Load twitter configuration using System configuration method
         String consumerKey, consumerSecret, accessToken, accessTokenSecret;
         consumerKey = Configuration.getSystemConfig().getConfigOption("twitter", "ConsumerKey");
@@ -84,56 +94,45 @@ public class TwitterConfigurator {
                 .setOAuthAccessTokenSecret(accessTokenSecret);
 
         tf = new TwitterFactory(cb.build());
-        readCachedTweets(); // Read tweets stored in cache
+        // retrieveTweetCache();
     }
 
     /**
-     * Find the status for a tweet from its tweetId
+     * Retrieve the tweet cache
      *
-     * @param tweetId The id of the desired tweet
-     * @return The status for the desired tweet
+     * @return The default cache for tweet
      */
-    public static Status getStatus(String tweetId) {
-        Status toret = null;
-        Gson gson = new Gson();
-
-        if (validTweetsCache.containsKey(Long.parseLong(tweetId))) {
-            // If already on valid cache
-            toret = validTweetsCache.get(Long.parseLong(tweetId));
-        } else if (errorTweetsCache.containsKey(Long.parseLong(tweetId))) {
-            // If already on error cache
-            ErrorTweet et = errorTweetsCache.get(Long.parseLong(tweetId));
-            logger.error("Tweet error / " + et.getError() + " | Current tweet: " + et.getTweetId());
-        } else {
-            // If not on cache
-            if (tf==null) tf=getTwitterFactory();
-            
-            Twitter twitter = tf.getInstance();
-            try {
-                toret = twitter.showStatus(Long.parseLong(tweetId));
-                validTweetsCache.put(toret.getId(), new TweetStatus(toret.getCreatedAt(), toret.getId(), toret.getText(), toret.getLang()));
-                try (Writer writer = new FileWriter(validTweetsCacheFile)) {
-                    Type statusType = new TypeToken<HashMap<Long, TweetStatus>>() {
-                    }.getType();
-                    gson.toJson(validTweetsCache, statusType, writer);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } catch (TwitterException te) {
-                errorTweetsCache.put(Long.parseLong(tweetId), new ErrorTweet(Long.parseLong(tweetId), te.getErrorMessage()));
-                try (Writer writer = new FileWriter(errorTweetsCacheFile)) {
-                    Type statusType = new TypeToken<HashMap<Long, ErrorTweet>>() {
-                    }.getType();
-                    gson.toJson(errorTweetsCache, statusType, writer);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                logger.error("Tweet error / " + te.getErrorMessage() + " | Current tweet: " + tweetId);
-                return null;
-            }
+    public static TwitterConfigurator getTwitterData() {
+        if (twitterConfigurator == null) {
+            twitterConfigurator = new TwitterConfigurator();
         }
+        return twitterConfigurator;
+    }
 
-        return toret;
+    /**
+     * Add a text to youtube cache
+     *
+     * @param createdAt The date of creation
+     * @param id The identifier of the tweet
+     * @param text The text of the tweet
+     * @param lang The language of the tweet
+     * @param error Indicates if the tweet is correct
+     */
+    public void add(Date createdAt, long id, String text, String lang, boolean error) {
+        if (!tweetsCache.containsKey(id)) {
+            tweetsCache.put(id, new TweetStatus(createdAt, id, text, lang, error));
+        }
+    }
+
+    /**
+     * Determines if a tweet id is included in the cache
+     *
+     * @param id The identifier of the tweet
+     * @return a boolean indicating whether the id is included in the tweet
+     * cache or not
+     */
+    public boolean isIncluded(long id) {
+        return tweetsCache.containsKey(id);
     }
 
     /**
@@ -141,7 +140,7 @@ public class TwitterConfigurator {
      *
      * @return the TwitterFactory to use it externally
      */
-    public static TwitterFactory getTwitterFactory() {
+    public TwitterFactory getTwitterFactory() {
         if (tc == null) {
             // If not instanced yet, we do it
             tc = new TwitterConfigurator();
@@ -151,44 +150,119 @@ public class TwitterConfigurator {
     }
 
     /**
-     * Read Cached Tweets from a JSON file
+     * Find the status for a tweet from its tweetId
+     *
+     * @param tweetId The id of the desired tweet
+     * @return The status for the desired tweet
      */
-    private void readCachedTweets() {
+    public Status getStatus(String tweetId) {
+        Status toret;
+
+        if (twitterConfigurator.size() == 0) {
+            twitterConfigurator.retrieveTweetCache();
+        }
+        if (this.isIncluded(Long.parseLong(tweetId))) {
+            // If already on valid cache
+            if (tweetsCache.get(Long.parseLong(tweetId)).getError()) {
+                toret = null;
+            } else {
+                toret = tweetsCache.get(Long.parseLong(tweetId));
+            }
+        } else {
+            // If not on cache
+            if (tf == null) {
+                tf = getTwitterFactory();
+            }
+
+            Twitter twitter = tf.getInstance();
+
+            try {
+                toret = twitter.showStatus(Long.parseLong(tweetId));
+                this.add(toret.getCreatedAt(), toret.getId(), toret.getText(), toret.getLang(), false);
+                saveTwitterCache();
+            } catch (TwitterException te) {
+                this.add(null, Long.parseLong(tweetId), te.getErrorMessage(), null, true);
+                saveTwitterCache();
+                logger.error("Tweet error / " + te.getErrorMessage() + " | Current tweet: " + tweetId);
+                return null;
+            }
+        }
+
+        return toret;
+    }
+
+    /**
+     * Save data to a file
+     *
+     * @param filename File name where the data is saved
+     */
+    public void writeToDisk(String filename) {
+        Gson gson = new Gson();
+        try (Writer writer = new FileWriter(filename)) {
+            Type statusType = new TypeToken<HashMap<Long, TweetStatus>>() {
+            }.getType();
+            gson.toJson(tweetsCache, statusType, writer);
+        } catch (IOException e) {
+            logger.error("[WRITE TO DISK] " + e.getMessage());
+        }
+    }
+
+    /**
+     * Retrieve data from file
+     *
+     * @param filename File name to retrieve data
+     */
+    public void readFromDisk(String filename) {
+        File file = new File(filename);
+        try (BufferedInputStream buffer = new BufferedInputStream(new FileInputStream(file))) {
+            ObjectInputStream input = new ObjectInputStream(buffer);
+
+            tweetsCache = (HashMap<Long, TweetStatus>) input.readObject();
+        } catch (Exception ex) {
+            logger.error("[READ FROM DISK] " + ex.getMessage());
+        }
+    }
+
+    /**
+     * Retrieve data from cache
+     */
+    public void retrieveTweetCache() {
         BufferedReader bufferedReader = null;
         Gson gson = new Gson();
 
         try {
-            File f = errorTweetsCacheFile;
-            if (!f.exists()) {
-                f.createNewFile();
+            File tweetCacheFile = new File(outputFile);
+            if (!tweetCacheFile.exists()) {
+                tweetCacheFile.createNewFile();
             }
-            bufferedReader = new BufferedReader(new FileReader(f));
-        } catch (IOException e) {
-            e.printStackTrace();
+            bufferedReader = new BufferedReader(new FileReader(tweetCacheFile));
+        } catch (IOException ex) {
+            logger.error("[RETRIEVE TWEET CACHE] " + ex.getMessage());
         }
 
-        Type errorType = new TypeToken<HashMap<Long, ErrorTweet>>() {
+        Type type = new TypeToken<HashMap<Long, TweetStatus>>() {
         }.getType();
-        HashMap<Long, ErrorTweet> errorTweet = gson.fromJson(bufferedReader, errorType);
-        if (errorTweet != null) {
-            errorTweet.forEach((k, v) -> errorTweetsCache.put(k, v));
-        }
+        HashMap<Long, TweetStatus> tweet = gson.fromJson(bufferedReader, type);
 
+        if (tweet != null) {
+            tweet.forEach((k, v) -> tweetsCache.put(k, v));
+        }
+    }
+
+    /**
+     * Save data to cache
+     */
+    public void saveTwitterCache() {
         try {
-            File f = validTweetsCacheFile;
-            if (!f.exists()) {
-                f.createNewFile();
+            if (this.size() > 0) {
+                writeToDisk(outputFile);
             }
-            bufferedReader = new BufferedReader(new FileReader(f));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            logger.warn("[SAVE TWITTER CACHE] " + ex.getMessage());
         }
+    }
 
-        Type statusType = new TypeToken<HashMap<Long, TweetStatus>>() {
-        }.getType();
-        HashMap<Long, TweetStatus> status = gson.fromJson(bufferedReader, statusType);
-        if (status != null) {
-            status.forEach((k, v) -> validTweetsCache.put(k, v));
-        }
+    public int size() {
+        return tweetsCache.size();
     }
 }
