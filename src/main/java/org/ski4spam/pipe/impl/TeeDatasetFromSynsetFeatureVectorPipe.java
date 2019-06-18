@@ -122,7 +122,7 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
      */
     @Override
     public Class<?> getOutputType() {
-        return Dataset.class;
+        return SynsetFeatureVector.class;
     }
 
     private String identifyType(String value) {
