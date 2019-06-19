@@ -59,11 +59,6 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
     public static final String DEFAULT_SAVEDATA = "yes";
 
     /**
-     * The default value for the output dir
-     */
-    public static final String DEFAULT_OUTPUT_FOLDER = Configurator.DEFAULT_OUTPUT_FOLDER + System.getProperty("file.separator");
-
-    /**
      * The default value for the output file
      */
     public static final String DEFAULT_OUTPUT_FILE = "output.csv";
@@ -85,7 +80,7 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
     public TeeCSVFromStringBufferPipe(String output) {
         super(new Class<?>[0], new Class<?>[0]);
 
-        this.output = DEFAULT_OUTPUT_FOLDER + output;
+        this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
         File f = new File(output);
         if (f.exists()) {
             f.delete();
@@ -103,7 +98,7 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
     public TeeCSVFromStringBufferPipe(String output, boolean saveData) {
         super(new Class<?>[0], new Class<?>[0]);
 
-        this.output = DEFAULT_OUTPUT_FOLDER + output;
+        this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
         File f = new File(output);
         if (f.exists()) {
             f.delete();

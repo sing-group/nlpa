@@ -41,11 +41,6 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
     private static final Logger logger = LogManager.getLogger(TeeCSVFromSynsetFeatureVectorPipe.class);
 
     /**
-     * The default value for the output dir
-     */
-    public static final String DEFAULT_OUTPUT_FOLDER = Configurator.DEFAULT_OUTPUT_FOLDER + System.getProperty("file.separator");
-
-    /**
      * The default value for the output file
      */
     public static final String DEFAULT_OUTPUT_FILE = "output.csv";
@@ -108,7 +103,7 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
     public TeeCSVFromSynsetFeatureVectorPipe(String output) {
         super(new Class<?>[0], new Class<?>[0]);
 
-        this.output = DEFAULT_OUTPUT_FOLDER + output;
+        this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
         File f = new File(output);
         if (f.exists()) {
             f.delete();
@@ -126,7 +121,7 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
     public TeeCSVFromSynsetFeatureVectorPipe(String output, boolean saveProps) {
         super(new Class<?>[0], new Class<?>[0]);
 
-        this.output = DEFAULT_OUTPUT_FOLDER + output;
+        this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
         this.saveProps = saveProps;
     }
 
@@ -137,7 +132,7 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
      */
     @PipeParameter(name = "output", description = "Indicates the output filename/path for saving CSV", defaultValue = DEFAULT_OUTPUT_FILE)
     public void setOutput(String output) {
-        this.output = DEFAULT_OUTPUT_FOLDER + output;
+        this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
     }
 
     /**
