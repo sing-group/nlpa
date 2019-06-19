@@ -49,11 +49,6 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
     private boolean saveData;
 
     /**
-     * Indicates if the current instance will be the first one to save
-     */
-    private boolean isFirst;
-
-    /**
      * The default value for save Data
      */
     public static final String DEFAULT_SAVEDATA = "yes";
@@ -81,11 +76,11 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
         super(new Class<?>[0], new Class<?>[0]);
 
         this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
-        File f = new File(output);
+        File f = new File(this.output);
         if (f.exists()) {
             f.delete();
         }
-        this.dataset = new CSVDatasetWriter(output);
+        this.dataset = new CSVDatasetWriter(this.output);
     }
 
     /**
@@ -99,13 +94,12 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
         super(new Class<?>[0], new Class<?>[0]);
 
         this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
-        File f = new File(output);
+        File f = new File(this.output);
         if (f.exists()) {
             f.delete();
         }
-        this.dataset = new CSVDatasetWriter(output);
+        this.dataset = new CSVDatasetWriter(this.output);
         this.setSaveData(saveData);
-        this.isFirst = true;
     }
 
     /**
@@ -163,12 +157,12 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
     public void setOutput(String output) {
         this.dataset.flushAndClose();
         this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
-        File f = new File(output);
+        File f = new File(this.output);
         if (f.exists()) {
             f.delete();
         }
         this.dataset.flushAndClose();
-        this.dataset = new CSVDatasetWriter(output);
+        this.dataset = new CSVDatasetWriter(this.output);
     }
 
     /**

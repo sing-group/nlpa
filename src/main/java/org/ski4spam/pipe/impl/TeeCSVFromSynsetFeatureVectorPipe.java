@@ -104,11 +104,11 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
         super(new Class<?>[0], new Class<?>[0]);
 
         this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
-        File f = new File(output);
+        File f = new File(this.output);
         if (f.exists()) {
             f.delete();
         }
-        this.dataset = new CSVDatasetWriter(output);
+        this.dataset = new CSVDatasetWriter(this.output);
     }
 
     /**
@@ -123,6 +123,12 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
 
         this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
         this.saveProps = saveProps;
+
+        File f = new File(this.output);
+        if (f.exists()) {
+            f.delete();
+        }
+        this.dataset = new CSVDatasetWriter(this.output);          
     }
 
     /**
@@ -133,12 +139,12 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
     @PipeParameter(name = "output", description = "Indicates the output filename/path for saving CSV", defaultValue = DEFAULT_OUTPUT_FILE)
     public void setOutput(String output) {
         this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
-        File f = new File(output);
+        File f = new File(this.output);
         if (f.exists()) {
             f.delete();
         }
         this.dataset.flushAndClose();
-        this.dataset = new CSVDatasetWriter(output);        
+        this.dataset = new CSVDatasetWriter(this.output);        
     }
 
     /**
