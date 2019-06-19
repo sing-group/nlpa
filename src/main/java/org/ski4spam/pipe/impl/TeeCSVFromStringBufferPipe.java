@@ -162,11 +162,12 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
     @PipeParameter(name = "output", description = "Indicates the output filename/path for saving CSV", defaultValue = DEFAULT_OUTPUT_FILE)
     public void setOutput(String output) {
         this.dataset.flushAndClose();
-        this.output = output;
+        this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
         File f = new File(output);
         if (f.exists()) {
             f.delete();
         }
+        this.dataset.flushAndClose();
         this.dataset = new CSVDatasetWriter(output);
     }
 

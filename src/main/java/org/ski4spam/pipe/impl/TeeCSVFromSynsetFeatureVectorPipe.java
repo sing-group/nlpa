@@ -133,6 +133,12 @@ public class TeeCSVFromSynsetFeatureVectorPipe extends AbstractPipe implements S
     @PipeParameter(name = "output", description = "Indicates the output filename/path for saving CSV", defaultValue = DEFAULT_OUTPUT_FILE)
     public void setOutput(String output) {
         this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
+        File f = new File(output);
+        if (f.exists()) {
+            f.delete();
+        }
+        this.dataset.flushAndClose();
+        this.dataset = new CSVDatasetWriter(output);        
     }
 
     /**
