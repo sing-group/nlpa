@@ -14,11 +14,13 @@ import org.bdp4j.pipe.Pipe;
 
 /**
  * This pipe reads text and html contents from different file formats
+ *
  * @author José Ramón Méndez Reboredo
  */
 @AutoService(Pipe.class)
 @TransformationPipe()
 public class File2StringBufferPipe extends AbstractPipe {
+
     /**
      * For logging purposes
      */
@@ -35,29 +37,40 @@ public class File2StringBufferPipe extends AbstractPipe {
     }
 
     /**
-		* A collection of Textextractors to extract the text
-		*/
+     * A collection of Textextractors to extract the text
+     */
     private static HashMap<String, TextExtractor> htExtractors;
 
-    static{
-       htExtractors = new HashMap<>();
+    static {
+        htExtractors = new HashMap<>();
 
-       //Add the extractors
-       for (String ext:GenericTextExtractor.getExtensions()) htExtractors.put(ext, GenericTextExtractor.getInstance());		
-	    for (String ext:EMLTextExtractor.getExtensions()) htExtractors.put(ext, EMLTextExtractor.getInstance());
-       for (String ext:SMSTextExtractor.getExtensions()) htExtractors.put(ext, SMSTextExtractor.getInstance());
-       for (String ext:WARCTextExtractor.getExtensions()) htExtractors.put(ext, WARCTextExtractor.getInstance());
-       for (String ext:TWTIDTextExtractor.getExtensions()) htExtractors.put(ext, TWTIDTextExtractor.getInstance());
-	    for (String ext:YTBIDTextExtractor.getExtensions()) htExtractors.put(ext, YTBIDTextExtractor.getInstance());    	
+        //Add the extractors
+        for (String ext : GenericTextExtractor.getExtensions()) {
+            htExtractors.put(ext, GenericTextExtractor.getInstance());
+        }
+        for (String ext : EMLTextExtractor.getExtensions()) {
+            htExtractors.put(ext, EMLTextExtractor.getInstance());
+        }
+        for (String ext : SMSTextExtractor.getExtensions()) {
+            htExtractors.put(ext, SMSTextExtractor.getInstance());
+        }
+        for (String ext : WARCTextExtractor.getExtensions()) {
+            htExtractors.put(ext, WARCTextExtractor.getInstance());
+        }
+        for (String ext : TWTIDTextExtractor.getExtensions()) {
+            htExtractors.put(ext, TWTIDTextExtractor.getInstance());
+        }
+        for (String ext : YTBIDTextExtractor.getExtensions()) {
+            htExtractors.put(ext, YTBIDTextExtractor.getInstance());
+        }
     }
-	 
+
     /**
-		* Default constructor for the class
-		*/
+     * Default constructor for the class
+     */
     public File2StringBufferPipe() {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[0], new Class<?>[0]);
     }
-
 
     @Override
     public Instance pipe(Instance carrier) {
@@ -81,7 +94,9 @@ public class File2StringBufferPipe extends AbstractPipe {
                 if (txt == null) {
                     logger.warn("Invalidating instance " + carrier.toString() + " due to a fault in parsing.");
                     carrier.invalidate();
-                } else carrier.setData(txt);
+                } else {
+                    carrier.setData(txt);
+                }
             } else {
                 logger.warn("No parser available for instance " + carrier.toString() + ". Invalidating instance.");
                 carrier.invalidate();

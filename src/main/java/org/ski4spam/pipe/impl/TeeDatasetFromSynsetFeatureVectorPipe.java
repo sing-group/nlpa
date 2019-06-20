@@ -10,19 +10,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
-import org.bdp4j.types.Dataset;
 import org.bdp4j.types.Instance;
 import org.bdp4j.types.Transformer;
 import org.bdp4j.util.Pair;
-import org.bdp4j.util.SubClassParameterTypeIdentificator;
 import org.ski4spam.types.SynsetDictionary;
 import org.ski4spam.types.SynsetFeatureVector;
-import weka.core.Attribute;
 
 import java.util.*;
 import java.util.function.Predicate;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TeePipe;
+import org.bdp4j.types.DatasetStore;
 import org.bdp4j.util.DateTimeIdentifier;
 
 /**
@@ -63,8 +61,8 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
     /**
      * The attributes
      */
-    ArrayList<Attribute> attributes = null;
-
+    // ArrayList<Attribute> attributes = null;
+    DatasetStore dataset = null;
     /**
      * A Map with integer fields mapped to its types
      */
@@ -157,11 +155,11 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
         String field;
         String type;
         Pair<String, String> pair;
-        Pair<String, String> newPair;
+        Pair<String, String> newPair;        
         try {
-
+            
             if (isFirst) {
-                attributes = new ArrayList<>();
+                dataset = DatasetStore.getDatasetStore();
                 detectedTypes = new HashSet<>();
                 columnTypes = new ArrayList<>();
                 instanceList = new ArrayList<>();
@@ -206,7 +204,6 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
                     }
                 }
             }
-
             // Create the dataset, when we reach last instance.
             if (isLast()) {
                 // Get transformes which parameter type is not Double
@@ -215,24 +212,19 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
                     for (Map.Entry<String, Transformer> entry : transformersList.entrySet()) {
                         String key = entry.getKey();
                         Transformer value = entry.getValue();
-                        if (!SubClassParameterTypeIdentificator.findSubClassParameterType(value, Transformer.class, 0).getName().equals("Double")) {
                             noDoubleTransformers.add(key);
-                        }
                     }
                 }
 
                 // Get attribute list to generate Dataset. This list will contain the columns to add to the dataset.
-                Predicate<String> isAttribute = name -> attributes.stream()
-                        .anyMatch(attribute -> attribute.name().equals(name));
-
-                attributes.add(new Attribute("id", true));
+                dataset.addColumn("id", String.class, "");
                 if (!columnTypes.isEmpty()) {
                     for (Pair<String, String> next : columnTypes) {
                         final String header = next.getObj1();
                         final String typeHeader = next.getObj2();
-
-                        if ((typeHeader.equals("Double") || noDoubleTransformers.contains(header)) && !isAttribute.test(header)) {
-                            attributes.add(new Attribute(header));
+                        
+                        if ((typeHeader.equals("Double") || noDoubleTransformers.contains(header))) {
+                            dataset.addColumn(header, Double.class, 0);
                         }
                     }
                 }
@@ -240,23 +232,25 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
                 // Add synsetIds to attribute list
                 SynsetDictionary synsetsDictionary = SynsetDictionary.getDictionary();
                 for (String synsetId : synsetsDictionary) {
-                    attributes.add(new Attribute(synsetId));
+                    dataset.addColumn(synsetId, Double.class, 0);
                 }
-                attributes.add(new Attribute("target"));
-
-                Dataset dataset = new Dataset("dataset", attributes, 0);
+                dataset.addColumn("target", Double.class, 0);
                 int indInstance = 0;
                 SynsetFeatureVector synsetFeatureVector = null;
                 weka.core.Instance instance = null;
                 Transformer t;
+                
+                List<String> attributes = dataset.getDataset().getAttributes();
+                Object[] values = new Object[attributes.size()];
+                
                 for (Instance entry : instanceList) {
-                    instance = dataset.createDenseInstance();
+                    
                     synsetFeatureVector = (SynsetFeatureVector) entry.getData();
                     String attName = "";
                     for (int index = 0; index < attributes.size(); index++) {
-                        attName = attributes.get(index).name();
+                        attName = attributes.get(index);
                         if (attName.equals("id")) {
-                            instance.setValue(indInstance, entry.getName().toString());
+                            values[indInstance] = entry.getName().toString();
                             indInstance++;
                         } else {
                             if (attName.startsWith("bn:")) {
@@ -264,9 +258,9 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
                                 for (String synsetId : synsetsDictionary) {
                                     Double frequency = synsetFeatureVector.getFrequencyValue(synsetId);
                                     if (frequency > 0) {
-                                        instance.setValue(indInstance, frequency);
+                                        values[indInstance] = frequency;
                                     } else {
-                                        instance.setValue(indInstance, 0d);
+                                        values[indInstance] = 0d;
                                     }
                                     index = indInstance;
                                     indInstance++;
@@ -279,15 +273,20 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
                                 }
                                 if ((t = transformersList.get(attName)) != null) {
                                     if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
-                                        instance.setValue(indInstance, t.transform(field));
+                                        values[indInstance] = t.transform(field);
                                     } else {
-                                        instance.setValue(indInstance, 0d);
+                                        values[indInstance] = 0d;
                                     }
                                 } else {
                                     if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
-                                        instance.setValue(indInstance, Double.parseDouble(field));
+                                        try {
+                                            values[indInstance] = Double.parseDouble(field);
+                                        } catch (NumberFormatException nfex) {
+                                            values[indInstance] = 0;
+                                            logger.warn("The value for field " + field + " is 0, because parse double is not possible. To change this, use a transformer." + nfex.getMessage());
+                                        }
                                     } else {
-                                        instance.setValue(indInstance, 0d);
+                                        values[indInstance] = 0d;
                                     }
                                 }
                                 indInstance++;
@@ -295,11 +294,9 @@ public class TeeDatasetFromSynsetFeatureVectorPipe extends AbstractPipe {
                         }
                     }
                     indInstance = 0;
+                    dataset.addRow(values);
                 }
-                dataset.generateCSV();
-                carrier.setData(dataset);
             }
-
         } catch (Exception ex) {
             logger.error("[PIPE] " + ex.getMessage());
         }
