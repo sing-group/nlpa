@@ -4,11 +4,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.ski4spam</groupId>
-    <artifactId>ski4spam</artifactId>
+    <groupId>org.nlpa</groupId>
+    <artifactId>nlpa</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-    <name>ski4spam</name>
+    <name>nlpa</name>
     <!-- FIXME change it to the project's website -->
     <url>http://www.example.com</url>
 
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>org.bdp4j</groupId>
             <artifactId>bdp4j</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.optimaize.languagedetector</groupId>
@@ -298,7 +298,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.ski4spam.Main</mainClass>
+                            <mainClass>org.nlpa.Main</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                         </manifest>

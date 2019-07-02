@@ -13,7 +13,7 @@ import it.uniroma1.lcl.babelnet.BabelSynset;
 import it.uniroma1.lcl.babelnet.BabelSynsetID;
 import it.uniroma1.lcl.babelnet.BabelSynsetRelation;
 import it.uniroma1.lcl.babelnet.data.BabelPointer;
-import org.ski4spam.util.BabelUtils;
+import org.nlpa.util.BabelUtils;
 
 public class TestHypernym {
 

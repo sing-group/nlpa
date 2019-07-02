@@ -1,5 +1,28 @@
 package DefaultTest;
 
+import org.nlpa.pipe.impl.TeeDatasetFromFeatureVectorPipe;
+import org.nlpa.pipe.impl.StopWordFromStringBufferPipe;
+import org.nlpa.pipe.impl.FindEmojiInStringBufferPipe;
+import org.nlpa.pipe.impl.FindUrlInStringBufferPipe;
+import org.nlpa.pipe.impl.StripHTMLFromStringBufferPipe;
+import org.nlpa.pipe.impl.TeeCSVFromStringBufferPipe;
+import org.nlpa.pipe.impl.GuessDateFromFilePipe;
+import org.nlpa.pipe.impl.SlangFromStringBufferPipe;
+import org.nlpa.pipe.impl.FindEmoticonInStringBufferPipe;
+import org.nlpa.pipe.impl.FindUserNameInStringBufferPipe;
+import org.nlpa.pipe.impl.TargetAssigningFromPathPipe;
+import org.nlpa.pipe.impl.StringBufferToLowerCasePipe;
+import org.nlpa.pipe.impl.TeeCSVFromFeatureVectorPipe;
+import org.nlpa.pipe.impl.AbbreviationFromStringBufferPipe;
+import org.nlpa.pipe.impl.StringBuffer2SynsetSequencePipe;
+import org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe;
+import org.nlpa.pipe.impl.MeasureLengthFromStringBufferPipe;
+import org.nlpa.pipe.impl.InterjectionFromStringBufferPipe;
+import org.nlpa.pipe.impl.ComputePolarityFromStringBufferPipe;
+import org.nlpa.pipe.impl.NERFromStringBufferPipe;
+import org.nlpa.pipe.impl.StoreFileExtensionPipe;
+import org.nlpa.pipe.impl.FindHashtagInStringBufferPipe;
+import org.nlpa.pipe.impl.File2StringBufferPipe;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -9,8 +32,7 @@ import org.bdp4j.transformers.Enum2IntTransformer;
 import org.bdp4j.types.Instance;
 import org.bdp4j.types.Transformer;
 import org.bdp4j.util.InstanceListUtils;
-import org.ski4spam.pipe.impl.*;
-import org.ski4spam.util.textextractor.EMLTextExtractor;
+import org.nlpa.util.textextractor.EMLTextExtractor;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,7 +96,7 @@ public class TestPipeExecution {
         transformersList.put("date", new Date2MillisTransformer());
         transformersList.put("target",  new Enum2IntTransformer(transformList));
 
-        TeeDatasetFromSynsetFeatureVectorPipe teeDatasetFSV = new TeeDatasetFromSynsetFeatureVectorPipe();
+        TeeDatasetFromFeatureVectorPipe teeDatasetFSV = new TeeDatasetFromFeatureVectorPipe();
         teeDatasetFSV.setTransformersList(transformersList);
 
         /*create a example of pipe*/
@@ -101,9 +123,9 @@ public class TestPipeExecution {
                 new ComputePolarityFromStringBufferPipe(),
                 new NERFromStringBufferPipe(),
                 new TeeCSVFromStringBufferPipe("output.csv", true),
-                new StringBuffer2SynsetVectorPipe(),
-                new SynsetVector2SynsetFeatureVectorPipe(SynsetVectorGroupingStrategy.COUNT),
-                new TeeCSVFromSynsetFeatureVectorPipe("outputsyns.csv"),
+                new StringBuffer2SynsetSequencePipe(),
+                //new SynsetVector2SynsetFeatureVectorPipe(SynsetVectorGroupingStrategy.COUNT),
+                new TeeCSVFromFeatureVectorPipe("outputsyns.csv"),
                 teeDatasetFSV
         });
 

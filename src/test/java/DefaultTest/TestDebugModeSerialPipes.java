@@ -19,13 +19,13 @@ import org.bdp4j.pipe.ResumableSerialPipes;
 import org.bdp4j.types.Instance;
 import org.bdp4j.util.Configurator;
 import org.bdp4j.util.InstanceListUtils;
-import org.ski4spam.Main;
-import org.ski4spam.pipe.impl.File2StringBufferPipe;
-import org.ski4spam.pipe.impl.GuessDateFromFilePipe;
-import org.ski4spam.pipe.impl.MeasureLengthFromStringBufferPipe;
-import org.ski4spam.pipe.impl.StoreFileExtensionPipe;
-import org.ski4spam.pipe.impl.TargetAssigningFromPathPipe;
-import org.ski4spam.util.textextractor.EMLTextExtractor;
+import org.nlpa.Main;
+import org.nlpa.pipe.impl.File2StringBufferPipe;
+import org.nlpa.pipe.impl.GuessDateFromFilePipe;
+import org.nlpa.pipe.impl.MeasureLengthFromStringBufferPipe;
+import org.nlpa.pipe.impl.StoreFileExtensionPipe;
+import org.nlpa.pipe.impl.TargetAssigningFromPathPipe;
+import org.nlpa.util.textextractor.EMLTextExtractor;
 
 /**
  *
@@ -62,7 +62,9 @@ public class TestDebugModeSerialPipes {
         }
 
         /*create a example of debug mode in Serial Pipes*/
-        Configurator configurator = Configurator.getInstance("./config/configuration.xml");
+        Configurator configurator = Configurator.getInstance("configuration2.xml");
+        configurator.getProp(Configurator.OUTPUT_FOLDER);
+        
         configurator.setProp(Configurator.RESUMABLE_MODE, "yes");
         configurator.setProp(Configurator.DEBUG_MODE, "yes");
         configurator.setProp(Configurator.TEMP_FOLDER, "./tmp/");

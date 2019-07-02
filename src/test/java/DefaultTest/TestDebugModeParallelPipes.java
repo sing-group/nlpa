@@ -20,16 +20,16 @@ import org.bdp4j.pipe.ResumableSerialPipes;
 import org.bdp4j.types.Instance;
 import org.bdp4j.util.Configurator;
 import org.bdp4j.util.InstanceListUtils;
-import org.ski4spam.Main;
-import org.ski4spam.pipe.impl.File2StringBufferPipe;
-import org.ski4spam.pipe.impl.FindEmojiInStringBufferPipe;
-import org.ski4spam.pipe.impl.FindEmoticonInStringBufferPipe;
-import org.ski4spam.pipe.impl.FindUserNameInStringBufferPipe;
-import org.ski4spam.pipe.impl.GuessDateFromFilePipe;
-import org.ski4spam.pipe.impl.MeasureLengthFromStringBufferPipe;
-import org.ski4spam.pipe.impl.StripHTMLFromStringBufferPipe;
-import org.ski4spam.pipe.impl.TargetAssigningFromPathPipe;
-import org.ski4spam.util.textextractor.EMLTextExtractor;
+import org.nlpa.Main;
+import org.nlpa.pipe.impl.File2StringBufferPipe;
+import org.nlpa.pipe.impl.FindEmojiInStringBufferPipe;
+import org.nlpa.pipe.impl.FindEmoticonInStringBufferPipe;
+import org.nlpa.pipe.impl.FindUserNameInStringBufferPipe;
+import org.nlpa.pipe.impl.GuessDateFromFilePipe;
+import org.nlpa.pipe.impl.MeasureLengthFromStringBufferPipe;
+import org.nlpa.pipe.impl.StripHTMLFromStringBufferPipe;
+import org.nlpa.pipe.impl.TargetAssigningFromPathPipe;
+import org.nlpa.util.textextractor.EMLTextExtractor;
 
 /**
  *
