@@ -1,4 +1,4 @@
-# Content Preprocessor
+# Natural Langage Pre-processing Architecture
 
 This file contains instructions about configuration files needed to run application.
 
