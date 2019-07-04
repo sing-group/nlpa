@@ -21,8 +21,8 @@ import org.bdp4j.pipe.Pipe;
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 /**
- * This pipe drops stopwords from texts The data of the instance should contain
- * a StringBuffer without HTML Tags
+ * This pipe detects abbreviations in text and replaces them by its expansion using dictionaries (Json files). 
+ * The property that stores the language of text has to exist.
  *
  * @author Reyes Pavón Rial
  * @author Rosalía Laza Fidalgo
@@ -113,7 +113,7 @@ public class AbbreviationFromStringBufferPipe extends AbstractPipe {
      * Construct a AbbreviationFromStringBuffer instance given a language
      * property
      *
-     * @param langProp The propertie that stores the language of text
+     * @param langProp The property that stores the language of text
      */
     public AbbreviationFromStringBufferPipe(String langProp) {
         super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class},new Class<?>[0]);
