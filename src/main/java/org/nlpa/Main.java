@@ -102,11 +102,10 @@ public class Main {
                 // new ComputePolarityFromStringBufferPipe(),
                 // new NERFromStringBufferPipe(),
                 // sudo ssh -L 80:textblob_ws:80 moncho@ski.4spam.group
-                // new ComputePolarityTBWSFromStringBuffer("http://localhost/postjson"),
+                // new ComputePolarityFromStringBufferPipe("http://localhost/postjson"),
                 new TeeCSVFromStringBufferPipe("output.csv", true), new StringBuffer2SynsetSequencePipe(),
                 new SynsetSequence2FeatureVectorPipe(SequenceGroupingStrategy.COUNT),
-            new TeeCSVFromFeatureVectorPipe("outputsyns.csv"), 
-            //teeCSVDatasetFSV
+                new TeeCSVFromFeatureVectorPipe("outputsyns.csv"),
         });
 
         if (!p.checkDependencies()){
