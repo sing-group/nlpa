@@ -21,8 +21,8 @@ import org.bdp4j.pipe.Pipe;
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 /**
- * This pipe drops stopwords from texts The data of the instance should contain
- * a StringBuffer without HTML Tags
+ * This pipe detects slang terms in text and replace by its traduction using dictionaries (Json files). 
+ * The property that stores the language of text has to exist.
  *
  * @author Reyes Pavón Rial
  * @author Rosalía Laza Fidalgo
@@ -137,7 +137,6 @@ public class SlangFromStringBufferPipe extends AbstractPipe {
      * extending langs, and returns it. This is the method by which all pipes
      * are eventually run.
      *
-     * LLAMARLO ANTES DE QUITAR MAYÚSCULAS *****************
      *
      * @param carrier Instance to be processed.
      * @return Instancia procesada
@@ -195,7 +194,7 @@ class SlangEntry {
     private String replacement;
 
     /**
-     * A pattern that is automatically compued from the word to quickly find the
+     * A pattern that is automatically computed from the word to quickly find the
      * slang entry
      */
     private Pattern wordPattern;
