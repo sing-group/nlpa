@@ -20,7 +20,7 @@ import org.bdp4j.pipe.Pipe;
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 /**
- * This pipe drops interjections from texts The data of the instance should
+ * This pipe drops interjections from texts. The data of the instance should
  * contain a StringBuffer
  *
  * @author Reyes Pavón
@@ -128,7 +128,7 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Stablish the name of the property where the language will be stored
+     * Establish the name of the property where the language will be stored
      *
      * @param langProp The name of the property where the language is stored
      */
@@ -140,7 +140,7 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
     /**
      * Indicates if interjections should be removed
      *
-     * @param removeInterjection True if interjecions should be removed
+     * @param removeInterjection True if interjections should be removed
      */
     public void setRemoveInterjection(boolean removeInterjection) {
         this.removeInterjection = removeInterjection;
@@ -189,7 +189,7 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
      *
      * @param langProp The propertie that stores the language of text
      * @param interjectionProp The name of the property to store interjections
-     * @param removeInterjection tells if hashtags should be removed
+     * @param removeInterjection tells if interjection should be removed
      */
     public InterjectionFromStringBufferPipe(String langProp, String interjectionProp, boolean removeInterjection) {
         super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class},new Class<?>[0]);
@@ -205,7 +205,7 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
      * pipes are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return Instancia processed
      */
     @Override
     public Instance pipe(Instance carrier) {
