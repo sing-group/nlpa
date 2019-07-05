@@ -85,7 +85,7 @@ public class ComputePolarityTBWSFromStringBuffer extends AbstractPipe {
     }
 
     /**
-     * Stablish the polarity property name
+     * Establish the polarity property name
      * @param polarityProperty the polarityProperty to set
      */
     @PipeParameter(name = "polpropname", description = "Indicates the property name to store the polarity", defaultValue = DEFAULT_POLARITY_PROPERTY)
@@ -101,7 +101,7 @@ public class ComputePolarityTBWSFromStringBuffer extends AbstractPipe {
     }
 
     /**
-     * Stablish the uri to be used for querying purposes
+     * Establish the uri to be used for querying purposes
      * @param uri the uri to set
      */
     @PipeParameter(name = "uri", description = "Indicates the URI to make polarity requests", defaultValue = DEFAULT_REQUEST_URI)
@@ -109,16 +109,36 @@ public class ComputePolarityTBWSFromStringBuffer extends AbstractPipe {
         this.uri = uri;
     }
 
+     /**
+     * Return the input type included the data attribute of an Instance
+     *
+     * @return the input type for the data attribute of the Instance processed
+     */
     @Override
     public Class<?> getInputType() {
         return StringBuffer.class;
     }
 
+    /**
+     * Indicates the datatype expected in the data attribute of an Instance after
+     * processing
+     *
+     * @return the datatype expected in the data attribute of an Instance after
+     * processing
+     */
     @Override
     public Class<?> getOutputType() {
         return StringBuffer.class;
     }
 
+    /**
+     * Process an Instance. This method takes an input Instance, calculates its polarity, 
+     * and returns it. This is the method by which all
+     * pipes are eventually run.
+     *
+     * @param carrier Instance to be processed.
+     * @return Instance processed
+     */
     @Override
     public Instance pipe(Instance carrier) {
         JsonObject jsonObj = new JsonObject();

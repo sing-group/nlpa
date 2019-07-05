@@ -122,7 +122,7 @@ public class AbbreviationFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Stablish the name of the property where the language will be stored
+     * Establish the name of the property where the language will be stored
      *
      * @param langProp The name of the property where the language is stored
      */
@@ -146,7 +146,7 @@ public class AbbreviationFromStringBufferPipe extends AbstractPipe {
      * pipes are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {

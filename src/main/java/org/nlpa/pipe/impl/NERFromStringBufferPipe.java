@@ -51,6 +51,7 @@ public class NERFromStringBufferPipe extends AbstractPipe {
      */
     public static final String DEFAULT_IDENTIFIED_ENTITIES_PROPERTY = "NERDATE,NERMONEY,NERNUMBER,NERADDRESS,NERLOCATION";
 
+    
     private void init() {
         setEntityTypes(DEFAULT_ENTITY_TYPES);
         setIdentifiedEntitiesProperty(DEFAULT_IDENTIFIED_ENTITIES_PROPERTY);
@@ -164,10 +165,10 @@ public class NERFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after
+     * Indicates the datatype expected in the data attribute of an Instance after
      * processing
      *
-     * @return the datatype expected in the data attribute of a Instance after
+     * @return the datatype expected in the data attribute of an Instance after
      *         processing
      */
     @Override
@@ -224,10 +225,11 @@ public class NERFromStringBufferPipe extends AbstractPipe {
 
     /**
      * Process an Instance. This method takes an input Instance, modifies it
-     * removing NER. This is the method by which all pipes are eventually run.
+     * removing NER, adds properties and returns the instance. 
+     * This is the method by which all pipes are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {

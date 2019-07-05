@@ -69,9 +69,9 @@ public class ComputePolarityFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Return the input type included the data attribute of a Instance
+     * Return the input type included the data attribute of an Instance
      *
-     * @return the input type for the data attribute of the Instances processed
+     * @return the input type for the data attribute of the Instance processed
      */
     @Override
     public Class<?> getInputType() {
@@ -79,10 +79,10 @@ public class ComputePolarityFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after
+     * Indicates the datatype expected in the data attribute of an Instance after
      * processing
      *
-     * @return the datatype expected in the data attribute of a Instance after
+     * @return the datatype expected in the data attribute of an Instance after
      * processing
      */
     @Override
@@ -130,7 +130,7 @@ public class ComputePolarityFromStringBufferPipe extends AbstractPipe {
      * Build a StoreFileExtensionPipe that stores the polarity of the file in
      * the property polProp
      *
-     * @param polProp The name of the property to extore the file polarity
+     * @param polProp The name of the property to store the polarity text 
      */
     public ComputePolarityFromStringBufferPipe(String polProp) {
         super(new Class<?>[0],new Class<?>[0]);
@@ -139,12 +139,12 @@ public class ComputePolarityFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Process an Instance. This method takes an input Instance, destructively
-     * modifies it in some way, and returns it. This is the method by which all
+     * Process an Instance. This method takes an input Instance, calculates its polarity, 
+     * and returns it. This is the method by which all
      * pipes are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {

@@ -29,10 +29,10 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     private static final Logger logger = LogManager.getLogger(FindEmojiInStringBufferPipe.class);
 
     /**
-     * Determines the input type for the data attribute of the Instances
+     * Determines the input type for the data attribute of the Instance
      * processed
      *
-     * @return the input type for the data attribute of the Instances processed
+     * @return the input type for the data attribute of the Instance processed
      */
     @Override
     public Class<?> getInputType() {
@@ -40,10 +40,10 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after
+     * Indicates the datatype expected in the data attribute of an Instance after
      * processing
      *
-     * @return the datatype expected in the data attribute of a Instance after
+     * @return the datatype expected in the data attribute of an Instance after
      * processing
      */
     @Override
@@ -119,7 +119,7 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Construct a StripEmojiFromStringBufferPipe instance with the default
+     * Construct a FindEmojiInStringBufferPipe instance with the default
      * configuration value
      */
     public FindEmojiInStringBufferPipe() {
@@ -127,7 +127,7 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Build a StripEmojiFromStringBufferPipe that stores emojis of the
+     * Build a FindEmojiInStringBufferPipe that stores emojis of the
      * StringBuffer in the property emojiProp
      *
      * @param emojiProp The name of the property to store emojis
@@ -142,11 +142,11 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
 
     /**
      * Process an Instance. This method takes an input Instance, modifies it
-     * removing emojis, and returns it. This is the method by which all pipes
+     * removing emojis, adds a property and returns it. This is the method by which all pipes
      * are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {

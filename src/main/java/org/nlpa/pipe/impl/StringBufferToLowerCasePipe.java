@@ -7,21 +7,19 @@ import org.bdp4j.pipe.TransformationPipe;
 import org.bdp4j.types.Instance;
 
 /**
- * This pipe modifies the data of an Insatance to lowercase The data should be a
- * StringBuffer
- *
- * @author Rosalía Laza
+ * This pipe modifies the data of an Instance to pass it to lowercase
+ * The data should be a StringBuffer
+ * 
+ * @author Rosalía Laza 
  * @author Reyes Pavón
  */
 @AutoService(Pipe.class)
 @TransformationPipe()
 public class StringBufferToLowerCasePipe extends AbstractPipe {
-
-    /**
-     * Return the input type included the data attribute of a Instance
-     *
-     * @return the input type for the data attribute of the Instances processed
-     */
+   /**
+    * Return the input type included the data attribute of an Instance
+    * @return the input type for the data attribute of the Instance processed
+    */
     @Override
     public Class<?> getInputType() {
         return StringBuffer.class;
@@ -47,13 +45,13 @@ public class StringBufferToLowerCasePipe extends AbstractPipe {
     }
 
     /**
-     * Process an Instance. This method takes an input Instance, destructively
-     * modifies it in some way, and returns it. This is the method by which all
-     * pipes are eventually run.
-     *
-     * @param carrier Instance to be processed.
-     * @return Instancia procesada
-     */
+    * Process an Instance.  This method takes an input Instance,
+    * modifies it to pass it to lowercase, and returns it.
+    * This is the method by which all pipes are eventually run.
+    *
+    * @param carrier Instance to be processed.
+    * @return Instance processed
+    */
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {

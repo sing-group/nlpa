@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 import org.bdp4j.pipe.Pipe;
 
 /**
- * This pipe drops URLs The data of the instance should contain a StringBuffer
+ * This pipe drops URLs. The data of the instance should contain a StringBuffer
  *
  * @author Reyes Pavón
  * @author Rosalía Laza
@@ -46,9 +46,9 @@ public class FindUrlInStringBufferPipe extends AbstractPipe {
     private static final Pattern emailPattern = Pattern.compile("(?:\\s|[\"><¡?¿!;:,.'\\(]|^)((?:[\\w_.çñ+-]+)(?:@|\\(at\\)|<at>)(?:(?:\\w[\\\\.:ñ-]?)*)[\\p{Alnum}ñ](?:\\.[A-Z]{2,4}))[;:?\"!,.'>\\)]?(?=(?:\\s|$|>))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 
     /**
-     * Return the input type included the data attribute of a Instance
+     * Return the input type included the data attribute of an Instance
      *
-     * @return the input type for the data attribute of the Instances processed
+     * @return the input type for the data attribute of the Instance processed
      */
     @Override
     public Class<?> getInputType() {
@@ -56,10 +56,10 @@ public class FindUrlInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after
+     * Indicates the datatype expected in the data attribute of an Instance after
      * processing
      *
-     * @return the datatype expected in the data attribute of a Instance after
+     * @return the datatype expected in the data attribute of an Instance after
      * processing
      */
     @Override
@@ -143,7 +143,7 @@ public class FindUrlInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Construct a StripUserNameFromStringBufferPipe instance
+     * Construct a FindUrlInStringBufferPipe instance
      */
     public FindUrlInStringBufferPipe() {
         this(DEFAULT_URL_PROPERTY, true);
@@ -169,7 +169,7 @@ public class FindUrlInStringBufferPipe extends AbstractPipe {
 
     /**
      * Process an Instance. This method takes an input Instance, modifies it
-     * removing URL, and returns it. This is the method by which all pipes are
+     * removing URLs, adds a property and returns it. This is the method by which all pipes are
      * eventually run.
      *
      * @param carrier Instance to be processed.

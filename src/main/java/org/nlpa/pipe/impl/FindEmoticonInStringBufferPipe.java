@@ -36,9 +36,9 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
     private static final Pattern emoticonPattern = Pattern.compile("(\\:\\w+\\:|\\<[\\/\\\\]?3|[\\(\\)\\\\\\D|\\*\\$][\\-\\^]?[\\:\\;\\=]|[\\:\\;\\=B8][\\-\\^]?[3DOPp\\@\\$\\*\\\\\\)\\(\\/\\|])(?=\\s|[\\!\\.\\?]|$)");
 
     /**
-     * Return the input type included the data attribute of a Instance
+     * Return the input type included the data attribute of an Instance
      *
-     * @return the input type for the data attribute of the Instances processed
+     * @return the input type for the data attribute of the Instance processed
      */
     @Override
     public Class<?> getInputType() {
@@ -46,10 +46,10 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after
+     * Indicates the datatype expected in the data attribute of an Instance after
      * processing
      *
-     * @return the datatype expected in the data attribute of a Instance after
+     * @return the datatype expected in the data attribute of an Instance after
      * processing
      */
     @Override
@@ -139,7 +139,7 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Construct a StripEmoticonFromStringBufferPipe instance with the default
+     * Construct a FindEmoticonInStringBufferPipe instance with the default
      * configuration value
      */
     public FindEmoticonInStringBufferPipe() {
@@ -147,7 +147,7 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Build a StripEmoticonFromStringBufferPipe that stores emoticons of the
+     * Build a FindEmoticonInStringBufferPipe that stores emoticons of the
      * StringBuffer in the property emoticonProp
      *
      * @param emoticonProp The name of the property to store emoticons
@@ -162,11 +162,11 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
 
     /**
      * Process an Instance. This method takes an input Instance, modifies it
-     * removing emoticons, and returns it. This is the method by which all pipes
+     * removing emoticons, adds a property and returns it. This is the method by which all pipes
      * are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {

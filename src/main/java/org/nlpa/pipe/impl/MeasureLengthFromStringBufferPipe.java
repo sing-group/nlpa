@@ -26,9 +26,9 @@ public class MeasureLengthFromStringBufferPipe extends AbstractPipe {
     private static final Logger logger = LogManager.getLogger(MeasureLengthFromStringBufferPipe.class);
 
     /**
-     * Return the input type included the data attribute of a Instance
+     * Return the input type included the data attribute of an Instance
      *
-     * @return the input type for the data attribute of the Instances processed
+     * @return the input type for the data attribute of the Instance processed
      */
     @Override
     public Class<?> getInputType() {
@@ -36,10 +36,10 @@ public class MeasureLengthFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after
+     * Indicates the datatype expected in the data attribute of an Instance after
      * processing
      *
-     * @return the datatype expected in the data attribute of a Instance after
+     * @return the datatype expected in the data attribute of an Instance after
      * processing
      */
     @Override
@@ -58,9 +58,9 @@ public class MeasureLengthFromStringBufferPipe extends AbstractPipe {
     private String lengthProp = DEFAULT_LENGTH_PROPERTY;
 
     /**
-     * Stablish the name of the property to sotre the lenght of the text
+     * Establish the name of the property to store the lenght of the text
      *
-     * @param lengthProp the name of the property to sotre the lenght of the
+     * @param lengthProp the name of the property to store the lenght of the
      * text
      */
     @PipeParameter(name = "lengthpropname", description = "Indicates the property name to store the length", defaultValue = DEFAULT_LENGTH_PROPERTY)
@@ -98,12 +98,11 @@ public class MeasureLengthFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Process an Instance. This method takes an input Instance, destructively
-     * modifies it in some way, and returns it. This is the method by which all
-     * pipes are eventually run.
+     * Process an Instance. This method takes an input Instance, calculates the lenght of the text, 
+     * and returns it. This is the method by which all pipes are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {

@@ -98,7 +98,7 @@ public class StopWordFromStringBufferPipe extends AbstractPipe {
     /**
      * Return the input type included the data attribute of a Instance
      *
-     * @return the input type for the data attribute of the Instances processed
+     * @return the input type for the data attribute of the Instance processed
      */
     @Override
     public Class<?> getInputType() {
@@ -127,7 +127,7 @@ public class StopWordFromStringBufferPipe extends AbstractPipe {
     /**
      * Construct a StopWordFromStringBuffer instance given a language property
      *
-     * @param langProp The propertie that stores the language of text
+     * @param langProp The property that stores the language of text
      */
     public StopWordFromStringBufferPipe(String langProp) {
         super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class},new Class<?>[]{AbbreviationFromStringBufferPipe.class});
@@ -136,7 +136,7 @@ public class StopWordFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Stablish the name of the property where the language will be stored
+     * Establish the name of the property where the language will be stored
      *
      * @param langProp The name of the property where the language is stored
      */
@@ -147,12 +147,12 @@ public class StopWordFromStringBufferPipe extends AbstractPipe {
 
 
     /**
-     * Process an Instance. This method takes an input Instance, destructively
-     * modifies it in some way, and returns it. This is the method by which all
+     * Process an Instance. This method takes an input Instance,
+     * drops stopwords from the text, and returns it. This is the method by which all
      * pipes are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {

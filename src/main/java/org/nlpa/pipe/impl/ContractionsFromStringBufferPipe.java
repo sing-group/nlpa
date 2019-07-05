@@ -40,8 +40,8 @@ public class ContractionsFromStringBufferPipe extends AbstractPipe {
     private String langProp = DEFAULT_LANG_PROPERTY;
 
     /**
-     * A hashset of abbreviations in different languages. NOTE: All JSON files
-     * (listed below) containing abbreviations
+     * A hashset of contractions in different languages. NOTE: All JSON files
+     * (listed below) containing contractions
      *
      */
     private static final HashMap<String, HashMap<String, Pair<Pattern, String>>> htContractions = new HashMap<>();
@@ -100,7 +100,7 @@ public class ContractionsFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Stablish the name of the property where the language will be stored
+     * Establish the name of the property where the language will be stored
      *
      * @param langProp The name of the property where the language is stored
      */
@@ -118,6 +118,14 @@ public class ContractionsFromStringBufferPipe extends AbstractPipe {
         return this.langProp;
     }
 
+    /**
+     * Process an Instance. This method takes an input Instance, modifies it
+     * extending contractions, and returns it. This is the method by which all
+     * pipes are eventually run.
+     *
+     * @param carrier Instance to be processed.
+     * @return Instance processed
+     */
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {

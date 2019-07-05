@@ -20,8 +20,8 @@ import org.bdp4j.pipe.Pipe;
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 /**
- * This pipe drops interjections from texts. The data of the instance should
- * contain a StringBuffer
+ * This pipe drops (or not) interjections from texts and adds an Instance property. 
+ * The data of the instance should contain a StringBuffer
  *
  * @author Reyes Pavón
  * @author Rosalía Laza
@@ -76,9 +76,9 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
     private String langProp = DEFAULT_LANG_PROPERTY;
 
     /**
-     * Return the input type included the data attribute of a Instance
+     * Return the input type included the data attribute of an Instance
      *
-     * @return the input type for the data attribute of the Instances processed
+     * @return the input type for the data attribute of the Instance processed
      */
     @Override
     public Class<?> getInputType() {
@@ -86,10 +86,10 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after
+     * Indicates the datatype expected in the data attribute of an Instance after
      * processing
      *
-     * @return the datatype expected in the data attribute of a Instance after
+     * @return the datatype expected in the data attribute of an Instance after
      * processing
      */
     @Override
@@ -185,7 +185,7 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
     /**
      * Construct a InterjectionFromStringBuffer instance given a language
      * property that stores interjections of the StringBuffer in the property
-     * hashtagProp
+     * interjectionProp
      *
      * @param langProp The propertie that stores the language of text
      * @param interjectionProp The name of the property to store interjections
@@ -200,12 +200,12 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Process an Instance. This method takes an input Instance, destructively
-     * modifies it in some way, and returns it. This is the method by which all
+     * Process an Instance. This method takes an input Instance, 
+     * drops interjections, adds an instance property, and returns it. This is the method by which all
      * pipes are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia processed
+     * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {

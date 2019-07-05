@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import org.bdp4j.pipe.Pipe;
 
 /**
- * This pipe drops hashtags The data of the instance should contain a
+ * This pipe drops hashtags. The data of the instance should contain a
  * StringBuffer
  *
  * @author Reyes Pavón
@@ -37,9 +37,9 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
     private static final Pattern hashtagPattern = Pattern.compile("(?:\\s|^|[\"><¡?¿!;:,.'-])(#[^\\p{Cntrl}\\p{Space}!\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~.-]+)[;:?\"!,.'>-]?(?=(?:\\s|$|>))");
 
     /**
-     * Return the input type included the data attribute of a Instance
+     * Return the input type included the data attribute of an Instance
      *
-     * @return the input type for the data attribute of the Instances processed
+     * @return the input type for the data attribute of the Instance processed
      */
     @Override
     public Class<?> getInputType() {
@@ -47,10 +47,10 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after
+     * Indicates the datatype expected in the data attribute of an Instance after
      * processing
      *
-     * @return the datatype expected in the data attribute of a Instance after
+     * @return the datatype expected in the data attribute of an Instance after
      * processing
      */
     @Override
@@ -140,7 +140,7 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Construct a StripHashtagFromStringBufferPipe instance with the default
+     * Construct a FindHashtagInStringBufferPipe instance with the default
      * configuration value
      */
     public FindHashtagInStringBufferPipe() {
@@ -148,7 +148,7 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Build a StripHashtagFromStringBufferPipe that stores hashtags of the
+     * Build a FindHashtagInStringBufferPipe that stores hashtags of the
      * StringBuffer in the property hashtagProp
      *
      * @param hashtagProp The name of the property to store hashtags
@@ -163,11 +163,11 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
 
     /**
      * Process an Instance. This method takes an input Instance, modifies it
-     * removing hashtags, and returns it. This is the method by which all pipes
+     * removing hashtags, adds a property and returns it. This is the method by which all pipes
      * are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {

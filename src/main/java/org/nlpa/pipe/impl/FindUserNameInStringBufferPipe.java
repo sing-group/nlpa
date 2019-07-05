@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import org.bdp4j.pipe.Pipe;
 
 /**
- * This pipe drops @userName The data of the instance should contain a
+ * This pipe drops @userName. The data of the instance should contain a
  * StringBuffer
  *
  * @author Reyes Pavón
@@ -42,9 +42,9 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
     private static final Pattern userPattern = Pattern.compile("(?:\\s|^|[\"><¡?¿!;:,.'-])(@[^\\p{Cntrl}\\p{Space}!\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~]+)[;:?\"!,.'>-]?(?=(?:\\s|$|>))");
 
     /**
-     * Return the input type included the data attribute of a Instance
+     * Return the input type included the data attribute of an Instance
      *
-     * @return the input type for the data attribute of the Instances processed
+     * @return the input type for the data attribute of the Instance processed
      */
     @Override
     public Class<?> getInputType() {
@@ -52,10 +52,10 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after
+     * Indicates the datatype expected in the data attribute of an Instance after
      * processing
      *
-     * @return the datatype expected in the data attribute of a Instance after
+     * @return the datatype expected in the data attribute of an Instance after
      * processing
      */
     @Override
@@ -136,14 +136,14 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Construct a StripUserNameFromStringBufferPipe instance
+     * Construct a FindUserNameInStringBufferPipe instance
      */
     public FindUserNameInStringBufferPipe() {
         this(DEFAULT_USERNAME_PROPERTY, true);
     }
 
     /**
-     * Build a StripUserNameFromStringBufferPipe that stores @userName of the
+     * Build a FindUserNameInStringBufferPipe that stores @userName of the
      * StringBuffer in the property userNameProp
      *
      * @param userNameProp The name of the property to store @userName
@@ -158,11 +158,11 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
 
     /**
      * Process an Instance. This method takes an input Instance, modifies it
-     * removing @userName, and returns it. This is the method by which all pipes
+     * removing @userName, adds a property and returns it. This is the method by which all pipes
      * are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return processed Instance
+     * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {

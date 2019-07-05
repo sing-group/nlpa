@@ -105,7 +105,7 @@ public class SlangFromStringBufferPipe extends AbstractPipe {
     /**
      * Construct a SlangFromStringBuffer instance given a language property
      *
-     * @param langProp The propertie that stores the language of text
+     * @param langProp The property that stores the language of text
      */
     public SlangFromStringBufferPipe(String langProp) {
         super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[0]);
@@ -114,7 +114,7 @@ public class SlangFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Stablish the name of the property where the language will be stored
+     * Establish the name of the property where the language will be stored
      *
      * @param langProp The name of the property where the language is stored
      */
@@ -134,12 +134,12 @@ public class SlangFromStringBufferPipe extends AbstractPipe {
 
     /**
      * Process an Instance. This method takes an input Instance, modifies it
-     * extending langs, and returns it. This is the method by which all pipes
+     * extending slangs, and returns it. This is the method by which all pipes
      * are eventually run.
      *
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {
