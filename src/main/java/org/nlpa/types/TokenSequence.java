@@ -138,7 +138,6 @@ public class TokenSequence implements Serializable{
      *
      * @param dir Directory name where the data is saved
      */
-    @Override
     public void writeToDisk(String dir) {
         Dictionary.getDictionary().writeToDisk(dir + System.getProperty("file.separator") + "Dictionary.ser");
     }
