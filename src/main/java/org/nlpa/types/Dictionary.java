@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -32,8 +33,8 @@ public class Dictionary implements Iterable<String> {
     private static final Logger logger = LogManager.getLogger(Dictionary.class);
 
     /**
-     * The information storage for the dictionary. Only a Hashset of strings
-     * is required
+     * The information storage for the dictionary. Only a Hashset of strings is
+     * required
      */
     private Set<String> textHashSet;
 
@@ -67,7 +68,7 @@ public class Dictionary implements Iterable<String> {
      * @param text The new text to add to the dictionary
      */
     public void add(String text) {
-        textHashSet.add(text);
+        textHashSet.add(encodeFeat(text));
     }
 
     /**
@@ -92,12 +93,29 @@ public class Dictionary implements Iterable<String> {
         return this.textHashSet.iterator();
     }
 
-     /**
+    /**
      * Returns the size of the dictionary
+     *
      * @return the size of the dictionary
      */
-    public int size(){
+    public int size() {
         return this.textHashSet.size();
+    }
+
+    /**
+     * Removes all the elements from the dictionary
+     */
+    public void clear() {
+        this.textHashSet.clear();
+    }
+
+    private String encodeFeat(String feat) {
+        return Base64.getEncoder().encodeToString(feat.getBytes());
+    }
+
+    private String decodeFeat(String feat) {
+        byte[] decodedBytes = Base64.getUrlDecoder().decode(feat);
+        return new String(decodedBytes);
     }
 
     /**

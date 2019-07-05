@@ -25,7 +25,6 @@ import org.nlpa.pipe.impl.File2StringBufferPipe;
 import org.nlpa.pipe.impl.FindEmojiInStringBufferPipe;
 import org.nlpa.pipe.impl.FindEmoticonInStringBufferPipe;
 import org.nlpa.pipe.impl.FindUserNameInStringBufferPipe;
-import org.nlpa.pipe.impl.GuessDateFromFilePipe;
 import org.nlpa.pipe.impl.MeasureLengthFromStringBufferPipe;
 import org.nlpa.pipe.impl.StripHTMLFromStringBufferPipe;
 import org.nlpa.pipe.impl.TargetAssigningFromPathPipe;

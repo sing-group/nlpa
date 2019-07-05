@@ -1,5 +1,6 @@
 package org.nlpa.pipe.impl;
 
+import com.google.auto.service.AutoService;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -17,6 +18,8 @@ import org.nlpa.types.TokenSequence;
 
 import org.bdp4j.util.Pair;
 import org.bdp4j.pipe.AbstractPipe;
+import org.bdp4j.pipe.Pipe;
+import org.bdp4j.pipe.TransformationPipe;
 import org.bdp4j.types.Instance;
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 import org.nlpa.types.Rule;
@@ -27,6 +30,8 @@ import org.nlpa.types.Rule;
  * @author José Ramón Méndez Reboredo
  * @since JDK 1.5
  */
+@AutoService(Pipe.class)
+@TransformationPipe()
 public class TokenSequencePorterStemmerPipe extends AbstractPipe {
 
     /**

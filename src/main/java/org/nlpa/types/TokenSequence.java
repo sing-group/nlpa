@@ -28,13 +28,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
+import org.bdp4j.pipe.SharedDataProducer;
 
 /**
- * A tokenArray implementation
+ * A tokenSequence implementation
  *
  * @author José Ramón Méndez Reboredo
  */
-public class TokenSequence implements Serializable {
+public class TokenSequence implements Serializable, SharedDataProducer {
 
     /**
      * The serial version UID.
@@ -55,7 +56,6 @@ public class TokenSequence implements Serializable {
      * Default consturctor
      */
     public TokenSequence() {
-
     }
 
     /**
@@ -71,7 +71,7 @@ public class TokenSequence implements Serializable {
     }
 
     /**
-     * Add a term to the tokenArray
+     * Add a term to the tokenSequence
      *
      * @param t the term (token) to add
      */
@@ -89,14 +89,10 @@ public class TokenSequence implements Serializable {
 
         for (String token : tokens) {
 
-            /**
-             * Add the token to dictionary
-             */
+            // Add the token to dictionary
             Dictionary.getDictionary().add(token);
 
-            /**
-             * Add the feature to the returnValue
-             */
+            // Add the feature to the returnValue
             Double val = retVal.get(token);
             retVal.put(token, (val != null) ? val + 1 : 1);
         }
@@ -104,22 +100,47 @@ public class TokenSequence implements Serializable {
         return new FeatureVector(retVal);
     }
 
+    /**
+     * Get the size of TokenSequence
+     *
+     * @return The size of TokenSequence
+     */
     public int size() {
         return this.tokens.size();
     }
 
+    /**
+     * Get the token in the indicated position
+     * 
+     * @param i Token position to get
+     * @return The token at the indicated position
+     */
     public String getToken(int i) {
         return tokens.get(i);
     }
 
+    /**
+     * Add an object to the TokenSequence
+     * @param o Object to add
+     */
     public void add(Object o) {
-   if (o instanceof String) {
+        if (o instanceof String) {
             add((String) o);
         } else if (o instanceof TokenSequence) {
             add((TokenSequence) o);
         } else {
             add(o.toString());
         }
+    }
+
+    /**
+     * Save data to a file
+     *
+     * @param dir Directory name where the data is saved
+     */
+    @Override
+    public void writeToDisk(String dir) {
+        Dictionary.getDictionary().writeToDisk(dir + System.getProperty("file.separator") + "Dictionary.ser");
     }
 
 }

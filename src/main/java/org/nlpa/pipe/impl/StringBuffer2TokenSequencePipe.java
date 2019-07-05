@@ -80,7 +80,7 @@ public class StringBuffer2TokenSequencePipe extends AbstractPipe implements Shar
      *
      */
     public StringBuffer2TokenSequencePipe() {
-        super(new Class<?>[0], new Class<?>[0]);
+        super(new Class<?>[]{StringBufferToLowerCasePipe.class}, new Class<?>[0]);
     }
     
     @Override
