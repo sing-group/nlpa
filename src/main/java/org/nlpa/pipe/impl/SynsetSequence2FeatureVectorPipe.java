@@ -20,8 +20,8 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TransformationPipe;
 
 /**
- * A pipe to transform a SynsetSequence wich contains a list of synsets included
- in a message into a FeatureVector wich compile togeher duplicated
+ * A pipe to transform a SynsetSequence which contains a list of synsets included
+ in a message into a FeatureVector which compiles together duplicated
  features and assign a score for each feature according with a
  groupingStrategy. The groupStrategy is one of the following: <ul>
  * <li>SequenceGroupingStrategy.COUNT: indicates the number of times that a
@@ -41,7 +41,7 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
     /**
      * For logging purposes
      */
-    public static final String DEFAULT_GROUPTING_STRATEGY = "COUNT";
+    public static final String DEFAULT_GROUPING_STRATEGY = "COUNT";
 
     /**
      * Indicates the group strategy to create the synsetFeatureVector
@@ -50,9 +50,9 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
             = SequenceGroupingStrategy.FREQUENCY;
 
     /**
-     * Return the input type included the data attribute of a Instance
+     * Return the input type included the data attribute of an Instance
      *
-     * @return the input type for the data attribute of the Instances processed
+     * @return the input type for the data attribute of the Instance processed
      */
     @Override
     public Class<?> getInputType() {
@@ -60,10 +60,10 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after
+     * Indicates the datatype expected in the data attribute of an Instance after
      * processing
      *
-     * @return the datatype expected in the data attribute of a Instance after
+     * @return the datatype expected in the data attribute of an Instance after
      * processing
      */
     @Override
@@ -76,7 +76,7 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
      *
      * @param groupStrategy The new grouping strategy
      */
-    @PipeParameter(name = "groupStrategy", description = "Indicates the group strategy to create the synsetFeatureVector", defaultValue = DEFAULT_GROUPTING_STRATEGY)
+    @PipeParameter(name = "groupStrategy", description = "Indicates the group strategy to create the synsetFeatureVector", defaultValue = DEFAULT_GROUPING_STRATEGY)
     public void setGroupStrategy(String groupStrategy) {
         this.groupStrategy = SequenceGroupingStrategy.valueOf(groupStrategy);
     }
@@ -90,12 +90,16 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
         return this.groupStrategy;
     }
 
+    /**
+     * Creates a SynsetVector2FeatureVector Pipe using the default
+     * grouping strategy
+     */
     public SynsetSequence2FeatureVectorPipe(){
-        this(SequenceGroupingStrategy.valueOf(DEFAULT_GROUPTING_STRATEGY));
+        this(SequenceGroupingStrategy.valueOf(DEFAULT_GROUPING_STRATEGY));
     }
 
     /**
-     * Creates a SynsetVector2FeatureVector Pipe using an specific
+     * Creates a SynsetVector2FeatureVector Pipe using a specific
      * grouping strategy
      *
      * @param groupStrategy The selected grouping strategy
@@ -107,12 +111,12 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
     }
 
     /**
-     * Converts a synsetVector in a synsetFeatureVector, with the synsetId and
-     * the number of times that a synsetId appears in synsetVector
+     * Converts a SynsetSequence in a FeatureVector, with the synsetId and
+     * the number of times that a synsetId appears in SynsetSequence
      *
      * @param synsetVector
-     * @return A synsetFeatureVector with the synsetId and the number of times
-     * that a synsetId appears in synsetVector
+     * @return A FeatureVector with the synsetId and the number of times
+     * that a synsetId appears in SynsetSequence
      */
     private FeatureVector countMatches(SynsetSequence synsetVector) {
 
@@ -137,12 +141,12 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
     }
 
     /**
-     * Process an Instance. This method takes an input Instance, destructively
-     * modifies it in some way, and returns it. This is the method by which all
+     * Process an Instance. This method takes an input Instance, 
+     * modifies its list of synsets in a feature vector, and returns it. This is the method by which all
      * pipes are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {
