@@ -130,6 +130,8 @@ public class GuessLanguageFromStringBufferPipe extends AbstractPipe {
 
     /**
      * The constructor for the language guessing pipe
+     * @param langProp The property name to store language
+     * @param langReliabilityProp The property name to store the reliability of the language guessing
      */
     public GuessLanguageFromStringBufferPipe(String langProp, String langReliabilityProp) {
         super(new Class<?>[]{StripHTMLFromStringBufferPipe.class}, new Class<?>[0]);
