@@ -35,7 +35,7 @@ import org.bdp4j.pipe.SharedDataProducer;
  *
  * @author José Ramón Méndez Reboredo
  */
-public class TokenSequence implements Serializable, SharedDataProducer {
+public class TokenSequence implements Serializable{
 
     /**
      * The serial version UID.
