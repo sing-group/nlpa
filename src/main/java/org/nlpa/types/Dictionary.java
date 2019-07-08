@@ -12,10 +12,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,6 +41,10 @@ public class Dictionary implements Iterable<String> {
     private Set<String> textHashSet;
 
     /**
+     * Indicates if the text saved is encoded 
+     */
+    private boolean encode;
+    /**
      * A instance of the Dictionary to implement a singleton pattern
      */
     private static Dictionary dictionary = null;
@@ -48,6 +54,7 @@ public class Dictionary implements Iterable<String> {
      */
     private Dictionary() {
         textHashSet = new LinkedHashSet<>();
+        this.encode = false;
     }
 
     /**
@@ -63,12 +70,32 @@ public class Dictionary implements Iterable<String> {
     }
 
     /**
+     * Set the value of encode property
+     * @param encode True if the text is encoded, false otherwise.
+     */
+    public void setEncode(boolean encode) {
+        this.encode = encode;
+    }
+
+    /**
+     * Get the value of encode property
+     * @return The value of encode property
+     */
+    public boolean getEncode() {
+        return this.encode;
+    }
+
+    /**
      * Add a string to dictionary
      *
      * @param text The new text to add to the dictionary
      */
     public void add(String text) {
-        textHashSet.add(encodeFeat(text));
+        if (this.encode) {
+            textHashSet.add(encodeBase64(text));
+        } else {
+            textHashSet.add(text);
+        }
     }
 
     /**
@@ -79,8 +106,8 @@ public class Dictionary implements Iterable<String> {
      * dictionary or not
      */
     public boolean isIncluded(String text) {
+        text = (this.encode) ? decodeBase64(text) : text;
         return textHashSet.contains(text);
-
     }
 
     /**
@@ -107,15 +134,6 @@ public class Dictionary implements Iterable<String> {
      */
     public void clear() {
         this.textHashSet.clear();
-    }
-
-    private String encodeFeat(String feat) {
-        return Base64.getEncoder().encodeToString(feat.getBytes());
-    }
-
-    private String decodeFeat(String feat) {
-        byte[] decodedBytes = Base64.getUrlDecoder().decode(feat);
-        return new String(decodedBytes);
     }
 
     /**
@@ -149,6 +167,37 @@ public class Dictionary implements Iterable<String> {
             this.textHashSet = (LinkedHashSet<String>) input.readObject();
         } catch (Exception ex) {
             logger.error("[READ FROM DISK] " + ex.getMessage());
+        }
+    }
+
+    /**
+     * Encode a text to BASE 64
+     *
+     * @param feat Text to encode
+     * @return The text encoded
+     */
+    private String encodeBase64(String feat) {
+        try {
+            return Base64.getEncoder().encodeToString(feat.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException ex) {
+            logger.warn("[ENCODE BASE 64]: " + ex.getMessage());
+            return "";
+        }
+    }
+
+    /**
+     * Decode text from BASE 64
+     *
+     * @param feat Texto do decode
+     * @return The text decoded
+     */
+    public String decodeBase64(String feat) {
+        byte[] decodedBytes = Base64.getDecoder().decode(feat);
+        try {
+            return new String(decodedBytes, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            logger.warn("[DECODE BASE 64]: " + ex.getMessage());
+            return "";
         }
     }
 }

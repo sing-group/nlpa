@@ -25,8 +25,8 @@ import org.bdp4j.util.CSVDatasetWriter;
 import org.bdp4j.util.Configurator;
 
 /**
- * Create a CSV file from a FeatureVector object located in the data field
- * of an instance.
+ * Create a CSV file from a FeatureVector object located in the data field of an
+ * instance.
  *
  * @author María Novo
  * @author José Ramón Méndez
@@ -95,15 +95,15 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
     }
 
     /**
-     * Creates a TeeCSVFromFeatureVector indicating a different filename
-     * for CSV output
+     * Creates a TeeCSVFromFeatureVector indicating a different filename for CSV
+     * output
      *
      * @param output The filename to store the output
      */
     public TeeCSVFromFeatureVectorPipe(String output) {
         super(new Class<?>[0], new Class<?>[0]);
 
-        this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
+        this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator") + output;
         File f = new File(this.output);
         if (f.exists()) {
             f.delete();
@@ -112,8 +112,8 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
     }
 
     /**
-     * Creates a TeeCSVFromFeatureVector indicating the output filename
-     * ans selecting whether the properties will be also outputed
+     * Creates a TeeCSVFromFeatureVector indicating the output filename ans
+     * selecting whether the properties will be also outputed
      *
      * @param output The output filename to store the CSV
      * @param saveProps Indicates whether the props will be also saved
@@ -121,14 +121,14 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
     public TeeCSVFromFeatureVectorPipe(String output, boolean saveProps) {
         super(new Class<?>[0], new Class<?>[0]);
 
-        this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
+        this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator") + output;
         this.saveProps = saveProps;
 
         File f = new File(this.output);
         if (f.exists()) {
             f.delete();
         }
-        this.dataset = new CSVDatasetWriter(this.output);          
+        this.dataset = new CSVDatasetWriter(this.output);
     }
 
     /**
@@ -138,13 +138,13 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
      */
     @PipeParameter(name = "output", description = "Indicates the output filename/path for saving CSV", defaultValue = DEFAULT_OUTPUT_FILE)
     public void setOutput(String output) {
-        this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
+        this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator") + output;
         File f = new File(this.output);
         if (f.exists()) {
             f.delete();
         }
         this.dataset.flushAndClose();
-        this.dataset = new CSVDatasetWriter(this.output);        
+        this.dataset = new CSVDatasetWriter(this.output);
     }
 
     /**
@@ -246,9 +246,17 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
                 j++;
             }
 
-            Iterator<String> it = Dictionary.getDictionary().iterator();
+            Dictionary dictionary = Dictionary.getDictionary();
+            Iterator<String> it = dictionary.iterator();
             while (it.hasNext()) {
                 String dictEntry = it.next();
+                if (dictionary.getEncode()) {
+                    try{
+                    dictEntry = dictionary.decodeBase64(dictEntry);
+                    }catch(Exception ex){
+                        ex.getMessage();
+                    }
+                }
                 columnsToAdd[j] = dictEntry;
                 defaultValues[j] = "0";
                 j++;

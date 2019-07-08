@@ -1,6 +1,7 @@
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
+import java.util.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -96,6 +97,7 @@ public class StringBuffer2TokenSequencePipe extends AbstractPipe implements Shar
             TokenSequence tokenSequence = new TokenSequence(data, TokenSequence.DEFAULT_SEPARATORS);
             carrier.setData(tokenSequence);
             for (int i = 0; i < tokenSequence.size(); i++) {
+                Dictionary.getDictionary().setEncode(true);
                 Dictionary.getDictionary().add(tokenSequence.getToken(i));
             }
         }

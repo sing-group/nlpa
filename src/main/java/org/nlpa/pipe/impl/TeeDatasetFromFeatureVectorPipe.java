@@ -231,8 +231,13 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe {
 
                 // Add text to attribute list
                 Dictionary dictionary = Dictionary.getDictionary();
+
                 for (String text : dictionary) {
-                    dataset.addColumn(text, Double.class, 0);
+                    if (dictionary.getEncode()) {
+                        dataset.addColumn(dictionary.decodeBase64(text), Double.class, 0);
+                    } else {
+                        dataset.addColumn(text, Double.class, 0);
+                    }
                 }
                 dataset.addColumn("target", Double.class, 0);
                 int indInstance = 0;

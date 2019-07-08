@@ -23,6 +23,7 @@ package org.nlpa.types;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,7 @@ import org.bdp4j.pipe.SharedDataProducer;
  *
  * @author José Ramón Méndez Reboredo
  */
-public class TokenSequence implements Serializable{
+public class TokenSequence implements Serializable {
 
     /**
      * The serial version UID.
@@ -88,9 +89,9 @@ public class TokenSequence implements Serializable{
         HashMap<String, Double> retVal = new HashMap<>();
 
         for (String token : tokens) {
-
             // Add the token to dictionary
-            Dictionary.getDictionary().add(token);
+            Dictionary.getDictionary().setEncode(true);
+            Dictionary.getDictionary().add(token);            
 
             // Add the feature to the returnValue
             Double val = retVal.get(token);
@@ -99,6 +100,7 @@ public class TokenSequence implements Serializable{
 
         return new FeatureVector(retVal);
     }
+
 
     /**
      * Get the size of TokenSequence
@@ -111,7 +113,7 @@ public class TokenSequence implements Serializable{
 
     /**
      * Get the token in the indicated position
-     * 
+     *
      * @param i Token position to get
      * @return The token at the indicated position
      */
@@ -121,6 +123,7 @@ public class TokenSequence implements Serializable{
 
     /**
      * Add an object to the TokenSequence
+     *
      * @param o Object to add
      */
     public void add(Object o) {
