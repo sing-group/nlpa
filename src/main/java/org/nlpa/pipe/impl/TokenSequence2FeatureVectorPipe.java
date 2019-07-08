@@ -26,11 +26,11 @@ import org.nlpa.types.SequenceGroupingStrategy;
  * and assign a score for each feature according with a groupingStrategy. The
  * groupStrategy is one of the following: <ul>
  * <li>SequenceGroupingStrategy.COUNT: indicates the number of times that a
- * synset is observed in the content (ex. 5)</li>
- * <li>SequenceGroupingStrategy.BOOLEAN: Indicates if the synset is observed in
+ * token is observed in the content (ex. 5)</li>
+ * <li>SequenceGroupingStrategy.BOOLEAN: Indicates if the token is observed in
  * the content (1) or not (0) (ex. 0)</li>
- * <li>SequenceGroupingStrategy.FREQUENCY: Indicates the frequency of the synset
- * in the text that is the count of times that the synset is observed divided by
+ * <li>SequenceGroupingStrategy.FREQUENCY: Indicates the frequency of the token
+ * in the text that is the count of times that the token is observed divided by
  * the whole amount of tokens.</li>
  * </ul>
  *

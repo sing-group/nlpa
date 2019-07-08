@@ -7,7 +7,7 @@ import java.io.Serializable;
 import org.bdp4j.util.Pair;
 
 /**
- * A class to represent a vector of synsets and the asofiated information
+ * A class to represent a vector of synsets and the asociated information
  *
  * @author Iñaki Velez
  * @author Enaitz Ezpeleta
@@ -27,7 +27,7 @@ public class SynsetSequence implements Serializable {
     String originalText = null;
 
     /**
-     * The vector of unmatched texts that are represented as Pairs where: + The
+     * The list of unmatched texts that are represented as Pairs where: + The
      * first element of the pair is the original unmatched text + The second
      * elemento of the pair is the results of parsing the text
      */
@@ -39,7 +39,7 @@ public class SynsetSequence implements Serializable {
     String fixedText = null;
 
     /**
-     * The vector of detected synsets represented as Pairs where: + The first
+     * The list of detected synsets represented as Pairs where: + The first
      * element of the pair is the synsetId identified by babelfy + The second
      * element of the pair is the portion of the fixedText that matches the
      * synsetId
@@ -124,10 +124,10 @@ public class SynsetSequence implements Serializable {
 
     /**
      * Achieves a list of synsets in the form (S, T) where S is the synset and T
-     * the text that matched the synsets
+     * the text that matched the synset
      *
      * @return a list of synsets in the form (S, T) where S is the synset and T
-     * the text that matched the synsets
+     * the text that matched the synset
      */
     public List<Pair<String, String>> getSynsets() {
         return synsets;
@@ -137,7 +137,7 @@ public class SynsetSequence implements Serializable {
      * Changes the list of synsets for the current text
      *
      * @param synsets a list of synsets in the form (S, T) where S is the synset
-     * and T the text that matched the synsets
+     * and T the text that matched the synset
      */
     public void setSynsets(List<Pair<String, String>> synsets) {
         this.synsets = synsets;

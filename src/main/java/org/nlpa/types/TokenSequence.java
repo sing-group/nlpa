@@ -54,7 +54,7 @@ public class TokenSequence implements Serializable {
     public static final String DEFAULT_SEPARATORS = " \t\r\n\f!\"#$%&'()*+,\\-./:;<=>?@[]^_`{|}~";
 
     /**
-     * Default consturctor
+     * Default constructor
      */
     public TokenSequence() {
     }
@@ -63,7 +63,7 @@ public class TokenSequence implements Serializable {
      * Constructor with a string that will be tokenized
      *
      * @param toTokenize The string to tokenize
-     * @param separators the separators to be used
+     * @param separators the separator to be used
      */
     public TokenSequence(String toTokenize, String separators) {
         tokens = Collections.list(new StringTokenizer(toTokenize, separators)).stream()
