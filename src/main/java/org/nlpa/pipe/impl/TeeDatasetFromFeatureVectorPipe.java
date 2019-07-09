@@ -19,6 +19,7 @@ import org.nlpa.types.FeatureVector;
 import java.util.*;
 import java.util.function.Predicate;
 import org.bdp4j.pipe.Pipe;
+import org.bdp4j.pipe.SharedDataConsumer;
 import org.bdp4j.pipe.TeePipe;
 import org.bdp4j.types.DatasetStore;
 import org.bdp4j.util.DateTimeIdentifier;
@@ -30,7 +31,7 @@ import org.bdp4j.util.DateTimeIdentifier;
  */
 @AutoService(Pipe.class)
 @TeePipe()
-public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe {
+public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements SharedDataConsumer {
 
     /**
      * For logging purposes
@@ -302,5 +303,15 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe {
             logger.error("[PIPE] " + ex.getMessage());
         }
         return carrier;
+    }
+
+    @Override
+    /**
+     * Retrieve data from directory
+     *
+     * @param dir Directory name to retrieve data
+     */
+    public void readFromDisk(String dir) {
+        Dictionary.getDictionary().readFromDisk(dir + System.getProperty("file.separator") + "Dictionary.ser");
     }
 }
