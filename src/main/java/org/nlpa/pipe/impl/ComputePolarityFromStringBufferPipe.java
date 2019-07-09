@@ -50,20 +50,7 @@ import org.bdp4j.pipe.Pipe;
  * <li> 4: "Very Positive" </li>
  * </ul>
  * 
- * To compute the polarity we take advantage of a webservice implementing a REST API.
- * The webservice is implemented python and takes advantae of textblob library
- * to compute polarity.
- * 
- * To execute this task, the textblob web service should be executed. The service
- * can be started using  adocker container included in the /scripts directory.
- * A starting script (run-textblob-ws-sh) is provided to facilitate launching.
- * The text-blob service has been entirelly developed by Enaitz Ezpeleta 
- * (Mondragon Unibertsitatea)
- * 
- * If the service is being executed in other server, SSH tunneling (-L) can be used
- * to connect the pipe with the service. As an example the following command can be used
- * 
- * sudo ssh -L 80:textblob_ws:80 moncho@ski.4spam.group
+ * The polarity is computed using Stanford NLP framework.
  * 
  * @author José Ramón Méndez
  * @author Enaitz Ezpeleta

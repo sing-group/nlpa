@@ -44,7 +44,23 @@ import org.bdp4j.pipe.PropertyComputingPipe;
 /**
  * This class allows to compute polarity by querying Textblob-ws implemented by Enaitz Ezpeleta
  * Example: 
- * wget -O- -q --header "Content-Type: application/json" --post-data '{"text": "Hello World"}' http://172.18.0.2/postjson
+ * wget -O- -q --header "Content-Type: application/json" --post-data '{"text": "Hello World"}' \
+ *     http://&lt;textblob_server&gt;/postjson
+ * 
+ * To compute the polarity we take advantage of a webservice implementing a REST API.
+ * The webservice is implemented python and takes advantae of textblob library
+ * to compute polarity.
+ * 
+ * To execute this task, the textblob web service should be executed. The service
+ * can be started using  adocker container included in the /scripts directory.
+ * A starting script (run-textblob-ws-sh) is provided to facilitate launching.
+ * The text-blob service has been entirelly developed by Enaitz Ezpeleta 
+ * (Mondragon Unibertsitatea)
+ * 
+ * If the service is being executed in other server, SSH tunneling (-L) can be used
+ * to connect the pipe with the service. As an example the following command can be used
+ * 
+ * sudo ssh -L 80:textblob_ws:80 moncho@ski.4spam.group
  * @author José Ramón Méndez Reboredo
  * @author Enaitz Ezpeleta
  */
