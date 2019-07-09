@@ -1,13 +1,30 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/*-
+ * #%L
+ * NLPA
+ * %%
+ * Copyright (C) 2018 - 2019 SING Group (University of Vigo)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #L%
  */
+
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.types.Instance;
@@ -15,7 +32,6 @@ import org.nlpa.types.Dictionary;
 import org.nlpa.types.FeatureVector;
 import org.bdp4j.util.EBoolean;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.util.Iterator;
 import org.bdp4j.pipe.Pipe;
@@ -38,7 +54,7 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
     /**
      * For logging purposes
      */
-    private static final Logger logger = LogManager.getLogger(TeeCSVFromFeatureVectorPipe.class);
+    //private static final Logger logger = LogManager.getLogger(TeeCSVFromFeatureVectorPipe.class);
 
     /**
      * The default value for the output file
@@ -54,11 +70,6 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
      * The output filename to store the CSV information
      */
     private String output;
-
-    /**
-     * The output Bufferered reader for writting purposes
-     */
-    private BufferedWriter outputFile;
 
     /**
      * Csv DAtaset to store data
@@ -79,13 +90,6 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
      * Indicates whether if the props will be created or not
      */
     private boolean saveProps = true;
-
-    /**
-     * Indicates if this the current element is the first one to be processed
-     * (this is because with the first element, the CSV header needs to be
-     * generated)
-     */
-    private boolean isFirst = true;
 
     /**
      * Build a TeeCSVFromFeatureVector using the default information

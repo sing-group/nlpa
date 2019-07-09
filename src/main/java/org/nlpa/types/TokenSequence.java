@@ -1,35 +1,33 @@
-/*
- * BDP4J-sample implements a list of BDP4J (https://github.com/sing-group/bdp4j) 
- * tasks (org.nlpa.pipe.Pipe). These tasks implement common text preprocessing 
- * stages and can be easilly combined to create a BDP4J pipeline for preprocessig 
- * a set of ham/spam SMS messages downloaded from http://www.esp.uem.es/jmgomez/smsspamcorpus/
- *
- * Copyright (C) 2018  Sing Group (University of Vigo)
- *
+/*-
+ * #%L
+ * NLPA
+ * %%
+ * Copyright (C) 2018 - 2019 SING Group (University of Vigo)
+ * %%
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #L%
  */
 package org.nlpa.types;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
-import org.bdp4j.pipe.SharedDataProducer;
 
 /**
  * A tokenSequence implementation
