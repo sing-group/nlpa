@@ -1,14 +1,17 @@
 # Natural Language Pre-processing Architecture
 
-This file contains instructions about configuration files needed to run application.
+NLPA is a framework designed to operate in conjuction with BDP4J (https://github.com/sing-group/bdp4j) and able to extract texts from Twitter, Youtube Comments, text files, raw email files (.eml) or WARC (Web Archive) files. The extracted text can be preprocessed into a Dataset using task (org.bdp4j.pipe.Pipe) definitions. This framework incorporates more than 30 preprocessing tasks to transform the text. 
+
+## Requirements
 
 You need this user accounts:
 
-* Babelnet
+* Babelnet / Babelfy
 * Twitter
 * Youtube
 
 ## Configuration files
+To properly opearte with NLPA the following configuration files (and options) should be filled:
 
 * `babelnet.var.properties`
     * `babelnet.dir` - Babelnet path. Directory where are babelnet files  .
@@ -20,15 +23,23 @@ You need this user accounts:
 * `configurations.ini`
 
 ```
-[twitter]
-ConsumerKey
-ConsumerSecret
-AccessToken
-AccessTokenSecret
+[twitter] 
+ConsumerKey=<YourConsumerKey> 
+ConsumerSecret=<YourConsumerSecret>
+AccessToken=<YourAccessToken>
+AccessTokenSecret=<YourAccessTokenSecret>
 
 [youtube]
-APIKey
+APIKey=<YourYoutubeAPIKey>
 ```
+We are aware that with youtube we are using unsecure API keys. Next versions will include more secure forms to access YouTube services (i.e. using OAuth schemes).
+
+Please see files config/configurations.ini.example, config/babelnet.var.properties.example and config/babelfy.var.properties.example for further configuration details.
+
+## Using NLPA
+
+Todo
+
 ## License
 
 Copyright (C) 2018 Sing Group (University of Vigo)
