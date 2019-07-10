@@ -34,12 +34,12 @@ import org.nlpa.types.TokenSequence;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.SharedDataProducer;
 
-import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
-
+import static org.nlpa.types.TokenSequence.DEFAULT_SEPARATORS;
 /**
  * A pipe to compute tokens from text
  *
  * @author María Novo 
+ * @author José Ramón Méndez
  */
 @AutoService(Pipe.class)
 @TransformationPipe()
@@ -51,9 +51,9 @@ public class StringBuffer2TokenSequencePipe extends AbstractPipe implements Shar
     //private static final Logger logger = LogManager.getLogger(StringBuffer2TokenSequencePipe.class);
 
     /**
-     * The name of the property where the language is stored
+     * The separators used to tokenize
      */
-    private String langProp = DEFAULT_LANG_PROPERTY;
+    private String separators = DEFAULT_SEPARATORS;
 
     /**
      * Return the input type included the data attribute of a Instance
@@ -78,22 +78,22 @@ public class StringBuffer2TokenSequencePipe extends AbstractPipe implements Shar
     }
 
     /**
-     * Stablish the name of the property where the language will be stored
+     * Stablish the separators used for tokenising
      *
-     * @param langProp The name of the property where the language is stored
+     * @param separators The separators
      */
-    @PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue = DEFAULT_LANG_PROPERTY)
-    public void setLangProp(String langProp) {
-        this.langProp = langProp;
+    @PipeParameter(name = "separators", description = "Indicates separators used to identify tokens", defaultValue = DEFAULT_SEPARATORS)
+    public void setLangProp(String separators) {
+        this.separators = separators;
     }
 
     /**
-     * Returns the name of the property in which the language is stored
+     * Returns a String with the characters used as token separators
      *
-     * @return the name of the property where the language is stored
+     * @return the separators used to tokenize
      */
-    public String getLangProp() {
-        return this.langProp;
+    public String getSeparators() {
+        return this.separators;
     }
 
     /**
@@ -105,17 +105,16 @@ public class StringBuffer2TokenSequencePipe extends AbstractPipe implements Shar
         super(new Class<?>[]{StringBufferToLowerCasePipe.class}, new Class<?>[0]);
     }
     
-    @Override
     /**
      * Compute tokens from text. This method get data from StringBuffer and
-     * process instances:
-     * <li>Invalidate instance if the language is not present</li>
-     * <li>Process this texts to get tokens</li>
+     * process instances to get tokens
+     * @param carrier The instance to be processed
      */
+    @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
             String data = (carrier.getData().toString());
-            TokenSequence tokenSequence = new TokenSequence(data, TokenSequence.DEFAULT_SEPARATORS);
+            TokenSequence tokenSequence = new TokenSequence(data, separators);
             carrier.setData(tokenSequence);
             for (int i = 0; i < tokenSequence.size(); i++) {
                 Dictionary.getDictionary().setEncode(true);
