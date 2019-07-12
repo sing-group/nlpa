@@ -71,7 +71,7 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
     /* Load irregulars words from file */
     static {
         for (String i : new String[]{"/irregular/irregular_es.stm", "/irregular/irregular_en.stm"}) {
-            String lang = i.substring(21, 23);
+            String lang = i.substring(21, 23).toUpperCase();
             Map<String, String> irregularWordsList = new HashMap<>();
             try (FileReader fReader = new FileReader(new File(TokenSequenceStemIrregularPipe.class.getResource("/irregular/irregular_" + lang + ".stm").toURI()));
                     BufferedReader bReader = new BufferedReader(fReader);) {
@@ -91,7 +91,7 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
      * Default constructor
      */
     public TokenSequenceStemIrregularPipe() {
-        super(new Class<?>[]{StringBuffer2TokenSequencePipe.class, GuessLanguageFromStringBufferPipe.class}, new Class<?>[0]);
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[]{TokenSequencePorterStemmerPipe.class});
         this.langProp = DEFAULT_LANG_PROPERTY;
     }
 
