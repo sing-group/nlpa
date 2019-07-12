@@ -82,7 +82,8 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
         }) {
 
             List<Pair<String, List<Rule>>> currentRulesFile = new ArrayList<>();
-            String lang = i.substring(15, 17).toLowerCase();
+            String lang = i.substring(15, 17).toUpperCase();
+
             try (Reader iStream = new FileReader(new File(TokenSequencePorterStemmerPipe.class.getResource("/porter/porter." + lang + ".stm").toURI()));
                     BufferedReader bReader = new BufferedReader(iStream)) {
                 String line;
