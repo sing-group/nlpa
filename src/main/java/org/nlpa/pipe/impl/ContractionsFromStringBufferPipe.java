@@ -114,7 +114,7 @@ public class ContractionsFromStringBufferPipe extends AbstractPipe {
      * Construct a ContractionsFromStringBuffer instance given a language
      * property
      *
-     * @param langProp The propertie that stores the language of text
+     * @param langProp The property that stores the language of text
      */
     public ContractionsFromStringBufferPipe(String langProp) {
         super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class},new Class<?>[0]);

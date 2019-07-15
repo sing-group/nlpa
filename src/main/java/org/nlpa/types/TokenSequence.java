@@ -86,10 +86,10 @@ public class TokenSequence implements Serializable {
     public FeatureVector buildFeatureVector() {
         HashMap<String, Double> retVal = new HashMap<>();
 
+        Dictionary.getDictionary().setEncode(true);
         for (String token : tokens) {
             // Add the token to dictionary
-            Dictionary.getDictionary().setEncode(true);
-            Dictionary.getDictionary().add(token);            
+            Dictionary.getDictionary().add(token);
 
             // Add the feature to the returnValue
             Double val = retVal.get(token);
@@ -98,7 +98,6 @@ public class TokenSequence implements Serializable {
 
         return new FeatureVector(retVal);
     }
-
 
     /**
      * Get the size of TokenSequence

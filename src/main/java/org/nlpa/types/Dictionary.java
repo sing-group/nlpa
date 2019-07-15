@@ -56,7 +56,7 @@ public class Dictionary implements Iterable<String> {
     private Set<String> textHashSet;
 
     /**
-     * Indicates if the text saved is encoded 
+     * Indicates if the text saved is encoded
      */
     private boolean encode;
     /**
@@ -86,6 +86,7 @@ public class Dictionary implements Iterable<String> {
 
     /**
      * Set the value of encode property
+     *
      * @param encode True if the text is encoded, false otherwise.
      */
     public void setEncode(boolean encode) {
@@ -94,6 +95,7 @@ public class Dictionary implements Iterable<String> {
 
     /**
      * Get the value of encode property
+     *
      * @return The value of encode property
      */
     public boolean getEncode() {
@@ -121,7 +123,8 @@ public class Dictionary implements Iterable<String> {
      * dictionary or not
      */
     public boolean isIncluded(String text) {
-        text = (this.encode) ? decodeBase64(text) : text;
+        text = (this.encode) ? encodeBase64(text) : text;
+
         return textHashSet.contains(text);
     }
 

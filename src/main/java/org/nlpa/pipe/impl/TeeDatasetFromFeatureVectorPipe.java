@@ -39,6 +39,7 @@ import org.bdp4j.pipe.SharedDataConsumer;
 import org.bdp4j.pipe.TeePipe;
 import org.bdp4j.types.DatasetStore;
 import org.bdp4j.util.DateTimeIdentifier;
+import weka.core.Attribute;
 
 /**
  * Create a Dataset from Instanced containing a FeatureVector as data
@@ -240,7 +241,6 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                     for (Pair<String, String> next : columnTypes) {
                         final String header = next.getObj1();
                         final String typeHeader = next.getObj2();
-
                         if ((typeHeader.equals("Double") || noDoubleTransformers.contains(header))) {
                             dataset.addColumn(header, Double.class, 0);
                         }
@@ -257,7 +257,15 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                         dataset.addColumn(text, Double.class, 0);
                     }
                 }
-                dataset.addColumn("target", Double.class, 0);
+                List<String> target_values = new ArrayList<>();
+                Transformer transformer = transformersList.get("target");
+                if (transformer != null) {
+                    for (Object value : transformer.getListValues()) {
+                        target_values.add(value.toString());
+                    }
+                }
+
+                dataset.addColumn("target", Enum.class, target_values);
                 int indInstance = 0;
                 FeatureVector featureVector;
                 Transformer t;
@@ -306,6 +314,13 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                                         }
                                     } else {
                                         values[indInstance] = 0d;
+                                    }
+                                }
+                                if (attName.equals("target")) {
+                                    Double doubleValue = Double.parseDouble(values[indInstance].toString());
+                                    String target_value = Integer.toString(doubleValue.intValue());
+                                    if (target_values.contains(target_value)) {
+                                        values[indInstance] = target_value+"";
                                     }
                                 }
                                 indInstance++;

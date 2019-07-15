@@ -97,8 +97,8 @@ public class StringBuffer2TokenSequencePipe extends AbstractPipe implements Shar
     }
 
     /**
-     * Create the pipe and initialize the dictionary. Please note that
-     * the dictionary can be achieved by using the corresponding getter.
+     * Create the pipe and initialize the dictionary. Please note that the
+     * dictionary can be achieved by using the corresponding getter.
      *
      */
     public StringBuffer2TokenSequencePipe() {
@@ -116,8 +116,9 @@ public class StringBuffer2TokenSequencePipe extends AbstractPipe implements Shar
             String data = (carrier.getData().toString());
             TokenSequence tokenSequence = new TokenSequence(data, separators);
             carrier.setData(tokenSequence);
+
+            Dictionary.getDictionary().setEncode(true);
             for (int i = 0; i < tokenSequence.size(); i++) {
-                Dictionary.getDictionary().setEncode(true);
                 Dictionary.getDictionary().add(tokenSequence.getToken(i));
             }
         }
