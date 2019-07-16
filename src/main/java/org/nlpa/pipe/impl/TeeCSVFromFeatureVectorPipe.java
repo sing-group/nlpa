@@ -116,7 +116,7 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
     }
 
     /**
-     * Creates a TeeCSVFromFeatureVector indicating the output filename ans
+     * Creates a TeeCSVFromFeatureVector indicating the output filename and
      * selecting whether the properties will be also outputed
      *
      * @param output The output filename to store the CSV
@@ -191,9 +191,9 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
     }
 
     /**
-     * Return the input type included the data attribute of a Instance
+     * Return the input type included the data attribute of an Instance
      *
-     * @return the input type for the data attribute of the Instances processed
+     * @return the input type for the data attribute of the Instance processed
      */
     @Override
     public Class<?> getInputType() {
@@ -210,10 +210,10 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after
+     * Indicates the datatype expected in the data attribute of an Instance after
      * processing
      *
-     * @return the datatype expected in the data attribute of a Instance after
+     * @return the datatype expected in the data attribute of an Instance after
      * processing
      */
     @Override
@@ -222,12 +222,11 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
     }
 
     /**
-     * Process an Instance. This method takes an input Instance, destructively
-     * modifies it in some way, and returns it. This is the method by which all
-     * pipes are eventually run.
+     * Process an Instance. This method takes an input Instance and creates a CSV file. 
+     * This is the method by which all pipes are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {
