@@ -89,13 +89,13 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
     /**
      * Indicates whether if the props will be created or not
      */
-    private boolean saveProps = true;
+    private boolean saveProps = EBoolean.getBoolean(DEFAULT_SAVEPROPS);
 
     /**
      * Build a TeeCSVFromFeatureVector using the default information
      */
     public TeeCSVFromFeatureVectorPipe() {
-        this(DEFAULT_OUTPUT_FILE);
+        this(DEFAULT_OUTPUT_FILE, EBoolean.getBoolean(DEFAULT_SAVEPROPS));
     }
 
     /**
@@ -105,14 +105,7 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
      * @param output The filename to store the output
      */
     public TeeCSVFromFeatureVectorPipe(String output) {
-        super(new Class<?>[0], new Class<?>[0]);
-
-        this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator") + output;
-        File f = new File(this.output);
-        if (f.exists()) {
-            f.delete();
-        }
-        this.dataset = new CSVDatasetWriter(this.output);
+        this(output, EBoolean.getBoolean(DEFAULT_SAVEPROPS));
     }
 
     /**
