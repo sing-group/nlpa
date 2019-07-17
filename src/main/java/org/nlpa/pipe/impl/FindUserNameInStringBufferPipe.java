@@ -161,7 +161,7 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
      * Construct a FindUserNameInStringBufferPipe instance
      */
     public FindUserNameInStringBufferPipe() {
-        this(DEFAULT_USERNAME_PROPERTY, true);
+        this(DEFAULT_USERNAME_PROPERTY, EBoolean.getBoolean(DEFAULT_REMOVE_USERNAME));
     }
 
     /**

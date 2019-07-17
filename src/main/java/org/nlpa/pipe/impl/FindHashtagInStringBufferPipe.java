@@ -166,7 +166,7 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
      * configuration value
      */
     public FindHashtagInStringBufferPipe() {
-        this(DEFAULT_HASHTAG_PROPERTY, true);
+        this(DEFAULT_HASHTAG_PROPERTY, EBoolean.getBoolean(DEFAULT_REMOVE_HASHTAG));
     }
 
     /**

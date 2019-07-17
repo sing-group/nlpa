@@ -165,7 +165,7 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
      * configuration value
      */
     public FindEmoticonInStringBufferPipe() {
-        this(DEFAULT_EMOTICON_PROPERTY, true);
+        this(DEFAULT_EMOTICON_PROPERTY, EBoolean.getBoolean(DEFAULT_REMOVE_EMOTICON));
     }
 
     /**

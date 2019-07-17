@@ -145,7 +145,7 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
      * configuration value
      */
     public FindEmojiInStringBufferPipe() {
-        this(DEFAULT_EMOJI_PROPERTY, true);
+        this(DEFAULT_EMOJI_PROPERTY, EBoolean.getBoolean(DEFAULT_REMOVE_EMOJI));
     }
 
     /**
