@@ -201,7 +201,7 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
      * configuration value
      */
     public InterjectionFromStringBufferPipe() {
-        this(DEFAULT_LANG_PROPERTY, DEFAULT_INTERJECTION_PROPERTY, false);
+        this(DEFAULT_LANG_PROPERTY, DEFAULT_INTERJECTION_PROPERTY, EBoolean.getBoolean(DEFAULT_REMOVE_INTERJECTION));
     }
 
     /**
@@ -209,7 +209,7 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
      * property that stores interjections of the StringBuffer in the property
      * interjectionProp
      *
-     * @param langProp The propertie that stores the language of text
+     * @param langProp The property that stores the language of text
      * @param interjectionProp The name of the property to store interjections
      * @param removeInterjection tells if interjection should be removed
      */

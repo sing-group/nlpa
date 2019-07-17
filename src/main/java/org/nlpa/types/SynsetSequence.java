@@ -28,7 +28,7 @@ import java.io.Serializable;
 import org.bdp4j.util.Pair;
 
 /**
- * A class to represent a vector of synsets and the asociated information
+ * A class to represent a vector of synsets and the associated information
  *
  * @author Iñaki Velez
  * @author Enaitz Ezpeleta

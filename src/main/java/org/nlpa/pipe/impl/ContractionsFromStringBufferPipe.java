@@ -43,7 +43,7 @@ import org.bdp4j.pipe.TransformationPipe;
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 /**
- * Pipe that replaces the contactions in the original text
+ * Pipe that replaces the contractions in the original text
  * Example "i can't" -%gt; "i cannot"
  * @author José Ramón Méndez Reboredo
  */
@@ -92,12 +92,23 @@ public class ContractionsFromStringBufferPipe extends AbstractPipe {
         }
 
     }
-
+     /**
+     * Return the input type included the data attribute of an Instance
+     *
+     * @return the input type for the data attribute of the Instance processed
+     */
     @Override
     public Class<?> getInputType() {
         return StringBuffer.class;
     }
 
+    /**
+     * Indicates the datatype expected in the data attribute of an Instance after
+     * processing
+     *
+     * @return the datatype expected in the data attribute of an Instance after
+     * processing
+     */
     @Override
     public Class<?> getOutputType() {
         return StringBuffer.class;
