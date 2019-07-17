@@ -86,11 +86,6 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates if @userName should be removed
-     */
-    private boolean removeUserName;
-
-    /**
      * The default value for removing @userName
      */
     public static final String DEFAULT_REMOVE_USERNAME = "yes";
@@ -99,6 +94,11 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
      * The default property name to store @userName
      */
     public static final String DEFAULT_USERNAME_PROPERTY = "@userName";
+
+    /**
+     * Indicates if @userName should be removed
+     */
+    private boolean removeUserName = EBoolean.getBoolean(DEFAULT_REMOVE_USERNAME);
 
     /**
      * The property name to store @userName

@@ -73,11 +73,7 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
         return StringBuffer.class;
     }
 
-    /**
-     * Indicates if emojis should be removed from data
-     */
-    private boolean removeEmoji = true;
-
+    
     /**
      * The default value for removed emojis
      */
@@ -87,6 +83,11 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
      * The default property name to store emojis
      */
     public static final String DEFAULT_EMOJI_PROPERTY = "emoji";
+
+    /**
+     * Indicates if emojis should be removed from data
+     */
+    private boolean removeEmoji = EBoolean.getBoolean(DEFAULT_REMOVE_EMOJI);
 
     /**
      * The property name to store emojis

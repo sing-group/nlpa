@@ -89,10 +89,7 @@ public class FindUrlInStringBufferPipe extends AbstractPipe {
         return StringBuffer.class;
     }
 
-    /**
-     * Indicates if URLs should be removed
-     */
-    private boolean removeURL;
+    
 
     /**
      * The default value for removing @userName
@@ -103,6 +100,11 @@ public class FindUrlInStringBufferPipe extends AbstractPipe {
      * The default property name to store @userName
      */
     public static final String DEFAULT_URL_PROPERTY = "URLs";
+
+    /**
+     * Indicates if URLs should be removed
+     */
+    private boolean removeURL=EBoolean.getBoolean(DEFAULT_REMOVE_URL);
 
     /**
      * The property name to store @userName

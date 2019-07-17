@@ -79,11 +79,7 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
         return StringBuffer.class;
     }
 
-    /**
-     * Indicates if emoticons should be removed from data
-     */
-    private boolean removeEmoticon = true;
-
+    
     /**
      * The default value for removed emoticons
      */
@@ -93,6 +89,11 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
      * The default property name to store emoticons
      */
     public static final String DEFAULT_EMOTICON_PROPERTY = "emoticon";
+
+    /**
+     * Indicates if emoticons should be removed from data
+     */
+    private boolean removeEmoticon = EBoolean.getBoolean(DEFAULT_REMOVE_EMOTICON);
 
     /**
      * The property name to store emoticons

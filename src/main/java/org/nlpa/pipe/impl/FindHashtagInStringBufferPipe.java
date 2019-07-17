@@ -80,11 +80,7 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
         return StringBuffer.class;
     }
 
-    /**
-     * Indicates if hashtags should be removed from data
-     */
-    private boolean removeHashtag = true;
-
+    
     /**
      * The default value for removed hashtags
      */
@@ -94,6 +90,11 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
      * The default property name to store hashtags
      */
     public static final String DEFAULT_HASHTAG_PROPERTY = "hashtag";
+
+    /**
+     * Indicates if hashtags should be removed from data
+     */
+    private boolean removeHashtag = EBoolean.getBoolean(DEFAULT_REMOVE_HASHTAG);
 
     /**
      * The property name to store hashtags
