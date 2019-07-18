@@ -37,6 +37,7 @@ import java.util.function.Predicate;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.SharedDataConsumer;
 import org.bdp4j.pipe.TeePipe;
+import org.bdp4j.transformers.Enum2IntTransformer;
 import org.bdp4j.types.DatasetStore;
 import org.bdp4j.util.DateTimeIdentifier;
 import weka.core.Attribute;
@@ -75,7 +76,6 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
      * The types por columns
      */
     List<Pair<String, String>> columnTypes = null;
-
     /**
      * The attributes
      */
@@ -229,13 +229,13 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                 if (transformersList.size() > 0) {
                     for (Map.Entry<String, Transformer> entry : transformersList.entrySet()) {
                         String key = entry.getKey();
-                        Transformer value = entry.getValue();
                         noDoubleTransformers.add(key);
                     }
                 }
 
                 // Get attribute list to generate Dataset. This list will contain the columns to add to the dataset.
                 dataset.addColumn("id", String.class, "");
+
                 if (!columnTypes.isEmpty()) {
                     for (Pair<String, String> next : columnTypes) {
                         final String header = next.getObj1();
@@ -250,10 +250,9 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                 Dictionary dictionary = Dictionary.getDictionary();
 
                 for (String text : dictionary) {
-                    if (dictionary.getEncode()) {
-                        dataset.addColumn(dictionary.decodeBase64(text), Double.class, 0);
-                    } else {
-                        dataset.addColumn(text, Double.class, 0);
+                    String textToInsert = (dictionary.getEncode()) ? dictionary.decodeBase64(text) : text;
+                    if (!textToInsert.equals("target")) {
+                        dataset.addColumn(textToInsert, Double.class, 0);
                     }
                 }
                 List<String> target_values = new ArrayList<>();
@@ -265,6 +264,7 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                 }
 
                 dataset.addColumn("target", Enum.class, target_values);
+
                 int indInstance = 0;
                 FeatureVector featureVector;
                 Transformer t;
@@ -273,7 +273,6 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                 Object[] values = new Object[attributes.size()];
 
                 for (Instance entry : instanceList) {
-
                     featureVector = (FeatureVector) entry.getData();
                     String attName = "";
                     for (int index = 0; index < attributes.size(); index++) {
@@ -282,7 +281,7 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                             values[indInstance] = entry.getName().toString();
                             indInstance++;
                         } else {
-                            if (dictionary.isIncluded(attName)) {
+                            if (dictionary.isIncluded(attName) && !attName.equals("target")) {
                                 Double frequency = featureVector.getFrequencyValue(attName);
                                 if (frequency > 0) {
                                     values[indInstance] = frequency;
