@@ -91,7 +91,7 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
      * Default constructor
      */
     public TokenSequenceStemIrregularPipe() {
-        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[]{TokenSequencePorterStemmerPipe.class});
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[]{});
         this.langProp = DEFAULT_LANG_PROPERTY;
     }
 

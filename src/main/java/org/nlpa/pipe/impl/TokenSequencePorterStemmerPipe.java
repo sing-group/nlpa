@@ -169,7 +169,7 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
      * Default constructor
      */
     public TokenSequencePorterStemmerPipe() {
-        super(new Class<?>[]{StringBuffer2TokenSequencePipe.class, GuessLanguageFromStringBufferPipe.class}, new Class<?>[0]);
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[]{TokenSequencePorterStemmerPipe.class});
         this.langProp = DEFAULT_LANG_PROPERTY;
     }
 
