@@ -28,16 +28,52 @@ License along with this program.  If not, see
     <artifactId>nlpa</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-    <name>nlpa</name>
-    <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
+    <name>NLPA</name>
+    <inceptionYear>2019</inceptionYear>
+    <url>https://github.com/sing-group/nlpa</url>
+    <description>
+        NLPA is a framework designed to operate in conjuction with BDP4J
+        (https://github.com/sing-group/bdp4j) and able to extract texts from 
+        Twitter, Youtube Comments, text files, raw email files (.eml) or WARC 
+        (Web Archive) files. The extracted text can be preprocessed into a 
+        Dataset using task (org.bdp4j.pipe.Pipe) definitions. This framework 
+        incorporates more than 30 preprocessing tasks to transform the text.
+    </description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.test.skip>true</maven.test.skip>
+        
+        <!-- license-maven-plugin configuration -->
+        <license.licenseName>gpl_v3</license.licenseName>
+        <license.copyrightOwners>SING Group (University of Vigo)</license.copyrightOwners>
+        <license.organizationName>SING Group (University of Vigo)</license.organizationName>
+        <license.addJavaLicenseAfterPackage>false</license.addJavaLicenseAfterPackage>
     </properties>
+    
+    <licenses>
+        <license>
+            <name>GNU GENERAL PUBLIC LICENSE, Version 3</name>
+            <url>http://www.gnu.org/licenses/gpl.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <distributionManagement>
+        <repository>
+            <id>sing-maven-releases</id>
+            <name>SING Maven Releases</name>
+            <url>https://maven.sing-group.org/repository/maven-releases/</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>sing-maven-snapshots</id>
+            <name>SING Maven Snapshots</name>
+            <url>https://maven.sing-group.org/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <repositories>
         <repository>
