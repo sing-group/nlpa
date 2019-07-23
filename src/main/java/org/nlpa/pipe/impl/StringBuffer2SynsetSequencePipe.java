@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -49,7 +48,8 @@ import org.bdp4j.pipe.SharedDataProducer;
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 /**
- * A pipe to compute synsets from text
+ * This pipe modifies the data of an Instance transforming it from StringBuffer
+ * to SynsetSequence
  *
  * @author Iñaki Velez
  * @author Enaitz Ezpeleta
@@ -85,8 +85,8 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
      *
      * @return the datatype expected in the data attribute of an Instance after
      * processing
@@ -116,9 +116,7 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
     }
 
     /**
-     * Create the pipe and initialize the synset dictionary. Please note that
-     * the synset dictionary can be achieved by using the corresponding getter.
-     *
+     * Default constructor. Creates a StringBuffer2SynsetSequencePipe Pipe
      */
     public StringBuffer2SynsetSequencePipe() {
         super(new Class<?>[0], new Class<?>[0]);
@@ -192,27 +190,25 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
                         }
                     }
                 } else { //The puntuation symbol is in the middle
-//                    if (acceptedCharOnMiddle.indexOf(current.charAt(indexOfPuntMark)) == -1 || acceptedCharOnEnd.indexOf(current.charAt(indexOfPuntMark)) == -1) {
                     if (acceptedCharOnMiddle.indexOf(current.charAt(indexOfPuntMark)) == -1 && acceptedCharOnEnd.indexOf(current.charAt(indexOfPuntMark)) == -1) {
-                        returnValue.add(new Pair<String, String>(current, null));
+                        returnValue.add(new Pair<>(current, null));
                     } else {
                         Matcher innerMatcher = acceptedCharOnEndPattern.matcher(current);
                         if (innerMatcher.find(indexOfPuntMark)) {
                             if (!BabelUtils.getDefault().isTermInBabelNet(innerMatcher.replaceFirst(""), lang)) {
-                                returnValue.add(new Pair<String, String>(current, null));
+                                returnValue.add(new Pair<>(current, null));
                             }
                         } else {
-                            //System.out.println("Term is "+current);
                             innerMatcher = acceptedCharOnMiddlePattern.matcher(current);
                             if (innerMatcher.find()) {
                                 String firstElement = current.substring(0, innerMatcher.start());
                                 String lastElement = current.substring(innerMatcher.end());
                                 if (!BabelUtils.getDefault().isTermInBabelNet(firstElement, lang)
                                         || (innerMatcher.end() < current.length() - 1 && !BabelUtils.getDefault().isTermInBabelNet(lastElement, lang))) {
-                                    returnValue.add(new Pair<String, String>(current, null));
+                                    returnValue.add(new Pair<>(current, null));
                                 }
                             } else {
-                                returnValue.add(new Pair<String, String>(current, null));
+                                returnValue.add(new Pair<>(current, null));
                             }
                         }
                     }
@@ -220,9 +216,8 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
             } else {
                 //We check if the term current exist in babelnet. 
                 //if current is not found in Babelnet
-                //    returnValue.add(new Pair<String,String>(current,null));
                 if (!BabelUtils.getDefault().isTermInBabelNet(current, lang)) {
-                    returnValue.add(new Pair<String, String>(current, null));
+                    returnValue.add(new Pair<>(current, null));
                 }
             }
 

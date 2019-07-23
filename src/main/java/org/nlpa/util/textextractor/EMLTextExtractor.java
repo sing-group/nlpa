@@ -140,14 +140,14 @@ public class EMLTextExtractor extends TextExtractor {
             for (int j = 0; j < mp.getCount(); j++) {
                 Part bpart = mp.getBodyPart(j);
                 if (bpart.isMimeType(cfgPartSelectedOnAlternative)) {
-                    partlist.add(new Pair<String, InputStream>(bpart.getContentType(), bpart.getInputStream()));
+                    partlist.add(new Pair<>(bpart.getContentType(), bpart.getInputStream()));
                 }
             }
         } else if (mp.getContentType().indexOf("multipart/signed") > -1) {
             for (int j = 0; j < mp.getCount(); j++) {
                 Part bpart = mp.getBodyPart(j);
                 if (!bpart.isMimeType("application/pgp-signature")) {
-                    partlist.add(new Pair<String, InputStream>(bpart.getContentType(), bpart.getInputStream()));
+                    partlist.add(new Pair<>(bpart.getContentType(), bpart.getInputStream()));
                 }
             }
         } else if (mp.getContentType().indexOf("multipart/mixed") > -1) {
@@ -158,7 +158,7 @@ public class EMLTextExtractor extends TextExtractor {
                 if (apart.getContentType().indexOf("multipart/") >= 0) {
                     buildPartInfoList(partlist, (Multipart) apart.getContent());
                 } else {
-                    partlist.add(new Pair<String, InputStream>(apart.getContentType(), apart.getInputStream()));
+                    partlist.add(new Pair<>(apart.getContentType(), apart.getInputStream()));
                 }
             }
         }
@@ -191,21 +191,21 @@ public class EMLTextExtractor extends TextExtractor {
     @Override
     public StringBuffer extractText(File f) {
         StringBuffer sbResult = new StringBuffer();
-        ArrayList<Pair<String, InputStream>> parts = new ArrayList<Pair<String, InputStream>>();
+        ArrayList<Pair<String, InputStream>> parts = new ArrayList<>();
 
         try {
             //Create a mime message
             MimeMessage mimeMultipart = new MimeMessage(null, new FileInputStream(f));
 
             if (mimeMultipart.getSubject() != null) {
-                sbResult.append(mimeMultipart.getSubject() + "\n");
+                sbResult.append(mimeMultipart.getSubject()).append("\n");
             } else {
                 return null;
             }
 
             //If it is not multipart, anotate the part to handle it later
             if (mimeMultipart.getContentType().indexOf("multipart/") == -1) {
-                parts.add(new Pair<String, InputStream>(mimeMultipart.getContentType(), mimeMultipart.getInputStream()));
+                parts.add(new Pair<>(mimeMultipart.getContentType(), mimeMultipart.getInputStream()));
             } //If multipart, then recursivelly compile parts to handle them later
             else {
                 buildPartInfoList(parts, (Multipart) mimeMultipart.getContent());
@@ -235,12 +235,10 @@ public class EMLTextExtractor extends TextExtractor {
                                 logger.warn("Charset guesed: " + cm.getName() + " [confidence=" + cm.getConfidence() + "/100]for " + f.getAbsolutePath() + " Content type: " + contentType);
                                 sbResult.append(new String(contents, Charset.forName(cm.getName())));
                             }
-
                             is.close();
                         }
                     } catch (IOException e) {
-                        System.out.println("Error while processing " + f.getAbsolutePath());
-                        System.out.println(e.getMessage());
+                        logger.warn("Error while processing " + f.getAbsolutePath() + " - " + e.getMessage());
                     } finally {
                         if (is != null) {
                             is.close();
@@ -248,7 +246,6 @@ public class EMLTextExtractor extends TextExtractor {
                     }
                 }
             }
-
         } catch (MessagingException e) {
             logger.error("Messagging Exception caught / " + e.getMessage() + "Current e-mail: " + f.getAbsolutePath());
             return null;
@@ -259,8 +256,6 @@ public class EMLTextExtractor extends TextExtractor {
             logger.error("Exception caught / " + e.getMessage() + "Current e-mail: " + f.getAbsolutePath());
             return null;
         }
-
-        //System.out.println(sbResult.toString());
         return sbResult;
     }
 }

@@ -86,7 +86,7 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
                 hmInterjections.put(lang, setWords);
 
             } catch (Exception e) {
-                System.out.println("Exception processing: " + i + " message " + e.getMessage());
+                logger.warn("Exception processing: " + i + " message " + e.getMessage());
             }
         }
 
@@ -97,7 +97,27 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
      */
     private String langProp = DEFAULT_LANG_PROPERTY;
 
+       /**
+     * Indicates if interjections should be removed from data
+     */
+    private boolean removeInterjection = false;
+
     /**
+     * The default value for removed interjections
+     */
+    public static final String DEFAULT_REMOVE_INTERJECTION = "no";
+
+    /**
+     * The default property name to store interjections
+     */
+    public static final String DEFAULT_INTERJECTION_PROPERTY = "interjection";
+
+    /**
+     * The property name to store interjections
+     */
+    private String interjectionProp = DEFAULT_INTERJECTION_PROPERTY;
+
+     /**
      * Return the input type included the data attribute of an Instance
      *
      * @return the input type for the data attribute of the Instance processed
@@ -118,27 +138,7 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
     public Class<?> getOutputType() {
         return StringBuffer.class;
     }
-
-    /**
-     * Indicates if interjections should be removed from data
-     */
-    private boolean removeInterjection = false;
-
-    /**
-     * The default value for removed interjections
-     */
-    public static final String DEFAULT_REMOVE_INTERJECTION = "no";
-
-    /**
-     * The default property name to store interjections
-     */
-    public static final String DEFAULT_INTERJECTION_PROPERTY = "interjection";
-
-    /**
-     * The property name to store interjections
-     */
-    private String interjectionProp = DEFAULT_INTERJECTION_PROPERTY;
-
+    
     /**
      * Indicates if interjection should be removed from data
      *
@@ -197,7 +197,7 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Construct a InterjectionFromStringBuffer instance with the default
+     * Default construct. Construct a InterjectionFromStringBuffer instance with the default
      * configuration value
      */
     public InterjectionFromStringBufferPipe() {

@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -34,15 +33,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.bdp4j.pipe.Pipe;
+import org.bdp4j.pipe.PipeParameter;
 
 /**
- * This pipe assign a target to an instance keeping in mind the file path of the instance
+ * This pipe assign a target to an instance keeping in mind the file path of the
+ * instance
  *
  * @author José Ramón Méndez
  */
 @AutoService(Pipe.class)
 @TargetAssigningPipe()
-public class TargetAssigningFromPathPipe extends AbstractPipe{
+public class TargetAssigningFromPathPipe extends AbstractPipe {
+
     /**
      * For logging purposes
      */
@@ -50,6 +52,7 @@ public class TargetAssigningFromPathPipe extends AbstractPipe{
 
     /**
      * Return the input type included the data attribute of a Instance
+     *
      * @return the input type for the data attribute of the Instances processed
      */
     @Override
@@ -58,8 +61,11 @@ public class TargetAssigningFromPathPipe extends AbstractPipe{
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after processing
-     * @return the datatype expected in the data attribute of a Instance after processing
+     * Indicates the datatype expected in the data attribute of a Instance after
+     * processing
+     *
+     * @return the datatype expected in the data attribute of a Instance after
+     * processing
      */
     @Override
     public Class<?> getOutputType() {
@@ -67,49 +73,63 @@ public class TargetAssigningFromPathPipe extends AbstractPipe{
     }
 
     /**
-     * A map where the key is the substring found in the file path and the value the label for the object
+     * A map where the key is the substring found in the file path and the value
+     * the label for the object
      */
     Map<String, String> targets = null;
 
-    public void setTargets(Map<String, String> targets){
+    /**
+     * Changes the targets
+     *
+     * @param targets Map where the key is the substring found in the file path
+     * and the value the label for the object
+     */
+    @PipeParameter(name = "targets", description = "A map where the key is the substring found in the file path and the value the label for the object", defaultValue = "")
+    public void setTargets(Map<String, String> targets) {
         this.targets = targets;
     }
-    
-    public Map<String, String> getTargets(){
+
+    /**
+     * Retrieves the targets
+     *
+     * @return Map where the key is the substring found in the file path and the
+     * value the label for the object
+     */
+    public Map<String, String> getTargets() {
         return this.targets;
     }
-    
+
     /**
-     * Create a TargetAssigningPipe using the default mapping ("_spam_" for target "spam" and "_ham_" for target "ham")
+     * Default constructor. Create a TargetAssigningPipe using the default
+     * mapping ("_spam_" for target "spam" and "_ham_" for target "ham")
      */
-
     public TargetAssigningFromPathPipe() {
-        this(new HashMap<String,String>());
-
+        this(new HashMap<String, String>());
         targets.put("_ham_", "ham");
         targets.put("_spam_", "spam");
-        
     }
 
     /**
-     * Create a TargetAssigningPipe using the map for mapping from filepath to targets
+     * Create a TargetAssigningPipe using the map for mapping from filepath to
+     * targets
      *
-     * @param targets Map of targets. The key represents the substring of the path and the value the specific target.
+     * @param targets Map of targets. The key represents the substring of the
+     * path and the value the specific target.
      */
     public TargetAssigningFromPathPipe(Map<String, String> targets) {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[0], new Class<?>[0]);
 
         this.targets = targets;
     }
 
     /**
-    * Process an Instance.  This method takes an input Instance,
-    * destructively modifies it in some way, and returns it.
-    * This is the method by which all pipes are eventually run.
-    *
-    * @param carrier Instance to be processed.
-    * @return Instancia procesada
-    */
+     * Process an Instance. This method takes an input Instance, and
+     * destructively modifies its target and returns it. This is the method by
+     * which all pipes are eventually run.
+     *
+     * @param carrier Instance to be processed.
+     * @return Processed instance
+     */
     @Override
     public Instance pipe(Instance carrier) {
         Set<String> keys = targets.keySet();

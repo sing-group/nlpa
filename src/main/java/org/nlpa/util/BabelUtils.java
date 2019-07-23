@@ -184,7 +184,7 @@ public class BabelUtils {
      * @return the list with the synset and all of hypernyms
      */
     public List<String> getAllHypernyms(String synsetToScale) {
-        List<String> allHypernymsList = new ArrayList<String>();
+        List<String> allHypernymsList = new ArrayList<>();
         try {
             List<BabelSynsetRelation> elementsInAnyHypernymPointer, elementsInHypernymPointer;
             BabelSynset by;
@@ -238,11 +238,8 @@ public class BabelUtils {
             } catch (Exception e) {
                 logger.error("Hypernym search problem. The synset " + synsetListElement + " does not exists in Babelnet." + e.getMessage());
             }
-
         }
-
         return synsetHypernymMap;
-
     }
 
     /**
@@ -272,9 +269,7 @@ public class BabelUtils {
                     }
                 }
             } while (!isHypernym && !synsetToCheck.equals(stopSynset));
-
             return isHypernym;
-
         }
     }
 
@@ -310,9 +305,6 @@ public class BabelUtils {
         }
         parts.add(remain);
         subtexts = parts.toArray(subtexts);
-        // if (subtexts.length>1) {System.out.print("Instance text slitted: original
-        // size: "+fixedText.length()+" new zizes "); for (String
-        // i:subtexts){System.out.print(i.length()+", ");}; System.out.println();}
 
         // Text is not splitted
         int currentSubtext = 0;
@@ -321,8 +313,7 @@ public class BabelUtils {
                 bfyAnnotations.addAll(bfy.babelfy(subtexts[currentSubtext], Language.valueOf(lang)));
                 currentSubtext++;
             } catch (RuntimeException e) {
-                if (e.getMessage().equals(
-                        "Your key is not valid or the daily requests limit has been reached. Please visit http://babelfy.org.")) {
+                if (e.getMessage().equals("Your key is not valid or the daily requests limit has been reached. Please visit http://babelfy.org.")) {
                     // Wait until 01:01:01 of the next day (just after midnigth)
                     Calendar c = Calendar.getInstance();
                     c.add(Calendar.DAY_OF_MONTH, 1);
@@ -336,11 +327,6 @@ public class BabelUtils {
                     long millis = midnight - now;
                     long hours = millis / (1000 * 60 * 60);
                     long minutes = (millis % (1000 * 60 * 60)) / (1000 * 60);
-                    // System.out.println("--------------------------------------------------------------------------------------------------------------------------");
-                    // System.out.println("INFO: Your key is not valid or the daily requests limit
-                    // has been reached. The application will pause for " + hours+"h
-                    // "+minutes+"m.");
-                    // System.out.println("--------------------------------------------------------------------------------------------------------------------------");
                     logger.info(
                             "Your key is not valid or the daily requests limit has been reached. The application will pause for "
                             + hours + "h " + minutes + "m.");
@@ -396,141 +382,13 @@ public class BabelUtils {
         }
 
         // The value that will be returned
-        ArrayList<Pair<String, String>> returnValue = new ArrayList<Pair<String, String>>();
+        ArrayList<Pair<String, String>> returnValue = new ArrayList<>();
         for (BabelfyEntry entry : nGrams) {
             if (checkSynsetInBabelnet(entry.getSynsetId(), entry.getText())) {
-                returnValue.add(new Pair<String, String>(entry.getSynsetId(), entry.getText()));
+                returnValue.add(new Pair<>(entry.getSynsetId(), entry.getText()));
             }
 
         }
         return returnValue;
     }
-}
-
-/**
- * This class is to represent a babelfy Semantic annotation with all relevant
- * attributes to made intensive searches and discard the irrelevant information
- * achieved by Babelfy
- */
-class BabelfyEntry {
-
-    private int startIdx;
-    private int endIdx;
-    private double score;
-    private String synsetId;
-    private String text;
-
-    /**
-     * No args constructor
-     */
-    public BabelfyEntry() {
-    }
-
-    /**
-     * Constructor that stablish all attributes of a BabelfyEntry
-     *
-     * @param endIdx The last index of the entry
-     * @param synsetId The synset ID
-     * @param score The score
-     * @param startIdx The start index of an entry
-     * @param text The text of an entry
-     */
-    public BabelfyEntry(int startIdx, int endIdx, Double score, String synsetId, String text) {
-        this.startIdx = startIdx;
-        this.endIdx = endIdx;
-        this.score = score;
-        this.synsetId = synsetId;
-        this.text = text;
-    }
-
-    /**
-     * Returns the start index of an entry
-     *
-     * @return The start index of an entry
-     */
-    public int getStartIdx() {
-        return startIdx;
-    }
-
-    /**
-     * Stablish the start index of an entry
-     *
-     * @param startIdx The start index of an entry
-     */
-    public void setStartIdx(int startIdx) {
-        this.startIdx = startIdx;
-    }
-
-    /**
-     * Return the end index for an entry
-     *
-     * @return he last index of the entry
-     */
-    public int getEndIdx() {
-        return endIdx;
-    }
-
-    /**
-     * Stablish the end index for an entry
-     *
-     * @param endIdx The last index of the entry
-     */
-    public void setEndIdx(int endIdx) {
-        this.endIdx = endIdx;
-    }
-
-    /**
-     * Returns the score of an entry
-     *
-     * @return the score of an entry
-     */
-    public double getScore() {
-        return score;
-    }
-
-    /**
-     * Change the score of an entry
-     *
-     * @param score the score of the entry
-     */
-    public void setScore(double score) {
-        this.score = score;
-    }
-
-    /**
-     * Returns the synsetId for the entry
-     *
-     * @return the synsetId for the entry
-     */
-    public String getSynsetId() {
-        return synsetId;
-    }
-
-    /**
-     * Stablish the synsetId for the entry
-     *
-     * @param synsetID the synsetId for the entry
-     */
-    public void setSynsetId(String synsetId) {
-        this.synsetId = synsetId;
-    }
-
-    /**
-     * Returns the text for an entrty
-     *
-     * @return the text for the entry
-     */
-    public String getText() {
-        return this.text;
-    }
-
-    /**
-     * Stablish the text for an entry
-     *
-     * @param text The text for the entry
-     */
-    public void setText(String text) {
-        this.text = text;
-    }
-
 }

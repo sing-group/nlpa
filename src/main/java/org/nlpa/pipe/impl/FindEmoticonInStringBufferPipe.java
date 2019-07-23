@@ -57,6 +57,27 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
      */
     private static final Pattern emoticonPattern = Pattern.compile("(\\:\\w+\\:|\\<[\\/\\\\]?3|[\\(\\)\\\\\\D|\\*\\$][\\-\\^]?[\\:\\;\\=]|[\\:\\;\\=B8][\\-\\^]?[3DOPp\\@\\$\\*\\\\\\)\\(\\/\\|])(?=\\s|[\\!\\.\\?]|$)");
 
+        
+    /**
+     * The default value for removed emoticons
+     */
+    public static final String DEFAULT_REMOVE_EMOTICON = "yes";
+
+    /**
+     * The default property name to store emoticons
+     */
+    public static final String DEFAULT_EMOTICON_PROPERTY = "emoticon";
+
+    /**
+     * Indicates if emoticons should be removed from data
+     */
+    private boolean removeEmoticon = EBoolean.getBoolean(DEFAULT_REMOVE_EMOTICON);
+
+    /**
+     * The property name to store emoticons
+     */
+    private String emoticonProp = DEFAULT_EMOTICON_PROPERTY;
+
     /**
      * Return the input type included the data attribute of an Instance
      *
@@ -78,28 +99,7 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
     public Class<?> getOutputType() {
         return StringBuffer.class;
     }
-
     
-    /**
-     * The default value for removed emoticons
-     */
-    public static final String DEFAULT_REMOVE_EMOTICON = "yes";
-
-    /**
-     * The default property name to store emoticons
-     */
-    public static final String DEFAULT_EMOTICON_PROPERTY = "emoticon";
-
-    /**
-     * Indicates if emoticons should be removed from data
-     */
-    private boolean removeEmoticon = EBoolean.getBoolean(DEFAULT_REMOVE_EMOTICON);
-
-    /**
-     * The property name to store emoticons
-     */
-    private String emoticonProp = DEFAULT_EMOTICON_PROPERTY;
-
     /**
      * Indicates if emoticon should be removed from data
      *
@@ -162,7 +162,7 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Construct a FindEmoticonInStringBufferPipe instance with the default
+     * Default constructor. Construct a FindEmoticonInStringBufferPipe instance with the default
      * configuration value
      */
     public FindEmoticonInStringBufferPipe() {

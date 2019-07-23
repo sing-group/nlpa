@@ -98,18 +98,16 @@ public class StopWordFromStringBufferPipe extends AbstractPipe {
                 JsonReader rdr = Json.createReader(is);
                 JsonArray array = rdr.readArray();
                 LinkedList<Pattern> currentStopwords=new LinkedList<>();
-                for (JsonValue v : array) {
+                array.forEach((v) -> {
                     currentStopwords.add(
-                      Pattern.compile( "(?:\\p{Space}|[\"><¡?¿!;:,.'-]|^)(" + Pattern.quote(((JsonString)v).getString()) + ")[;:?\"!,.'>-]?(?=(?:\\p{Space}|$|>))" )
+                            Pattern.compile( "(?:\\p{Space}|[\"><¡?¿!;:,.'-]|^)(" + Pattern.quote(((JsonString)v).getString()) + ")[;:?\"!,.'>-]?(?=(?:\\p{Space}|$|>))" )
                     );
-                    //System.out.println("Adding: "+lang+" -> "+((JsonString)v).getString());
-                }
+                });
                 hmStopWords.put(lang,currentStopwords);
             } catch (Exception e) {
                 System.out.println("Exception processing: " + i + " message " + e.getMessage());
             }
         }
-
     }
 
     /**
@@ -140,7 +138,7 @@ public class StopWordFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Construct a StopWordFromStringBuffer instance
+     * Default constructor. Construct a StopWordFromStringBuffer instance
      */
     public StopWordFromStringBufferPipe() {
         this(DEFAULT_LANG_PROPERTY);
@@ -166,7 +164,6 @@ public class StopWordFromStringBufferPipe extends AbstractPipe {
     public void setLangProp(String langProp) {
         this.langProp = langProp;
     }
-
 
     /**
      * Process an Instance. This method takes an input Instance,

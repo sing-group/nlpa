@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -64,28 +63,6 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
     private static final Pattern userPattern = Pattern.compile("(?:\\s|^|[\"><¡?¿!;:,.'-])(@[^\\p{Cntrl}\\p{Space}!\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~]+)[;:?\"!,.'>-]?(?=(?:\\s|$|>))");
 
     /**
-     * Return the input type included the data attribute of an Instance
-     *
-     * @return the input type for the data attribute of the Instance processed
-     */
-    @Override
-    public Class<?> getInputType() {
-        return StringBuffer.class;
-    }
-
-    /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
-     *
-     * @return the datatype expected in the data attribute of an Instance after
-     * processing
-     */
-    @Override
-    public Class<?> getOutputType() {
-        return StringBuffer.class;
-    }
-
-    /**
      * The default value for removing @userName
      */
     public static final String DEFAULT_REMOVE_USERNAME = "yes";
@@ -104,6 +81,28 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
      * The property name to store @userName
      */
     private String userNameProp = DEFAULT_USERNAME_PROPERTY;
+
+    /**
+     * Return the input type included the data attribute of an Instance
+     *
+     * @return the input type for the data attribute of the Instance processed
+     */
+    @Override
+    public Class<?> getInputType() {
+        return StringBuffer.class;
+    }
+
+    /**
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
+     *
+     * @return the datatype expected in the data attribute of an Instance after
+     * processing
+     */
+    @Override
+    public Class<?> getOutputType() {
+        return StringBuffer.class;
+    }
 
     /**
      * Indicates if @userName should be removed
@@ -158,7 +157,7 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Construct a FindUserNameInStringBufferPipe instance
+     * Default construct. Construct a FindUserNameInStringBufferPipe instance
      */
     public FindUserNameInStringBufferPipe() {
         this(DEFAULT_USERNAME_PROPERTY, EBoolean.getBoolean(DEFAULT_REMOVE_USERNAME));
@@ -180,8 +179,8 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
 
     /**
      * Process an Instance. This method takes an input Instance, modifies it
-     * removing @userName, adds a property and returns it. This is the method by which all pipes
-     * are eventually run.
+     * removing @userName, adds a property and returns it. This is the method by
+     * which all pipes are eventually run.
      *
      * @param carrier Instance to be processed.
      * @return Instance processed

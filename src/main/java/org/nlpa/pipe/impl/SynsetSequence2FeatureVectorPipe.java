@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import org.nlpa.types.SequenceGroupingStrategy;
@@ -33,21 +32,23 @@ import org.nlpa.types.SynsetSequence;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TransformationPipe;
 
 /**
- * A pipe to transform a SynsetSequence which contains a list of synsets included
- in a message into a FeatureVector which compiles together duplicated
- features and assign a score for each feature according with a
- groupingStrategy. The groupStrategy is one of the following: <ul>
+ * A pipe to transform a SynsetSequence which contains a list of synsets
+ * included in a message into a FeatureVector which compiles together duplicated
+ * features and assign a score for each feature according with a
+ * groupingStrategy. The groupStrategy is one of the following: <ul>
  * <li>SequenceGroupingStrategy.COUNT: indicates the number of times that a
- synset is observed in the content (ex. 5)</li>
- * <li>SequenceGroupingStrategy.BOOLEAN: Indicates if the synset is observed
- in the content (1) or not (0) (ex. 0)</li>
- * <li>SequenceGroupingStrategy.FREQUENCY: Indicates the frequency of the
- synset in the text that is the count of times that the synset is observed
- divided by the whole amount of synsets.</li>
+ * synset is observed in the content (ex. 5)</li>
+ * <li>SequenceGroupingStrategy.BOOLEAN: Indicates if the synset is observed in
+ * the content (1) or not (0) (ex. 0)</li>
+ * <li>SequenceGroupingStrategy.FREQUENCY: Indicates the frequency of the synset
+ * in the text that is the count of times that the synset is observed divided by
+ * the whole amount of synsets.</li>
  * </ul>
  *
  * @author María Novo
@@ -55,16 +56,21 @@ import org.bdp4j.pipe.TransformationPipe;
 @AutoService(Pipe.class)
 @TransformationPipe()
 public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
+
     /**
      * For logging purposes
+     */
+    private static final Logger logger = LogManager.getLogger(SynsetSequence2FeatureVectorPipe.class);
+
+     /**
+     * The default value for the the grouping strategy
      */
     public static final String DEFAULT_GROUPING_STRATEGY = "COUNT";
 
     /**
-     * Indicates the group strategy to create the synsetFeatureVector
+     * Indicates the grouping strategy to create the synsetFeatureVector
      */
-    private SequenceGroupingStrategy groupStrategy
-            = SequenceGroupingStrategy.FREQUENCY;
+    private SequenceGroupingStrategy groupStrategy = SequenceGroupingStrategy.FREQUENCY;
 
     /**
      * Return the input type included the data attribute of an Instance
@@ -77,8 +83,8 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
      *
      * @return the datatype expected in the data attribute of an Instance after
      * processing
@@ -108,59 +114,57 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
     }
 
     /**
-     * Creates a SynsetVector2FeatureVector Pipe using the default
-     * grouping strategy
+     * Default constructor. Creates a SynsetVector2FeatureVector Pipe using the
+     * default grouping strategy
      */
-    public SynsetSequence2FeatureVectorPipe(){
+    public SynsetSequence2FeatureVectorPipe() {
         this(SequenceGroupingStrategy.valueOf(DEFAULT_GROUPING_STRATEGY));
     }
 
     /**
-     * Creates a SynsetVector2FeatureVector Pipe using a specific
-     * grouping strategy
+     * Creates a SynsetVector2FeatureVector Pipe using a specific grouping
+     * strategy
      *
      * @param groupStrategy The selected grouping strategy
      */
     public SynsetSequence2FeatureVectorPipe(SequenceGroupingStrategy groupStrategy) {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[0], new Class<?>[0]);
 
         this.groupStrategy = groupStrategy;
     }
 
     /**
-     * Converts a SynsetSequence in a FeatureVector, with the synsetId and
-     * the number of times that a synsetId appears in SynsetSequence
+     * Converts a SynsetSequence in a FeatureVector, with the synsetId and the
+     * number of times that a synsetId appears in SynsetSequence
      *
      * @param synsetVector
-     * @return A FeatureVector with the synsetId and the number of times
-     * that a synsetId appears in SynsetSequence
+     * @return A FeatureVector with the synsetId and the number of times that a
+     * synsetId appears in SynsetSequence
      */
     private FeatureVector countMatches(SynsetSequence synsetVector) {
 
         Map<String, Double> synsetFeatureVector = new HashMap<>();
 
         try {
-            for (Pair<String, String> pairSV : synsetVector.getSynsets()) {
-                String synsetId = pairSV.getObj1();
-
+            synsetVector.getSynsets().stream().map((pairSV) -> pairSV.getObj1()).forEachOrdered((synsetId) -> {
                 if (synsetFeatureVector.get(synsetId) == null) {
                     synsetFeatureVector.put(synsetId, 1d);
                 } else {
                     Double appearanceNumber = synsetFeatureVector.get(synsetId);
                     synsetFeatureVector.put(synsetId, appearanceNumber + 1d);
                 }
-            }
+            });
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            logger.warn("[COUNT MATCHES]" + e.getMessage());
         }
 
         return new FeatureVector(synsetFeatureVector);
     }
 
     /**
-     * Process an Instance. This method takes an input Instance, 
-     * modifies its list of synsets in a feature vector, and returns it. This is the method by which all
-     * pipes are eventually run.
+     * Process an Instance. This method takes an input Instance, destructively
+     * transforming data from SynsetSequence to FeatureVector and returns it.
+     * This is the method by which all pipes are eventually run.
      *
      * @param carrier Instance to be processed.
      * @return Instance processed
@@ -173,7 +177,6 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
         try {
             SynsetSequence synsetVector = (SynsetSequence) carrier.getData();
 
-            //SynsetVector synsetVector = (SynsetSequence) svTest;
             switch (groupStrategy) {
                 case COUNT:
                     /* Generate a synsetFeatureVector with synsetId and synsetId appearance number in synsetVector*/
@@ -208,7 +211,7 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
             }
 
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            logger.warn("[PIPE]: " + e.getMessage());
         }
         return carrier;
     }

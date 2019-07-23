@@ -125,7 +125,7 @@ public class AbbreviationFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Construct a AbbreviationFromStringBuffer instance
+     * Default constructor. Construct a AbbreviationFromStringBuffer instance with default configuration
      */
     public AbbreviationFromStringBufferPipe() {
         this(DEFAULT_LANG_PROPERTY);

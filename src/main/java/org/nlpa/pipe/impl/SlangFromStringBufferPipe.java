@@ -77,17 +77,15 @@ public class SlangFromStringBufferPipe extends AbstractPipe {
                 JsonObject jsonObject = rdr.readObject();
                 rdr.close();
                 HashMap<String, SlangEntry> dict = new HashMap<>();
-                for (String slang : jsonObject.keySet()) {
+                jsonObject.keySet().forEach((slang) -> {
                     dict.put(slang, new SlangEntry(Pattern.compile("(?:[\\p{Space}]|[\"><¡?¿!;:,.']|^)(" + Pattern.quote(slang) + ")[;:?\"!,.'>]?(?=(?:[\\p{Space}]|$|>))", Pattern.CASE_INSENSITIVE),
                             jsonObject.getString(slang)));
-                }
+                });
                 hmSlangs.put(lang, dict);
             } catch (Exception e) {
                 logger.error("Exception processing: " + i + " message " + e.getMessage());
             }
-
         }
-
     }
 
     /**
@@ -118,7 +116,7 @@ public class SlangFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Construct a SlangFromStringBuffer instance
+     * Default constructor. Construct a SlangFromStringBuffer instance
      */
     public SlangFromStringBufferPipe() {
         this(DEFAULT_LANG_PROPERTY);
@@ -158,7 +156,6 @@ public class SlangFromStringBufferPipe extends AbstractPipe {
      * Process an Instance. This method takes an input Instance, modifies it
      * extending slangs, and returns it. This is the method by which all pipes
      * are eventually run.
-     *
      *
      * @param carrier Instance to be processed.
      * @return Instance processed

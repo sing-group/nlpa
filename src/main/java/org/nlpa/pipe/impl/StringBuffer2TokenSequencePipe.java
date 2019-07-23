@@ -19,12 +19,9 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.TransformationPipe;
@@ -35,10 +32,12 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.SharedDataProducer;
 
 import static org.nlpa.types.TokenSequence.DEFAULT_SEPARATORS;
+
 /**
- * A pipe to compute tokens from text
+ * This pipe modifies the data of an Instance transforming it from StringBuffer
+ * to TokenSequence
  *
- * @author María Novo 
+ * @author María Novo
  * @author José Ramón Méndez
  */
 @AutoService(Pipe.class)
@@ -46,14 +45,17 @@ import static org.nlpa.types.TokenSequence.DEFAULT_SEPARATORS;
 public class StringBuffer2TokenSequencePipe extends AbstractPipe implements SharedDataProducer {
 
     /**
-     * For loggins purposes
-     */
-    //private static final Logger logger = LogManager.getLogger(StringBuffer2TokenSequencePipe.class);
-
-    /**
      * The separators used to tokenize
      */
     private String separators = DEFAULT_SEPARATORS;
+
+    /**
+     * Default constructor. Creates a StringBuffer2TokenSequencePipe Pipe
+     *
+     */
+    public StringBuffer2TokenSequencePipe() {
+        super(new Class<?>[]{StringBufferToLowerCasePipe.class}, new Class<?>[0]);
+    }
 
     /**
      * Return the input type included the data attribute of a Instance
@@ -83,7 +85,7 @@ public class StringBuffer2TokenSequencePipe extends AbstractPipe implements Shar
      * @param separators The separators
      */
     @PipeParameter(name = "separators", description = "Indicates separators used to identify tokens", defaultValue = DEFAULT_SEPARATORS)
-    public void setLangProp(String separators) {
+    public void setSeparators(String separators) {
         this.separators = separators;
     }
 
@@ -97,18 +99,11 @@ public class StringBuffer2TokenSequencePipe extends AbstractPipe implements Shar
     }
 
     /**
-     * Create the pipe and initialize the dictionary. Please note that the
-     * dictionary can be achieved by using the corresponding getter.
-     *
-     */
-    public StringBuffer2TokenSequencePipe() {
-        super(new Class<?>[]{StringBufferToLowerCasePipe.class}, new Class<?>[0]);
-    }
-    
-    /**
      * Compute tokens from text. This method get data from StringBuffer and
      * process instances to get tokens
+     *
      * @param carrier The instance to be processed
+     * @return The processed instance
      */
     @Override
     public Instance pipe(Instance carrier) {

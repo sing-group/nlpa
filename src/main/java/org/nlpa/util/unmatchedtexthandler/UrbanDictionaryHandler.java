@@ -46,7 +46,6 @@ public class UrbanDictionaryHandler extends UnmatchedTextHandler {
      * @param text Is a pair with the original text and the word that matches
      * with the text. If the second one doesn't exists, the value is null
      * @param lang The language of the original string
-     * @return String
      */
     public void handle(Pair<String, String> text, String lang) {
         String originalString = text.getObj1();

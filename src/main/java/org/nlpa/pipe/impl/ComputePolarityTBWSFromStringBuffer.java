@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -42,80 +41,92 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PropertyComputingPipe;
 
 /**
- * This class allows to compute polarity by querying Textblob-ws implemented by Enaitz Ezpeleta
- * Example: 
- * wget -O- -q --header "Content-Type: application/json" --post-data '{"text": "Hello World"}' \
- *     http://&lt;textblob_server&gt;/postjson
- * 
- * To compute the polarity we take advantage of a webservice implementing a REST API.
- * The webservice is implemented python and takes advantae of textblob library
- * to compute polarity.
- * 
- * To execute this task, the textblob web service should be executed. The service
- * can be started using  adocker container included in the /scripts directory.
- * A starting script (run-textblob-ws-sh) is provided to facilitate launching.
- * The text-blob service has been entirelly developed by Enaitz Ezpeleta 
- * (Mondragon Unibertsitatea)
- * 
- * If the service is being executed in other server, SSH tunneling (-L) can be used
- * to connect the pipe with the service. As an example the following command can be used
- * 
+ * This class allows to compute polarity by querying Textblob-ws implemented by
+ * Enaitz Ezpeleta Example: wget -O- -q --header "Content-Type:
+ * application/json" --post-data '{"text": "Hello World"}' \
+ * http://&lt;textblob_server&gt;/postjson
+ *
+ * To compute the polarity we take advantage of a webservice implementing a REST
+ * API. The webservice is implemented python and takes advantae of textblob
+ * library to compute polarity.
+ *
+ * To execute this task, the textblob web service should be executed. The
+ * service can be started using adocker container included in the /scripts
+ * directory. A starting script (run-textblob-ws-sh) is provided to facilitate
+ * launching. The text-blob service has been entirelly developed by Enaitz
+ * Ezpeleta (Mondragon Unibertsitatea)
+ *
+ * If the service is being executed in other server, SSH tunneling (-L) can be
+ * used to connect the pipe with the service. As an example the following
+ * command can be used
+ *
  * sudo ssh -L 80:textblob_ws:80 moncho@ski.4spam.group
+ *
  * @author José Ramón Méndez Reboredo
  * @author Enaitz Ezpeleta
  */
 @AutoService(Pipe.class)
 @PropertyComputingPipe()
 public class ComputePolarityTBWSFromStringBuffer extends AbstractPipe {
-    static Logger logger=LogManager.getLogger(ComputePolarityTBWSFromStringBuffer.class);
+
+    /**
+     * For logging purposes
+     */
+    static Logger logger = LogManager.getLogger(ComputePolarityTBWSFromStringBuffer.class);
 
     /**
      * Contains the default URI for accessing textblob-service
      */
-    private static final String DEFAULT_REQUEST_URI="http://textblob-ws/postjson";
+    private static final String DEFAULT_REQUEST_URI = "http://textblob-ws/postjson";
     //public static final String DEFAULT_URI="http://localhost/postjson";
 
     /**
      * The uri to be used
      */
-    private String uri=DEFAULT_REQUEST_URI;
+    private String uri = DEFAULT_REQUEST_URI;
 
     /**
      * The default name for the polarity property
      */
-    public static final String DEFAULT_POLARITY_PROPERTY="PolarityTBWS";
+    public static final String DEFAULT_POLARITY_PROPERTY = "PolarityTBWS";
 
     /**
      * The polarity property name
      */
-    private String polarityProperty=DEFAULT_POLARITY_PROPERTY;
+    private String polarityProperty = DEFAULT_POLARITY_PROPERTY;
 
     /**
-     * Creates an instance of this pipe
+     * Default constructor. Creates an instance of this pipe with default
+     * configuration.
      */
-    public ComputePolarityTBWSFromStringBuffer(){
+    public ComputePolarityTBWSFromStringBuffer() {
         this(DEFAULT_REQUEST_URI);
     }
 
     /**
-     * Creates an instance of this pipe
+     * Creates an instance of this pipe storing the uri
+     *
      * @param uri The uri that will be used for requests
      */
-    public ComputePolarityTBWSFromStringBuffer(String uri){
-        this(uri,DEFAULT_POLARITY_PROPERTY);
+    public ComputePolarityTBWSFromStringBuffer(String uri) {
+        this(uri, DEFAULT_POLARITY_PROPERTY);
     }
 
     /**
-     * Creates an instance of this pipe
+     * Creates an instance of this pipe storing the uri and polarity property
+     *
      * @param uri The uri that will be used for requests
      * @param polarityProperty The property name to store the polarity
      */
-    public ComputePolarityTBWSFromStringBuffer(String uri, String polarityProperty){
+    public ComputePolarityTBWSFromStringBuffer(String uri, String polarityProperty) {
         super(new Class<?>[0], new Class<?>[0]);
-        this.uri=uri;
-        this.polarityProperty=polarityProperty;
+        this.uri = uri;
+        this.polarityProperty = polarityProperty;
     }
+
     /**
+     * Returns the stored polarity property
+     *
      * @return the polarityProperty
      */
     public String getPolarityProperty() {
@@ -124,6 +135,7 @@ public class ComputePolarityTBWSFromStringBuffer extends AbstractPipe {
 
     /**
      * Establish the polarity property name
+     *
      * @param polarityProperty the polarityProperty to set
      */
     @PipeParameter(name = "polpropname", description = "Indicates the property name to store the polarity", defaultValue = DEFAULT_POLARITY_PROPERTY)
@@ -132,6 +144,8 @@ public class ComputePolarityTBWSFromStringBuffer extends AbstractPipe {
     }
 
     /**
+     * Returns the stored uri
+     *
      * @return the uri
      */
     public String getUri() {
@@ -140,6 +154,7 @@ public class ComputePolarityTBWSFromStringBuffer extends AbstractPipe {
 
     /**
      * Establish the uri to be used for querying purposes
+     *
      * @param uri the uri to set
      */
     @PipeParameter(name = "uri", description = "Indicates the URI to make polarity requests", defaultValue = DEFAULT_REQUEST_URI)
@@ -147,7 +162,7 @@ public class ComputePolarityTBWSFromStringBuffer extends AbstractPipe {
         this.uri = uri;
     }
 
-     /**
+    /**
      * Return the input type included the data attribute of an Instance
      *
      * @return the input type for the data attribute of the Instance processed
@@ -158,8 +173,8 @@ public class ComputePolarityTBWSFromStringBuffer extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
      *
      * @return the datatype expected in the data attribute of an Instance after
      * processing
@@ -170,9 +185,9 @@ public class ComputePolarityTBWSFromStringBuffer extends AbstractPipe {
     }
 
     /**
-     * Process an Instance. This method takes an input Instance, calculates its polarity, 
-     * and returns it. This is the method by which all
-     * pipes are eventually run.
+     * Process an Instance. This method takes an input Instance, calculates its
+     * polarity, and returns it. This is the method by which all pipes are
+     * eventually run.
      *
      * @param carrier Instance to be processed.
      * @return Instance processed
@@ -181,21 +196,21 @@ public class ComputePolarityTBWSFromStringBuffer extends AbstractPipe {
     public Instance pipe(Instance carrier) {
         JsonObject jsonObj = new JsonObject();
         jsonObj.add("text", new JsonPrimitive(carrier.getData().toString()));
-        Double result=http(uri,jsonObj.toString());
-        if(result!=null){
+        Double result = http(uri, jsonObj.toString());
+        if (result != null) {
             carrier.setProperty("PolarityTBWS", result);
-            logger.info("Polarity("+carrier.getData().toString()+")="+result);
-        }else{
-            logger.error("Polarity error error for instance "+carrier+" contents: "+carrier.getData().toString());
+            logger.info("Polarity(" + carrier.getData().toString() + ")=" + result);
+        } else {
+            logger.error("Polarity error error for instance " + carrier + " contents: " + carrier.getData().toString());
             carrier.invalidate();
         }
 
         return carrier;
-	}
-
+    }
 
     /**
      * Makes a json request to the textblob-ws
+     *
      * @param url The URL for the textblob-ws
      * @param body The body of the query
      * @return The polarity of the text
@@ -212,34 +227,29 @@ public class ComputePolarityTBWSFromStringBuffer extends AbstractPipe {
 
             com.google.gson.Gson gson = new com.google.gson.Gson();
             Response respuesta;
-            try{
+            try {
                 respuesta = gson.fromJson(json, Response.class);
-            }catch (Exception e){
-                logger.error(e);
-                e.printStackTrace();
+            } catch (Exception e) {
+                logger.error("[HTTP]: " + e.getMessage());
                 return null;
             }
-            
-            
+
             return respuesta.getPolarity();
 
         } catch (IOException ex) {
-            logger.error(ex);
-            ex.printStackTrace();
-            return null;            
+            logger.error("[HTTP builder]: " + ex.getMessage());
+            return null;
         }
-
-    } 
-
+    }
 }
 
 /**
  * Handles the response for the json query to the textblob-ws
  */
-class Response{
+class Response {
 
     /**
-     * The polaroty
+     * The polarity
      */
     private double polarity;
 
@@ -249,6 +259,8 @@ class Response{
     private double subjectivity;
 
     /**
+     * Returns the stored polarity
+     *
      * @return the polarity
      */
     public double getPolarity() {
@@ -256,6 +268,8 @@ class Response{
     }
 
     /**
+     * Estabilish the polarity
+     *
      * @param polarity the polarity to set
      */
     public void setPolarity(double polarity) {
@@ -263,6 +277,8 @@ class Response{
     }
 
     /**
+     * Returns the subjectivity
+     *
      * @return the subjectivity
      */
     public double getSubjectivity() {
@@ -270,6 +286,8 @@ class Response{
     }
 
     /**
+     * Estabilish the subjectivity
+     *
      * @param subjectivity the subjectivity to set
      */
     public void setSubjectivity(double subjectivity) {

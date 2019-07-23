@@ -103,6 +103,13 @@ public class Configuration {
         }
     }
 
+    /**
+     * Get the configuration options
+     *
+     * @param group Group of configuration to get
+     * @param option Option of configuration to get
+     * @return The value of configuration
+     */
     public String getConfigOption(String group, String option) {
         String retValue;
 

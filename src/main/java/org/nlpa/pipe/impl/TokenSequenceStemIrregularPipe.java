@@ -39,7 +39,8 @@ import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_
 import org.nlpa.types.TokenSequence;
 
 /**
- * Stemmer of generic and abstract irregular terms
+ * A pipe to detect irregular words and get its root from a list of terms
+ * contained in text files.
  *
  * @author José Ramón Méndez Reboredo
  * @since JDK 1.5
@@ -59,12 +60,12 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
     private final String langProp;
 
     /**
-     * Irregular words by lang
+     * List of irregular words classified by lang
      */
     private final static Map<String, Map<String, String>> LANG_WORD_FILES = new HashMap<>();
 
     /**
-     * Irregular words
+     * List of irregular words ans its root
      */
     private Map<String, String> irregularWords = new HashMap<>();
 
@@ -88,7 +89,8 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
     }
 
     /**
-     * Default constructor
+     * Default constructor. Build a TokenSequenceStemIrregularPipe pipe with the
+     * default configuration values
      */
     public TokenSequenceStemIrregularPipe() {
         super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[]{});
@@ -106,8 +108,8 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
      *
      * @return the datatype expected in the data attribute of an Instance after
      * processing
@@ -116,9 +118,10 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
     public Class<?> getOutputType() {
         return TokenSequence.class;
     }
-    
+
     /**
-     * Process instances to detect irregular word and change them.
+     * Process instances to detect irregular word and destructively
+     * replace them with their root.
      *
      * @param carrier Instance to be process
      * @return The processed instance
@@ -134,7 +137,7 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
             if (irregularWords != null) {
                 for (int i = 0; i < ts.size(); i++) {
                     String token = ts.getToken(i);
-                    //Si el token es irregular se cambia el texto
+                    //If the token is irregular, it changes text
                     String changeTxt;
                     if ((changeTxt = irregularWords.get(token)) != null) {
                         token = changeTxt;

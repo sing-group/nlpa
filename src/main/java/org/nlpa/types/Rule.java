@@ -31,12 +31,12 @@ package org.nlpa.types;
 public class Rule {
 
     /**
-     * Sufijo anterior
+     * Previous suffix
      */
     String oldSuffix;
 
     /**
-     * Sufijo de reemplazo
+     * Replacement suffix
      */
     String newSuffix;
 
@@ -46,12 +46,19 @@ public class Rule {
     int minRootSize;
 
     /**
-     * Change condition. Condición de cambio. If it's worth 1 contains a vowel,
-     * if it's worth 2 then removeAnE. If it's worth 3 thn condition is not
-     * neccesary
+     * Change condition. If it's worth 1 contains a vowel, if it's worth 2 then
+     * removeAnE. If it's worth 3 thn condition is not neccesary
      */
     int condition;
 
+    /**
+     * Default constructor. Creates a Rule instance.
+     *
+     * @param fa Previous suffix
+     * @param fn Replacement suffix
+     * @param mrs Min root size
+     * @param c Condition
+     */
     public Rule(String fa, String fn, int mrs, int c) {
         oldSuffix = fa;
         newSuffix = fn;
@@ -115,6 +122,7 @@ public class Rule {
         this.minRootSize = minRootSize;
     }
 
+    @Override
     public String toString() {
         return this.oldSuffix + " " + newSuffix + " " + minRootSize + " " + condition;
     }

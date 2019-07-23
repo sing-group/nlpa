@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -58,38 +57,14 @@ public class FindUrlInStringBufferPipe extends AbstractPipe {
     /**
      * Pattern for URLs
      */
-                                                     //regex used: (?:\s|["><¡?¿!;:,.'(]|^)((?:(?:[[:alnum:]]+:(?:\/{1,2}))|\/{0,2}www\.)(?:[\w-]+(?:(?:\.[\w-]+)*))(?:(?:[\w~?=-][.;,@?^=%&:\/~+#-]?)*)[\w@?^=%&\/~+#,;!:<\\"?\-]?(?=(?:[<\\,;!"?)]|\s|$)))
-        private static final Pattern URLPattern = Pattern.compile("(?:\\s|[\"><¡?¿!;:,.'\\(]|^)((?:(?:[\\p{Alnum}]+:(?:\\/{1,2}))|\\/{0,2}www\\.)(?:[\\w-]+(?:(?:\\.[\\w-]+)*))(?:(?:[\\w~?=-][.;,@?^=%&:\\/~+#-]?)*)[\\w@?^=%&\\/~+#,;!:<\\\\\"?-]?(?=(?:[<\\\\,;!\"?\\)]|\\s|$)))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+    //regex used: (?:\s|["><¡?¿!;:,.'(]|^)((?:(?:[[:alnum:]]+:(?:\/{1,2}))|\/{0,2}www\.)(?:[\w-]+(?:(?:\.[\w-]+)*))(?:(?:[\w~?=-][.;,@?^=%&:\/~+#-]?)*)[\w@?^=%&\/~+#,;!:<\\"?\-]?(?=(?:[<\\,;!"?)]|\s|$)))
+    private static final Pattern URLPattern = Pattern.compile("(?:\\s|[\"><¡?¿!;:,.'\\(]|^)((?:(?:[\\p{Alnum}]+:(?:\\/{1,2}))|\\/{0,2}www\\.)(?:[\\w-]+(?:(?:\\.[\\w-]+)*))(?:(?:[\\w~?=-][.;,@?^=%&:\\/~+#-]?)*)[\\w@?^=%&\\/~+#,;!:<\\\\\"?-]?(?=(?:[<\\\\,;!\"?\\)]|\\s|$)))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
     /**
      * Pattern for e-mail addresses
      */
-    
-                                                  // regex used: (?:\s|["><¡?¿!;:,.'(]|^)((?:[\w_.çñ+-]+)(?:@|\(at\)|<at>)(?:(?:\w[\\.:ñ-]?)*)[[:alnum:]ñ](?:\.[A-Z]{2,4}))[;:?"!,.'>)]?(?=(?:\s|$|>))
+
+    // regex used: (?:\s|["><¡?¿!;:,.'(]|^)((?:[\w_.çñ+-]+)(?:@|\(at\)|<at>)(?:(?:\w[\\.:ñ-]?)*)[[:alnum:]ñ](?:\.[A-Z]{2,4}))[;:?"!,.'>)]?(?=(?:\s|$|>))
     private static final Pattern emailPattern = Pattern.compile("(?:\\s|[\"><¡?¿!;:,.'\\(]|^)((?:[\\w_.çñ+-]+)(?:@|\\(at\\)|<at>)(?:(?:\\w[\\\\.:ñ-]?)*)[\\p{Alnum}ñ](?:\\.[A-Z]{2,4}))[;:?\"!,.'>\\)]?(?=(?:\\s|$|>))", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
-
-    /**
-     * Return the input type included the data attribute of an Instance
-     *
-     * @return the input type for the data attribute of the Instance processed
-     */
-    @Override
-    public Class<?> getInputType() {
-        return StringBuffer.class;
-    }
-
-    /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
-     *
-     * @return the datatype expected in the data attribute of an Instance after
-     * processing
-     */
-    @Override
-    public Class<?> getOutputType() {
-        return StringBuffer.class;
-    }
-
-    
 
     /**
      * The default value for removing @userName
@@ -104,12 +79,34 @@ public class FindUrlInStringBufferPipe extends AbstractPipe {
     /**
      * Indicates if URLs should be removed
      */
-    private boolean removeURL=EBoolean.getBoolean(DEFAULT_REMOVE_URL);
+    private boolean removeURL = EBoolean.getBoolean(DEFAULT_REMOVE_URL);
 
     /**
      * The property name to store @userName
      */
     private String URLProp = DEFAULT_URL_PROPERTY;
+
+    /**
+     * Return the input type included the data attribute of an Instance
+     *
+     * @return the input type for the data attribute of the Instance processed
+     */
+    @Override
+    public Class<?> getInputType() {
+        return StringBuffer.class;
+    }
+
+    /**
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
+     *
+     * @return the datatype expected in the data attribute of an Instance after
+     * processing
+     */
+    @Override
+    public Class<?> getOutputType() {
+        return StringBuffer.class;
+    }
 
     /**
      * Indicates if URL should be removed
@@ -180,9 +177,8 @@ public class FindUrlInStringBufferPipe extends AbstractPipe {
      * @param URLProp The name of the property to store @userName
      * @param removeURL tells if URL should be removed
      */
-
     public FindUrlInStringBufferPipe(String URLProp, boolean removeURL) {
-        super(new Class<?>[0],new Class<?>[]{FindUserNameInStringBufferPipe.class});
+        super(new Class<?>[0], new Class<?>[]{FindUserNameInStringBufferPipe.class});
 
         this.URLProp = URLProp;
         this.removeURL = removeURL;
@@ -193,8 +189,8 @@ public class FindUrlInStringBufferPipe extends AbstractPipe {
 
     /**
      * Process an Instance. This method takes an input Instance, modifies it
-     * removing URLs, adds a property and returns it. This is the method by which all pipes are
-     * eventually run.
+     * removing URLs, adds a property and returns it. This is the method by
+     * which all pipes are eventually run.
      *
      * @param carrier Instance to be processed.
      * @return processed Instance
@@ -211,22 +207,22 @@ public class FindUrlInStringBufferPipe extends AbstractPipe {
                 for (Pattern URLPat : URLPatterns) {
                     Matcher m = URLPat.matcher(sb);
                     int last = 0;
-                    
+
                     while (m.find(last)) {
                         value += m.group(1) + " ";
-                        last=removeURL?m.start(1):m.end(1);
-                        
+                        last = removeURL ? m.start(1) : m.end(1);
+
                         if (removeURL) {
-                            sb.replace(m.start(1),m.end(1),"");
+                            sb.replace(m.start(1), m.end(1), "");
                         }
                     }
-                }    
+                }
             } else {
                 logger.info("URL not found for instance " + carrier.toString());
             }
             carrier.setProperty(URLProp, value);
-        }else{
-          logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
+        } else {
+            logger.error("Data should be an StrinBuffer when processing " + carrier.getName() + " but is a " + carrier.getData().getClass().getName());
         }
         return carrier;
     }

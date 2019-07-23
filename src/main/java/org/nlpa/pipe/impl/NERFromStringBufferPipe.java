@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -53,7 +52,7 @@ public class NERFromStringBufferPipe extends AbstractPipe {
     private static final Logger logger = LogManager.getLogger(NERFromStringBufferPipe.class);
 
     /**
-     * Initing entity types collection
+     * Initialize entity types collection
      */
     List<String> entityTypes = null;
 
@@ -62,13 +61,19 @@ public class NERFromStringBufferPipe extends AbstractPipe {
      */
     public static final String DEFAULT_ENTITY_TYPES = "DATE,MONEY,NUMBER,ADDRESS,LOCATION";
 
+    /**
+     * Initialize identify entities property
+     */
     List<String> identifiedEntitiesProperty = null;
+
     /**
      * The default property name to store the identified entities
      */
     public static final String DEFAULT_IDENTIFIED_ENTITIES_PROPERTY = "NERDATE,NERMONEY,NERNUMBER,NERADDRESS,NERLOCATION";
 
-    
+    /**
+     * Initialize entityTypes and identifiedEntitiesProperty with default values
+     */
     private void init() {
         setEntityTypes(DEFAULT_ENTITY_TYPES);
         setIdentifiedEntitiesProperty(DEFAULT_IDENTIFIED_ENTITIES_PROPERTY);
@@ -83,6 +88,10 @@ public class NERFromStringBufferPipe extends AbstractPipe {
      * Initing a StandfordCoreNLP pipeline
      */
     static StanfordCoreNLP pipeline;
+    
+    /**
+     * Initing properties
+     */
     static Properties props;
 
     static {
@@ -126,9 +135,10 @@ public class NERFromStringBufferPipe extends AbstractPipe {
 
     /**
      * Return the identified properties as string
+     *
      * @return The identified properties as string
      */
-    public String getIdentifiedEntitiesProp(){
+    public String getIdentifiedEntitiesProp() {
         return identifiedEntitiesProp;
     }
 
@@ -140,8 +150,9 @@ public class NERFromStringBufferPipe extends AbstractPipe {
     @PipeParameter(name = "identifiedEntitiesProperty", description = "Indicates the property name to store the identified entities", defaultValue = DEFAULT_IDENTIFIED_ENTITIES_PROPERTY)
     public void setIdentifiedEntitiesProp(List<String> identifiedEntitiesProperty) {
         this.identifiedEntitiesProp = "";
-        for (String p : identifiedEntitiesProperty)
+        for (String p : identifiedEntitiesProperty) {
             this.identifiedEntitiesProp += (p + " ");
+        }
         this.identifiedEntitiesProperty = identifiedEntitiesProperty;
     }
 
@@ -165,14 +176,15 @@ public class NERFromStringBufferPipe extends AbstractPipe {
      * Retrieves the property name for storing the identified entities
      *
      * @return String containing the property name for storing the identified
-     *         entities
+     * entities
      */
     public Collection<String> getIdentifiedEntitiesProperty() {
         return this.identifiedEntitiesProperty;
     }
 
     /**
-     * Determines the input type for the data attribute of the Instances processed
+     * Determines the input type for the data attribute of the Instances
+     * processed
      *
      * @return the input type for the data attribute of the Instances processed
      */
@@ -182,11 +194,11 @@ public class NERFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
      *
      * @return the datatype expected in the data attribute of an Instance after
-     *         processing
+     * processing
      */
     @Override
     public Class<?> getOutputType() {
@@ -194,25 +206,25 @@ public class NERFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Default constructor
+     * Default constructor. Creates a NERFromStringBufferPipe Pipe
      */
     public NERFromStringBufferPipe() {
-        super(new Class<?>[0],new Class<?>[0]);
-        
+        super(new Class<?>[0], new Class<?>[0]);
+
         init();
     }
 
     // Indicate which annotators will be used (see:
     // https://stanfordnlp.github.io/CoreNLP)
     /**
-     * Build a NERFromStringBufferPipe that stores the identified entities in the
-     * property identifiedEntitiesProp
+     * Build a NERFromStringBufferPipe that stores the identified entities in
+     * the property identifiedEntitiesProp
      *
-     * @param identifiedEntitiesProp The name of the property to store identified
-     *                               entities
+     * @param identifiedEntitiesProp The name of the property to store
+     * identified entities
      */
     public NERFromStringBufferPipe(String identifiedEntitiesProp) {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[0], new Class<?>[0]);
 
         this.identifiedEntitiesProp = identifiedEntitiesProp;
     }
@@ -223,27 +235,28 @@ public class NERFromStringBufferPipe extends AbstractPipe {
      * @param entityTypes The list of the entity types to annotate
      */
     public NERFromStringBufferPipe(List<String> entityTypes) {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[0], new Class<?>[0]);
 
         this.entityTypes = entityTypes;
     }
 
     /**
      * Build a NERFromStringBufferPipe that stores the entity types to annotate
-     * 
-     * @param identifiedEntitiesProp The property names for the identified entities
-     * @param entityTypes            The list of the entity types to annotate
+     *
+     * @param identifiedEntitiesProp The property names for the identified
+     * entities
+     * @param entityTypes The list of the entity types to annotate
      */
     public NERFromStringBufferPipe(String identifiedEntitiesProp, List<String> entityTypes) {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[0], new Class<?>[0]);
 
         this.entityTypes = entityTypes;
     }
 
     /**
      * Process an Instance. This method takes an input Instance, modifies it
-     * removing NER, adds properties and returns the instance. 
-     * This is the method by which all pipes are eventually run.
+     * removing NER, adds properties and returns the instance. This is the
+     * method by which all pipes are eventually run.
      *
      * @param carrier Instance to be processed.
      * @return Instance processed
@@ -307,8 +320,7 @@ public class NERFromStringBufferPipe extends AbstractPipe {
             }
 
         } catch (Exception ex) {
-            logger.error(ex.getMessage());
-            ex.printStackTrace();
+            logger.error("[PIPE]" + ex.getMessage());
         }
 
         identifiedEntitiesProperty.stream().filter((propName) -> (carrier.getProperty(propName) == null))

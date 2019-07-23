@@ -19,12 +19,9 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.types.Instance;
@@ -52,11 +49,6 @@ import org.bdp4j.util.Configurator;
 public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedDataConsumer {
 
     /**
-     * For logging purposes
-     */
-    //private static final Logger logger = LogManager.getLogger(TeeCSVFromFeatureVectorPipe.class);
-
-    /**
      * The default value for the output file
      */
     public static final String DEFAULT_OUTPUT_FILE = "output.csv";
@@ -72,7 +64,7 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
     private String output;
 
     /**
-     * Csv DAtaset to store data
+     * Csv Dataset to store data
      */
     CSVDatasetWriter dataset = null;
 
@@ -92,7 +84,8 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
     private boolean saveProps = EBoolean.getBoolean(DEFAULT_SAVEPROPS);
 
     /**
-     * Build a TeeCSVFromFeatureVector using the default information
+     * Default constructor. Build a TeeCSVFromFeatureVector using the default
+     * information
      */
     public TeeCSVFromFeatureVectorPipe() {
         this(DEFAULT_OUTPUT_FILE, EBoolean.getBoolean(DEFAULT_SAVEPROPS));
@@ -203,8 +196,8 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
      *
      * @return the datatype expected in the data attribute of an Instance after
      * processing
@@ -215,8 +208,8 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
     }
 
     /**
-     * Process an Instance. This method takes an input Instance and creates a CSV file. 
-     * This is the method by which all pipes are eventually run.
+     * Process an Instance. This method takes an input Instance and adds it to a
+     * CSV file. This is the method by which all pipes are eventually run.
      *
      * @param carrier Instance to be processed.
      * @return Instance processed
@@ -247,9 +240,9 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
             while (it.hasNext()) {
                 String dictEntry = it.next();
                 if (dictionary.getEncode()) {
-                    try{
-                    dictEntry = dictionary.decodeBase64(dictEntry);
-                    }catch(Exception ex){
+                    try {
+                        dictEntry = dictionary.decodeBase64(dictEntry);
+                    } catch (Exception ex) {
                         ex.getMessage();
                     }
                 }

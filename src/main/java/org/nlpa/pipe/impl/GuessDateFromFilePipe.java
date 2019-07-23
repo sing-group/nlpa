@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import org.nlpa.util.dateextractor.WARCDateExtractor;
@@ -49,25 +48,16 @@ import org.bdp4j.pipe.Pipe;
 @AutoService(Pipe.class)
 @PropertyComputingPipe()
 public class GuessDateFromFilePipe extends AbstractPipe {
-    /**
-     * The default name for the date property
-     */
-    public static final String DEFAULT_DATE_PROPERTY = "date";
 
     /**
      * For logging purposes
      */
     private static final Logger logger = LogManager.getLogger(GuessDateFromFilePipe.class);
 
-    @Override
-    public Class<?> getInputType() {
-        return File.class;
-    }
-
-    @Override
-    public Class<?> getOutputType() {
-        return File.class;
-    }
+    /**
+     * The default name for the date property
+     */
+    public static final String DEFAULT_DATE_PROPERTY = "date";
 
     /**
      * A collection of DateExtractors
@@ -101,6 +91,28 @@ public class GuessDateFromFilePipe extends AbstractPipe {
     String dateProp = DEFAULT_DATE_PROPERTY;
 
     /**
+     * Return the input type included the data attribute of an Instance
+     *
+     * @return the input type for the data attribute of the Instance processed
+     */
+    @Override
+    public Class<?> getInputType() {
+        return File.class;
+    }
+
+    /**
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
+     *
+     * @return the datatype expected in the data attribute of an Instance after
+     * processing
+     */
+    @Override
+    public Class<?> getOutputType() {
+        return File.class;
+    }
+
+    /**
      * Set the the property where the date will be stored
      *
      * @param dateProp the name of the property for the date
@@ -120,8 +132,8 @@ public class GuessDateFromFilePipe extends AbstractPipe {
     }
 
     /**
-     * Create a GuessDateFromFile which stores the date of the content in the
-     * property "date"
+     * Default constructor. Create a GuessDateFromFile which stores the date of
+     * the content in the property "date"
      */
     public GuessDateFromFilePipe() {
         this(DEFAULT_DATE_PROPERTY);
@@ -139,6 +151,14 @@ public class GuessDateFromFilePipe extends AbstractPipe {
         this.dateProp = dateProp;
     }
 
+    /**
+     * This method takes an input Instance, finds out the
+     * content Date from different formats, adds an instance property for date and
+     * returns it. This is the method by which all pipes are eventually run.
+     * 
+     * @param carrier Instance to processed
+     * @return Processed instance
+     */
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof File) {
@@ -170,9 +190,8 @@ public class GuessDateFromFilePipe extends AbstractPipe {
                 }
             } catch (Exception ex) {
                 logger.error("[GUESS DATE FROM FILE PIPE ] " + ex.getMessage());
-             }
+            }
         }
-
         return carrier;
     }
 }

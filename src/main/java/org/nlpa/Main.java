@@ -37,7 +37,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.bdp4j.dataset.CSVDatasetReader;
+import org.bdp4j.transformers.CheckVoidTransformer;
+import org.bdp4j.transformers.Date2MillisTransformer;
+import org.bdp4j.transformers.Enum2IntTransformer;
+import org.bdp4j.transformers.Url2BinaryTransformer;
+import org.bdp4j.types.Transformer;
 
 /**
  * Main class for SKI4Spam project
@@ -64,7 +72,7 @@ public class Main {
     public static void main(String[] args) {
         // System.out.println("Program started.");
         if (args.length == 0) {
-            generateInstances("tests/");
+            generateInstances("tests3/");
         } else {
             generateInstances(args[0]);
         }
@@ -79,7 +87,7 @@ public class Main {
         /*
          * Create an example to identify methods which have ParameterPipe annotations.
          */
-        /*
+ /*
          * Method[] methods = SynsetVector2SynsetFeatureVectorPipe.class.getMethods();
          * PipeParameter parameterPipe; for (Method method : methods) { parameterPipe =
          * method.getAnnotation(PipeParameter.class);//Obtienes los métodos que tengan
@@ -90,7 +98,7 @@ public class Main {
          * // Obtienes los tipos de los parámetros para un método
          * //System.out.println(parameterName + " --> " + parameterDescription); } }
          */
-        /*
+ /*
          * // Parámetro para el transformador Enum2IntTransformer de la propiedad target
          * Map<String, Integer> transformList = new HashMap<>();
          * transformList.put("ham", 0); transformList.put("spam", 1); //Se define la
@@ -107,37 +115,56 @@ public class Main {
          * DatasetFromFile jml = new DatasetFromFile(filePath, transformersList);
          * jml.loadFile();
          */
+        //Then load the dataset to use it with Weka TM
+        Map<String, Integer> targetValues = new HashMap<>();
+        targetValues.put("ham", 0);
+        targetValues.put("spam", 1);
+
+        //Lets define transformers for the dataset
+        Map<String, Transformer> transformersList = new HashMap<>();
+        transformersList.put("target", new Enum2IntTransformer(targetValues));
+        transformersList.put("date", new Date2MillisTransformer());
+        transformersList.put("URLs", new Url2BinaryTransformer());
+//        long before = System.currentTimeMillis();
+//        System.out.println("before");
+//        weka.core.Instances data = (new CSVDatasetReader("output_spam_ass.csv", transformersList)).loadFile().getWekaDataset();
+//        System.out.println(" -- DATA --- \r\n " + data);
+//        long time = System.currentTimeMillis() - before;
+//        System.out.println("time: " + time);
+
+        TeeDatasetFromFeatureVectorPipe teeDatasetFSV = new TeeDatasetFromFeatureVectorPipe();
+        teeDatasetFSV.setTransformersList(transformersList);
         /* create a example of pipe */
-        AbstractPipe p = new SerialPipes(new AbstractPipe[] { new TargetAssigningFromPathPipe(),
-                new StoreFileExtensionPipe(), new GuessDateFromFilePipe(), new File2StringBufferPipe(),
-                new MeasureLengthFromStringBufferPipe(), new StripHTMLFromStringBufferPipe(),
-                new MeasureLengthFromStringBufferPipe("length_after_html_drop"), new FindUserNameInStringBufferPipe(),
-                new FindHashtagInStringBufferPipe(), new FindUrlInStringBufferPipe(),
-                new FindEmoticonInStringBufferPipe(), new FindEmojiInStringBufferPipe(),
-                new MeasureLengthFromStringBufferPipe("length_after_cleaning_text"),
-                new GuessLanguageFromStringBufferPipe(), new ContractionsFromStringBufferPipe(),
-                new AbbreviationFromStringBufferPipe(), new SlangFromStringBufferPipe(),
-                new StringBufferToLowerCasePipe(), new InterjectionFromStringBufferPipe(),
-                new StopWordFromStringBufferPipe(),
-                // new ComputePolarityFromStringBufferPipe(),
-                // new NERFromStringBufferPipe(),
-                // sudo ssh -L 80:textblob_ws:80 moncho@ski.4spam.group
-                // new ComputePolarityFromStringBufferPipe("http://localhost/postjson"),
-                new TeeCSVFromStringBufferPipe("output.csv", true), new StringBuffer2SynsetSequencePipe(),
-                new SynsetSequence2FeatureVectorPipe(SequenceGroupingStrategy.COUNT),
-                new TeeCSVFromFeatureVectorPipe("outputsyns.csv"),
+        AbstractPipe p = new SerialPipes(new AbstractPipe[]{new TargetAssigningFromPathPipe(),
+            new StoreFileExtensionPipe(), 
+            new GuessDateFromFilePipe(), 
+            new File2StringBufferPipe(),
+            new MeasureLengthFromStringBufferPipe(),
+            new FindUrlInStringBufferPipe(),
+            new StripHTMLFromStringBufferPipe(),
+            new MeasureLengthFromStringBufferPipe("length_after_html_drop"), 
+            new GuessLanguageFromStringBufferPipe(),
+            new StringBufferToLowerCasePipe(), 
+            new InterjectionFromStringBufferPipe(),
+            new StopWordFromStringBufferPipe(),
+            new TeeCSVFromStringBufferPipe("output.csv", true), 
+            new StringBuffer2SynsetSequencePipe(),
+            new SynsetSequence2FeatureVectorPipe(SequenceGroupingStrategy.COUNT),
+            // new TeeCSVFromFeatureVectorPipe("outputsyns.csv"),
+            teeDatasetFSV
         });
 
-        if (!p.checkDependencies()){
-          System.out.println("Pipe dependencies are not satisfied");
+        if (!p.checkDependencies()) {
+            System.out.println("Pipe dependencies are not satisfied");
 //          System.out.println(AbstractPipe.getErrorMesage()); // TODO why is this an error?
-          System.exit(1);
-        }else
-          System.out.println("Pipe dependencies are satisfied");
+            System.exit(1);
+        } else {
+            System.out.println("Pipe dependencies are satisfied");
+        }
 
         instances = InstanceListUtils.dropInvalid(instances);
 
-        /*Pipe all instances*/
+        //Pipe all instances
         p.pipeAll(instances);
 
         for (Instance i : instances) {
@@ -146,7 +173,6 @@ public class Main {
                     ? (i.getData().toString().substring(0, 10) + "...")
                     : i.getData().toString()));
         }
-
     }
 
     /**

@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -46,7 +45,8 @@ import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_
 import org.nlpa.types.Rule;
 
 /**
- * Stemmer according to Porter's algorithm
+ * Stemmer according to Porter's algorithm. Reduces a word to its root using
+ * Porter's algorithm.
  *
  * @author José Ramón Méndez Reboredo
  * @since JDK 1.5
@@ -71,7 +71,7 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
     private final static Map<String, List<Pair<String, List<Rule>>>> RULES_FILES = new HashMap<>();
 
     /**
-     * Stemming rules
+     * A list with Stemming rules
      */
     private List<Pair<String, List<Rule>>> rules = new ArrayList<>();
 
@@ -166,14 +166,15 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
     }
 
     /**
-     * Default constructor
+     * Default constructor. Build a TokenSequencePorterStemmerPipe pipe with the
+     * default configuration values
      */
     public TokenSequencePorterStemmerPipe() {
         super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[]{TokenSequenceStemIrregularPipe.class});
         this.langProp = DEFAULT_LANG_PROPERTY;
     }
 
-     /**
+    /**
      * Return the input type included the data attribute of a Instance
      *
      * @return the input type for the data attribute of the Instances processed
@@ -196,7 +197,8 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
     }
 
     /**
-     * Process instances and apply steemer to them.
+     * Process instances and apply steemer to them, destructively modify them
+     * and replace with its root.
      *
      * @param carrier Instance to be process
      * @return The processed instance
@@ -290,7 +292,7 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
     }
 
     /**
-     * Check if word ends with <Consonante><Vocal><Consonante>
+     * Check if word ends with <Consonant><Vowel><Consonant>
      *
      * @param word Word to check
      * @return True if word ends with CVC, false otherwise.

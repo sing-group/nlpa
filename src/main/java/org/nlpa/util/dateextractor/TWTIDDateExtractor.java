@@ -31,7 +31,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.nlpa.util.TwitterConfigurator;
 import twitter4j.Status;
-//import twitter4j.TwitterFactory;
 
 /**
  * This is a DateExtracfor for twtid files. These files should contain only a
@@ -51,10 +50,6 @@ public class TWTIDDateExtractor extends DateExtractor {
      */
     private static DateExtractor instance = null;
 
-    /**
-     * A instance of TwitterFactory
-     */
-    //private TwitterFactory tf = TwitterConfigurator.getTwitterFactory();
     /**
      * The default constructor (converted to private to implement singleton)
      */

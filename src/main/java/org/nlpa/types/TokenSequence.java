@@ -30,7 +30,7 @@ import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 /**
- * A tokenSequence implementation
+ * A class to represent a sequence of tokens.
  *
  * @author José Ramón Méndez Reboredo
  */
@@ -47,7 +47,7 @@ public class TokenSequence implements Serializable {
     private List<String> tokens = new ArrayList<>();
 
     /**
-     * The separators for tokenising
+     * The separators for tokenize
      */
     public static final String DEFAULT_SEPARATORS = " \t\r\n\f!\"#$%&'()*+,\\-./:;<=>?@[]^_`{|}~";
 
@@ -79,7 +79,7 @@ public class TokenSequence implements Serializable {
     }
 
     /**
-     * Build a Feature Vector
+     * Build a Feature Vector and add the information do Dictionary
      *
      * @return The feature Vector built
      */

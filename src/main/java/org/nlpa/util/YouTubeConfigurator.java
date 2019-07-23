@@ -36,6 +36,7 @@ import org.apache.logging.log4j.Logger;
 import org.bdp4j.util.Pair;
 
 /**
+ * This class allows to create a cache with youtube data.
  *
  * @author María Novo
  */
@@ -68,11 +69,10 @@ public class YouTubeConfigurator {
     private static YouTubeConfigurator youTubeData = null;
 
     /**
-     * The default constructor
+     * The default constructor. Creates a YouTubeConfigurator instance
      */
     private YouTubeConfigurator() {
         youTubeDataInstances = new LinkedHashMap<>();
-         
     }
 
     /**
@@ -151,8 +151,8 @@ public class YouTubeConfigurator {
      * @param filename File name where the data is saved
      */
     public void writeToDisk(String filename) {
-        try (FileOutputStream outputFile = new FileOutputStream(filename);
-                BufferedOutputStream buffer = new BufferedOutputStream(outputFile);
+        try (FileOutputStream outputFOS = new FileOutputStream(filename);
+                BufferedOutputStream buffer = new BufferedOutputStream(outputFOS);
                 ObjectOutputStream output = new ObjectOutputStream(buffer);) {
 
             output.writeObject(this.youTubeDataInstances);
@@ -208,6 +208,13 @@ public class YouTubeConfigurator {
         }
     }
 
+    /**
+     * Get the size of the map that contains ths information storage for YouTube
+     * cache
+     *
+     * @return The size of the map that contains ths information storage for
+     * YouTube cache
+     */
     public int size() {
         return this.youTubeDataInstances.size();
     }

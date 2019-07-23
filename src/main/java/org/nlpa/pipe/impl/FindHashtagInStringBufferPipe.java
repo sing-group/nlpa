@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -59,29 +58,6 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
     private static final Pattern hashtagPattern = Pattern.compile("(?:\\s|^|[\"><¡?¿!;:,.'-])(#[^\\p{Cntrl}\\p{Space}!\"#$%&'()*+\\\\,\\/:;<=>?@\\[\\]^`{|}~.-]+)[;:?\"!,.'>-]?(?=(?:\\s|$|>))");
 
     /**
-     * Return the input type included the data attribute of an Instance
-     *
-     * @return the input type for the data attribute of the Instance processed
-     */
-    @Override
-    public Class<?> getInputType() {
-        return StringBuffer.class;
-    }
-
-    /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
-     *
-     * @return the datatype expected in the data attribute of an Instance after
-     * processing
-     */
-    @Override
-    public Class<?> getOutputType() {
-        return StringBuffer.class;
-    }
-
-    
-    /**
      * The default value for removed hashtags
      */
     public static final String DEFAULT_REMOVE_HASHTAG = "yes";
@@ -100,6 +76,28 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
      * The property name to store hashtags
      */
     private String hashtagProp = DEFAULT_HASHTAG_PROPERTY;
+
+    /**
+     * Return the input type included the data attribute of an Instance
+     *
+     * @return the input type for the data attribute of the Instance processed
+     */
+    @Override
+    public Class<?> getInputType() {
+        return StringBuffer.class;
+    }
+
+    /**
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
+     *
+     * @return the datatype expected in the data attribute of an Instance after
+     * processing
+     */
+    @Override
+    public Class<?> getOutputType() {
+        return StringBuffer.class;
+    }
 
     /**
      * Indicates if hashtag should be removed from data
@@ -163,7 +161,7 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Construct a FindHashtagInStringBufferPipe instance with the default
+     * Default constructor. Construct a FindHashtagInStringBufferPipe instance with the default
      * configuration value
      */
     public FindHashtagInStringBufferPipe() {
@@ -178,16 +176,16 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
      * @param removeHashtag tells if hashtags should be removed
      */
     public FindHashtagInStringBufferPipe(String hashtagProp, boolean removeHashtag) {
-        super(new Class<?>[0],new Class<?>[0]);
-        
+        super(new Class<?>[0], new Class<?>[0]);
+
         this.hashtagProp = hashtagProp;
         this.removeHashtag = removeHashtag;
     }
 
     /**
      * Process an Instance. This method takes an input Instance, modifies it
-     * removing hashtags, adds a property and returns it. This is the method by which all pipes
-     * are eventually run.
+     * removing hashtags, adds a property and returns it. This is the method by
+     * which all pipes are eventually run.
      *
      * @param carrier Instance to be processed.
      * @return Instance processed
@@ -196,7 +194,7 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
 
-            StringBuffer data = (StringBuffer)carrier.getData();
+            StringBuffer data = (StringBuffer) carrier.getData();
             String value = "";
 
             if (isHashtag(data)) {
@@ -204,7 +202,7 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
                 int last = 0;
                 while (m.find(last)) {
                     value += m.group(1) + " ";
-                    last = removeHashtag?m.start(1):m.end(1);
+                    last = removeHashtag ? m.start(1) : m.end(1);
                     if (removeHashtag) {
                         data = data.replace(m.start(1), m.end(1), "");
                     }
@@ -215,8 +213,8 @@ public class FindHashtagInStringBufferPipe extends AbstractPipe {
 
             carrier.setProperty(hashtagProp, value);
 
-        }else{
-          logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
+        } else {
+            logger.error("Data should be an StrinBuffer when processing " + carrier.getName() + " but is a " + carrier.getData().getClass().getName());
         }
         return carrier;
     }

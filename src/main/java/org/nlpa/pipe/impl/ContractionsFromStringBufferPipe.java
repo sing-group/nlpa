@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -43,8 +42,9 @@ import org.bdp4j.pipe.TransformationPipe;
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 /**
- * Pipe that replaces the contractions in the original text
- * Example "i can't" -%gt; "i cannot"
+ * Pipe that replaces the contractions in the original text Example "i can't"
+ * -%gt; "i cannot"
+ *
  * @author José Ramón Méndez Reboredo
  */
 @AutoService(Pipe.class)
@@ -69,10 +69,9 @@ public class ContractionsFromStringBufferPipe extends AbstractPipe {
     private static final HashMap<String, HashMap<String, Pair<Pattern, String>>> htContractions = new HashMap<>();
 
     static {
-        for (String i : new String[]{"/contractions-json/contr.en.json", "/contractions-json/contr.es.json", 
-        }) {
+        for (String i : new String[]{"/contractions-json/contr.en.json", "/contractions-json/contr.es.json",}) {
             String lang = i.substring(25, 27).toUpperCase();
-            
+
             try {
                 InputStream is = ContractionsFromStringBufferPipe.class.getResourceAsStream(i);
                 JsonReader rdr = Json.createReader(is);
@@ -82,7 +81,7 @@ public class ContractionsFromStringBufferPipe extends AbstractPipe {
                 for (String abbrev : jsonObject.keySet()) {
                     dict.put(abbrev, new Pair<>(
                             Pattern.compile("(?:[\\p{Space}]|[\"><¡?¿!;:,.'-]|^)(" + Pattern.quote(abbrev) + ")[;:?\"!,.'>-]?(?=(?:[\\p{Space}]|$|>))"),
-                            jsonObject.getString(abbrev))); 
+                            jsonObject.getString(abbrev)));
                 }
                 htContractions.put(lang, dict);
             } catch (Exception e) {
@@ -92,7 +91,8 @@ public class ContractionsFromStringBufferPipe extends AbstractPipe {
         }
 
     }
-     /**
+
+    /**
      * Return the input type included the data attribute of an Instance
      *
      * @return the input type for the data attribute of the Instance processed
@@ -103,8 +103,8 @@ public class ContractionsFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
      *
      * @return the datatype expected in the data attribute of an Instance after
      * processing
@@ -115,7 +115,7 @@ public class ContractionsFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Construct a ContractionsFromStringBuffer instance
+     * Default constructor. Construct a ContractionsFromStringBuffer instance
      */
     public ContractionsFromStringBufferPipe() {
         this(DEFAULT_LANG_PROPERTY);
@@ -128,7 +128,7 @@ public class ContractionsFromStringBufferPipe extends AbstractPipe {
      * @param langProp The property that stores the language of text
      */
     public ContractionsFromStringBufferPipe(String langProp) {
-        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class},new Class<?>[0]);
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[0]);
 
         this.langProp = langProp;
     }
@@ -165,24 +165,24 @@ public class ContractionsFromStringBufferPipe extends AbstractPipe {
         if (carrier.getData() instanceof StringBuffer) {
 
             String lang = (String) carrier.getProperty(langProp);
-            StringBuffer sb = (StringBuffer)carrier.getData();
+            StringBuffer sb = (StringBuffer) carrier.getData();
 
-            HashMap<String,Pair<Pattern,String>> dict = htContractions.get(lang);
-            if (dict==null) return carrier; //When there is not a dictionary for the language
-
-            for(String abbrev:dict.keySet()){
-                 Pattern p=dict.get(abbrev).getObj1();
-                 Matcher m = p.matcher(sb);
-                 int last = 0;
-                 while (m.find(last)){
+            HashMap<String, Pair<Pattern, String>> dict = htContractions.get(lang);
+            if (dict == null) {
+                return carrier; //When there is not a dictionary for the language
+            }
+            for (String abbrev : dict.keySet()) {
+                Pattern p = dict.get(abbrev).getObj1();
+                Matcher m = p.matcher(sb);
+                int last = 0;
+                while (m.find(last)) {
                     last = m.start(1);
                     sb = sb.replace(m.start(1), m.end(1), dict.get(abbrev).getObj2());
-                 }
+                }
             }
-       }else{
-         logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
-       }
-       return carrier;
-   }
-
+        } else {
+            logger.error("Data should be an StrinBuffer when processing " + carrier.getName() + " but is a " + carrier.getData().getClass().getName());
+        }
+        return carrier;
+    }
 }

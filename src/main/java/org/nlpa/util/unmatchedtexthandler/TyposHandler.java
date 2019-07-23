@@ -88,10 +88,10 @@ public class TyposHandler extends UnmatchedTextHandler {
     }
 
     /**
-     * This method create instance of the language class corresponding with the
+     * This method get instance of the language class corresponding with the
      * lang parameter.
      *
-     * @param lang
+     * @param lang Specifies the language of instance to get
      * @return the Language instance of the corresponding language. If the
      * language doesn't exists, return null.
      */
@@ -115,7 +115,6 @@ public class TyposHandler extends UnmatchedTextHandler {
         return LANGUAGE_CLASSES.containsKey(lang);
     }
 
-    @Override
     /**
      * This method search matches with two diferents tools: JLanguageTool and
      * JSpellMatcher
@@ -125,6 +124,7 @@ public class TyposHandler extends UnmatchedTextHandler {
      * text. If the second one doesn't exists, the value is null
      *
      */
+    @Override
     public void handle(Pair<String, String> text, String lang) {
         String originalString = "";
         try {
@@ -139,12 +139,10 @@ public class TyposHandler extends UnmatchedTextHandler {
                     String matchedString = getJLanguageToolMatch(originalString, lang);
                     if (matchedString != null) {
                         text.setObj2(matchedString);
-                        //System.out.println("JLanguageToolMatch: " + originalString + "<<>>" + text.getObj2() + "<<");
                     } else {
                         matchedString = getJaSpellMatch(originalString, lang);
                         if (matchedString != null) {
                             text.setObj2(matchedString);
-                            //System.out.println("JaSpellMatch>>" + originalString + "<<>>" + text.getObj2() + "<<");
                         }
                     }
                 }
@@ -161,6 +159,7 @@ public class TyposHandler extends UnmatchedTextHandler {
      * Return match with the parameter, using JLanguageTool
      *
      * @param originalString Word to get match in resources files
+     * @param lang Specifies the language of the original string
      * @return String who contains , if exists, the match with the original
      * string. In other case, return null.
      */
@@ -195,19 +194,19 @@ public class TyposHandler extends UnmatchedTextHandler {
      * Return the word that matches with the parameter, using JaSpell
      *
      * @param originalString Word to get match in resources files
+     * @param lang Specifies the language of the original string
      * @return String who contains , if exists, the match with word. In other
      * case, return null.
      */
     private String getJaSpellMatch(String originalString, String lang) throws Exception {
         try (Reader dictionaryReader = new InputStreamReader(Main.class.getResourceAsStream("/dict/" + lang + ".txt"))) {
-
             SpellChecker spellCheck = new SpellChecker();
             spellCheck.initialize(dictionaryReader);
             return spellCheck.findMostSimilar(originalString);
 
         } catch (Exception ex) {
             if (ex.getClass().getName().equals("java.lang.NullPointerException")) {
-                logger.info ("ERROR getJaSpellMatch - The lang " + lang.toUpperCase() + " doesn't exist.");
+                logger.info("ERROR getJaSpellMatch - The lang " + lang.toUpperCase() + " doesn't exist.");
             } else {
                 logger.error("ERROR " + Main.class.getName() + ". getJaSpellMatch: " + ex.getMessage());
             }

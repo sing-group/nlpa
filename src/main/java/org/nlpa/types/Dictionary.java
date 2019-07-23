@@ -37,7 +37,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A dictionary of Strings
+ * A dictionary of Strings. 
  *
  * @author María Novo
  * @author José Ramón Méndez Reboredo

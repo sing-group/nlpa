@@ -113,7 +113,8 @@ public class TokenSequence2FeatureVectorPipe extends AbstractPipe {
     }
 
     /**
-     * Default constructor
+     * Default constructor. Build a TokenSequence2FeatureVectorPipe pipe with
+     * the default configuration values
      */
     public TokenSequence2FeatureVectorPipe() {
         this(SequenceGroupingStrategy.valueOf(DEFAULT_GROUPING_STRATEGY));
@@ -131,7 +132,7 @@ public class TokenSequence2FeatureVectorPipe extends AbstractPipe {
     }
 
     /**
-     * Converts a tokenSequence in a featureVector, with the token and the
+     * Converts a tokenSequence in a FeatureVector, with the token and the
      * number of times that token appears in tokenSequence
      *
      * @param tokenSequence
@@ -158,11 +159,11 @@ public class TokenSequence2FeatureVectorPipe extends AbstractPipe {
 
     /**
      * Process an Instance. This method takes an input Instance, destructively
-     * modifies it in some way, and returns it. This is the method by which all
+     * transforming data from TokenSequence to FeatureVector. This is the method by which all
      * pipes are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return The processed instance
      */
     @Override
     public Instance pipe(Instance carrier) {

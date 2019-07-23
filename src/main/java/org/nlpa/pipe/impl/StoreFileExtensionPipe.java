@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -39,7 +38,17 @@ import org.bdp4j.pipe.Pipe;
  */
 @AutoService(Pipe.class)
 @PropertyComputingPipe()
-public class StoreFileExtensionPipe extends AbstractPipe{
+public class StoreFileExtensionPipe extends AbstractPipe {
+
+    /**
+     * The default property name to store the extension
+     */
+    public static final String DEFAULT_EXTENSION_PROPERTY = "extension";
+
+    /**
+     * The property name to store the extension
+     */
+    private String extProp = DEFAULT_EXTENSION_PROPERTY;
 
     /**
      * Return the input type included the data attribute of a Instance
@@ -62,17 +71,7 @@ public class StoreFileExtensionPipe extends AbstractPipe{
     public Class<?> getOutputType() {
         return File.class;
     }
-
-    /**
-     * The default property name to store the extension
-     */
-    public static final String DEFAULT_EXTENSION_PROPERTY = "extension";
-
-    /**
-     * The property name to store the extension
-     */
-    private String extProp = DEFAULT_EXTENSION_PROPERTY;
-
+    
     /**
      * Sets the property where the extension will be stored
      *
@@ -94,7 +93,7 @@ public class StoreFileExtensionPipe extends AbstractPipe{
     }
 
     /**
-     * Default constructor
+     * Default constructor. Creates a StoreFileExtensionPipe Pipe.
      */
     public StoreFileExtensionPipe() {
         this(DEFAULT_EXTENSION_PROPERTY);
@@ -113,12 +112,12 @@ public class StoreFileExtensionPipe extends AbstractPipe{
     }
 
     /**
-     * Process an Instance. This method takes an input Instance, destructively
-     * modifies it in some way, and returns it. This is the method by which all
-     * pipes are eventually run.
+     * Process an Instance. This method takes an input Instance, adds extProp
+     * property and returns it. This is the method by which all pipes are
+     * eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return Processed instance
      */
     @Override
     public Instance pipe(Instance carrier) {

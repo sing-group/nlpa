@@ -44,7 +44,7 @@ public class ConfigurableCSVDatasetWriter extends CSVDatasetWriter {
     private static final Logger logger = LogManager.getLogger(ConfigurableCSVDatasetWriter.class);
 
     /**
-     * Disable the access to the default constructor (with no parameters
+     * Default constructor. Disable the access to the default constructor (with no parameters
      */
     private ConfigurableCSVDatasetWriter() {
         this(DEFAULT_CSV_FILE);
@@ -82,6 +82,7 @@ public class ConfigurableCSVDatasetWriter extends CSVDatasetWriter {
      *
      * @return the configured field separator for CSV files
      */
+    @Override
     public String getCSVSep() {
         if (CSVSep == null) {
             CSVSep = Configuration.getSystemConfig().getConfigOption("csv", "CSVSep");
@@ -98,6 +99,7 @@ public class ConfigurableCSVDatasetWriter extends CSVDatasetWriter {
      *
      * @return the configured String Quote Character for CSV files
      */
+    @Override
     public  String getStrQuote() {
         if (strQuote == null) {
             strQuote = Configuration.getSystemConfig().getConfigOption("csv", "CSVStrQuote");
@@ -114,6 +116,7 @@ public class ConfigurableCSVDatasetWriter extends CSVDatasetWriter {
      *
      * @return the CSV Escape Character for Quotes configured
      */
+    @Override
     public String getStrQuoteEscapeChar() {
         if (strQuoteEscapeChar == null) {
             strQuoteEscapeChar = Configuration.getSystemConfig().getConfigOption("csv", "CSVStrQuoteEscapeChar");
@@ -130,6 +133,7 @@ public class ConfigurableCSVDatasetWriter extends CSVDatasetWriter {
      *
      * @return the representation for a CSV void field
      */
+    @Override
     public  String getStrVoidField() {
         if (csvVoidField == null) {
             csvVoidField = Configuration.getSystemConfig().getConfigOption("csv", "CSVVoidField");
@@ -146,6 +150,7 @@ public class ConfigurableCSVDatasetWriter extends CSVDatasetWriter {
      *
      * @return if we should escape carriage returns
      */
+    @Override
     public boolean shouldEscapeCRChars() {
         if (escapeCR == null) {
             String propVal = Configuration.getSystemConfig().getConfigOption("csv", "CSVEscapeCRChars");
@@ -165,10 +170,11 @@ public class ConfigurableCSVDatasetWriter extends CSVDatasetWriter {
      *
      * @return if we should escape carriage returns
      */
+    @Override
     public String getCharsToScape() {
         if (charsToScape == null) {
             charsToScape = Configuration.getSystemConfig().getConfigOption("csv", "CSVEscapeChars");
-            logger.info("CSV chars that should be scapped: \"" + charsToScape.toString() + "\"");
+            logger.info("CSV chars that should be scapped: \"" + charsToScape + "\"");
         }
         if (charsToScape == null) {
             charsToScape = "\"";

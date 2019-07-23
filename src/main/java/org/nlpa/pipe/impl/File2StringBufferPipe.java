@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import org.nlpa.util.textextractor.TextExtractor;
@@ -54,16 +53,6 @@ public class File2StringBufferPipe extends AbstractPipe {
      */
     private static final Logger logger = LogManager.getLogger(File2StringBufferPipe.class);
 
-    @Override
-    public Class<?> getInputType() {
-        return File.class;
-    }
-
-    @Override
-    public Class<?> getOutputType() {
-        return StringBuffer.class;
-    }
-
     /**
      * A collection of Textextractors to extract the text
      */
@@ -94,12 +83,43 @@ public class File2StringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Default constructor for the class
+     * Determines the input type for the data attribute of the Instance
+     * processed
+     *
+     * @return the input type for the data attribute of the Instance processed
+     */
+    @Override
+    public Class<?> getInputType() {
+        return File.class;
+    }
+
+    /**
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
+     *
+     * @return the datatype expected in the data attribute of an Instance after
+     * processing
+     */
+    @Override
+    public Class<?> getOutputType() {
+        return StringBuffer.class;
+    }
+
+    /**
+     * Default constructor. Construct a File2StringBufferPipe instance
      */
     public File2StringBufferPipe() {
         super(new Class<?>[0], new Class<?>[0]);
     }
 
+    /**
+     * Process an Instance. This method reads text and html contents from
+     * different file formats and modify an instance, setting its data value. This
+     * is the method by which all pipes are eventually run.
+     *
+     * @param carrier Instance to processed
+     * @return Processed instance
+     */
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof File) {

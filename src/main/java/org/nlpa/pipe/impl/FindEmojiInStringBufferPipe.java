@@ -49,6 +49,26 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
      * For logging purposes
      */
     private static final Logger logger = LogManager.getLogger(FindEmojiInStringBufferPipe.class);
+    
+    /**
+     * The default value for removed emojis
+     */
+    public static final String DEFAULT_REMOVE_EMOJI = "yes";
+
+    /**
+     * The default property name to store emojis
+     */
+    public static final String DEFAULT_EMOJI_PROPERTY = "emoji";
+
+    /**
+     * Indicates if emojis should be removed from data
+     */
+    private boolean removeEmoji = EBoolean.getBoolean(DEFAULT_REMOVE_EMOJI);
+
+    /**
+     * The property name to store emojis
+     */
+    private String emojiProp = DEFAULT_EMOJI_PROPERTY;
 
     /**
      * Determines the input type for the data attribute of the Instance
@@ -72,28 +92,7 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     public Class<?> getOutputType() {
         return StringBuffer.class;
     }
-
     
-    /**
-     * The default value for removed emojis
-     */
-    public static final String DEFAULT_REMOVE_EMOJI = "yes";
-
-    /**
-     * The default property name to store emojis
-     */
-    public static final String DEFAULT_EMOJI_PROPERTY = "emoji";
-
-    /**
-     * Indicates if emojis should be removed from data
-     */
-    private boolean removeEmoji = EBoolean.getBoolean(DEFAULT_REMOVE_EMOJI);
-
-    /**
-     * The property name to store emojis
-     */
-    private String emojiProp = DEFAULT_EMOJI_PROPERTY;
-
     /**
      * Indicates if emoji should be removed from data
      *

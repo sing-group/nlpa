@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -48,6 +47,36 @@ public class MeasureLengthFromStringBufferPipe extends AbstractPipe {
     private static final Logger logger = LogManager.getLogger(MeasureLengthFromStringBufferPipe.class);
 
     /**
+     * The default name of the property to store the length of the text
+     */
+    public static final String DEFAULT_LENGTH_PROPERTY = "length";
+
+    /**
+     * The property to store the length of the text
+     */
+    private String lengthProp = DEFAULT_LENGTH_PROPERTY;
+
+    /**
+     * Default constructor. Build a MeasureLengthFromStringBufferPipe that stores the length in the
+     * default property ("length")
+     */
+    public MeasureLengthFromStringBufferPipe() {
+        this(DEFAULT_LENGTH_PROPERTY);
+    }
+
+    /**
+     * Build a MeasureLengthFromStringBufferPipe that stores the length in the
+     * property indicated by lengthProp parameter
+     *
+     * @param lengthProp the name of the property to store the text length
+     */
+    public MeasureLengthFromStringBufferPipe(String lengthProp) {
+        super(new Class<?>[0], new Class<?>[0]);
+
+        this.lengthProp = lengthProp;
+    }
+
+    /**
      * Return the input type included the data attribute of an Instance
      *
      * @return the input type for the data attribute of the Instance processed
@@ -58,8 +87,8 @@ public class MeasureLengthFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
      *
      * @return the datatype expected in the data attribute of an Instance after
      * processing
@@ -68,16 +97,6 @@ public class MeasureLengthFromStringBufferPipe extends AbstractPipe {
     public Class<?> getOutputType() {
         return StringBuffer.class;
     }
-
-    /**
-     * The default name of the property to store the length of the text
-     */
-    public static final String DEFAULT_LENGTH_PROPERTY = "length";
-
-    /**
-     * The property to store the length of the text
-     */
-    private String lengthProp = DEFAULT_LENGTH_PROPERTY;
 
     /**
      * Establish the name of the property to store the lenght of the text
@@ -100,28 +119,9 @@ public class MeasureLengthFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Build a MeasureLengthFromStringBufferPipe that stores the length in the
-     * default property ("length")
-     */
-    public MeasureLengthFromStringBufferPipe() {
-        this(DEFAULT_LENGTH_PROPERTY);
-    }
-
-    /**
-     * Build a MeasureLengthFromStringBufferPipe that stores the length in the
-     * property indicated by lengthProp parameter
-     *
-     * @param lengthProp the name of te property to store the text length
-     */
-    public MeasureLengthFromStringBufferPipe(String lengthProp) {
-        super(new Class<?>[0], new Class<?>[0]);
-
-        this.lengthProp = lengthProp;
-    }
-
-    /**
-     * Process an Instance. This method takes an input Instance, calculates the lenght of the text, 
-     * and returns it. This is the method by which all pipes are eventually run.
+     * Process an Instance. This method takes an input Instance, calculates the
+     * lenght of the text, and returns it. This is the method by which all pipes
+     * are eventually run.
      *
      * @param carrier Instance to be processed.
      * @return Instance processed

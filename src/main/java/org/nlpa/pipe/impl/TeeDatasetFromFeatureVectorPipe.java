@@ -37,10 +37,7 @@ import java.util.function.Predicate;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.SharedDataConsumer;
 import org.bdp4j.pipe.TeePipe;
-import org.bdp4j.transformers.Enum2IntTransformer;
 import org.bdp4j.types.DatasetStore;
-import org.bdp4j.util.DateTimeIdentifier;
-import weka.core.Attribute;
 
 /**
  * Create a Dataset from Instance containing a FeatureVector as data
@@ -79,7 +76,7 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
     /**
      * The attributes
      */
-    // ArrayList<Attribute> attributes = null;
+
     DatasetStore dataset = null;
     /**
      * A Map with integer fields mapped to its types
@@ -92,7 +89,8 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
     private boolean isFirst = true;
 
     /**
-     * Default constructor
+     * Default constructor. Creates an TeeDatasetFromFeatureVectorPipe object
+     * with an empty transformer list
      */
     public TeeDatasetFromFeatureVectorPipe() {
         super(new Class<?>[0], new Class<?>[0]);
@@ -130,8 +128,8 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
      *
      * @return the datatype expected in the data attribute of an Instance after
      * processing
@@ -141,27 +139,26 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
         return FeatureVector.class;
     }
 
+    /**
+     * Identify if the type of param is Double or String.
+     *
+     * @param value
+     * @return The type of the value
+     */
     private String identifyType(String value) {
         // Check if the field is Double                            
         try {
             Double.parseDouble(value);
             return "Double";
         } catch (NumberFormatException nfex) {
-            // Check if the field is Date                            
-            try {
-                if (DateTimeIdentifier.getDefault().checkDateTime(value) != null) {
-                    return "Date";
-                }
-            } catch (Exception ex) {
-                return "String";
-            }
+            return "String";
         }
-        return "String";
+
     }
 
     /**
-     * Process an Instance. This method takes an input Instance and creates a dataset. 
-     * This is the method by which all pipes are eventually run.
+     * Process an Instance. This method takes an input Instance and creates a
+     * Dataset. This is the method by which all pipes are eventually run.
      *
      * @param carrier Instance to be processed.
      * @return Processed Instance
@@ -221,7 +218,7 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                     }
                 }
             }
-            
+
             // Create the dataset, when we reach last instance.
             if (isLast()) {
                 // Get transformes which parameter type is not Double
@@ -232,7 +229,6 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                         noDoubleTransformers.add(key);
                     }
                 }
-
                 // Get attribute list to generate Dataset. This list will contain the columns to add to the dataset.
                 dataset.addColumn("id", String.class, "");
 
@@ -245,8 +241,7 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                         }
                     }
                 }
-
-                // Add text to attribute list
+               // Add text to attribute list
                 Dictionary dictionary = Dictionary.getDictionary();
 
                 for (String text : dictionary) {
@@ -261,15 +256,18 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                     for (Object value : transformer.getListValues()) {
                         target_values.add(value.toString());
                     }
+                    // Target column only adds if exists a transformer. Otherwise, it doesn't add to Dataset.
+                    if (target_values.size() > 0) {
+                        dataset.addColumn("target", Enum.class, target_values);
+                    }
                 }
-
-                dataset.addColumn("target", Enum.class, target_values);
 
                 int indInstance = 0;
                 FeatureVector featureVector;
                 Transformer t;
 
                 List<String> attributes = dataset.getDataset().getAttributes();
+                
                 Object[] values = new Object[attributes.size()];
 
                 for (Instance entry : instanceList) {
@@ -297,11 +295,7 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                                     field = entry.getProperty(attName).toString();
                                 }
                                 if ((t = transformersList.get(attName)) != null) {
-                                    if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
                                         values[indInstance] = t.transform(field);
-                                    } else {
-                                        values[indInstance] = 0d;
-                                    }
                                 } else {
                                     if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
                                         try {
@@ -318,7 +312,7 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                                     Double doubleValue = Double.parseDouble(values[indInstance].toString());
                                     String target_value = Integer.toString(doubleValue.intValue());
                                     if (target_values.contains(target_value)) {
-                                        values[indInstance] = target_value+"";
+                                        values[indInstance] = target_value + "";
                                     }
                                 }
                                 indInstance++;

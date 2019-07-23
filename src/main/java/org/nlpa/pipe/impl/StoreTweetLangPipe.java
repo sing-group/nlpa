@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -36,7 +35,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import org.bdp4j.pipe.Pipe;
-//import twitter4j.TwitterFactory;
 
 /**
  * This pipe implements language guessing by using Twitter API
@@ -46,46 +44,49 @@ import org.bdp4j.pipe.Pipe;
 @AutoService(Pipe.class)
 @PropertyComputingPipe()
 public class StoreTweetLangPipe extends AbstractPipe {
-    /**
-     * Default constructor
-     */
-    public StoreTweetLangPipe(){
-        super(new Class<?>[0],new Class<?>[0]);
-    }
 
-	/**
-	  * For loging purposes
-	  */
+    /**
+     * For loging purposes
+     */
     private static final Logger logger = LogManager.getLogger(StoreTweetLangPipe.class);
 
-   /**
-    * Return the input type included the data attribute of a Instance
-    * @return the input type for the data attribute of the Instances processed
-    */
+    /**
+     * Default constructor. Creates a StooreTweetLangPipe Pipe
+     */
+    public StoreTweetLangPipe() {
+        super(new Class<?>[0], new Class<?>[0]);
+    }
+
+    /**
+     * Return the input type included the data attribute of a Instance
+     *
+     * @return the input type for the data attribute of the Instances processed
+     */
     @Override
     public Class<?> getInputType() {
         return File.class;
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of a Instance after processing
-     * @return the datatype expected in the data attribute of a Instance after processing
+     * Indicates the datatype expected in the data attribute of a Instance after
+     * processing
+     *
+     * @return the datatype expected in the data attribute of a Instance after
+     * processing
      */
     @Override
     public Class<?> getOutputType() {
         return File.class;
     }
 
-    //private TwitterFactory tf = TwitterConfigurator.getTwitterFactory();
-
     /**
-    * Process an Instance.  This method takes an input Instance,
-    * destructively modifies it in some way, and returns it.
-    * This is the method by which all pipes are eventually run.
-    *
-    * @param carrier Instance to be processed.
-    * @return Instancia procesada
-    */
+     * Process an Instance. This method takes an input Instance, adds language a
+     * language-reliability properties and returns it. This is the method by
+     * which all pipes are eventually run.
+     *
+     * @param carrier Instance to be processed.
+     * @return Processed instance
+     */
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof File) {
@@ -93,11 +94,9 @@ public class StoreTweetLangPipe extends AbstractPipe {
                 String tweetId;
                 File file = (File) carrier.getData();
                 //Achieving the tweet id from the given file.
-                try {
-                    FileReader f = new FileReader(file);
-                    BufferedReader b = new BufferedReader(f);
+                try (FileReader f = new FileReader(file);
+                    BufferedReader b = new BufferedReader(f);){
                     tweetId = b.readLine();
-                    b.close();
                 } catch (IOException e) {
                     logger.error("IO Exception caught / " + e.getMessage() + "Current tweet: " + file.getAbsolutePath());
                     return carrier;
@@ -111,10 +110,6 @@ public class StoreTweetLangPipe extends AbstractPipe {
                 }
             }
         }
-
         return carrier;
     }
-
 }
-	
-		

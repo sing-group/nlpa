@@ -49,19 +49,20 @@ import org.bdp4j.pipe.Pipe;
  * <li> 3: "Positive" </li>
  * <li> 4: "Very Positive" </li>
  * </ul>
- * 
+ *
  * The polarity is computed using Stanford NLP framework.
- * 
+ *
  * @author José Ramón Méndez
  * @author Enaitz Ezpeleta
  */
 @AutoService(Pipe.class)
 @PropertyComputingPipe()
 public class ComputePolarityFromStringBufferPipe extends AbstractPipe {
-  /**
-   * For logging purposes
-   */
-  private static final Logger logger = LogManager.getLogger(ComputePolarityFromStringBufferPipe.class);
+
+    /**
+     * For logging purposes
+     */
+    private static final Logger logger = LogManager.getLogger(ComputePolarityFromStringBufferPipe.class);
 
     /**
      * Initing a StandfordCoreNLP pipeline
@@ -77,6 +78,16 @@ public class ComputePolarityFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
+     * The default property name to store the polarity
+     */
+    public static final String DEFAULT_POLARITY_PROPERTY = "polarity";
+
+    /**
+     * The property name to store the polarity
+     */
+    private String polProp = DEFAULT_POLARITY_PROPERTY;
+
+    /**
      * Return the input type included the data attribute of an Instance
      *
      * @return the input type for the data attribute of the Instance processed
@@ -87,8 +98,8 @@ public class ComputePolarityFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
      *
      * @return the datatype expected in the data attribute of an Instance after
      * processing
@@ -97,16 +108,6 @@ public class ComputePolarityFromStringBufferPipe extends AbstractPipe {
     public Class<?> getOutputType() {
         return StringBuffer.class;
     }
-
-    /**
-     * The default property name to store the polarity
-     */
-    public static final String DEFAULT_POLARITY_PROPERTY = "polarity";
-
-    /**
-     * The property name to store the polarity
-     */
-    private String polProp = DEFAULT_POLARITY_PROPERTY;
 
     /**
      * Sets the property where the polarity will be stored
@@ -128,40 +129,39 @@ public class ComputePolarityFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Default constructor
+     * Default constructor. Creates a ComputePolarityFromStringBufferPipe
+     * instance with default configuration
      */
     public ComputePolarityFromStringBufferPipe() {
-        this (DEFAULT_POLARITY_PROPERTY);
+        this(DEFAULT_POLARITY_PROPERTY);
     }
 
     /**
      * Build a StoreFileExtensionPipe that stores the polarity of the file in
      * the property polProp
      *
-     * @param polProp The name of the property to store the polarity text 
+     * @param polProp The name of the property to store the polarity text
      */
     public ComputePolarityFromStringBufferPipe(String polProp) {
-        super(new Class<?>[0],new Class<?>[0]);
+        super(new Class<?>[0], new Class<?>[0]);
 
         this.polProp = polProp;
     }
 
     /**
-     * Process an Instance. This method takes an input Instance, calculates its polarity, 
-     * and returns it. This is the method by which all
-     * pipes are eventually run.
+     * Process an Instance. This method takes an input Instance, calculates its
+     * polarity, and returns it. This is the method by which all pipes are
+     * eventually run.
      *
      * @param carrier Instance to be processed.
      * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {
-        //System.out.print("Processing: " + carrier.getName() + " ... ");
         int mainSentiment = 0;
         if (carrier.getData() instanceof StringBuffer) {
 
             String text = carrier.getData().toString().replaceAll("[^\\p{Space}\\p{Print}]", "");
-            //System.out.print("(size: " + text.length() + ") ");
             if (text != null && text.length() > 0) {
                 int longest = 0;
                 Annotation annotation = pipeline.process(text);
@@ -175,14 +175,12 @@ public class ComputePolarityFromStringBufferPipe extends AbstractPipe {
                         mainSentiment = sentiment;
                         longest = partText.length();
                     }
-
                 }
             }
-        }else{
-          logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
+        } else {
+            logger.error("Data should be an StringBuffer when processing " + carrier.getName() + " but is a " + carrier.getData().getClass().getName());
         }
         carrier.setProperty(polProp, mainSentiment);
-        //System.out.println("done: polarity=" + mainSentiment + ".");
         return carrier;
     }
 }

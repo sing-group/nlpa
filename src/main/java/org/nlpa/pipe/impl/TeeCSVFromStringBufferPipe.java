@@ -24,8 +24,6 @@ package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
 import java.io.File;
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.TeePipe;
@@ -50,11 +48,6 @@ import org.bdp4j.util.Configurator;
 public class TeeCSVFromStringBufferPipe extends AbstractPipe {
 
     /**
-     * For logging purposes
-     */
-    //private static final Logger logger = LogManager.getLogger(TeeCSVFromStringBufferPipe.class);
-
-    /**
      * Indicates the output filename/path for CSV storing
      */
     private String output;
@@ -75,7 +68,7 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
     public static final String DEFAULT_OUTPUT_FILE = "output.csv";
 
     /**
-     * Build a TeeCSVFromStringBufferPipe pipe with the default configuration
+     * Default constructor. Build a TeeCSVFromStringBufferPipe pipe with the default configuration
      * values
      */
     public TeeCSVFromStringBufferPipe() {
@@ -119,7 +112,7 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Csv DAtaset to store data
+     * Csv Dataset to store data
      */
     CSVDatasetWriter dataset = null;
 
@@ -226,7 +219,7 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
      * pipes are eventually run.
      *
      * @param carrier Instance to be processed.
-     * @return Instancia procesada
+     * @return The processed instance
      */
     @Override
     public Instance pipe(Instance carrier) {
@@ -240,12 +233,9 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
             defaultValues[0] = "";
             int j = 2;
 
-            //dataset.addColumn("id", "0");
-            //dataset.addColumn("data", "0");
             for (String i : carrier.getPropertyList()) {
                 columnsToAdd[j] = i;
                 defaultValues[j] = "";
-                //this.dataset.addColumn(i, "0");
                 j++;
             }
 
@@ -254,11 +244,9 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
             dataset.addColumns(columnsToAdd, defaultValues);
         } else if (dataset.getColumnCount() != (carrier.getPropertyList().size() + 3)) {
             String currentProps[] = dataset.getColumnNames();
-            for (String prop : carrier.getPropertyList()) {
-                if (!contains(currentProps, prop)) {
-                    dataset.insertColumnAt(prop, "0", dataset.getColumnCount() - 1);
-                }
-            }
+            carrier.getPropertyList().stream().filter((prop) -> (!contains(currentProps, prop))).forEachOrdered((prop) -> {
+                dataset.insertColumnAt(prop, "0", dataset.getColumnCount() - 1);
+            });
         }
 
         //Create and add the new row
@@ -273,7 +261,7 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
         newRow[newRow.length - 1] = carrier.getTarget();
         dataset.addRow(newRow);
 
-        //If islast on the current burst close the dataset
+        //If isLast on the current burst close the dataset
         if (isLast()) {
             dataset.flushAndClose();
         }

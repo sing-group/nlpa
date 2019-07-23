@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -68,28 +67,6 @@ public class GuessLanguageFromStringBufferPipe extends AbstractPipe {
     public final static String DEFAULT_LANG_RELIABILITY_PROPERTY = "language-reliability";
 
     /**
-     * Return the input type included the data attribute of an Instance
-     *
-     * @return the input type for the data attribute of the Instance processed
-     */
-    @Override
-    public Class<?> getInputType() {
-        return StringBuffer.class;
-    }
-
-    /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
-     *
-     * @return the datatype expected in the data attribute of an Instance after
-     * processing
-     */
-    @Override
-    public Class<?> getOutputType() {
-        return StringBuffer.class;
-    }
-
-    /**
      * The name of the property to store the language
      */
     private String langProp = DEFAULT_LANG_PROPERTY;
@@ -104,6 +81,28 @@ public class GuessLanguageFromStringBufferPipe extends AbstractPipe {
      * A language detector to guess the language
      */
     private LanguageDetector languageDetector;
+
+    /**
+     * Return the input type included the data attribute of an Instance
+     *
+     * @return the input type for the data attribute of the Instance processed
+     */
+    @Override
+    public Class<?> getInputType() {
+        return StringBuffer.class;
+    }
+
+    /**
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
+     *
+     * @return the datatype expected in the data attribute of an Instance after
+     * processing
+     */
+    @Override
+    public Class<?> getOutputType() {
+        return StringBuffer.class;
+    }
 
     /**
      * Establish the name of the property where the language will be stored
@@ -152,8 +151,10 @@ public class GuessLanguageFromStringBufferPipe extends AbstractPipe {
 
     /**
      * The constructor for the language guessing pipe
+     *
      * @param langProp The property name to store language
-     * @param langReliabilityProp The property name to store the reliability of the language guessing
+     * @param langReliabilityProp The property name to store the reliability of
+     * the language guessing
      */
     public GuessLanguageFromStringBufferPipe(String langProp, String langReliabilityProp) {
         super(new Class<?>[]{StripHTMLFromStringBufferPipe.class}, new Class<?>[0]);
@@ -184,9 +185,9 @@ public class GuessLanguageFromStringBufferPipe extends AbstractPipe {
 
     /**
      *
-     * Process an Instance. This method takes an input Instance, finds out the language, 
-     * adds an instance property for language and its reliability, and returns it. 
-     * This is the method by which all  pipes are eventually run.
+     * Process an Instance. This method takes an input Instance, finds out the
+     * language, adds an instance property for language and its reliability, and
+     * returns it. This is the method by which all pipes are eventually run.
      *
      * @param carrier Instance to be processed.
      * @return Instance processed
@@ -194,8 +195,6 @@ public class GuessLanguageFromStringBufferPipe extends AbstractPipe {
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
-            //if (carrier.getProperty("extension") != "twtid") { // For not using this with tweets
-            //query:
             List<DetectedLanguage> langList = languageDetector.getProbabilities((StringBuffer) (carrier.getData()));
 
             LdLocale bestlang = null;
@@ -217,8 +216,6 @@ public class GuessLanguageFromStringBufferPipe extends AbstractPipe {
                 carrier.setProperty(langProp, "UND");
                 carrier.setProperty(langReliabilityProp, 0);
             }
-
-            //}
         } else {
             logger.error("Data should be an StrinBuffer when processing " + carrier.getName() + " but is a " + carrier.getData().getClass().getName());
         }

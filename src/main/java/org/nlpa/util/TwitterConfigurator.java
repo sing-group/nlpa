@@ -89,7 +89,7 @@ public class TwitterConfigurator {
     private static TwitterConfigurator tc;
 
     /**
-     * The default constructor
+     * The default constructor. Creates a TwitterConfigurator instance.
      */
     private TwitterConfigurator() {
         tweetsCache = new LinkedHashMap<>();
@@ -109,7 +109,6 @@ public class TwitterConfigurator {
                 .setOAuthAccessTokenSecret(accessTokenSecret);
 
         tf = new TwitterFactory(cb.build());
-        // retrieveTweetCache();
     }
 
     /**
@@ -188,7 +187,6 @@ public class TwitterConfigurator {
             if (tf == null) {
                 tf = getTwitterFactory();
             }
-
             Twitter twitter = tf.getInstance();
 
             try {
@@ -202,7 +200,6 @@ public class TwitterConfigurator {
                 return null;
             }
         }
-
         return toret;
     }
 
@@ -277,6 +274,13 @@ public class TwitterConfigurator {
         }
     }
 
+    /**
+     * Get the size of the map that contains ths information storage for Twitter
+     * cache
+     *
+     * @return The size of the map that contains ths information storage for
+     * Twitter cache
+     */
     public int size() {
         return tweetsCache.size();
     }
