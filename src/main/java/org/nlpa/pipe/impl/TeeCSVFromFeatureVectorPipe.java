@@ -31,6 +31,8 @@ import org.bdp4j.util.EBoolean;
 
 import java.io.File;
 import java.util.Iterator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.SharedDataConsumer;
 import org.bdp4j.pipe.TeePipe;
@@ -47,6 +49,11 @@ import org.bdp4j.util.Configurator;
 @AutoService(Pipe.class)
 @TeePipe()
 public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedDataConsumer {
+
+    /**
+     * For logging purposes
+     */
+    private static final Logger logger = LogManager.getLogger(TeeCSVFromFeatureVectorPipe.class);
 
     /**
      * The default value for the output file
@@ -278,6 +285,14 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
             Iterator<String> it = Dictionary.getDictionary().iterator();
             while (it.hasNext()) {
                 String dictEntry = it.next();
+
+                if (Dictionary.getDictionary().getEncode()) {
+                    try {
+                        dictEntry = Dictionary.getDictionary().decodeBase64(dictEntry);
+                    } catch (Exception ex) {
+                        ex.getMessage();
+                    }
+                }
                 if (currentEntryIdx >= dictLength) {
                     newProps[j] = dictEntry;
                     newDefaultValues[j] = "0";
@@ -298,9 +313,19 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
             newRow[i] = current;
             i++;
         }
+
         Iterator<String> it = Dictionary.getDictionary().iterator();
         while (it.hasNext()) {
-            newRow[i] = fsv.getValue(it.next());
+            String dictEntry = it.next();
+
+            if (Dictionary.getDictionary().getEncode()) {
+                try {
+                    dictEntry = Dictionary.getDictionary().decodeBase64(dictEntry);
+                } catch (Exception ex) {
+                    logger.warn(ex.getMessage());
+                }
+            }
+            newRow[i] = fsv.getValue(dictEntry);
             i++;
         }
         newRow[i] = carrier.getTarget();
