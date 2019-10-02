@@ -143,7 +143,7 @@ Figure 2 includes a class diagram and a snippet of source code showing the inter
 *Figure 2. Interaction of BDP4J and NLPA projects*
 
 
-As we can see in Figure 1b, the pipeline orchestration comprises some tasks executed in sequence. In order to check whether the pipeline has been correctly defined, a dependency check is executed. Additionally, NLPA incorporates mechanisms to automatically load instances from files. And finally, instances are processed.
+As we can see in Figure 2b, the pipeline orchestration comprises some tasks executed in sequence. In order to check whether the pipeline has been correctly defined, a dependency check is executed. Additionally, NLPA incorporates mechanisms to automatically load instances from files. And finally, instances are processed.
 
 
 ## License
