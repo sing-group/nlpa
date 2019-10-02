@@ -103,7 +103,8 @@ Once a *java.io.File* is processed into a *java.lang.StringBuffer* (i.e. using F
 
 - *StringBufferToLowerCasePipe* transforms the textual content, included in the data attribute of an instance, to lowercase.
 
-Additionally, an instance containing a *StringBuffer* can be transformed into a *SynsetSequence* or a *TokenSequence*. These functionalities are implemented by *StringBuffer2SynsetSequencePipe* and *StringBuffer2TokenSequencePipe* respectively. The former takes advantage of Babelfy API 4 to recognize synsets of each word included in text. The second one implements a tokenizing process using a set of characters as word delimiters. Furthermore, *TeeCSVFromStringBufferPipe* stores instances in a Comma Separated value(s) (CSV) file containing all computed properties together with the text of each them.
+- Additionally, an instance containing a *StringBuffer* can be transformed into a *SynsetSequence* or a *TokenSequence*. These functionalities are implemented by *StringBuffer2SynsetSequencePipe* and *StringBuffer2TokenSequencePipe* respectively. The former takes advantage of Babelfy API 4 to recognize synsets of each word included in text. The second one implements a tokenizing process using a set of characters as word delimiters. 
+- Furthermore, *TeeCSVFromStringBufferPipe* stores instances in a Comma Separated value(s) (CSV) file containing all computed properties together with the text of each them.
 
 <u>**Processing org.nlp.types.SynsetSequence**</u>
 
