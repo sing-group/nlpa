@@ -57,13 +57,13 @@ As shown in Table 1, most tasks are designed to use *java.lang.StringBuffer* (a 
 
 Although streaming sources could be easily used with NLPA, currently it uses locally stored files (i.e. in a local or network file system) represented through *java.io.File* objects as the main of reading data instances. Descriptions of each available task for processing instances containing *java.io.File* objects as data, are included below.
 
-*File2StringBufferPipe* is able to transform the data attribute of an instance from *java.io.File* to a *java.lang.StringBuffer* type. To this end, the textual content of the target file (only for supported formats) is stored in the data attribute.
+- *File2StringBufferPipe* is able to transform the data attribute of an instance from *java.io.File* to a *java.lang.StringBuffer* type. To this end, the textual content of the target file (only for supported formats) is stored in the data attribute.
 
-*GuessDateFromFilePipe* is able to find in input file (interpreting their formats) the date of the contents (when available). As result of this process, date is stored as a property of each instance (using “date” as default name).
+- *GuessDateFromFilePipe* is able to find in input file (interpreting their formats) the date of the contents (when available). As result of this process, date is stored as a property of each instance (using “date” as default name).
 
-*StoreFileExtensionPipe* creates a property to insert the type of content into the instance properties (using “extension” as default name). The value of the property is computed as the extension of the file referenced by the data attribute of the instance.
+- *StoreFileExtensionPipe* creates a property to insert the type of content into the instance properties (using “extension” as default name). The value of the property is computed as the extension of the file referenced by the data attribute of the instance.
 
-Finally, *TargetAssigningFromPathPipe* can be applied only for classification purposes. This task finds in the path of the File referenced by the data attribute of the instance if a folder matching the class is found. This task uses a transformation map to connect system folder names with instance categories.
+- *TargetAssigningFromPathPipe* can be applied only for classification purposes. This task finds in the path of the File referenced by the data attribute of the instance if a folder matching the class is found. This task uses a transformation map to connect system folder names with instance categories.
 
 Once a *java.io.File* is processed into a *java.lang.StringBuffer* (i.e. using File2StringBufferPipe task), a wide variety of operations can be used to pre-process text. Next subsection presents the tasks that can be used for processing *StringBuffer* object included as instance data.
 
@@ -118,11 +118,11 @@ A *SynsetSequence* object brings together a sequence of synsets that are found i
 
 A *TokenSequence* contains the sequence of tokens that are found in the text of an instance. To handle instances with this data type as input, NLPA includes the tasks described below.
 
-*TokenSequence2FeatureVectorPipe*, similarly to *SynsetSequence2FeatureVectorPipe*, transforms the list of tokens included in the text of the data instance into a *FeatureVector* according to a selected grouping scheme (*SequenceGroupingStrategy*).
+- *TokenSequence2FeatureVectorPipe*, similarly to *SynsetSequence2FeatureVectorPipe*, transforms the list of tokens included in the text of the data instance into a *FeatureVector* according to a selected grouping scheme (*SequenceGroupingStrategy*).
 
-*TokenSequencePorterStemmerPipe* applies the Porter stemmer algorithm to the *TokenSequence* included in an instance. This scheme allows to reduce inflected (or sometimes derived) words to their stem form, using a set of language-dependant rules. As long as the rules are defined by language, it should be previously computed (see *GuessLanguageFromStringBufferPipe* in subsection 3.2). 
+- *TokenSequencePorterStemmerPipe* applies the Porter stemmer algorithm to the *TokenSequence* included in an instance. This scheme allows to reduce inflected (or sometimes derived) words to their stem form, using a set of language-dependant rules. As long as the rules are defined by language, it should be previously computed (see *GuessLanguageFromStringBufferPipe* in subsection 3.2). 
 
-*TokenSequenceStemIrregularPipe* applies irregular stemming (through language- dependant dictionaries) to tokens with the same purpose of the previous one. The irregular stemming task, if applied, should be executed before *TokenSequencePorterStemmerPipe* and the language of the text should be computed before its usage.
+- *TokenSequenceStemIrregularPipe* applies irregular stemming (through language- dependant dictionaries) to tokens with the same purpose of the previous one. The irregular stemming task, if applied, should be executed before *TokenSequencePorterStemmerPipe* and the language of the text should be computed before its usage.
 
 <u>**Processing org.nlp.types.FeatureVector**</u>
 
