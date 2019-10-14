@@ -371,6 +371,9 @@ License along with this program.  If not, see
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+				            <useBaseVersion>false</useBaseVersion>                            
                         </configuration>
                     </execution>
                 </executions>
