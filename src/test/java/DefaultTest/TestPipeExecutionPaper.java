@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.SerialPipes;
 import org.bdp4j.types.Instance;
+import org.bdp4j.util.Configurator;
 import org.bdp4j.util.InstanceListUtils;
 import org.nlpa.util.textextractor.EMLTextExtractor;
 
@@ -77,7 +78,8 @@ public class TestPipeExecutionPaper {
                     "[CHECK DEPENDENCIES] "
                     + AbstractPipe.getErrorMessage()
             );
-            System.exit(-1);
+            Configurator.setIrrecoverableErrorInfo("[CHECK DEPENDENCIES] " + AbstractPipe.getErrorMessage());
+            Configurator.getActionOnIrrecoverableError().run();
         }
 
         /*Load and pipe the current burst*/
@@ -99,7 +101,9 @@ public class TestPipeExecutionPaper {
                     .forEach(FileMng::visit);
         } catch (IOException e) {
             logger.error("IOException found " + e.getMessage());
-            System.exit(0);
+            Configurator.setIrrecoverableErrorInfo("IOException found " + e.getMessage());
+            Configurator.getActionOnIrrecoverableError().run();
+
         }
     }
 

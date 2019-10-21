@@ -9,7 +9,7 @@ import org.bdp4j.transformers.Enum2IntTransformer;
 import org.bdp4j.types.Dataset;
 import org.bdp4j.types.Transformer;
 
-import weka.core.Instances;
+//import weka.core.Instances;
 
 public class TestWekaClassifiers {
 
@@ -38,7 +38,7 @@ public class TestWekaClassifiers {
         
         // Con este código, se obtiene el dataset con el que tienes que trabajar en WEKA,
         // a partir de nuestro dataset
-        Instances wekaDataset = dataset.getWekaDataset();
+        //Instances wekaDataset = dataset.getWekaDataset();
         
         /* A partir de aquí, con datasetWeka, es donde tienes que meter el código para ejecutar los clasificadores */
         

@@ -100,7 +100,8 @@ public class TestDebugModeParallelPipes {
 
         if (!p.checkDependencies()) {
             System.out.println("Pipe dependencies are not satisfied");
-            System.exit(1);
+            Configurator.setIrrecoverableErrorInfo("Pipe dependencies are not satisfied");
+            Configurator.getActionOnIrrecoverableError().run();
         } else {
             System.out.println("Pipe dependencies are satisfied");
         }
@@ -132,7 +133,8 @@ public class TestDebugModeParallelPipes {
                     .forEach(FileMng::visit);
         } catch (IOException e) {
             logger.error("IOException found " + e.getMessage());
-            System.exit(0);
+            Configurator.setIrrecoverableErrorInfo("IOException found " + e.getMessage());
+            Configurator.getActionOnIrrecoverableError().run();
         }
     }
 

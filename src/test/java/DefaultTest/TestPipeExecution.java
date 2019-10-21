@@ -31,6 +31,7 @@ import org.bdp4j.transformers.Date2MillisTransformer;
 import org.bdp4j.transformers.Enum2IntTransformer;
 import org.bdp4j.types.Instance;
 import org.bdp4j.types.Transformer;
+import org.bdp4j.util.Configurator;
 import org.bdp4j.util.InstanceListUtils;
 import org.nlpa.util.textextractor.EMLTextExtractor;
 
@@ -156,7 +157,8 @@ public class TestPipeExecution {
                     .forEach(FileMng::visit);
         } catch (IOException e) {
             logger.error("IOException found " + e.getMessage());
-            System.exit(0);
+            Configurator.setIrrecoverableErrorInfo("IOException found " + e.getMessage());
+            Configurator.getActionOnIrrecoverableError().run();
         }
     }
 

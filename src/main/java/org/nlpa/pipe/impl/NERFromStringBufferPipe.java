@@ -31,6 +31,7 @@ import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
+import org.bdp4j.util.Configurator;
 
 import java.util.*;
 import org.bdp4j.pipe.Pipe;
@@ -266,7 +267,8 @@ public class NERFromStringBufferPipe extends AbstractPipe {
         if (this.entityTypes.size() != this.identifiedEntitiesProperty.size()) {
             logger.fatal(
                     "The number of entity types to detect is different to the number of property names. Unable to find a property store strategy for this.");
-            System.exit(0);
+            Configurator.setIrrecoverableErrorInfo("The number of entity types to detect is different to the number of property names. Unable to find a property store strategy for this.");
+            Configurator.getActionOnIrrecoverableError().run();
         }
 
         HashMap<String, String> hmProperties = new HashMap<>();
