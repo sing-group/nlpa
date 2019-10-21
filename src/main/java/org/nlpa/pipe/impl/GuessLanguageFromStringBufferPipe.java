@@ -35,6 +35,7 @@ import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
+import org.bdp4j.util.Configurator;
 
 import java.io.IOException;
 import java.util.List;
@@ -179,7 +180,8 @@ public class GuessLanguageFromStringBufferPipe extends AbstractPipe {
 
         } catch (IOException e) {
             logger.fatal("Language detector profiles could not be loaded");
-            System.exit(0);
+            Configurator.setIrrecoverableErrorInfo("Language detector profiles could not be loaded");
+            Configurator.getActionOnIrrecoverableError().run();
         }
     }
 

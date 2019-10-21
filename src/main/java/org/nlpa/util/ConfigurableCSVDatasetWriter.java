@@ -22,7 +22,7 @@
 package org.nlpa.util;
 
 import java.io.File;
-import java.util.regex.Pattern;
+//import java.util.regex.Pattern;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.bdp4j.util.CSVDatasetWriter;
@@ -47,7 +47,7 @@ public class ConfigurableCSVDatasetWriter extends CSVDatasetWriter {
      * Default constructor. Disable the access to the default constructor (with no parameters
      */
     private ConfigurableCSVDatasetWriter() {
-        this(DEFAULT_CSV_FILE);
+        //this(DEFAULT_CSV_FILE);
     }
    
     /**
@@ -55,6 +55,7 @@ public class ConfigurableCSVDatasetWriter extends CSVDatasetWriter {
      * @param csvDataset The file (java.io.File) where the dataset will be stored
      */
     public ConfigurableCSVDatasetWriter(File csvDataset) {
+        this();
         CSVSep = Configuration.getSystemConfig().getConfigOption("csv", "CSVSep");
         strQuote = Configuration.getSystemConfig().getConfigOption("csv", "CSVStrQuote");
         strQuoteEscapeChar =  Configuration.getSystemConfig().getConfigOption("csv", "CSVStrQuoteEscapeChar");
@@ -75,7 +76,7 @@ public class ConfigurableCSVDatasetWriter extends CSVDatasetWriter {
     /**
      * Pattern to determine if quotation is required
      */    
-    private Pattern quoteRequiredPattern = Pattern.compile("[" + getCSVSep() + getCharsToScape() + "\\n\\r\u0085'\u2028\u2029]");
+    //private Pattern quoteRequiredPattern = Pattern.compile("[" + getCSVSep() + getCharsToScape() + "\\n\\r\u0085'\u2028\u2029]");
 
     /**
      * Returns the CSV separator configured

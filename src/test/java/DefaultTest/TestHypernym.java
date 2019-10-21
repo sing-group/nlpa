@@ -2,7 +2,6 @@ package DefaultTest;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +12,6 @@ import it.uniroma1.lcl.babelnet.BabelSynset;
 import it.uniroma1.lcl.babelnet.BabelSynsetID;
 import it.uniroma1.lcl.babelnet.BabelSynsetRelation;
 import it.uniroma1.lcl.babelnet.data.BabelPointer;
-import org.nlpa.util.BabelUtils;
 
 public class TestHypernym {
 
