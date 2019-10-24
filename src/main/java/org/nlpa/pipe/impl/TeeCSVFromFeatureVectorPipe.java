@@ -248,7 +248,7 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
                 String dictEntry = it.next();
                 if (dictionary.getEncode()) {
                     try {
-                        dictEntry = dictionary.decodeBase64(dictEntry);
+                        dictEntry = dictionary.getEncode()?dictionary.decodeBase64(dictEntry):dictEntry;
                     } catch (Exception ex) {
                         ex.getMessage();
                     }
@@ -288,7 +288,7 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
 
                 if (Dictionary.getDictionary().getEncode()) {
                     try {
-                        dictEntry = Dictionary.getDictionary().decodeBase64(dictEntry);
+                        dictEntry = Dictionary.getDictionary().getEncode()?Dictionary.getDictionary().decodeBase64(dictEntry):dictEntry;
                     } catch (Exception ex) {
                         ex.getMessage();
                     }
@@ -320,7 +320,7 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
 
             if (Dictionary.getDictionary().getEncode()) {
                 try {
-                    dictEntry = Dictionary.getDictionary().decodeBase64(dictEntry);
+                    dictEntry = Dictionary.getDictionary().getEncode()?Dictionary.getDictionary().decodeBase64(dictEntry):dictEntry;
                 } catch (Exception ex) {
                     logger.warn(ex.getMessage());
                 }

@@ -23,8 +23,8 @@ package org.nlpa.types;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
@@ -65,7 +65,11 @@ public class TokenSequence implements Serializable {
      */
     public TokenSequence(String toTokenize, String separators) {
         tokens = Collections.list(new StringTokenizer(toTokenize, separators)).stream()
-                .map(token -> (String) token)
+                //.map(token -> (String) token) //Now tokens are represented 
+                                                //in base64 and preceded by "tk:"
+                .map( token -> {
+                    return "tk:"+Base64.getEncoder().encodeToString(((String)token).getBytes());
+                } )
                 .collect(Collectors.toList());
     }
 
@@ -76,27 +80,6 @@ public class TokenSequence implements Serializable {
      */
     public void add(String t) {
         tokens.add(t);
-    }
-
-    /**
-     * Build a Feature Vector and add the information do Dictionary
-     *
-     * @return The feature Vector built
-     */
-    public FeatureVector buildFeatureVector() {
-        HashMap<String, Double> retVal = new HashMap<>();
-
-        Dictionary.getDictionary().setEncode(true);
-        for (String token : tokens) {
-            // Add the token to dictionary
-            Dictionary.getDictionary().add(token);
-
-            // Add the feature to the returnValue
-            Double val = retVal.get(token);
-            retVal.put(token, (val != null) ? val + 1 : 1);
-        }
-
-        return new FeatureVector(retVal);
     }
 
     /**

@@ -53,12 +53,13 @@ public class Dictionary implements Iterable<String> {
      * The information storage for the dictionary. Only a Hashset of strings is
      * required
      */
-    private Set<String> textHashSet;
+    private Set<String> textHashSet=new LinkedHashSet<>();;
 
     /**
-     * Indicates if the text saved is encoded
+     * Indicates if the entries should be encoded
      */
-    private boolean encode;
+    private boolean encode=false;
+
     /**
      * A instance of the Dictionary to implement a singleton pattern
      */
@@ -68,8 +69,6 @@ public class Dictionary implements Iterable<String> {
      * The default constructor
      */
     private Dictionary() {
-        textHashSet = new LinkedHashSet<>();
-        this.encode = false;
     }
 
     /**
@@ -87,7 +86,7 @@ public class Dictionary implements Iterable<String> {
     /**
      * Set the value of encode property
      *
-     * @param encode True if the text is encoded, false otherwise.
+     * @param encode True if the text should be encoded, false otherwise.
      */
     public void setEncode(boolean encode) {
         this.encode = encode;
@@ -108,11 +107,7 @@ public class Dictionary implements Iterable<String> {
      * @param text The new text to add to the dictionary
      */
     public void add(String text) {
-        if (this.encode) {
-            textHashSet.add(encodeBase64(text));
-        } else {
-            textHashSet.add(text);
-        }
+            textHashSet.add(this.encode?encodeBase64(text):text);
     }
 
     /**
