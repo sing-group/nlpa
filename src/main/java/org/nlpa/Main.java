@@ -72,7 +72,7 @@ public class Main {
     public static void main(String[] args) {
         // System.out.println("Program started.");
         if (args.length == 0) {
-            generateInstances("tests3/");
+            generateInstances("tests/");
         } else {
             generateInstances(args[0]);
         }
