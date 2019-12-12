@@ -148,8 +148,9 @@ public class Main {
             new InterjectionFromStringBufferPipe(),
             new StopWordFromStringBufferPipe(),
             new TeeCSVFromStringBufferPipe("output.csv", true), 
-            new StringBuffer2SynsetSequencePipe(),
-            new SynsetSequence2FeatureVectorPipe(SequenceGroupingStrategy.COUNT),
+            //new StringBuffer2SynsetSequencePipe(),
+            new StringBuffer2TokenSequencePipe(),
+            new TokenSequence2FeatureVectorPipe(SequenceGroupingStrategy.COUNT),
             // new TeeCSVFromFeatureVectorPipe("outputsyns.csv"),
             teeDatasetFSV
         });
