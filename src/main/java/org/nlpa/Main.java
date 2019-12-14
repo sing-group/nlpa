@@ -121,10 +121,10 @@ public class Main {
         targetValues.put("spam", 1);
 
         //Lets define transformers for the dataset
-        Map<String, Transformer> transformersList = new HashMap<>();
-        transformersList.put("target", new Enum2IntTransformer(targetValues));
-        transformersList.put("date", new Date2MillisTransformer());
-        transformersList.put("URLs", new Url2BinaryTransformer());
+        //Map<String, Transformer> transformersList = new HashMap<>();
+        //transformersList.put("target", new Enum2IntTransformer(targetValues));
+        //transformersList.put("date", new Date2MillisTransformer());
+        //transformersList.put("URLs", new Url2BinaryTransformer());
 //        long before = System.currentTimeMillis();
 //        System.out.println("before");
 //        weka.core.Instances data = (new CSVDatasetReader("output_spam_ass.csv", transformersList)).loadFile().getWekaDataset();
@@ -132,8 +132,8 @@ public class Main {
 //        long time = System.currentTimeMillis() - before;
 //        System.out.println("time: " + time);
 
-        TeeDatasetFromFeatureVectorPipe teeDatasetFSV = new TeeDatasetFromFeatureVectorPipe();
-        teeDatasetFSV.setTransformersList(transformersList);
+        //TeeDatasetFromFeatureVectorPipe teeDatasetFSV = new TeeDatasetFromFeatureVectorPipe("outputtoks.csv");
+        //teeDatasetFSV.setTransformersList(transformersList);
         /* create a example of pipe */
         AbstractPipe p = new SerialPipes(new AbstractPipe[]{new TargetAssigningFromPathPipe(),
             new StoreFileExtensionPipe(), 
@@ -151,8 +151,8 @@ public class Main {
             //new StringBuffer2SynsetSequencePipe(),
             new StringBuffer2TokenSequencePipe(),
             new TokenSequence2FeatureVectorPipe(SequenceGroupingStrategy.COUNT),
-            // new TeeCSVFromFeatureVectorPipe("outputsyns.csv"),
-            teeDatasetFSV
+            new TeeCSVFromFeatureVectorPipe("outputtoks.csv")
+            //teeDatasetFSV
         });
 
         if (!p.checkDependencies()) {

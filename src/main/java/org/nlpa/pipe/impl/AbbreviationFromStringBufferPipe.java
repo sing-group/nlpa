@@ -75,7 +75,7 @@ public class AbbreviationFromStringBufferPipe extends AbstractPipe {
                                      "/abbreviations-json/abbrev.de.json",
                                      "/abbreviations-json/abbrev.pt.json"
         }) {
-
+ 
             String lang = i.substring(27, 29).toUpperCase();
             try {
                 InputStream is = AbbreviationFromStringBufferPipe.class.getResourceAsStream(i);
