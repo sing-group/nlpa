@@ -71,7 +71,7 @@ public class ContractionsFromStringBufferPipe extends AbstractPipe {
     static {
         for (String i : new String[]{"/contractions-json/contr.en.json", "/contractions-json/contr.es.json",
                                      "/contractions-json/contr.pt.json","/contractions-json/contr.fr.json",
-                                     "/contractions-json/contr.gl.json",}) {
+                                     "/contractions-json/contr.gl.json","/contractions-json/contr.de.json",}) {
             String lang = i.substring(25, 27).toUpperCase();
 
             try {
