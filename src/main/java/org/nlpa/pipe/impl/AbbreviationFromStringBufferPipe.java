@@ -73,7 +73,8 @@ public class AbbreviationFromStringBufferPipe extends AbstractPipe {
                                      "/abbreviations-json/abbrev.eu.json",
                                      "/abbreviations-json/abbrev.ru.json",
                                      "/abbreviations-json/abbrev.de.json",
-                                     "/abbreviations-json/abbrev.pt.json"
+                                     "/abbreviations-json/abbrev.pt.json",
+                                     "/abbreviations-json/abbrev.it.json"
         }) {
 
             String lang = i.substring(27, 29).toUpperCase();
