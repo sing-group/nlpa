@@ -23,6 +23,7 @@
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
+import com.google.gson.JsonObject;
 import com.vdurmont.emoji.EmojiParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +33,15 @@ import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
 import org.bdp4j.util.EBoolean;
+import org.bdp4j.util.Pair;
+
+import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
+
+import java.io.InputStream;
+import java.util.HashMap;
+
+import javax.json.Json;
+import javax.json.JsonReader;
 
 //import com.vdurmont.emoji.EmojiManager;
 
@@ -39,21 +49,50 @@ import org.bdp4j.util.EBoolean;
  * This pipe finds and eventually drops emojis The data of the instance should
  * contain a StringBuffer
  *
- * @author José Ramón Méndez
+ * @author Rodrigo Currás Ferradás
  */
 @AutoService(Pipe.class)
 @PropertyComputingPipe()
 public class FindEmojiInStringBufferPipe extends AbstractPipe {
 
+//Duda: funcionalidad de la estructura Pair<>   -------------------------------------------------------------
+//Duda: como funciona el bloque de inicializacion de htAbbreviations en AbbreviationFromStringBufferPipe ---------
+    /**
+     * A hashset of emojis in english
+     */
+    private static final HashMap<String,Pair<String, String>> emojiDictionary = new HashMap<>();
+    static{
+        for(String i: new String[]{"emoji-data/emoji.json"}){
+            //Preguntar por la línea 81 de AbbreviationFromStringBufferPipe
+            /*
+            InputStream is = FindEmojiInStringBufferPipe.class.getResourceAsStream(i);
+            JsonReader rdr = Json.createReader(is);
+            //Problema: no reconoce JsonObject del paquete javax.json, solo lo reconoce del paquete com.google.gson
+            JsonObject jsonObject = rdr.readObject();
+            */
+
+        }
+    }
+
     /**
      * For logging purposes
      */
     private static final Logger logger = LogManager.getLogger(FindEmojiInStringBufferPipe.class);
-    
+
+    /**
+     * The name of the property where the language is stored
+     */
+    private String langProp = DEFAULT_LANG_PROPERTY;
+
     /**
      * The default value for removed emojis
      */
     public static final String DEFAULT_REMOVE_EMOJI = "yes";
+
+    /**
+     * The default value for replace emoji
+     */
+    public static final boolean DEFAULT_REPLACE_EMOJI = false;
 
     /**
      * The default property name to store emojis
@@ -71,8 +110,12 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     private String emojiProp = DEFAULT_EMOJI_PROPERTY;
 
     /**
-     * Determines the input type for the data attribute of the Instance
-     * processed
+     * The property that indicates if emojis are replaced by its meaning
+     */
+    private boolean replaceEmoji = DEFAULT_REPLACE_EMOJI;
+
+    /**
+     * Determines the input type for the data attribute of the Instance processed
      *
      * @return the input type for the data attribute of the Instance processed
      */
@@ -81,12 +124,20 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
         return StringBuffer.class;
     }
 
+    public boolean isReplaceEmoji() {
+        return replaceEmoji;
+    }
+
+    public void setReplaceEmoji(boolean replaceEmoji) {
+        this.replaceEmoji = replaceEmoji;
+    }
+
     /**
      * Indicates the datatype expected in the data attribute of an Instance after
      * processing
      *
      * @return the datatype expected in the data attribute of an Instance after
-     * processing
+     *         processing
      */
     @Override
     public Class<?> getOutputType() {
@@ -111,6 +162,25 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     public void setRemoveEmoji(boolean removeEmoji) {
         this.removeEmoji = removeEmoji;
     }
+
+    /**
+     * Establish the name of the property where the language will be stored
+     *
+     * @param langProp The name of the property where the language is stored
+     */
+    @PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue = DEFAULT_LANG_PROPERTY)
+    public void setLangProp(String langProp) {
+        this.langProp = langProp;
+    }
+
+    /**
+     * Returns the name of the property in which the language is stored
+     *
+     * @return the name of the property where the language is stored
+     */
+    public String getLangProp() {
+        return this.langProp;
+    }    
 
     /**
      * Checks whether emojis should be removed
@@ -145,7 +215,7 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
      * configuration value
      */
     public FindEmojiInStringBufferPipe() {
-        this(DEFAULT_EMOJI_PROPERTY, EBoolean.getBoolean(DEFAULT_REMOVE_EMOJI));
+        this(DEFAULT_EMOJI_PROPERTY, EBoolean.getBoolean(DEFAULT_REMOVE_EMOJI), DEFAULT_LANG_PROPERTY, DEFAULT_REPLACE_EMOJI);
     }
 
     /**
@@ -154,12 +224,16 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
      *
      * @param emojiProp The name of the property to store emojis
      * @param removeEmoji tells if emojis should be removed
+     * @param replaceEmoji tells if emojis should be replaced by its meaning
      */
-    public FindEmojiInStringBufferPipe(String emojiProp, boolean removeEmoji) {
-        super(new Class<?>[0],new Class<?>[0]);
+    public FindEmojiInStringBufferPipe(String emojiProp, boolean removeEmoji, String langProp, boolean replaceEmoji) {
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class},
+        new Class<?>[0]);
 
         this.emojiProp = emojiProp;
         this.removeEmoji = removeEmoji;
+        this.langProp=langProp;
+        this.replaceEmoji=replaceEmoji;
     }
 
     /**
@@ -177,12 +251,15 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
             String data = carrier.getData().toString();
             String value = "";
             for (String i : EmojiParser.extractEmojis(data)) {
+    //Compute polatiry if needed
+                //Duda: como escribir un codigo eficiente para que no compruebe si replaceEmoji=true en cada iteracion ------------------
                 value += (i);
             }
             carrier.setProperty(emojiProp, value);
             if (removeEmoji) {
                 carrier.setData(new StringBuffer(EmojiParser.removeAllEmojis(data)));
             }
+            //Duda: se permite sustitucion emoji-significado y eliminacion emoji al mismo tiempo?  --------------------------------------
 
         }else{
           logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());

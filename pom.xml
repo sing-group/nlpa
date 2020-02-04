@@ -110,9 +110,9 @@ License along with this program.  If not, see
             </snapshots>
         </repository>
         <repository>
-            <id>sing-maven</id>
+            <id>spring-maven</id>
             <name>Spring Maven</name>
-            <url>http://repo.spring.io/plugins-release/</url>
+            <url>https://repo.spring.io/plugins-release/</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>never</updatePolicy>
