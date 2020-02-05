@@ -25,6 +25,7 @@ import com.google.auto.service.AutoService;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -136,13 +137,13 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
             irregularWords = LANG_WORD_FILES.get(lang.toLowerCase());
             if (irregularWords != null) {
                 for (int i = 0; i < ts.size(); i++) {
-                    String token = ts.getToken(i);
+                    String token = new String(Base64.getDecoder().decode(ts.getToken(i).substring(3)));
                     //If the token is irregular, it changes text
                     String changeTxt;
                     if ((changeTxt = irregularWords.get(token)) != null) {
                         token = changeTxt;
                     }
-                    ret.add(token);
+                    ret.add("tk:" + new String(Base64.getEncoder().encode(token.getBytes())));
                 }
                 carrier.setData(ret);
             }

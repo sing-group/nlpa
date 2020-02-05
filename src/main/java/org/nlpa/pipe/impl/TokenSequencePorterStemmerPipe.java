@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -212,15 +213,15 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
         if (lang != null) {
             //Apply stemmer to each word
             for (int i = 0; i < ts.size(); i++) {
-                String token = ts.getToken(i);
+                String token = new String(Base64.getDecoder().decode(ts.getToken(i).substring(3)));
                 String tokenRoot = extractRoot(token, lang.toLowerCase());
-
                 if (!tokenRoot.equals("")) {
-                    ret.add(token);
+                    ret.add("tk:" + new String(Base64.getEncoder().encode(token.getBytes())));
                 }
             }
         }
         carrier.setData(ret);
+
         return carrier;
     }
 
