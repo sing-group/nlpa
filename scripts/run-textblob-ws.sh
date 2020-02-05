@@ -23,4 +23,7 @@
 # This software has been developed by Enaitz Ezpeleta (Mondragon Unibertsitatea)
 
 docker build -t textblob-ws:latest textblob-ws/
-docker run -p 80:localhost:80 textblob-ws:latest
+echo "Configure your pipe to use the URL is http://localhost/postjson"
+#Running the container as root is required to map port 80 (below 1024).
+#If you change the mapping defininition, please modify the sevice URL accordingly.
+sudo docker run -p 80:80 textblob-ws:latest
