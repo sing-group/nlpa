@@ -22,6 +22,8 @@
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.TransformationPipe;
@@ -30,6 +32,7 @@ import org.nlpa.types.Dictionary;
 import org.nlpa.types.TokenSequence;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.SharedDataProducer;
+import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 import static org.nlpa.types.TokenSequence.DEFAULT_SEPARATORS;
 
@@ -45,16 +48,27 @@ import static org.nlpa.types.TokenSequence.DEFAULT_SEPARATORS;
 public class StringBuffer2TokenSequencePipe extends AbstractPipe implements SharedDataProducer {
 
     /**
+     * For loggins purposes
+     */
+    private static final Logger logger = LogManager.getLogger(StringBuffer2SynsetSequencePipe.class);
+
+    /**
      * The separators used to tokenize
      */
     private String separators = DEFAULT_SEPARATORS;
+
+    /**
+     * The name of the property where the language is stored
+     */
+    private String langProp = DEFAULT_LANG_PROPERTY;
 
     /**
      * Default constructor. Creates a StringBuffer2TokenSequencePipe Pipe
      *
      */
     public StringBuffer2TokenSequencePipe() {
-        super(new Class<?>[]{StringBufferToLowerCasePipe.class}, new Class<?>[0]);
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class, StringBufferToLowerCasePipe.class}, new Class<?>[0]);
+        Dictionary.getDictionary().setEncode(false); //No encoding is required
     }
 
     /**
@@ -77,6 +91,25 @@ public class StringBuffer2TokenSequencePipe extends AbstractPipe implements Shar
     @Override
     public Class<?> getOutputType() {
         return TokenSequence.class;
+    }
+
+    /**
+     * Stablish the name of the property where the language will be stored
+     *
+     * @param langProp The name of the property where the language is stored
+     */
+    @PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue = DEFAULT_LANG_PROPERTY)
+    public void setLangProp(String langProp) {
+        this.langProp = langProp;
+    }
+
+    /**
+     * Returns the name of the property in which the language is stored
+     *
+     * @return the name of the property where the language is stored
+     */
+    public String getLangProp() {
+        return this.langProp;
     }
 
     /**
@@ -108,15 +141,22 @@ public class StringBuffer2TokenSequencePipe extends AbstractPipe implements Shar
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
+            //We cannot correctly represent the instance if the language is not present
+            if (carrier.getProperty(langProp) == null || ((String) carrier.getProperty(langProp)).equalsIgnoreCase("UND")) {
+                logger.error("Instance " + carrier.getName() + " cannot be transformed into a TokenSequence because language could not be determined. It has been invalidated.");
+                carrier.invalidate();
+                return carrier;
+            }
             String data = (carrier.getData().toString());
+
             TokenSequence tokenSequence = new TokenSequence(data, separators);
             carrier.setData(tokenSequence);
 
-            Dictionary.getDictionary().setEncode(true);
             for (int i = 0; i < tokenSequence.size(); i++) {
                 Dictionary.getDictionary().add(tokenSequence.getToken(i));
             }
         }
+        
         return carrier;
     }
 

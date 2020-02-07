@@ -75,7 +75,7 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
         for (String i : new String[]{"/irregular/irregular_es.stm", "/irregular/irregular_en.stm"}) {
             String lang = i.substring(21, 23).toUpperCase();
             Map<String, String> irregularWordsList = new HashMap<>();
-            try (FileReader fReader = new FileReader(new File(TokenSequenceStemIrregularPipe.class.getResource("/irregular/irregular_" + lang + ".stm").toURI()));
+            try (FileReader fReader = new FileReader(new File(TokenSequenceStemIrregularPipe.class.getResource("/irregular/irregular_" + lang.toLowerCase() + ".stm").toURI()));
                     BufferedReader bReader = new BufferedReader(fReader);) {
                 String var = "";
                 while ((var = bReader.readLine()) != null) {
@@ -134,10 +134,10 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
         String lang = (String) carrier.getProperty(this.langProp);
 
         if (lang != null) {
-            irregularWords = LANG_WORD_FILES.get(lang.toLowerCase());
+            irregularWords = LANG_WORD_FILES.get(lang.toUpperCase());
             if (irregularWords != null) {
                 for (int i = 0; i < ts.size(); i++) {
-                    String token = new String(Base64.getDecoder().decode(ts.getToken(i).substring(3)));
+                    String token = new String(Base64.getDecoder().decode((ts.getToken(i)).substring(3)));
                     //If the token is irregular, it changes text
                     String changeTxt;
                     if ((changeTxt = irregularWords.get(token)) != null) {
