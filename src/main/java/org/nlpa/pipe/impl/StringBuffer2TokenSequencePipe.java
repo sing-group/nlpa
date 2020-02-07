@@ -67,7 +67,7 @@ public class StringBuffer2TokenSequencePipe extends AbstractPipe implements Shar
      *
      */
     public StringBuffer2TokenSequencePipe() {
-        super(new Class<?>[]{StringBufferToLowerCasePipe.class}, new Class<?>[0]);
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class, StringBufferToLowerCasePipe.class}, new Class<?>[0]);
         Dictionary.getDictionary().setEncode(false); //No encoding is required
     }
 
@@ -148,13 +148,24 @@ public class StringBuffer2TokenSequencePipe extends AbstractPipe implements Shar
                 return carrier;
             }
             String data = (carrier.getData().toString());
+             System.out.println("data --> " + data);
             TokenSequence tokenSequence = new TokenSequence(data, separators);
             carrier.setData(tokenSequence);
 
             
             for (int i = 0; i < tokenSequence.size(); i++) {
+               
                 Dictionary.getDictionary().add(tokenSequence.getToken(i));
             }
+        }
+        this.printJson(carrier);
+         if (carrier.getData() instanceof TokenSequence) {
+            TokenSequence ss = (TokenSequence) carrier.getData();
+            System.out.println("[");
+            for (int i=0; i<ss.size();i++){
+                System.out.println("\""+ss.getToken(i)+"\",");
+            }
+            System.out.println("]");
         }
         return carrier;
     }
