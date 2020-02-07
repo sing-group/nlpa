@@ -85,7 +85,7 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
             List<Pair<String, List<Rule>>> currentRulesFile = new ArrayList<>();
             String lang = i.substring(15, 17).toUpperCase();
 
-            try (Reader iStream = new FileReader(new File(TokenSequencePorterStemmerPipe.class.getResource("/porter/porter." + lang + ".stm").toURI()));
+            try (Reader iStream = new FileReader(new File(TokenSequencePorterStemmerPipe.class.getResource("/porter/porter." + lang.toLowerCase() + ".stm").toURI()));
                     BufferedReader bReader = new BufferedReader(iStream)) {
                 String line;
                 StringTokenizer sTokenizer;
@@ -216,7 +216,9 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
                 String token = new String(Base64.getDecoder().decode(ts.getToken(i).substring(3)));
                 String tokenRoot = extractRoot(token, lang.toLowerCase());
                 if (!tokenRoot.equals("")) {
-                    ret.add("tk:" + new String(Base64.getEncoder().encode(token.getBytes())));
+                    ret.add("tk:" + new String(Base64.getEncoder().encode(tokenRoot.getBytes())));
+                } else {
+                        ret.add("tk:" + new String(Base64.getEncoder().encode(token.getBytes())));
                 }
             }
         }
@@ -338,32 +340,31 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
         int i = 0;
 
         String returnValue = processWord;
-
         while (i < rules.size()) {
             // check if the root word matched with some root rule
-            if (returnValue.length() - rules.get(i).getOldSuffix().length() < 0) {
-                ending = "";
-            } else {
-                ending = returnValue.substring(returnValue.length() - rules.get(i).getOldSuffix().length());
-            }
 
-            if (ending.equals("")) {
-                if (rules.get(i).getOldSuffix().equals(ending)) {
-                    if (returnValue.endsWith(rules.get(i).getOldSuffix())) {
-                        tmp_ch = ending;
-                        returnValue = returnValue.substring(0, returnValue.length() - rules.get(i).getOldSuffix().length()); // elimina el sufijo a la palabra
-                        if (rules.get(i).getMinRootSize() < wordSize(returnValue)) {   // si el tamaño de la raíz permite el cambio
-                            if ((rules.get(i).getCondition() == -1) || ((rules.get(i).getCondition() == 1) && (containsVowel(returnValue)))
-                                    || ((rules.get(i).getCondition() == 2) && (removeAnE(returnValue)))) { // si hay que aplicar alguna condición
-                                returnValue += rules.get(i).getNewSuffix();
-                                break;
+            if (returnValue.length() - rules.get(i).getOldSuffix().length() >= 0) {
+                ending = returnValue.substring(returnValue.length() - rules.get(i).getOldSuffix().length());
+
+                if (!ending.equals("")) {
+                    if (rules.get(i).getOldSuffix().equals(ending)) {
+                        if (returnValue.endsWith(rules.get(i).getOldSuffix())) {
+                            tmp_ch = ending;
+                            returnValue = returnValue.substring(0, returnValue.length() - rules.get(i).getOldSuffix().length()); // elimina el sufijo a la palabra
+                            if (rules.get(i).getMinRootSize() < wordSize(returnValue)) {   // si el tamaño de la raíz permite el cambio
+                                if ((rules.get(i).getCondition() == -1) || ((rules.get(i).getCondition() == 1) && (containsVowel(returnValue)))
+                                        || ((rules.get(i).getCondition() == 2) && (removeAnE(returnValue)))) { // si hay que aplicar alguna condición
+                                    returnValue += rules.get(i).getNewSuffix();
+                                    break;
+                                }
                             }
+                            ending = tmp_ch; // Restore suffix
+                            returnValue += ending;
                         }
-                        ending = tmp_ch; // Restore suffix
-                        returnValue += ending;
                     }
                 }
             }
+
             i++;
         }
         return returnValue;
@@ -403,7 +404,12 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
         if (rules != null) {
             //Process rules
             for (int i = 0; i < rules.size(); i++) {
+                String original = ret;
+                
                 ret = replaceEnd(rules.get(i).getObj2(), ret);
+                if (!ret.equals(original)){
+                    break;
+                }
             }
         }
         return ret;
@@ -435,11 +441,12 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
      */
     public String extractRoot(String word, String lang) {
         String returnValue = word;
-
+        String langUp = lang.toUpperCase();
         returnValue = returnValue.toLowerCase();
         returnValue = cleanUpText(returnValue);
-        if (RULES_FILES.containsKey(lang)) {
-            returnValue = stem(returnValue, lang);
+
+        if (RULES_FILES.containsKey(langUp)) {
+            returnValue = stem(returnValue, langUp);
         }
         removeAccents(returnValue);
         return returnValue;
