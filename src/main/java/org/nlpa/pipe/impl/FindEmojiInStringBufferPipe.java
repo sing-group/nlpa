@@ -23,7 +23,7 @@
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
-import com.google.gson.JsonObject;
+import javax.json.JsonObject;
 import com.vdurmont.emoji.EmojiParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,6 +39,7 @@ import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_
 
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 import javax.json.Json;
 import javax.json.JsonReader;
@@ -55,29 +56,40 @@ import javax.json.JsonReader;
 @PropertyComputingPipe()
 public class FindEmojiInStringBufferPipe extends AbstractPipe {
 
-//Duda: funcionalidad de la estructura Pair<>   -------------------------------------------------------------
-//Duda: como funciona el bloque de inicializacion de htAbbreviations en AbbreviationFromStringBufferPipe ---------
-    /**
-     * A hashset of emojis in english
-     */
-    private static final HashMap<String,Pair<String, String>> emojiDictionary = new HashMap<>();
-    static{
-        for(String i: new String[]{"emoji-data/emoji.json"}){
-            //Preguntar por la línea 81 de AbbreviationFromStringBufferPipe
-            /*
-            InputStream is = FindEmojiInStringBufferPipe.class.getResourceAsStream(i);
-            JsonReader rdr = Json.createReader(is);
-            //Problema: no reconoce JsonObject del paquete javax.json, solo lo reconoce del paquete com.google.gson
-            JsonObject jsonObject = rdr.readObject();
-            */
-
-        }
-    }
-
     /**
      * For logging purposes
      */
     private static final Logger logger = LogManager.getLogger(FindEmojiInStringBufferPipe.class);
+
+    /**
+     * A hashset of emojis in english
+     */
+    //Cambiar mapa de Strings a Object porque es una array asociativo
+    private static final HashMap<String,HashMap<String,Pair<Pattern, String>>> emojiDictionary = new HashMap<>();
+    static{
+        for(String i: new String[]{"emoji-data/emoji.en.json"}){
+            //Preguntar por el parametro de la línea 81 de AbbreviationFromStringBufferPipe 
+            String lang = i.substring(16,19).toUpperCase();
+            //usar prints o logger?
+            System.out.println("1er char: "+i.charAt(16)+"2o char: "+i.charAt(19)+"Lang= "+lang);
+            //logger.info("1er char: "+i.charAt(16)+"2o char: "+i.charAt(19)+"Lang= "+lang);
+            try{             
+                InputStream is = FindEmojiInStringBufferPipe.class.getResourceAsStream(i);
+                JsonReader rdr = Json.createReader(is);
+                JsonObject jsonObject = rdr.readObject();
+                rdr.close();
+                HashMap<String, Pair<Pattern, String>> dict = new HashMap<>();
+                for(String emoji : jsonObject.keySet()){
+                    //Duda: como construir el diccionario al tener 2 Strings dependientes de emoji?? --------------------------------
+                    dict.put(emoji, new Pair<>(Pattern.compile(Pattern.quote(emoji)),jsonObject.getString(emoji)));
+                } 
+
+                emojiDictionary.put(lang,dict);
+            }catch(Exception e){
+                logger.error("Exception processing: " + i + " message " + e.getMessage());
+            }
+        }
+    }
 
     /**
      * The name of the property where the language is stored
@@ -87,12 +99,12 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     /**
      * The default value for removed emojis
      */
-    public static final String DEFAULT_REMOVE_EMOJI = "yes";
+    public static final String DEFAULT_REMOVE_EMOJI = "no";
 
     /**
      * The default value for replace emoji
      */
-    public static final boolean DEFAULT_REPLACE_EMOJI = false;
+    public static final boolean DEFAULT_REPLACE_EMOJI = true;
 
     /**
      * The default property name to store emojis
@@ -247,20 +259,31 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
-
+            //POR DEFECTO  traducir=no, borrar=si y crear todas las propiedades
+            //Ver foto pizarra
             String data = carrier.getData().toString();
             String value = "";
             for (String i : EmojiParser.extractEmojis(data)) {
-    //Compute polatiry if needed
-                //Duda: como escribir un codigo eficiente para que no compruebe si replaceEmoji=true en cada iteracion ------------------
-                value += (i);
+    //Compute polatiry if needed, sumatorio y luego hacer media
+                value += (i);   //guardar en propiedad si se especifica que lo haga
             }
             carrier.setProperty(emojiProp, value);
-            if (removeEmoji) {
-                carrier.setData(new StringBuffer(EmojiParser.removeAllEmojis(data)));
-            }
-            //Duda: se permite sustitucion emoji-significado y eliminacion emoji al mismo tiempo?  --------------------------------------
 
+            String lang = (String) carrier.getProperty(langProp);
+            HashMap<String, Pair<Pattern, String>> dict = emojiDictionary.get(lang);
+            
+            
+            if(dict==null) return carrier; //When there is not a dictionary for the language
+            if(replaceEmoji){
+                for(String emoji: dict.keySet()){
+                    /*TO DO sustitucion emoji por su significado,
+                    necesario arreglar problema con inicializacion del diccionario
+                    */
+                    //el m.start(1) y m.end(1)  se refieren a la region 1 de la expresion regular
+                }
+            }else if (removeEmoji) {
+                carrier.setData(new StringBuffer(EmojiParser.removeAllEmojis(data)));   //modificar por replace
+            }   //else si quiero traducir el emoji
         }else{
           logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
         }
