@@ -350,6 +350,11 @@ License along with this program.  If not, see
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.2.0</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.4.0</version>
+                </plugin>                
             </plugins>
         </pluginManagement>
 
@@ -406,6 +411,14 @@ License along with this program.  If not, see
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <configuration>
+                    <mainClass>org.nlpa.Main</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
