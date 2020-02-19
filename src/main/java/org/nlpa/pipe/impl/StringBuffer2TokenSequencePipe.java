@@ -154,19 +154,10 @@ public class StringBuffer2TokenSequencePipe extends AbstractPipe implements Shar
 
             
             for (int i = 0; i < tokenSequence.size(); i++) {
-               
                 Dictionary.getDictionary().add(tokenSequence.getToken(i));
             }
         }
-       
-         if (carrier.getData() instanceof TokenSequence) {
-            TokenSequence ss = (TokenSequence) carrier.getData();
-            System.out.println("[");
-            for (int i=0; i<ss.size();i++){
-                System.out.println("\""+ss.getToken(i)+"\",");
-            }
-            System.out.println("]");
-        }
+
         return carrier;
     }
 
