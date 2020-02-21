@@ -85,15 +85,10 @@ public class StringBuffer2SynsetSequencePipeTest {
         SynsetSequence expectedSynsetSequence = new SynsetSequence(data);
         List<Pair<String, String>> synsets = new ArrayList<>();
         synsets.add(new Pair("bn:00025645n", "December"));
-        synsets.add(new Pair("bn:00006898n", "ho"));
         synsets.add(new Pair("bn:03100869n", "ho ho"));
-        synsets.add(new Pair("bn:00006898n", "ho"));
         synsets.add(new Pair("bn:03100869n", "ho ho"));
-        synsets.add(new Pair("bn:00006898n", "ho"));
         synsets.add(new Pair("bn:00009394n", "Beat"));
-        synsets.add(new Pair("bn:00018836n", "Christmas"));
         synsets.add(new Pair("bn:00018836n", "Christmas days"));
-        synsets.add(new Pair("bn:00000086n", "days"));
         synsets.add(new Pair("bn:03149538n", "online"));
         synsets.add(new Pair("bn:00025645n", "Dec"));
         synsets.add(new Pair("bn:00080111n", "Visit"));
@@ -104,12 +99,6 @@ public class StringBuffer2SynsetSequencePipeTest {
         expResult.setProperty(instance.getLangProp(), "EN");
         Instance result = instance.pipe(carrier);
 
-        if (result.getData() instanceof SynsetSequence) {
-            SynsetSequence ss = (SynsetSequence) carrier.getData();
-            for (Pair<String, String> synset : ss.getSynsets()) {
-                System.out.println(synset.getObj1() + "," + synset.getObj2());
-            }
-        }
         assertEquals(expResult, result);
     }
 
@@ -119,7 +108,7 @@ public class StringBuffer2SynsetSequencePipeTest {
     @Test
     public void testWriteToDisk() {
 
-        String dir = "output/testWriteToDisk.txt";
+        String dir = "output/";
         instance.writeToDisk(dir);
     }
 

@@ -81,8 +81,6 @@ public class StripHTMLFromStringBufferPipeTest {
         Instance expResult = new Instance(new StringBuffer(expectedData), null, name, source);
         Instance result = instance.pipe(carrier);
         
-        System.out.println(result.getData() + " -- " + result.getPropertyList());
-        System.out.println(expResult.getData() + " -- " + expResult.getPropertyList());
         assertEquals(expResult,result);
     }
 }

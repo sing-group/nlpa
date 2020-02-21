@@ -187,9 +187,6 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
         }else{
           logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
         }
-        System.out.println(carrier.getData());
-        System.out.println(carrier.getPropertyList());
-        System.out.println(carrier.getValueList());
         return carrier;
     }
 }

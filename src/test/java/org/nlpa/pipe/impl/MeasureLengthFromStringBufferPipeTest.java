@@ -81,9 +81,10 @@ public class MeasureLengthFromStringBufferPipeTest {
          String expectedData = "December is hre :), ho ho ho! 🎅 Beat the Christmas days with us and we'll even give you 19% off online until 31 Dec. Visit us on <a href=\"www.xx.com\">here</a>, #xx or @xx.";
 
         Instance expResult = new Instance(new StringBuffer(expectedData), null, name, source);
-        expResult.setProperty(instance.getLengthProp(), "172");
+        expResult.setProperty(instance.getLengthProp(), 172);
         Instance result = instance.pipe(carrier);
-        assertTrue(expResult.equals(result));
+
+        assertEquals(expResult,result);
     }
     
 }

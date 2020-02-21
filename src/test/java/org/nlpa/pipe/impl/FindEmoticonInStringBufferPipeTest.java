@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  */
 public class FindEmoticonInStringBufferPipeTest {
 
-    String data = "December is hre :), ho ho ho! 🎅 Beat the Christmas days with us and we'll even give you 19% off online until 31 Dec. Visit us on here, #xx or @xx.";
+    String data = "December is hre :) , ho ho ho! 🎅 Beat the Christmas days with us and we'll even give you 19% off online until 31 Dec. Visit us on here, #xx or @xx.";
     String name = "basic_example/_spam_/7c63a8fd7ae52e350e354d63b23e1c3b.tsms";
     String source = "basic_example/_spam_/7c63a8fd7ae52e350e354d63b23e1c3b.tsms";
     private static Instance carrier = null;
@@ -30,6 +30,7 @@ public class FindEmoticonInStringBufferPipeTest {
     public void setUp() {
         instance = new FindEmoticonInStringBufferPipe();
         carrier = new Instance(new StringBuffer(data), null, name, source);
+        carrier.setProperty(instance.getLangProp(), "EN");
     }
 
     /**
@@ -107,11 +108,14 @@ public class FindEmoticonInStringBufferPipeTest {
      */
     @Test
     public void testPipe() {
-        String expectedData = "December is hre , ho ho ho! 🎅 Beat the Christmas days with us and we'll even give you 19% off online until 31 Dec. Visit us on here, #xx or @xx.";
+        String expectedData = "December is hre  , ho ho ho! 🎅 Beat the Christmas days with us and we'll even give you 19% off online until 31 Dec. Visit us on here, #xx or @xx.";
 
         Instance expResult = new Instance(new StringBuffer(expectedData), null, name, source);
+        expResult.setProperty(instance.getLangProp(), "EN");
         expResult.setProperty(instance.getEmoticonProp(), ":) ");   
+        
         Instance result = instance.pipe(carrier);
+
         assertTrue(expResult.equals(result));
     }
 

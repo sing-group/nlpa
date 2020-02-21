@@ -104,10 +104,10 @@ public class GuessLanguageFromStringBufferPipeTest {
     public void testPipe() {
         Instance expResult = new Instance(new StringBuffer(data),null, name, source);
         expResult.setProperty(instance.getLangProp(), "EN");
-        expResult.setProperty(instance.getLangReliabilityProp(), "0.9999981494831541");
+        expResult.setProperty(instance.getLangReliabilityProp(), 0.9999981494831541);
 
         Instance result = instance.pipe(carrier);
-        assertTrue(expResult.equals(result));
+        assertEquals(expResult, result);
     }
 
 }

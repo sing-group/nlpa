@@ -76,7 +76,7 @@ public class FindEmojiInStringBufferPipeTest {
      */
     @Test
     public void testGetRemoveEmoji() {
-        boolean expResult = false;
+        boolean expResult = true;
         boolean result = instance.getRemoveEmoji();
         assertEquals(expResult, result);
     }
@@ -95,7 +95,7 @@ public class FindEmojiInStringBufferPipeTest {
      */
     @Test
     public void testGetEmojiProp() {
-        String expResult = "";
+        String expResult = "emoji";
         String result = instance.getEmojiProp();
         assertEquals(expResult, result);
     }
@@ -105,13 +105,16 @@ public class FindEmojiInStringBufferPipeTest {
      */
     @Test
     public void testPipe() {
-       /* String expectedData = "December is hre :-) , ho ho ho! 🎅 Beat the Christmas days with us and we will even give you 19% off online until 31 Dec. Visit us on here, #xx or @xx.";
+        String expectedData = "December is hre :-) , ho ho ho!  Beat the Christmas days with us and we'll even give you 19% off online until 31 Dec. Visit us on here, #xx or @xx.";
         
         Instance expResult = new Instance(new StringBuffer(expectedData), null, name, source);
+        expResult.setProperty(instance.getEmojiProp(), "🎅");
        
-        
         Instance result = instance.pipe(carrier);
-        assertTrue(expResult.equals(result));*/
+
+        System.out.println(result.getData()+ result.getPropertyList().toString()+result.getValueList());
+        System.out.println(expResult.getData()+expResult.getPropertyList().toString()+expResult.getValueList());
+        assertTrue(expResult.equals(result));
     }
 
 }
