@@ -116,15 +116,15 @@ public class Main {
          * jml.loadFile();
          */
         //Then load the dataset to use it with Weka TM
-        Map<String, Integer> targetValues = new HashMap<>();
-        targetValues.put("ham", 0);
-        targetValues.put("spam", 1);
+//        Map<String, Integer> targetValues = new HashMap<>();
+//        targetValues.put("ham", 0);
+//        targetValues.put("spam", 1);
 
         //Lets define transformers for the dataset
-        Map<String, Transformer> transformersList = new HashMap<>();
-        transformersList.put("target", new Enum2IntTransformer(targetValues));
-        transformersList.put("date", new Date2MillisTransformer());
-        transformersList.put("URLs", new Url2BinaryTransformer());
+//        Map<String, Transformer> transformersList = new HashMap<>();
+//        transformersList.put("target", new Enum2IntTransformer(targetValues));
+//        transformersList.put("date", new Date2MillisTransformer());
+//        transformersList.put("URLs", new Url2BinaryTransformer());
 //        long before = System.currentTimeMillis();
 //        System.out.println("before");
 //        weka.core.Instances data = (new CSVDatasetReader("output_spam_ass.csv", transformersList)).loadFile().getWekaDataset();
@@ -132,8 +132,8 @@ public class Main {
 //        long time = System.currentTimeMillis() - before;
 //        System.out.println("time: " + time);
 
-        TeeDatasetFromFeatureVectorPipe teeDatasetFSV = new TeeDatasetFromFeatureVectorPipe();
-        teeDatasetFSV.setTransformersList(transformersList);
+//        TeeDatasetFromFeatureVectorPipe teeDatasetFSV = new TeeDatasetFromFeatureVectorPipe();
+//        teeDatasetFSV.setTransformersList(transformersList);
         /* create a example of pipe */
         AbstractPipe p = new SerialPipes(new AbstractPipe[]{new TargetAssigningFromPathPipe(),
             new StoreFileExtensionPipe(), 
@@ -144,19 +144,25 @@ public class Main {
             new StripHTMLFromStringBufferPipe(),
             new MeasureLengthFromStringBufferPipe("length_after_html_drop"), 
             new GuessLanguageFromStringBufferPipe(),
+            new ContractionsFromStringBufferPipe(),
+            new AbbreviationFromStringBufferPipe(),
+            new SlangFromStringBufferPipe(),
+            new ComputePolarityFromLexiconPipe(),
             new StringBufferToLowerCasePipe(), 
             new InterjectionFromStringBufferPipe(),
             new StopWordFromStringBufferPipe(),
             new TeeCSVFromStringBufferPipe("output.csv", true), 
-            new StringBuffer2SynsetSequencePipe(),
-            new SynsetSequence2FeatureVectorPipe(SequenceGroupingStrategy.COUNT),
-            // new TeeCSVFromFeatureVectorPipe("outputsyns.csv"),
-            teeDatasetFSV
+            new StringBuffer2TokenSequencePipe(),
+            new TokenSequence2FeatureVectorPipe(SequenceGroupingStrategy.COUNT),
+             new TeeCSVFromFeatureVectorPipe("outputsyns.csv")
+             
+//            teeDatasetFSV
+            
         });
 
         if (!p.checkDependencies()) {
             System.out.println("Pipe dependencies are not satisfied");
-//          System.out.println(AbstractPipe.getErrorMesage()); // TODO why is this an error?
+         System.out.println(AbstractPipe.getErrorMessage()); // TODO why is this an error?
             System.exit(1);
         } else {
             System.out.println("Pipe dependencies are satisfied");
