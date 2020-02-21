@@ -24,6 +24,7 @@ package org.nlpa.types;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.bdp4j.util.Pair;
 
@@ -164,4 +165,42 @@ public class SynsetSequence implements Serializable {
         this.synsets = synsets;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 17 * hash + Objects.hashCode(this.originalText);
+        hash = 17 * hash + Objects.hashCode(this.unmatchedTexts);
+        hash = 17 * hash + Objects.hashCode(this.fixedText);
+        hash = 17 * hash + Objects.hashCode(this.synsets);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SynsetSequence other = (SynsetSequence) obj;
+        if (!Objects.equals(this.originalText, other.originalText)) {
+            return false;
+        }
+        if (!Objects.equals(this.fixedText, other.fixedText)) {
+            System.out.println("fixedText: " + this.fixedText + " - " + other.fixedText);
+            return false;
+        }
+//        if (!Objects.equals(this.unmatchedTexts, other.unmatchedTexts)) {
+//            System.out.println("unmatchedTexts: " + this.unmatchedTexts + " - " + other.unmatchedTexts);
+//            return false;
+//        }
+        if (!Objects.equals(this.synsets, other.synsets)) {
+            return false;
+        }
+        return true;
+    }
 }

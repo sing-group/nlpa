@@ -86,9 +86,9 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
 
         this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
         File f = new File(this.output);
-        if (f.exists()) {
-            f.delete();
-        }
+//        if (f.exists()) {
+//            f.delete();
+//        }
         this.dataset = new CSVDatasetWriter(this.output);
     }
 
@@ -104,9 +104,9 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
 
         this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
         File f = new File(this.output);
-        if (f.exists()) {
-            f.delete();
-        }
+//        if (f.exists()) {
+//            f.delete();
+//        }
         this.dataset = new CSVDatasetWriter(this.output);
         this.setSaveData(saveData);
     }
@@ -167,9 +167,9 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
         this.dataset.flushAndClose();
         this.output = Configurator.getLastUsed().getProp(Configurator.OUTPUT_FOLDER) + System.getProperty("file.separator")+ output;
         File f = new File(this.output);
-        if (f.exists()) {
-            f.delete();
-        }
+//        if (f.exists()) {
+//            f.delete();
+//        }
         this.dataset.flushAndClose();
         this.dataset = new CSVDatasetWriter(this.output);
     }
@@ -265,6 +265,7 @@ public class TeeCSVFromStringBufferPipe extends AbstractPipe {
         if (isLast()) {
             dataset.flushAndClose();
         }
+        
         return carrier;
 
     }

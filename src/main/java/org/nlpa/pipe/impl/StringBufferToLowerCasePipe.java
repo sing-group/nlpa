@@ -64,7 +64,7 @@ public class StringBufferToLowerCasePipe extends AbstractPipe {
      * Build a StringBufferToLowerCasePipe
      */
     public StringBufferToLowerCasePipe() {
-        super(new Class<?>[0], new Class<?>[]{AbbreviationFromStringBufferPipe.class, SlangFromStringBufferPipe.class});
+        super(new Class<?>[0], new Class<?>[]{AbbreviationFromStringBufferPipe.class, SlangFromStringBufferPipe.class, FindEmoticonInStringBufferPipe.class});
     }
 
     /**

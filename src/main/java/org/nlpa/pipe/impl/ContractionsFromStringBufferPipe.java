@@ -69,7 +69,11 @@ public class ContractionsFromStringBufferPipe extends AbstractPipe {
     private static final HashMap<String, HashMap<String, Pair<Pattern, String>>> htContractions = new HashMap<>();
 
     static {
-        for (String i : new String[]{"/contractions-json/contr.en.json", "/contractions-json/contr.es.json",}) {
+        for (String i : new String[]{"/contractions-json/contr.en.json", "/contractions-json/contr.es.json",
+                                     "/contractions-json/contr.pt.json","/contractions-json/contr.fr.json",
+                                     "/contractions-json/contr.gl.json","/contractions-json/contr.de.json",
+                                     "/contractions-json/contr.it.json","/contractions-json/contr.ru.json"
+                                    }) {
             String lang = i.substring(25, 27).toUpperCase();
 
             try {

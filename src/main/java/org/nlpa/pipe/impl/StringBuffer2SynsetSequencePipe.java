@@ -22,6 +22,12 @@
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.ObjectOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -119,7 +125,7 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
      * Default constructor. Creates a StringBuffer2SynsetSequencePipe Pipe
      */
     public StringBuffer2SynsetSequencePipe() {
-        super(new Class<?>[0], new Class<?>[0]);
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[0]);
     }
 
     /**
@@ -174,19 +180,19 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
                 int indexOfPuntMark = matcher.start();
                 if (indexOfPuntMark == 0) { //The puntuation symbol is at the beggining
                     if (acceptedCharOnBeggining.indexOf(current.charAt(indexOfPuntMark)) == -1) {
-                        returnValue.add(new Pair<String, String>(current, null));
+                        returnValue.add(new Pair<>(current, null));
                     } else {
                         Matcher innerMatcher = acceptedCharOnBegginingPattern.matcher(current);
                         if (!BabelUtils.getDefault().isTermInBabelNet(innerMatcher.replaceFirst(""), lang)) {
-                            returnValue.add(new Pair<String, String>(current, null));
+                            returnValue.add(new Pair<>(current, null));
                         }
                     }
                 } else if (indexOfPuntMark == current.length() - 1) { //the puntuation symbol is at the end
                     if (acceptedCharOnEnd.indexOf(current.charAt(indexOfPuntMark)) == -1) {
-                        returnValue.add(new Pair<String, String>(current, null));
+                        returnValue.add(new Pair<>(current, null));
                     } else {
                         if (!BabelUtils.getDefault().isTermInBabelNet(current.substring(0, indexOfPuntMark), lang)) {
-                            returnValue.add(new Pair<String, String>(current, null));
+                            returnValue.add(new Pair<>(current, null));
                         }
                     }
                 } else { //The puntuation symbol is in the middle
@@ -249,6 +255,8 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
         for (Pair<String, String> current : unmatched) {
             for (int i = 0; current.getObj2() == null && i < vUTH.length; i++) {
                 vUTH[i].handle(current, lang);
+//                System.out.println(current.getObj1() + " (" + lang + ");");
+//                writeToFile(current.getObj1() + " (" + lang + ");\r\n");
             }
             if (current.getObj2() != null) {
                 returnValue.replace(current.getObj1(), current.getObj2());
@@ -275,7 +283,9 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
 
         //Query Babelnet
         ArrayList<Pair<String, String>> returnValue = BabelUtils.getDefault().buildSynsetSequence(fixedText, lang);
-
+        if (returnValue == null) {
+            return null;
+        }
         //Update dictionaries
         for (Pair<String, String> current : returnValue) {
             Dictionary.getDictionary().add(current.getObj1());
@@ -295,7 +305,7 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
      */
     public Instance pipe(Instance carrier) {
         SynsetSequence sv = new SynsetSequence((StringBuffer) carrier.getData());
-
+        
         //Invalidate the instance if the language is not present
         //We cannot correctly represent the instance if the language is not present
         if (carrier.getProperty(langProp) == null || ((String) carrier.getProperty(langProp)).equalsIgnoreCase("UND")) {
@@ -316,13 +326,21 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
         } else {
             sv.setFixedText(sv.getOriginalText());
         }
+        ArrayList<Pair<String, String>> syns = buildSynsetSequence(sv.getFixedText(), ((String) carrier.getProperty(langProp)).toUpperCase());
 
-        sv.setSynsets(buildSynsetSequence(sv.getFixedText(), ((String) carrier.getProperty(langProp)).toUpperCase()));
+        if (syns == null) {
+            logger.info("Invalidating instance because was unable to find synsets");
+            carrier.setData(null);
+            carrier.invalidate();
+            return carrier;
+        }
+
+        sv.setSynsets(syns);
 
         carrier.setData(sv);
 
         logger.info("Instance processed: " + carrier.getName());
-
+        
         return carrier;
     }
 

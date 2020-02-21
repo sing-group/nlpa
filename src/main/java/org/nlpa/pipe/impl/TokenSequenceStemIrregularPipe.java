@@ -25,6 +25,7 @@ import com.google.auto.service.AutoService;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -36,6 +37,7 @@ import org.bdp4j.pipe.TransformationPipe;
 
 import org.bdp4j.types.Instance;
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
+import org.nlpa.types.Dictionary;
 import org.nlpa.types.TokenSequence;
 
 /**
@@ -74,7 +76,7 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
         for (String i : new String[]{"/irregular/irregular_es.stm", "/irregular/irregular_en.stm"}) {
             String lang = i.substring(21, 23).toUpperCase();
             Map<String, String> irregularWordsList = new HashMap<>();
-            try (FileReader fReader = new FileReader(new File(TokenSequenceStemIrregularPipe.class.getResource("/irregular/irregular_" + lang + ".stm").toURI()));
+            try (FileReader fReader = new FileReader(new File(TokenSequenceStemIrregularPipe.class.getResource("/irregular/irregular_" + lang.toLowerCase() + ".stm").toURI()));
                     BufferedReader bReader = new BufferedReader(fReader);) {
                 String var = "";
                 while ((var = bReader.readLine()) != null) {
@@ -120,8 +122,8 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
     }
 
     /**
-     * Process instances to detect irregular word and destructively
-     * replace them with their root.
+     * Process instances to detect irregular word and destructively replace them
+     * with their root.
      *
      * @param carrier Instance to be process
      * @return The processed instance
@@ -131,22 +133,34 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
         TokenSequence ts = (TokenSequence) carrier.getData();
         TokenSequence ret = new TokenSequence();
         String lang = (String) carrier.getProperty(this.langProp);
-
+        Dictionary dictionary = Dictionary.getDictionary();
+        dictionary.setEncode(true);
+        
         if (lang != null) {
-            irregularWords = LANG_WORD_FILES.get(lang.toLowerCase());
+            irregularWords = LANG_WORD_FILES.get(lang.toUpperCase());
             if (irregularWords != null) {
                 for (int i = 0; i < ts.size(); i++) {
-                    String token = ts.getToken(i);
+                    String encodeToken = ts.getToken(i);
+                    String decodeToken = dictionary.decodeBase64(ts.getToken(i).substring(3));
+                    String token = decodeToken;
                     //If the token is irregular, it changes text
                     String changeTxt;
-                    if ((changeTxt = irregularWords.get(token)) != null) {
+                    if ((changeTxt = irregularWords.get(decodeToken)) != null) {
                         token = changeTxt;
                     }
-                    ret.add(token);
+                    String encodedReplaceToken = "tk:" + dictionary.encodeBase64(token);
+                    ret.add(encodedReplaceToken);
+
+                    if (dictionary.getEncode()) {
+                        dictionary.replace(encodeToken, encodedReplaceToken);
+                    } else {
+                        dictionary.replace(decodeToken, token);
+                    }
                 }
                 carrier.setData(ret);
             }
         }
+        
         return carrier;
     }
 }

@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TransformationPipe;
 import org.bdp4j.types.Instance;
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
+import org.nlpa.types.Dictionary;
 import org.nlpa.types.Rule;
 
 /**
@@ -84,7 +86,7 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
             List<Pair<String, List<Rule>>> currentRulesFile = new ArrayList<>();
             String lang = i.substring(15, 17).toUpperCase();
 
-            try (Reader iStream = new FileReader(new File(TokenSequencePorterStemmerPipe.class.getResource("/porter/porter." + lang + ".stm").toURI()));
+            try (Reader iStream = new FileReader(new File(TokenSequencePorterStemmerPipe.class.getResource("/porter/porter." + lang.toLowerCase() + ".stm").toURI()));
                     BufferedReader bReader = new BufferedReader(iStream)) {
                 String line;
                 StringTokenizer sTokenizer;
@@ -209,18 +211,28 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
         TokenSequence ret = new TokenSequence();
         String lang = (String) carrier.getProperty(this.langProp);
 
+        Dictionary dictionary = Dictionary.getDictionary();
+        dictionary.setEncode(true);
+
         if (lang != null) {
             //Apply stemmer to each word
             for (int i = 0; i < ts.size(); i++) {
-                String token = ts.getToken(i);
+                String token = new String(Base64.getDecoder().decode(ts.getToken(i).substring(3)));
                 String tokenRoot = extractRoot(token, lang.toLowerCase());
-
                 if (!tokenRoot.equals("")) {
-                    ret.add(token);
+                    ret.add("tk:" + new String(Base64.getEncoder().encode(tokenRoot.getBytes())));
+                    if (dictionary.getEncode()) {
+                        dictionary.replace("tk:" + dictionary.encodeBase64(token), "tk:" + dictionary.encodeBase64(tokenRoot));
+                    } else {
+                        dictionary.replace(token, tokenRoot);
+                    }
+                } else {
+                    ret.add("tk:" + new String(Base64.getEncoder().encode(token.getBytes())));
                 }
             }
         }
         carrier.setData(ret);
+
         return carrier;
     }
 
@@ -337,32 +349,31 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
         int i = 0;
 
         String returnValue = processWord;
-
         while (i < rules.size()) {
             // check if the root word matched with some root rule
-            if (returnValue.length() - rules.get(i).getOldSuffix().length() < 0) {
-                ending = "";
-            } else {
-                ending = returnValue.substring(returnValue.length() - rules.get(i).getOldSuffix().length());
-            }
 
-            if (ending.equals("")) {
-                if (rules.get(i).getOldSuffix().equals(ending)) {
-                    if (returnValue.endsWith(rules.get(i).getOldSuffix())) {
-                        tmp_ch = ending;
-                        returnValue = returnValue.substring(0, returnValue.length() - rules.get(i).getOldSuffix().length()); // elimina el sufijo a la palabra
-                        if (rules.get(i).getMinRootSize() < wordSize(returnValue)) {   // si el tamaño de la raíz permite el cambio
-                            if ((rules.get(i).getCondition() == -1) || ((rules.get(i).getCondition() == 1) && (containsVowel(returnValue)))
-                                    || ((rules.get(i).getCondition() == 2) && (removeAnE(returnValue)))) { // si hay que aplicar alguna condición
-                                returnValue += rules.get(i).getNewSuffix();
-                                break;
+            if (returnValue.length() - rules.get(i).getOldSuffix().length() >= 0) {
+                ending = returnValue.substring(returnValue.length() - rules.get(i).getOldSuffix().length());
+
+                if (!ending.equals("")) {
+                    if (rules.get(i).getOldSuffix().equals(ending)) {
+                        if (returnValue.endsWith(rules.get(i).getOldSuffix())) {
+                            tmp_ch = ending;
+                            returnValue = returnValue.substring(0, returnValue.length() - rules.get(i).getOldSuffix().length()); // elimina el sufijo a la palabra
+                            if (rules.get(i).getMinRootSize() < wordSize(returnValue)) {   // si el tamaño de la raíz permite el cambio
+                                if ((rules.get(i).getCondition() == -1) || ((rules.get(i).getCondition() == 1) && (containsVowel(returnValue)))
+                                        || ((rules.get(i).getCondition() == 2) && (removeAnE(returnValue)))) { // si hay que aplicar alguna condición
+                                    returnValue += rules.get(i).getNewSuffix();
+                                    break;
+                                }
                             }
+                            ending = tmp_ch; // Restore suffix
+                            returnValue += ending;
                         }
-                        ending = tmp_ch; // Restore suffix
-                        returnValue += ending;
                     }
                 }
             }
+
             i++;
         }
         return returnValue;
@@ -402,7 +413,12 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
         if (rules != null) {
             //Process rules
             for (int i = 0; i < rules.size(); i++) {
+                String original = ret;
+
                 ret = replaceEnd(rules.get(i).getObj2(), ret);
+                if (!ret.equals(original)) {
+                    break;
+                }
             }
         }
         return ret;
@@ -434,11 +450,12 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
      */
     public String extractRoot(String word, String lang) {
         String returnValue = word;
-
+        String langUp = lang.toUpperCase();
         returnValue = returnValue.toLowerCase();
         returnValue = cleanUpText(returnValue);
-        if (RULES_FILES.containsKey(lang)) {
-            returnValue = stem(returnValue, lang);
+
+        if (RULES_FILES.containsKey(langUp)) {
+            returnValue = stem(returnValue, langUp);
         }
         removeAccents(returnValue);
         return returnValue;

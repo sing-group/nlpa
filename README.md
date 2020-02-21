@@ -145,6 +145,15 @@ Figure 2 includes a class diagram and a snippet of source code showing the inter
 
 As we can see in Figure 2b, the pipeline orchestration comprises some tasks executed in sequence. In order to check whether the pipeline has been correctly defined, a dependency check is executed. Additionally, NLPA incorporates mechanisms to automatically load instances from files. And finally, instances are processed.
 
+## Authors
+
+This project has been conceived and developed by SING research group. The development team is composed by:
+
+  * José R. Méndez: Subject Matter Expert
+  * María Novo: Software Architecture Design and Team Leader
+  * Rosalía Laza: Developer
+  * Reyes Pavón: Developer
+
 
 ## License
 

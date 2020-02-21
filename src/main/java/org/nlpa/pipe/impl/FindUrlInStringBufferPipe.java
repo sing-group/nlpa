@@ -147,6 +147,15 @@ public class FindUrlInStringBufferPipe extends AbstractPipe {
     }
 
     /**
+     * Retrieves the property name for URL
+     *
+     * @return String containing the property name for URL
+     */
+    public String getURLProp() {
+        return this.URLProp;
+    }
+    
+    /**
      * Will return true if s contains URL.
      *
      * @param s String to test
