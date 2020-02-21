@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -56,14 +55,14 @@ public class StopWordFromStringBufferPipe extends AbstractPipe {
     private static final Logger logger = LogManager.getLogger(StopWordFromStringBufferPipe.class);
 
     /**
-     * A HashMap of stopwords in different languages.
-	  * Thanks to StopWords-Json Project available at
-	  * <a href="https://www.npmjs.com/package/stopwords-json">
-	  * https://www.npmjs.com/package/stopwords-json</a>
-	  * NOTE: All JSON files (listed below) containing these stopwords
-	  * have been compiled from stopwords-json project (see previous link)
+     * A HashMap of stopwords in different languages. Thanks to StopWords-Json
+     * Project available at
+     * <a href="https://www.npmjs.com/package/stopwords-json">
+     * https://www.npmjs.com/package/stopwords-json</a>
+     * NOTE: All JSON files (listed below) containing these stopwords have been
+     * compiled from stopwords-json project (see previous link)
      */
-    private static final HashMap<String,LinkedList<Pattern>> hmStopWords = new HashMap<>();
+    private static final HashMap<String, LinkedList<Pattern>> hmStopWords = new HashMap<>();
 
     static {
         for (String i : new String[]{"/stopwords-json/af.json", "/stopwords-json/ar.json",
@@ -97,13 +96,13 @@ public class StopWordFromStringBufferPipe extends AbstractPipe {
                 InputStream is = StopWordFromStringBufferPipe.class.getResourceAsStream(i);
                 JsonReader rdr = Json.createReader(is);
                 JsonArray array = rdr.readArray();
-                LinkedList<Pattern> currentStopwords=new LinkedList<>();
+                LinkedList<Pattern> currentStopwords = new LinkedList<>();
                 array.forEach((v) -> {
                     currentStopwords.add(
-                            Pattern.compile( "(?:\\p{Space}|[\"><¡?¿!;:,.'-]|^)(" + Pattern.quote(((JsonString)v).getString()) + ")[;:?\"!,.'>-]?(?=(?:\\p{Space}|$|>))" )
+                            Pattern.compile("(?:\\p{Space}|[\"><¡?¿!;:,.'-]|^)(" + Pattern.quote(((JsonString) v).getString()) + ")[;:?\"!,.'>-]?(?=(?:\\p{Space}|$|>))")
                     );
                 });
-                hmStopWords.put(lang,currentStopwords);
+                hmStopWords.put(lang, currentStopwords);
             } catch (Exception e) {
                 System.out.println("Exception processing: " + i + " message " + e.getMessage());
             }
@@ -126,8 +125,8 @@ public class StopWordFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
      *
      * @return the datatype expected in the data attribute of an Instance after
      * processing
@@ -150,8 +149,8 @@ public class StopWordFromStringBufferPipe extends AbstractPipe {
      * @param langProp The property that stores the language of text
      */
     public StopWordFromStringBufferPipe(String langProp) {
-        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class},new Class<?>[]{AbbreviationFromStringBufferPipe.class});
-        
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[]{AbbreviationFromStringBufferPipe.class});
+
         this.langProp = langProp;
     }
 
@@ -160,40 +159,40 @@ public class StopWordFromStringBufferPipe extends AbstractPipe {
      *
      * @param langProp The name of the property where the language is stored
      */
-   @PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue = DEFAULT_LANG_PROPERTY)
+    @PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue = DEFAULT_LANG_PROPERTY)
     public void setLangProp(String langProp) {
         this.langProp = langProp;
     }
 
     /**
-     * Process an Instance. This method takes an input Instance,
-     * drops stopwords from the text, and returns it. This is the method by which all
-     * pipes are eventually run.
+     * Process an Instance. This method takes an input Instance, drops stopwords
+     * from the text, and returns it. This is the method by which all pipes are
+     * eventually run.
      *
      * @param carrier Instance to be processed.
      * @return Instance processed
      */
     @Override
     public Instance pipe(Instance carrier) {
-      if (carrier.getData() instanceof StringBuffer) {
-          String lang = (String) carrier.getProperty(langProp);
-          StringBuffer sb = (StringBuffer) carrier.getData();
-          
-          LinkedList<Pattern> setStopwords = hmStopWords.get(lang);
-          
-          if (setStopwords!=null){
-            for (Pattern currentStopword:setStopwords){
-                Matcher m = currentStopword.matcher(sb);
-                int last=0;
-                while (m.find(last)) {
-                      last=m.start(1);
-                      sb.replace(m.start(1),m.end(1),"");
+        if (carrier.getData() instanceof StringBuffer) {
+            String lang = (String) carrier.getProperty(langProp);
+            StringBuffer sb = (StringBuffer) carrier.getData();
+
+            LinkedList<Pattern> setStopwords = hmStopWords.get(lang);
+
+            if (setStopwords != null) {
+                for (Pattern currentStopword : setStopwords) {
+                    Matcher m = currentStopword.matcher(sb);
+                    int last = 0;
+                    while (m.find(last)) {
+                        last = m.start(1);
+                        sb.replace(m.start(1), m.end(1), "");
+                    }
                 }
             }
-          }
-      }else{
-        logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
-      }
-      return carrier;
+        } else {
+            logger.error("Data should be an StrinBuffer when processing " + carrier.getName() + " but is a " + carrier.getData().getClass().getName());
+        }
+        return carrier;
     }
 }

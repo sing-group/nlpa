@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -44,15 +43,15 @@ import org.bdp4j.pipe.Pipe;
 
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
-
 /**
  * This pipe finds and eventually drops emoticons The data of the instance
  * should contain a StringBuffer
  *
- * References: https://es.wikipedia.org/wiki/Anexo:Emoticonos. https://en.wikipedia.org/wiki/List_of_emoticons 
- *              Thanks to Wikipedia 
- * UTF16 encoder: https://convertcodes.com/utf16-encode-decode-convert-string/. Thanks to Convert Codes
- * 
+ * References: https://es.wikipedia.org/wiki/Anexo:Emoticonos.
+ * https://en.wikipedia.org/wiki/List_of_emoticons Thanks to Wikipedia UTF16
+ * encoder: https://convertcodes.com/utf16-encode-decode-convert-string/. Thanks
+ * to Convert Codes
+ *
  * @author Reyes Pavón
  * @author Rosalía Laza
  * @author José Ramón Méndez
@@ -66,7 +65,7 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
      */
     private static final Logger logger = LogManager.getLogger(FindEmoticonInStringBufferPipe.class);
 
-   /* private static HashSet<String> emoticons=new HashSet<>(Arrays.asList(new String[]{
+    /* private static HashSet<String> emoticons=new HashSet<>(Arrays.asList(new String[]{
 
         //Sideways Latin-only emoticons
         "\u003a\u2011\u0029", ":)", ":-]", ":]", ":-3", ":3", ":->", ":>","8-)", "8)", ":-}", ":}", "\u003a\u006f\u0029",
@@ -261,40 +260,42 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
 		//Multi-line 2channel emoticons
 		"\u003c\u0060\u2200\u00b4\u003e", "\u003c\u4e36\uff40\u2200\u00b4\u003e" //Stereotypical Korean character (Nidā)
     }));
-    */
-
+     */
     /**
-     * A hashmap of emoticons in different languages. NOTE: All JSON files (listed
-     * below) containing emoticons
+     * A hashmap of emoticons in different languages. NOTE: All JSON files
+     * (listed below) containing emoticons
      *
      */
-
     private static final HashMap<String, HashMap<String, Pair<Pattern, String>>> htEmoticons = new HashMap<>();
 
     static {
         for (String i : new String[]{"/emoticons-json/emoticons.en.json"}) {
-            
+
             String lang = i.substring(26, 28).toUpperCase();
-            
+
             try {
                 InputStream is = FindEmoticonInStringBufferPipe.class.getResourceAsStream(i);
+
                 JsonReader rdr = Json.createReader(is);
+
                 JsonObject jsonObject = rdr.readObject();
+
                 rdr.close();
+
                 HashMap<String, Pair<Pattern, String>> dict = new HashMap<>();
                 jsonObject.keySet().forEach((emoticon) -> {
-                    dict.put(emoticon, new Pair<>(Character.isLetter(emoticon.charAt(0))? 
-                        Pattern.compile("(?<=[\\p{Space}]|^)" + Pattern.quote(emoticon)):
-                        Pattern.compile(Pattern.quote(emoticon) + "(?=(?:[\\p{Space}]|$))") ,
-                    jsonObject.getString(emoticon)));
+                    dict.put(emoticon, new Pair<>(Character.isLetter(emoticon.charAt(0))
+                            ? Pattern.compile("(?<=[\\p{Space}]|^)" + Pattern.quote(emoticon))
+                            : Pattern.compile(Pattern.quote(emoticon) + "(?=(?:[\\p{Space}]|$))"),
+                            jsonObject.getString(emoticon)));
                 });
+                //System.out.println("2");
                 htEmoticons.put(lang, dict);
             } catch (Exception e) {
                 logger.error("Exception processing: " + i + " message " + e.getMessage());
             }
         }
     }
-
 
     /**
      * The default value for removed emoticons
@@ -311,7 +312,7 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
      */
     private boolean removeEmoticon = EBoolean.getBoolean(DEFAULT_REMOVE_EMOTICON);
 
-     /**
+    /**
      * The name of the property where the language is stored
      */
     private String langProp = DEFAULT_LANG_PROPERTY;
@@ -332,8 +333,8 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
      *
      * @return the datatype expected in the data attribute of an Instance after
      * processing
@@ -342,7 +343,7 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
     public Class<?> getOutputType() {
         return StringBuffer.class;
     }
-    
+
     /**
      * Indicates if emoticon should be removed from data
      *
@@ -390,14 +391,12 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
         return this.emoticonProp;
     }
 
-    
     /**
      * Establish the name of the property where the language will be stored
      *
      * @param langProp The name of the property where the language is stored
      */
-   
-     @PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue = DEFAULT_LANG_PROPERTY)
+    @PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue = DEFAULT_LANG_PROPERTY)
     public void setLangProp(String langProp) {
         this.langProp = langProp;
     }
@@ -407,15 +406,13 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
      *
      * @return the name of the property where the language is stored
      */
-    
     public String getLangProp() {
         return this.langProp;
     }
 
-
     /**
-     * Default constructor. Construct a FindEmoticonInStringBufferPipe instance with
-     * the default configuration value
+     * Default constructor. Construct a FindEmoticonInStringBufferPipe instance
+     * with the default configuration value
      */
     public FindEmoticonInStringBufferPipe() {
         this(DEFAULT_EMOTICON_PROPERTY, EBoolean.getBoolean(DEFAULT_REMOVE_EMOTICON), DEFAULT_LANG_PROPERTY);
@@ -424,13 +421,13 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
     /**
      * Build a FindEmoticonInStringBufferPipe that stores emoticons of the
      * StringBuffer in the property emoticonProp
-     * 
-     * @param langProp   The name of the property that stores the language of text
-     * @param emoticonProp   The name of the property to store emoticons
+     *
+     * @param langProp The name of the property that stores the language of text
+     * @param emoticonProp The name of the property to store emoticons
      * @param removeEmoticon tells if emoticons should be removed
      */
-    public FindEmoticonInStringBufferPipe(String emoticonProp,  boolean removeEmoticon, String langProp) {
-        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[] {FindHashtagInStringBufferPipe.class });
+    public FindEmoticonInStringBufferPipe(String emoticonProp, boolean removeEmoticon, String langProp) {
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[]{FindHashtagInStringBufferPipe.class});
 
         this.langProp = langProp;
         this.emoticonProp = emoticonProp;
@@ -451,40 +448,40 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
         String data = carrier.getData().toString();
         final Stack<Pair<Integer, Integer>> replacements = new Stack<>();
         String lang = (String) carrier.getProperty(langProp);
-        
 
-        HashMap<String,Pair<Pattern,String>> dict = htEmoticons.get(lang);
-        if (dict==null){
+        HashMap<String, Pair<Pattern, String>> dict = htEmoticons.get(lang);
+        
+        if (dict == null) {
             carrier.setProperty(emoticonProp, " ");
             return carrier; //When there is not a dictionary for the language
-        } 
-        
+        }
+
         String value = "";
 
-        for(String emoti: dict.keySet()){
-            Pattern p=dict.get(emoti).getObj1();
+        for (String emoti : dict.keySet()) {
+            Pattern p = dict.get(emoti).getObj1();
             Matcher m = p.matcher(sb);
             while (m.find()) {
                 value += m.group() + " ";
                 if (removeEmoticon) {
                     replacements.push(new Pair<>(m.start(), m.end()));
                 }
-            }   
-            
+            }
+
             while (!replacements.empty()) {
                 final Pair<Integer, Integer> current = replacements.pop();
                 data = (current.getObj1() > 0 ? data.substring(0, current.getObj1()) : "")
-                    + //if startindex is 0 do not concatenate
-                    (current.getObj2() < (data.length() - 1) ? data.substring(current.getObj2()) : ""); //if endindex=newSb.length()-1 do not concatenate
+                        + //if startindex is 0 do not concatenate
+                        (current.getObj2() < (data.length() - 1) ? data.substring(current.getObj2()) : ""); //if endindex=newSb.length()-1 do not concatenate
             }
 
             if (removeEmoticon) {
                 carrier.setData(new StringBuffer(data));
             }
         }
-        
+
         carrier.setProperty(emoticonProp, value);
-            
+
         return carrier;
     }
 

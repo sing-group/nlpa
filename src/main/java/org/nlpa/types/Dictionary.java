@@ -37,7 +37,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A dictionary of Strings. 
+ * A dictionary of Strings.
  *
  * @author María Novo
  * @author José Ramón Méndez Reboredo
@@ -53,12 +53,13 @@ public class Dictionary implements Iterable<String> {
      * The information storage for the dictionary. Only a Hashset of strings is
      * required
      */
-    private Set<String> textHashSet=new LinkedHashSet<>();;
+    private Set<String> textHashSet = new LinkedHashSet<>();
+    ;
 
     /**
      * Indicates if the entries should be encoded
      */
-    private boolean encode=false;
+    private boolean encode = false;
 
     /**
      * A instance of the Dictionary to implement a singleton pattern
@@ -107,20 +108,43 @@ public class Dictionary implements Iterable<String> {
      * @param text The new text to add to the dictionary
      */
     public void add(String text) {
-            textHashSet.add(this.encode?encodeBase64(text):text);
+        textHashSet.add(this.encode ? encodeBase64(text) : text);
     }
 
     /**
      * Determines if a text is included in the dictionary
      *
      * @param text the text to check
+     * @param checkEncode indicates if checking encode property is necessary
      * @return a boolean indicating whether the text is included in the
      * dictionary or not
      */
-    public boolean isIncluded(String text) {
-        text = (this.encode) ? encodeBase64(text) : text;
-
+    public boolean isIncluded(String text, boolean checkEncode) {
+        if (checkEncode) {
+            text = (this.encode) ? encodeBase64(text) : text;
+        }
         return textHashSet.contains(text);
+    }
+
+    /**
+     * Replace a text with other
+     *
+     * @param originalText Text that be replaced in Dictionary
+     * @param replaceText Text to replace old originalText
+     */
+    public void replace(String originalText, String replaceText) {
+        if (!originalText.equals(replaceText)) {
+            if (this.isIncluded(originalText, false)) {
+                textHashSet.remove(originalText);
+                textHashSet.add(replaceText);
+            }
+        }
+    }
+
+    public void print() {
+        for (String text : textHashSet) {
+            System.out.print(new String(Base64.getDecoder().decode(text.substring(3))) + "|");
+        }
     }
 
     /**
@@ -161,7 +185,6 @@ public class Dictionary implements Iterable<String> {
 
             output.writeObject(this.textHashSet);
             output.flush();
-            output.close();
         } catch (Exception ex) {
             logger.error("[WRITE TO DISK] " + ex.getMessage());
         }
@@ -189,7 +212,7 @@ public class Dictionary implements Iterable<String> {
      * @param feat Text to encode
      * @return The text encoded
      */
-    private String encodeBase64(String feat) {
+    public String encodeBase64(String feat) {
         try {
             return Base64.getEncoder().encodeToString(feat.getBytes("UTF-8"));
         } catch (UnsupportedEncodingException ex) {

@@ -141,6 +141,15 @@ public class FindUserNameInStringBufferPipe extends AbstractPipe {
     public void setUserNameProp(String userNameProp) {
         this.userNameProp = userNameProp;
     }
+    
+       /**
+     * Retrieves the property name for @username
+     *
+     * @return String containing the property name for @username
+     */
+    public String getUserNameProp() {
+        return this.userNameProp;
+    }
 
     /**
      * Will return true if s contains @userName.

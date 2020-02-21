@@ -192,6 +192,7 @@ public class AbbreviationFromStringBufferPipe extends AbstractPipe {
         }else{
           logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
         }
+        
         return carrier;
     }
 }

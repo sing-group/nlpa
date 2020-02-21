@@ -180,6 +180,7 @@ public class SlangFromStringBufferPipe extends AbstractPipe {
                 }
             }
         }
+     
         return carrier;
     }
 

@@ -43,6 +43,7 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.TransformationPipe;
 import org.bdp4j.types.Instance;
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
+import org.nlpa.types.Dictionary;
 import org.nlpa.types.Rule;
 
 /**
@@ -210,6 +211,9 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
         TokenSequence ret = new TokenSequence();
         String lang = (String) carrier.getProperty(this.langProp);
 
+        Dictionary dictionary = Dictionary.getDictionary();
+        dictionary.setEncode(true);
+
         if (lang != null) {
             //Apply stemmer to each word
             for (int i = 0; i < ts.size(); i++) {
@@ -217,8 +221,13 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
                 String tokenRoot = extractRoot(token, lang.toLowerCase());
                 if (!tokenRoot.equals("")) {
                     ret.add("tk:" + new String(Base64.getEncoder().encode(tokenRoot.getBytes())));
+                    if (dictionary.getEncode()) {
+                        dictionary.replace("tk:" + dictionary.encodeBase64(token), "tk:" + dictionary.encodeBase64(tokenRoot));
+                    } else {
+                        dictionary.replace(token, tokenRoot);
+                    }
                 } else {
-                        ret.add("tk:" + new String(Base64.getEncoder().encode(token.getBytes())));
+                    ret.add("tk:" + new String(Base64.getEncoder().encode(token.getBytes())));
                 }
             }
         }
@@ -405,9 +414,9 @@ public class TokenSequencePorterStemmerPipe extends AbstractPipe {
             //Process rules
             for (int i = 0; i < rules.size(); i++) {
                 String original = ret;
-                
+
                 ret = replaceEnd(rules.get(i).getObj2(), ret);
-                if (!ret.equals(original)){
+                if (!ret.equals(original)) {
                     break;
                 }
             }

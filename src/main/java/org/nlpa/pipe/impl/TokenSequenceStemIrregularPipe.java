@@ -37,6 +37,7 @@ import org.bdp4j.pipe.TransformationPipe;
 
 import org.bdp4j.types.Instance;
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
+import org.nlpa.types.Dictionary;
 import org.nlpa.types.TokenSequence;
 
 /**
@@ -121,8 +122,8 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
     }
 
     /**
-     * Process instances to detect irregular word and destructively
-     * replace them with their root.
+     * Process instances to detect irregular word and destructively replace them
+     * with their root.
      *
      * @param carrier Instance to be process
      * @return The processed instance
@@ -132,22 +133,34 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
         TokenSequence ts = (TokenSequence) carrier.getData();
         TokenSequence ret = new TokenSequence();
         String lang = (String) carrier.getProperty(this.langProp);
-
+        Dictionary dictionary = Dictionary.getDictionary();
+        dictionary.setEncode(true);
+        
         if (lang != null) {
             irregularWords = LANG_WORD_FILES.get(lang.toUpperCase());
             if (irregularWords != null) {
                 for (int i = 0; i < ts.size(); i++) {
-                    String token = new String(Base64.getDecoder().decode((ts.getToken(i)).substring(3)));
+                    String encodeToken = ts.getToken(i);
+                    String decodeToken = dictionary.decodeBase64(ts.getToken(i).substring(3));
+                    String token = decodeToken;
                     //If the token is irregular, it changes text
                     String changeTxt;
-                    if ((changeTxt = irregularWords.get(token)) != null) {
+                    if ((changeTxt = irregularWords.get(decodeToken)) != null) {
                         token = changeTxt;
                     }
-                    ret.add("tk:" + new String(Base64.getEncoder().encode(token.getBytes())));
+                    String encodedReplaceToken = "tk:" + dictionary.encodeBase64(token);
+                    ret.add(encodedReplaceToken);
+
+                    if (dictionary.getEncode()) {
+                        dictionary.replace(encodeToken, encodedReplaceToken);
+                    } else {
+                        dictionary.replace(decodeToken, token);
+                    }
                 }
                 carrier.setData(ret);
             }
         }
+        
         return carrier;
     }
 }
