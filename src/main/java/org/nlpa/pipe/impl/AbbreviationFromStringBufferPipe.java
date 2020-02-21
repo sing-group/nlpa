@@ -73,7 +73,8 @@ public class AbbreviationFromStringBufferPipe extends AbstractPipe {
                                      "/abbreviations-json/abbrev.eu.json",
                                      "/abbreviations-json/abbrev.ru.json",
                                      "/abbreviations-json/abbrev.de.json",
-                                     "/abbreviations-json/abbrev.pt.json"
+                                     "/abbreviations-json/abbrev.pt.json",
+                                     "/abbreviations-json/abbrev.it.json"
         }) {
 
             String lang = i.substring(27, 29).toUpperCase();
@@ -185,13 +186,13 @@ public class AbbreviationFromStringBufferPipe extends AbstractPipe {
                   Matcher m = p.matcher(sb);
                   int last = 0;
                   while (m.find(last)){
-                     last = m.start(1);
-                     sb = sb.replace(m.start(1), m.end(1), dict.get(abbrev).getObj2());
+                     sb = sb.replace(last=m.start(1), m.end(1), dict.get(abbrev).getObj2());
                   }
              }
         }else{
           logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
         }
+        
         return carrier;
     }
 }

@@ -70,7 +70,9 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
             "/interjections-json/interj.pt.json",
             "/interjections-json/interj.fr.json",
             "/interjections-json/interj.gl.json",
-            "/interjections-json/interj.eu.json"}) {
+            "/interjections-json/interj.eu.json",
+            "/interjections-json/interj.it.json"
+        }) {
 
             String lang = i.substring(27, 29).toUpperCase();
             try {
@@ -257,6 +259,7 @@ public class InterjectionFromStringBufferPipe extends AbstractPipe {
         }else{
           logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
         }
+        
         return carrier;
     }
 

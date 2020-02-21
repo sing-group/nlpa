@@ -19,7 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
@@ -65,8 +64,8 @@ public class StripHTMLFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Indicates the datatype expected in the data attribute of an Instance after
-     * processing
+     * Indicates the datatype expected in the data attribute of an Instance
+     * after processing
      *
      * @return the datatype expected in the data attribute of an Instance after
      * processing
@@ -127,9 +126,9 @@ public class StripHTMLFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Process an Instance. This method takes an input Instance,
-     * removes HTML markup tags or entities and returns it. 
-     * This is the method by which all pipes are eventually run.
+     * Process an Instance. This method takes an input Instance, removes HTML
+     * markup tags or entities and returns it. This is the method by which all
+     * pipes are eventually run.
      *
      * @param carrier Instance to be processed.
      * @return Instance processed
@@ -147,13 +146,25 @@ public class StripHTMLFromStringBufferPipe extends AbstractPipe {
                 String title;
                 if ((title = doc.title()) != null && title.length() > 0) {
                     newSb.append(title).append("\n\n");
+                    System.out.println("t1: " + title);
+
                 }
 
                 Elements elements = doc.getAllElements();
+                //System.out.println(elements);
+               String copiedText="";
                 for (Element element : elements) {
-                    for (TextNode node : element.textNodes()) {
-                        newSb.append(StringEscapeUtils.unescapeHtml4(node.text())).append("\n");
+                    if (element.textNodes().isEmpty()) {
+                        if (!copiedText.contains(element.text())){
+                            newSb.append(element.text());
+                            copiedText += element.text();
+                        }
                     }
+                    /* for (TextNode node : element.textNodes()) {
+                        //newSb.append(StringEscapeUtils.unescapeHtml4(node.text())).append("\n");
+                        System.out.println("t2: " + node.text());
+                        newSb.append(StringEscapeUtils.unescapeHtml4(node.text())).append(" ");
+                    }*/
                 }
 
                 carrier.setData(newSb);

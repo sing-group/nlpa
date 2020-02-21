@@ -51,6 +51,8 @@ import java.util.Map;
  */
 public class BabelUtils {
 
+    public static int babelfyQueries = 0;
+
     /**
      * For logging purpopses
      */
@@ -310,9 +312,19 @@ public class BabelUtils {
         int currentSubtext = 0;
         while (currentSubtext < subtexts.length) {
             try {
-                bfyAnnotations.addAll(bfy.babelfy(subtexts[currentSubtext], Language.valueOf(lang)));
+                logger.info("We are going to query LANG: " + lang + " Number of previous queries: " + babelfyQueries);
+
+                //Cambio para que todas las consultas se hagan en Inglés restaurar antes del commit
+                bfyAnnotations.addAll(bfy.babelfy(subtexts[currentSubtext], Language.valueOf(lang))); 
+                // bfyAnnotations.addAll(bfy.babelfy(subtexts[currentSubtext], Language.valueOf("EN")));
+                //Fin del cambio
+                babelfyQueries++;
                 currentSubtext++;
             } catch (RuntimeException e) {
+                //Comentar antes de hacer commit
+//                System.out.println(e.getMessage());
+//                e.printStackTrace();
+                //Fin de comentar
                 if (e.getMessage().equals("Your key is not valid or the daily requests limit has been reached. Please visit http://babelfy.org.")) {
                     // Wait until 01:01:01 of the next day (just after midnigth)
                     Calendar c = Calendar.getInstance();
@@ -335,6 +347,13 @@ public class BabelUtils {
                     } catch (InterruptedException ie) {
                         logger.error("Unable to sleep " + millis + ". " + ie.getMessage());
                     }
+                    babelfyQueries = 0;
+                } else if (e.getMessage().equals("Your are not allowed on the requested languages. Please visit http://babelfy.org.")) {
+                    logger.info("Mark instance for invalidating because caugth Babelfy error: Your are not allowed on the requested languages. Please visit http://babelfy.org.");
+                    
+                    return null;
+                } else {
+                    currentSubtext++;
                 }
             }
         }
@@ -355,27 +374,38 @@ public class BabelUtils {
             // the current one
             int pos = 0;
             BabelfyEntry prevAnot = nGrams.get(pos);
-            for (; !(start >= prevAnot.getStartIdx() && end <= prevAnot.getEndIdx())
+            //System.out.println("start: "+start+" end: "+end);
+
+            while ((!(start >= prevAnot.getStartIdx() && end <= prevAnot.getEndIdx()))
                     && // The current anotation is
                     // included in other previous
                     // one
-                    !(prevAnot.getStartIdx() >= start && prevAnot.getEndIdx() <= end)
+                    (!(prevAnot.getStartIdx() >= start && prevAnot.getEndIdx() <= end))
                     && // A previous anotation is
                     // included in the current
                     // one
-                    pos < nGrams.size() - 1; prevAnot = nGrams.get(pos++))
-				;
-
-            if (start >= prevAnot.getStartIdx() && end <= prevAnot.getEndIdx()) { // The current anotation is included
-                // in other previous one
-                if (start == prevAnot.getStartIdx() && end == prevAnot.getEndIdx() && score > prevAnot.getScore()) {
-                    nGrams.set(pos, new BabelfyEntry(start, end, score, synsetId, text));
+                    pos < (nGrams.size()-1))
+                {
+                    pos++;
+                    prevAnot = nGrams.get(pos);
+                    //System.out.println("current-> start:"+prevAnot.getStartIdx()+"current->end:"+prevAnot.getEndIdx());
                 }
+
+            //System.out.println("pos: "+pos+"/"+(nGrams.size()-1));
+            if (start == prevAnot.getStartIdx() && end == prevAnot.getEndIdx() && score > prevAnot.getScore()) {
+                //System.out.println("same text+-> other "+prevAnot.getText()+" /current: "+text);
+                nGrams.set(pos, new BabelfyEntry(start, end, score, synsetId, text));
+            } else if (start >= prevAnot.getStartIdx() && end <= prevAnot.getEndIdx()) { // The current anotation is included
+                                                                                        // in other previous one  
+                //System.out.println("currentAnotation is included in other previous one+-> other: "+prevAnot.getText()+" /current: "+text);
+                              
             } else if (prevAnot.getStartIdx() >= start && prevAnot.getEndIdx() <= end) { // A previous anotation is
-                // included in the current
-                // one
+                                                                                        // included in the current
+                                                                                        // one
+                //System.out.println("other previous one includes current one+-> other: "+prevAnot.getText()+" /current: "+text);
                 nGrams.set(pos, new BabelfyEntry(start, end, score, synsetId, text));
             } else {
+                //System.out.println("current anotation is unique-< current: "+text);
                 nGrams.add(new BabelfyEntry(start, end, score, synsetId, text)); // it it not related to nothing
                 // previous
             }

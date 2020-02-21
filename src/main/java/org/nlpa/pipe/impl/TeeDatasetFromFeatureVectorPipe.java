@@ -272,14 +272,14 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
 
                 for (Instance entry : instanceList) {
                     featureVector = (FeatureVector) entry.getData();
-                    String attName = "";
+                    String attName;
                     for (int index = 0; index < attributes.size(); index++) {
                         attName = attributes.get(index);
                         if (attName.equals("id")) {
                             values[indInstance] = entry.getName().toString();
                             indInstance++;
                         } else {
-                            if (dictionary.isIncluded(attName) && !attName.equals("target")) {
+                            if (dictionary.isIncluded(attName, true) && !attName.equals("target")) {
                                 Double frequency = featureVector.getFrequencyValue(attName);
                                 if (frequency > 0) {
                                     values[indInstance] = frequency;

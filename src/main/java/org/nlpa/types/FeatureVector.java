@@ -24,6 +24,7 @@ package org.nlpa.types;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Implements a FeatureVector
@@ -103,6 +104,31 @@ public class FeatureVector implements Serializable {
             }
         }
         return -1;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.features);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FeatureVector other = (FeatureVector) obj;
+        if (!Objects.equals(this.features, other.features)) {
+            return false;
+        }
+        return true;
     }
 
 }

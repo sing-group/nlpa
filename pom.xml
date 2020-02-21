@@ -110,9 +110,9 @@ License along with this program.  If not, see
             </snapshots>
         </repository>
         <repository>
-            <id>sing-maven</id>
+            <id>spring-maven</id>
             <name>Spring Maven</name>
-            <url>http://repo.spring.io/plugins-release/</url>
+            <url>https://repo.spring.io/plugins-release/</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>never</updatePolicy>
@@ -308,7 +308,7 @@ License along with this program.  If not, see
         </dependency>
     </dependencies>
 
-    <build>
+   <build>
         <pluginManagement>            <!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
                 <plugin>
@@ -345,6 +345,16 @@ License along with this program.  If not, see
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.0.1</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.4.0</version>
+                </plugin>                
             </plugins>
         </pluginManagement>
 
@@ -365,7 +375,7 @@ License along with this program.  If not, see
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
@@ -389,6 +399,26 @@ License along with this program.  If not, see
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-source</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <configuration>
+                    <mainClass>org.nlpa.Main</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

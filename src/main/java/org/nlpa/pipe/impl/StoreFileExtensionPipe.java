@@ -88,7 +88,7 @@ public class StoreFileExtensionPipe extends AbstractPipe {
      * @return String containing the property name for storing the file
      * extension
      */
-    public String getExtenstionProp() {
+    public String getExtensionProp() {
         return this.extProp;
     }
 
