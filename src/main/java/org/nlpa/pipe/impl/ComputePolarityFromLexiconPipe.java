@@ -6,17 +6,11 @@ import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
-import org.bdp4j.util.Pair;
-import org.json.JSONArray;
 
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,6 +35,10 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 	 * For logging purposes
 	 */
 	private static final Logger logger = LogManager.getLogger(ComputePolarityFromLexiconPipe.class);
+	
+	/**
+	 * Number of words that are modified by the word of negation that precede them
+	 */
 	private static final int NEGATION_WORDS_COUNT = 3;
 
 	/**
@@ -155,8 +153,8 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 			}
 
 			double polarity = calculatePolarity(data.toString(), dict);
-			carrier.setProperty(polarityProp, polarity);
-			System.out.println("Polaridad");
+			double polarityDecimalFormat = (double) Math.round(polarity * 100) / 100;
+			carrier.setProperty(polarityProp, polarityDecimalFormat);
 
 		} else {
 			logger.error("Data should be an StringBuffer when processing " + carrier.getName() + " but is a "
@@ -181,14 +179,15 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 		double polaritySentence = 0.0d;
 		
 		// Remove symbols from text
-		data.replaceAll("[^a-zA-Z0-9.]", "");
-		
+		String pattern = "[^a-zA-Z0-9.\\s]";
+		String text = data.replaceAll(pattern, "");
+	
 		// Calculate the polarity for each sentence
-		String[] sentences = { data };
-		if (data.contains(".")) {
-			sentences = data.split(".");
+		String[] sentences = {text};
+		if (text.contains(".")) {
+			sentences = text.split("\\.");
 		} else {
-			sentences[0] = data;
+			sentences[0] = text;
 		}
 
 		
@@ -237,7 +236,7 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 			
 			if (wordNum > 0) { 
 				
-				weightSentence = wordNum / 2;
+				weightSentence = wordNum / 5.0;
 				totalWeightSentence += weightSentence;
 				
 				polaritySentence += (weightSentence * totalPolarityScore);
@@ -303,5 +302,5 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 
 		return false;
 	}
-
+	
 }
