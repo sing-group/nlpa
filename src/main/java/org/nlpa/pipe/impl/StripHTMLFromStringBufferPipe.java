@@ -146,12 +146,10 @@ public class StripHTMLFromStringBufferPipe extends AbstractPipe {
                 String title;
                 if ((title = doc.title()) != null && title.length() > 0) {
                     newSb.append(title).append("\n\n");
-                    System.out.println("t1: " + title);
 
                 }
 
                 Elements elements = doc.getAllElements();
-                //System.out.println(elements);
                String copiedText="";
                 for (Element element : elements) {
                     if (element.textNodes().isEmpty()) {

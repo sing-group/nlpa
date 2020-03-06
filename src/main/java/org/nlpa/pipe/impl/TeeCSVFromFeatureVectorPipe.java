@@ -30,7 +30,9 @@ import org.nlpa.types.FeatureVector;
 import org.bdp4j.util.EBoolean;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.Pipe;
@@ -224,7 +226,8 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
     @Override
     public Instance pipe(Instance carrier) {
         FeatureVector fsv = (FeatureVector) carrier.getData();
-
+        
+        Dictionary dictionary = Dictionary.getDictionary();
         //Ensure the columns of the dataset fits with the instance
         if (dataset.getColumnCount() == 0) {
             nprops = carrier.getPropertyList().size();
@@ -242,18 +245,9 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
                 j++;
             }
 
-            Dictionary dictionary = Dictionary.getDictionary();
             Iterator<String> it = dictionary.iterator();
             while (it.hasNext()) {
-                String dictEntry = it.next();
-                if (dictionary.getEncode()) {
-                    try {
-                        dictEntry = dictionary.getEncode()?dictionary.decodeBase64(dictEntry):dictEntry;
-                    } catch (Exception ex) {
-                        ex.getMessage();
-                    }
-                }
-                columnsToAdd[j] = dictEntry;
+                columnsToAdd[j] = it.next();
                 defaultValues[j] = "0";
                 j++;
             }
@@ -262,7 +256,7 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
             defaultValues[j] = "";
             dataset.addColumns(columnsToAdd, defaultValues);
 
-        } else if (dataset.getColumnCount() != Dictionary.getDictionary().size() + 2 + carrier.getPropertyList().size()) {
+        } else if (dataset.getColumnCount() != dictionary.size() + 2 + carrier.getPropertyList().size()) {
             String currentProps[] = dataset.getColumnNames();
 
             String newProps[] = new String[carrier.getPropertyList().size() - nprops];
@@ -282,17 +276,11 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
             newDefaultValues = new Object[Dictionary.getDictionary().size() - dictLength];
             j = 0;
             int currentEntryIdx = 0;
-            Iterator<String> it = Dictionary.getDictionary().iterator();
+
+            Iterator<String> it = dictionary.iterator();
             while (it.hasNext()) {
                 String dictEntry = it.next();
 
-                if (Dictionary.getDictionary().getEncode()) {
-                    try {
-                        dictEntry = Dictionary.getDictionary().getEncode()?Dictionary.getDictionary().decodeBase64(dictEntry):dictEntry;
-                    } catch (Exception ex) {
-                        ex.getMessage();
-                    }
-                }
                 if (currentEntryIdx >= dictLength) {
                     newProps[j] = dictEntry;
                     newDefaultValues[j] = "0";
@@ -308,27 +296,20 @@ public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedD
         //Create and add the new row
         Object newRow[] = new Object[nprops + dictLength + 2];
         newRow[0] = carrier.getName();
+
         int i = 1;
         for (Object current : carrier.getValueList()) {
             newRow[i] = current;
             i++;
         }
 
-        Iterator<String> it = Dictionary.getDictionary().iterator();
+        Iterator<String> it = dictionary.iterator();
         while (it.hasNext()) {
-            String dictEntry = it.next();
-
-            if (Dictionary.getDictionary().getEncode()) {
-                try {
-                    dictEntry = Dictionary.getDictionary().getEncode()?Dictionary.getDictionary().decodeBase64(dictEntry):dictEntry;
-                } catch (Exception ex) {
-                    logger.warn(ex.getMessage());
-                }
-            }
-            newRow[i] = fsv.getValue(dictEntry);
+            newRow[i] = fsv.getValue(it.next());
             i++;
         }
         newRow[i] = carrier.getTarget();
+        
         dataset.addRow(newRow);
 
         //If islast on the current burst close the dataset

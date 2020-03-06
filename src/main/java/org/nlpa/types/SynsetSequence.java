@@ -191,7 +191,6 @@ public class SynsetSequence implements Serializable {
             return false;
         }
         if (!Objects.equals(this.fixedText, other.fixedText)) {
-            System.out.println("fixedText: " + this.fixedText + " - " + other.fixedText);
             return false;
         }
 //        if (!Objects.equals(this.unmatchedTexts, other.unmatchedTexts)) {

@@ -228,8 +228,9 @@ public class Dictionary implements Iterable<String> {
      * @return The text decoded
      */
     public String decodeBase64(String feat) {
-        byte[] decodedBytes = Base64.getDecoder().decode(feat);
+        byte[] decodedBytes;
         try {
+            decodedBytes =  Base64.getDecoder().decode(feat);
             return new String(decodedBytes, "UTF-8");
         } catch (UnsupportedEncodingException ex) {
             logger.warn("[DECODE BASE 64]: " + ex.getMessage());

@@ -111,9 +111,6 @@ public class FindEmojiInStringBufferPipeTest {
         expResult.setProperty(instance.getEmojiProp(), "🎅");
        
         Instance result = instance.pipe(carrier);
-
-        System.out.println(result.getData()+ result.getPropertyList().toString()+result.getValueList());
-        System.out.println(expResult.getData()+expResult.getPropertyList().toString()+expResult.getValueList());
         assertTrue(expResult.equals(result));
     }
 

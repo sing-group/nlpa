@@ -241,13 +241,12 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                         }
                     }
                 }
-               // Add text to attribute list
+                // Add text to attribute list
                 Dictionary dictionary = Dictionary.getDictionary();
 
                 for (String text : dictionary) {
-                    String textToInsert = (dictionary.getEncode()) ? dictionary.decodeBase64(text) : text;
-                    if (!textToInsert.equals("target")) {
-                        dataset.addColumn(textToInsert, Double.class, 0);
+                    if (!text.equals("target")) {
+                        dataset.addColumn(text, Double.class, 0);
                     }
                 }
                 List<String> target_values = new ArrayList<>();
@@ -267,7 +266,7 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                 Transformer t;
 
                 List<String> attributes = dataset.getDataset().getAttributes();
-                
+
                 Object[] values = new Object[attributes.size()];
 
                 for (Instance entry : instanceList) {
@@ -292,10 +291,10 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                                 if (attName.equals("target")) {
                                     field = entry.getTarget().toString();
                                 } else {
-                                    field = entry.getProperty(attName).toString();
+                                    field = (entry.getProperty(attName) != null) ? entry.getProperty(attName).toString() : null;//toString();
                                 }
                                 if ((t = transformersList.get(attName)) != null) {
-                                        values[indInstance] = t.transform(field);
+                                    values[indInstance] = t.transform(field);
                                 } else {
                                     if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
                                         try {
@@ -324,7 +323,7 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                 }
             }
         } catch (Exception ex) {
-            logger.error("[PIPE] " + ex.getMessage());
+            logger.error("[PIPE] " + this.getClass() + ": " + ex.getMessage());
         }
         return carrier;
     }
