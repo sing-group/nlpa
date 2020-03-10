@@ -3,27 +3,14 @@ package org.nlpa.pipe.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
-import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
-import org.bdp4j.util.Pair;
-import org.json.JSONArray;
 import org.nlpa.types.FeatureVector;
-import org.nlpa.types.SynsetSequence;
-
-import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -77,7 +64,7 @@ public class ComputePolarityFromSynsetPipe extends AbstractPipe {
 	/**
 	 * The default property name where the polarity will be stored
 	 */
-	public static final String DEFAULT_POLARITY_PROPERTY = "polarity";
+	public static final String DEFAULT_POLARITY_PROPERTY = "synsetPolarity";
 
 	/**
 	 * The name of the property where the polarity is stored
@@ -125,7 +112,7 @@ public class ComputePolarityFromSynsetPipe extends AbstractPipe {
 			HashMap<String, double[]> dict = htPolarities;
 			// When there is not a lexicon
 			if (dict == null) {
-				carrier.setProperty(polarityProp, 2);
+				carrier.setProperty(polarityProp, 0.0);
 				return carrier;
 			}
 
@@ -151,8 +138,8 @@ public class ComputePolarityFromSynsetPipe extends AbstractPipe {
 	 * @return polarity of the synset sequence
 	 */
 	private double calculatePolarity(FeatureVector data, HashMap<String, double[]> dict) {
-		double totalPolarityScore = 0;
-		double polarityScore = 0;
+		double totalPolarityScore = 0.0;
+		double polarityScore = 0.0;
 		int words = 0;
 		HashMap<String, Double> dataMap = (HashMap<String, Double>) data.getFeatures();
 
@@ -174,9 +161,6 @@ public class ComputePolarityFromSynsetPipe extends AbstractPipe {
 			}
 	    	 
 	    	 totalPolarityScore += polarityScore;
-	     }
-	     if(words == 0) {
-	    	 return 2;
 	     }
 		
 		return totalPolarityScore/words;
