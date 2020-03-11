@@ -135,6 +135,14 @@ public class Main {
         TeeDatasetFromFeatureVectorPipe teeDatasetFSV = new TeeDatasetFromFeatureVectorPipe();
         teeDatasetFSV.setTransformersList(transformersList);
         /* create a example of pipe */
+
+        AbstractPipe p2 = new SerialPipes(new AbstractPipe[]{new TargetAssigningFromPathPipe(),
+            new StoreFileExtensionPipe(), 
+            new GuessDateFromFilePipe(), 
+            new File2StringBufferPipe(),
+            new TeeCSVFromStringBufferPipe("output.csv", true),        
+        });
+
         AbstractPipe p = new SerialPipes(new AbstractPipe[]{new TargetAssigningFromPathPipe(),
             new StoreFileExtensionPipe(), 
             new GuessDateFromFilePipe(), 
@@ -154,7 +162,7 @@ public class Main {
             teeDatasetFSV
         });
 
-        if (!p.checkDependencies()) {
+        if (!p2.checkDependencies()) {
             System.out.println("Pipe dependencies are not satisfied");
 //          System.out.println(AbstractPipe.getErrorMesage()); // TODO why is this an error?
             System.exit(1);
@@ -165,7 +173,7 @@ public class Main {
         instances = InstanceListUtils.dropInvalid(instances);
 
         //Pipe all instances
-        p.pipeAll(instances);
+        p2.pipeAll(instances);
 
         for (Instance i : instances) {
             logger.info("Instance data after pipe: " + i.getSource() + " "

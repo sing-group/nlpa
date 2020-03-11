@@ -364,7 +364,7 @@ License along with this program.  If not, see
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.nlpa.Main</mainClass>
+                            <mainClass>org.nlpa.ui.MainUI</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                         </manifest>
@@ -417,7 +417,7 @@ License along with this program.  If not, see
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.4.0</version>
                 <configuration>
-                    <mainClass>org.nlpa.Main</mainClass>
+                    <mainClass>org.nlpa.ui.MainUI</mainClass>
                 </configuration>
             </plugin>
         </plugins>
