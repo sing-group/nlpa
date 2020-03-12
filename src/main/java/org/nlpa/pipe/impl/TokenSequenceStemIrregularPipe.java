@@ -25,7 +25,6 @@ import com.google.auto.service.AutoService;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -84,7 +83,7 @@ public class TokenSequenceStemIrregularPipe extends AbstractPipe {
                     irregularWordsList.put(st.nextToken(), st.nextToken());
                 }
             } catch (Exception e) {
-                logger.error("[TokenSequencePorterStemmerPipe Load files]: " + e.getMessage());
+                logger.error("[TokenSequenceStemIrregularPipe Load files]: " + e.getMessage());
             }
             LANG_WORD_FILES.put(lang, irregularWordsList);
         }

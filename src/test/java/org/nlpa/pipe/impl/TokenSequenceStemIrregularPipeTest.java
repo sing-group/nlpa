@@ -6,10 +6,7 @@
 package org.nlpa.pipe.impl;
 
 import org.bdp4j.types.Instance;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.nlpa.types.TokenSequence;
@@ -77,8 +74,8 @@ public class TokenSequenceStemIrregularPipeTest {
      */
     @Test
     public void testGetInputType() {
-        Class expResult = TokenSequence.class;
-        Class result = instance.getInputType();
+        Class<?> expResult = TokenSequence.class;
+        Class<?> result = instance.getInputType();
         assertEquals(expResult, result);
     }
 
@@ -87,8 +84,8 @@ public class TokenSequenceStemIrregularPipeTest {
      */
     @Test
     public void testGetOutputType() {
-        Class expResult = TokenSequence.class;
-        Class result = instance.getOutputType();
+        Class<?> expResult = TokenSequence.class;
+        Class<?> result = instance.getOutputType();
         assertEquals(expResult, result);
     }
 

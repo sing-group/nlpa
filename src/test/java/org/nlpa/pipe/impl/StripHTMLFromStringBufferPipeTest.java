@@ -6,10 +6,7 @@
 package org.nlpa.pipe.impl;
 
 import org.bdp4j.types.Instance;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -40,8 +37,8 @@ public class StripHTMLFromStringBufferPipeTest {
      */
     @Test
     public void testGetInputType() {
-        Class expResult = StringBuffer.class;
-        Class result = instance.getInputType();
+        Class<?> expResult = StringBuffer.class;
+        Class<?> result = instance.getInputType();
         assertEquals(expResult, result);
     }
 
@@ -50,8 +47,8 @@ public class StripHTMLFromStringBufferPipeTest {
      */
     @Test
     public void testGetOutputType() {
-       Class expResult = StringBuffer.class;
-        Class result = instance.getOutputType();
+       Class<?> expResult = StringBuffer.class;
+        Class<?> result = instance.getOutputType();
         assertEquals(expResult, result);
     }
 

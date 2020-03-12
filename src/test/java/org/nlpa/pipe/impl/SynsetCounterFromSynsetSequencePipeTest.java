@@ -37,14 +37,14 @@ public class SynsetCounterFromSynsetSequencePipeTest {
     public void setUp() {
         SynsetSequence synsetSequence = new SynsetSequence(data);
         List<Pair<String, String>> synsets = new ArrayList<>();
-        synsets.add(new Pair("bn:00025645n", "December"));
-        synsets.add(new Pair("bn:03100869n", "ho ho"));
-        synsets.add(new Pair("bn:03100869n", "ho ho"));
-        synsets.add(new Pair("bn:00009394n", "Beat"));
-        synsets.add(new Pair("bn:00018836n", "Christmas days"));
-        synsets.add(new Pair("bn:03149538n", "online"));
-        synsets.add(new Pair("bn:00025645n", "Dec"));
-        synsets.add(new Pair("bn:00080111n", "Visit"));
+        synsets.add(new Pair<>("bn:00025645n", "December"));
+        synsets.add(new Pair<>("bn:03100869n", "ho ho"));
+        synsets.add(new Pair<>("bn:03100869n", "ho ho"));
+        synsets.add(new Pair<>("bn:00009394n", "Beat"));
+        synsets.add(new Pair<>("bn:00018836n", "Christmas days"));
+        synsets.add(new Pair<>("bn:03149538n", "online"));
+        synsets.add(new Pair<>("bn:00025645n", "Dec"));
+        synsets.add(new Pair<>("bn:00080111n", "Visit"));
         synsetSequence.setSynsets(synsets);
         synsetSequence.setFixedText(data);
         instance = new SynsetCounterFromSynsetSequencePipe();
@@ -56,8 +56,8 @@ public class SynsetCounterFromSynsetSequencePipeTest {
      */
     @Test
     public void testGetInputType() {
-        Class expResult = SynsetSequence.class;
-        Class result = instance.getInputType();
+        Class<?> expResult = SynsetSequence.class;
+        Class<?> result = instance.getInputType();
         assertEquals(expResult, result);
     }
 
@@ -66,8 +66,8 @@ public class SynsetCounterFromSynsetSequencePipeTest {
      */
     @Test
     public void testGetOutputType() {
-        Class expResult = SynsetSequence.class;
-        Class result = instance.getOutputType();
+        Class<?> expResult = SynsetSequence.class;
+        Class<?> result = instance.getOutputType();
         assertEquals(expResult, result);
     }
 
@@ -97,14 +97,14 @@ public class SynsetCounterFromSynsetSequencePipeTest {
     public void testPipe() {
         SynsetSequence expectedSynsetSequence = new SynsetSequence(data);
         List<Pair<String, String>> synsets = new ArrayList<>();
-        synsets.add(new Pair("bn:00025645n", "December"));
-        synsets.add(new Pair("bn:03100869n", "ho ho"));
-        synsets.add(new Pair("bn:03100869n", "ho ho"));
-        synsets.add(new Pair("bn:00009394n", "Beat"));
-        synsets.add(new Pair("bn:00018836n", "Christmas days"));
-        synsets.add(new Pair("bn:03149538n", "online"));
-        synsets.add(new Pair("bn:00025645n", "Dec"));
-        synsets.add(new Pair("bn:00080111n", "Visit"));
+        synsets.add(new Pair<>("bn:00025645n", "December"));
+        synsets.add(new Pair<>("bn:03100869n", "ho ho"));
+        synsets.add(new Pair<>("bn:03100869n", "ho ho"));
+        synsets.add(new Pair<>("bn:00009394n", "Beat"));
+        synsets.add(new Pair<>("bn:00018836n", "Christmas days"));
+        synsets.add(new Pair<>("bn:03149538n", "online"));
+        synsets.add(new Pair<>("bn:00025645n", "Dec"));
+        synsets.add(new Pair<>("bn:00080111n", "Visit"));
         expectedSynsetSequence.setSynsets(synsets);
         expectedSynsetSequence.setFixedText(data);
 

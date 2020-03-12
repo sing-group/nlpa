@@ -48,8 +48,8 @@ public class StoreTweetLangPipeTest {
      */
     @Test
     public void testGetInputType() {
-        Class expResult = File.class;
-        Class result = instance.getInputType();
+        Class<?> expResult = File.class;
+        Class<?> result = instance.getInputType();
         assertEquals(expResult, result);
     }
 
@@ -58,8 +58,8 @@ public class StoreTweetLangPipeTest {
      */
     @Test
     public void testGetOutputType() {
-        Class expResult = File.class;
-        Class result = instance.getOutputType();
+        Class<?> expResult = File.class;
+        Class<?> result = instance.getOutputType();
         assertEquals(expResult, result);
     }
 

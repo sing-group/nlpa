@@ -22,7 +22,6 @@
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -31,7 +30,6 @@ import org.bdp4j.types.Instance;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import java.nio.charset.Charset;

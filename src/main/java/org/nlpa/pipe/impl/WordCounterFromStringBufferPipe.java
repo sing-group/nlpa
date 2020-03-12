@@ -21,10 +21,6 @@
  */
 package org.nlpa.pipe.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 import com.google.auto.service.AutoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

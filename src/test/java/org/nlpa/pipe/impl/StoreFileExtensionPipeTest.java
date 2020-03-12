@@ -9,10 +9,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 import org.bdp4j.types.Instance;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -47,8 +44,8 @@ public class StoreFileExtensionPipeTest {
      */
     @Test
     public void testGetInputType() {
-        Class expResult = File.class;
-        Class result = instance.getInputType();
+        Class<?> expResult = File.class;
+        Class<?> result = instance.getInputType();
         assertEquals(expResult, result);
     }
 
@@ -57,8 +54,8 @@ public class StoreFileExtensionPipeTest {
      */
     @Test
     public void testGetOutputType() {
-        Class expResult = File.class;
-        Class result = instance.getOutputType();
+        Class<?> expResult = File.class;
+        Class<?> result = instance.getOutputType();
         assertEquals(expResult, result);
     }
 

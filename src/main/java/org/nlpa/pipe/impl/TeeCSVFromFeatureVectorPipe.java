@@ -30,11 +30,7 @@ import org.nlpa.types.FeatureVector;
 import org.bdp4j.util.EBoolean;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.SharedDataConsumer;
 import org.bdp4j.pipe.TeePipe;
@@ -51,12 +47,6 @@ import org.bdp4j.util.Configurator;
 @AutoService(Pipe.class)
 @TeePipe()
 public class TeeCSVFromFeatureVectorPipe extends AbstractPipe implements SharedDataConsumer {
-
-    /**
-     * For logging purposes
-     */
-    private static final Logger logger = LogManager.getLogger(TeeCSVFromFeatureVectorPipe.class);
-
     /**
      * The default value for the output file
      */

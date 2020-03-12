@@ -37,8 +37,8 @@ public class FindUserNameInStringBufferPipeTest {
      */
     @Test
     public void testGetInputType() {
-        Class expResult = StringBuffer.class;
-        Class result = instance.getInputType();
+        Class<?> expResult = StringBuffer.class;
+        Class<?> result = instance.getInputType();
         assertEquals(expResult, result);
     }
 
@@ -47,8 +47,8 @@ public class FindUserNameInStringBufferPipeTest {
      */
     @Test
     public void testGetOutputType() {
-        Class expResult = StringBuffer.class;
-        Class result = instance.getOutputType();
+        Class<?> expResult = StringBuffer.class;
+        Class<?> result = instance.getOutputType();
         assertEquals(expResult, result);
     }
 

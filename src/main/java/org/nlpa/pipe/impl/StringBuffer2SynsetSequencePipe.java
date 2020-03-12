@@ -22,12 +22,6 @@
 package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.ObjectOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -43,15 +37,24 @@ import org.nlpa.util.unmatchedtexthandler.TyposHandler;
 import org.nlpa.util.unmatchedtexthandler.UnmatchedTextHandler;
 import org.nlpa.util.unmatchedtexthandler.UrbanDictionaryHandler;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
 import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.SharedDataProducer;
 
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
+import static org.nlpa.pipe.impl.FindEmoticonInStringBufferPipe.DEFAULT_EMOTICON_PROPERTY;
 
 /**
  * This pipe modifies the data of an Instance transforming it from StringBuffer
@@ -79,6 +82,71 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
      * The name of the property where the language is stored
      */
     private String langProp = DEFAULT_LANG_PROPERTY;
+
+    /**
+     * The default value of replaceEmoticon property
+     */
+    private final static String DEFAULT_REPLACE_EMOTICON_VALUE = "true";
+
+    /**
+     * List of puntuation marks accepted on the beggining of a word
+     */
+    private static final String acceptedCharOnBeggining = "¿¡[(\"\'";
+    private static Pattern acceptedCharOnBegginingPattern = Pattern.compile("^[¿¡\\[\\(\"\'][¿¡\\[\\(\"\']*");
+    /**
+     * List of puntuation marks accepted on the end of a word
+     */
+    private static final String acceptedCharOnEnd = ".,!?)];:\"\'";
+    private static Pattern acceptedCharOnEndPattern = Pattern.compile("[\\.,!?\\)\\];:<>\"\'][\\.,!?\\)\\];:<>\"\']*$");
+
+    /**
+     * List of puntuation marks accepted on the middle of a word
+     */
+    private static final String acceptedCharOnMiddle = "/-.,;:";
+    private static Pattern acceptedCharOnMiddlePattern = Pattern.compile("[\\/\\()\\)\\-\\.,;:<>][\\/\\-\\.,;:<>]*");
+
+    /**
+     * The property that indicates if emoticon property will be transform in a
+     * synset
+     */
+    private static Boolean replaceEmoticon = Boolean.parseBoolean(DEFAULT_REPLACE_EMOTICON_VALUE);
+
+    /**
+     * A pattern to detect puntuation marks
+     */
+    private Pattern puntMarkPattern = Pattern.compile("\\p{Punct}");
+
+    /**
+     * List of synset-emoticon relationship
+     */
+    private final static Map<String, String> EMOTICON_SYNSETS = new HashMap<>();
+
+
+    /* Load list of synset-emoticon relationship*/
+    static {
+        if (replaceEmoticon) {
+            for (String i : new String[]{"/synsets-json/emoticons.json"}) {
+                InputStream is = InterjectionFromStringBufferPipe.class.getResourceAsStream(i);
+                JsonReader rdr = Json.createReader(is);
+                JsonObject jsonObject = rdr.readObject();
+                jsonObject.keySet().forEach((chars) -> {
+                    EMOTICON_SYNSETS.put(chars, jsonObject.getString(chars));
+                });
+            }
+        }
+    }
+
+    /**
+     * Default constructor. Creates a StringBuffer2SynsetSequencePipe Pipe
+     */
+    public StringBuffer2SynsetSequencePipe() {
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[0]);
+    }
+
+    public StringBuffer2SynsetSequencePipe(Boolean replaceEmoticonProp) {
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[0]);
+        replaceEmoticon = replaceEmoticonProp;
+    }
 
     /**
      * Return the input type included the data attribute of an Instance
@@ -122,33 +190,24 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
     }
 
     /**
-     * Default constructor. Creates a StringBuffer2SynsetSequencePipe Pipe
+     * Get the value of replaceEmoticon property
+     *
+     * @return The value of replaceEmoticon property
      */
-    public StringBuffer2SynsetSequencePipe() {
-        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[0]);
+    public Boolean isReplaceEmoticon() {
+        return replaceEmoticon;
     }
 
     /**
-     * List of puntuation marks accepted on the beggining of a word
+     * Establish replaceEmoticon value
+     *
+     * @param replaceEmoticon True if you want to add the synsetID corresponding
+     * with emoticon property
      */
-    private static final String acceptedCharOnBeggining = "¿¡[(\"\'";
-    private static Pattern acceptedCharOnBegginingPattern = Pattern.compile("^[¿¡\\[\\(\"\'][¿¡\\[\\(\"\']*");
-    /**
-     * List of puntuation marks accepted on the end of a word
-     */
-    private static final String acceptedCharOnEnd = ".,!?)];:\"\'";
-    private static Pattern acceptedCharOnEndPattern = Pattern.compile("[\\.,!?\\)\\];:<>\"\'][\\.,!?\\)\\];:<>\"\']*$");
-
-    /**
-     * List of puntuation marks accepted on the middle of a word
-     */
-    private static final String acceptedCharOnMiddle = "/-.,;:";
-    private static Pattern acceptedCharOnMiddlePattern = Pattern.compile("[\\/\\()\\)\\-\\.,;:<>][\\/\\-\\.,;:<>]*");
-
-    /**
-     * A pattern to detect puntuation marks
-     */
-    private Pattern puntMarkPattern = Pattern.compile("\\p{Punct}");
+    @PipeParameter(name = "replaceemoticonname", description = "Establish replaceEmoticon value", defaultValue = DEFAULT_REPLACE_EMOTICON_VALUE)
+    public void setReplaceEmoticon(Boolean replaceEmoticonProp) {
+        replaceEmoticon = replaceEmoticonProp;
+    }
 
     /**
      * This method find fagments in text (str) thar are incorrect.
@@ -161,24 +220,24 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
     private ArrayList<Pair<String, String>> computeUnmatched(String str, String lang) {
         StringTokenizer st = new StringTokenizer(str, " \t\n\r\u000b\f");
 
-        //The value that will be returned
+        // The value that will be returned
         ArrayList<Pair<String, String>> returnValue = new ArrayList<Pair<String, String>>();
 
         while (st.hasMoreTokens()) {
             String current = st.nextToken().trim();
 
             Matcher matcher = puntMarkPattern.matcher(current);
-            if (matcher.find()) { //We found a puntuation mark in the token
-                //matcher.start() <- here is the index of the puntuation mark
-                //We developed rules checking also the existence of term/terms in Babelnet
+            if (matcher.find()) { // We found a puntuation mark in the token
+                // matcher.start() <- here is the index of the puntuation mark
+                // We developed rules checking also the existence of term/terms in Babelnet
 
-                //if do not fit the rules and/or not found in Babelnet
-                //    returnValue.add(new Pair<String,String>(current,null));
-                //To check the exitence of the term in BabelNet, we will 
-                //create a class org.ski4spam.util.BabelNetUtils with  
-                //static methods.
+                // if do not fit the rules and/or not found in Babelnet
+                // returnValue.add(new Pair<String,String>(current,null));
+                // To check the exitence of the term in BabelNet, we will
+                // create a class org.ski4spam.util.BabelNetUtils with
+                // static methods.
                 int indexOfPuntMark = matcher.start();
-                if (indexOfPuntMark == 0) { //The puntuation symbol is at the beggining
+                if (indexOfPuntMark == 0) { // The puntuation symbol is at the beggining
                     if (acceptedCharOnBeggining.indexOf(current.charAt(indexOfPuntMark)) == -1) {
                         returnValue.add(new Pair<>(current, null));
                     } else {
@@ -187,7 +246,7 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
                             returnValue.add(new Pair<>(current, null));
                         }
                     }
-                } else if (indexOfPuntMark == current.length() - 1) { //the puntuation symbol is at the end
+                } else if (indexOfPuntMark == current.length() - 1) { // the puntuation symbol is at the end
                     if (acceptedCharOnEnd.indexOf(current.charAt(indexOfPuntMark)) == -1) {
                         returnValue.add(new Pair<>(current, null));
                     } else {
@@ -195,8 +254,9 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
                             returnValue.add(new Pair<>(current, null));
                         }
                     }
-                } else { //The puntuation symbol is in the middle
-                    if (acceptedCharOnMiddle.indexOf(current.charAt(indexOfPuntMark)) == -1 && acceptedCharOnEnd.indexOf(current.charAt(indexOfPuntMark)) == -1) {
+                } else { // The puntuation symbol is in the middle
+                    if (acceptedCharOnMiddle.indexOf(current.charAt(indexOfPuntMark)) == -1
+                            && acceptedCharOnEnd.indexOf(current.charAt(indexOfPuntMark)) == -1) {
                         returnValue.add(new Pair<>(current, null));
                     } else {
                         Matcher innerMatcher = acceptedCharOnEndPattern.matcher(current);
@@ -210,7 +270,8 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
                                 String firstElement = current.substring(0, innerMatcher.start());
                                 String lastElement = current.substring(innerMatcher.end());
                                 if (!BabelUtils.getDefault().isTermInBabelNet(firstElement, lang)
-                                        || (innerMatcher.end() < current.length() - 1 && !BabelUtils.getDefault().isTermInBabelNet(lastElement, lang))) {
+                                        || (innerMatcher.end() < current.length() - 1
+                                        && !BabelUtils.getDefault().isTermInBabelNet(lastElement, lang))) {
                                     returnValue.add(new Pair<>(current, null));
                                 }
                             } else {
@@ -220,8 +281,8 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
                     }
                 }
             } else {
-                //We check if the term current exist in babelnet. 
-                //if current is not found in Babelnet
+                // We check if the term current exist in babelnet.
+                // if current is not found in Babelnet
                 if (!BabelUtils.getDefault().isTermInBabelNet(current, lang)) {
                     returnValue.add(new Pair<>(current, null));
                 }
@@ -244,19 +305,20 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
      * @return A string containing the original text fixed
      */
     private String handleUnmatched(String originalText, List<Pair<String, String>> unmatched, String lang) {
-        //Implement the UnmatchedTextHandler interface and three specific implementations that are:
-        //+ UrbanDictionaryHandler
-        //+ TyposHandler
-        //+ ObfuscationHandler
+        // Implement the UnmatchedTextHandler interface and three specific
+        // implementations that are:
+        // + UrbanDictionaryHandler
+        // + TyposHandler
+        // + ObfuscationHandler
         String returnValue = originalText;
 
-        //The replacement should be done here
-        //DONE develop these things (Moncho)
+        // The replacement should be done here
+        // DONE develop these things (Moncho)
         for (Pair<String, String> current : unmatched) {
             for (int i = 0; current.getObj2() == null && i < vUTH.length; i++) {
                 vUTH[i].handle(current, lang);
-//                System.out.println(current.getObj1() + " (" + lang + ");");
-//                writeToFile(current.getObj1() + " (" + lang + ");\r\n");
+                // System.out.println(current.getObj1() + " (" + lang + ");");
+                // writeToFile(current.getObj1() + " (" + lang + ");\r\n");
             }
             if (current.getObj2() != null) {
                 returnValue.replace(current.getObj1(), current.getObj2());
@@ -276,17 +338,18 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
      * synset ID
      */
     private ArrayList<Pair<String, String>> buildSynsetSequence(String fixedText, String lang) {
-        //Call Babelfy api to transform the string into a vector of sysnsets. 
-        //The fisrt string in the pair is the synsetID from babelnet
-        //The second string is the matched text
-        //The dictionary (dict) should be updated by adding each detected synset in texts.
+        // Call Babelfy api to transform the string into a vector of sysnsets.
+        // The fisrt string in the pair is the synsetID from babelnet
+        // The second string is the matched text
+        // The dictionary (dict) should be updated by adding each detected synset in
+        // texts.
 
-        //Query Babelnet
+        // Query Babelnet
         ArrayList<Pair<String, String>> returnValue = BabelUtils.getDefault().buildSynsetSequence(fixedText, lang);
         if (returnValue == null) {
             return null;
         }
-        //Update dictionaries
+        // Update dictionaries
         for (Pair<String, String> current : returnValue) {
             Dictionary.getDictionary().add(current.getObj1());
         }
@@ -305,28 +368,42 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
      */
     public Instance pipe(Instance carrier) {
         SynsetSequence sv = new SynsetSequence((StringBuffer) carrier.getData());
-        
-        //Invalidate the instance if the language is not present
-        //We cannot correctly represent the instance if the language is not present
+
+        // Invalidate the instance if the language is not present
+        // We cannot correctly represent the instance if the language is not present
         if (carrier.getProperty(langProp) == null || ((String) carrier.getProperty(langProp)).equalsIgnoreCase("UND")) {
-            logger.error("Instance " + carrier.getName() + " cannot be transformed into a SynsetVector because language could not be determined. It has been invalidated.");
+            logger.error("Instance " + carrier.getName()
+                    + " cannot be transformed into a SynsetVector because language could not be determined. It has been invalidated.");
             carrier.invalidate();
             return carrier;
         }
 
-        sv.setUnmatchedTexts(computeUnmatched(sv.getOriginalText(), ((String) carrier.getProperty(langProp)).toUpperCase()));
+        sv.setUnmatchedTexts(
+                computeUnmatched(sv.getOriginalText(), ((String) carrier.getProperty(langProp)).toUpperCase()));
 
         if (sv.getUnmatchedTexts().size() > 0) {
-            sv.setFixedText(handleUnmatched(
-                    sv.getOriginalText(),
-                    sv.getUnmatchedTexts(),
-                    ((String) carrier.getProperty(langProp)).toUpperCase()
-            )
-            );
+            sv.setFixedText(handleUnmatched(sv.getOriginalText(), sv.getUnmatchedTexts(),
+                    ((String) carrier.getProperty(langProp)).toUpperCase()));
         } else {
             sv.setFixedText(sv.getOriginalText());
         }
-        ArrayList<Pair<String, String>> syns = buildSynsetSequence(sv.getFixedText(), ((String) carrier.getProperty(langProp)).toUpperCase());
+        ArrayList<Pair<String, String>> syns = buildSynsetSequence(sv.getFixedText(),
+                ((String) carrier.getProperty(langProp)).toUpperCase());
+
+        // If there is emoticon property, replace with the corresponding synsetID
+        if (replaceEmoticon) {
+
+            String emoticon = carrier.getProperty(DEFAULT_EMOTICON_PROPERTY).toString();
+            String synsetID;
+            if (!emoticon.equals("")) {
+                emoticon = emoticon.trim();
+                synsetID = EMOTICON_SYNSETS.get(emoticon);
+                if (!synsetID.equals("")) {
+                    syns.add(new Pair<>(synsetID, emoticon));
+                    Dictionary.getDictionary().add(synsetID);
+                }
+            }
+        }
 
         if (syns == null) {
             logger.info("Invalidating instance because was unable to find synsets");

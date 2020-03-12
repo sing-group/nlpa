@@ -43,8 +43,8 @@ public class File2StringBufferPipeTest {
      */
     @Test
     public void testGetInputType() {
-        Class expResult = File.class;
-        Class result = instance.getInputType();
+        Class<?> expResult = File.class;
+        Class<?> result = instance.getInputType();
         assertEquals(expResult, result);
     }
 
@@ -53,8 +53,8 @@ public class File2StringBufferPipeTest {
      */
     @Test
     public void testGetOutputType() {
-        Class expResult = StringBuffer.class;
-        Class result = instance.getOutputType();
+        Class<?> expResult = StringBuffer.class;
+        Class<?> result = instance.getOutputType();
         assertEquals(expResult, result);
     }
 
