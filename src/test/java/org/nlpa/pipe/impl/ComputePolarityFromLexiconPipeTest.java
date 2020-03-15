@@ -65,21 +65,26 @@ public class ComputePolarityFromLexiconPipeTest {
 	public void addSentences() {
 
 		// Test different dictionaries
-		this.sentences.put("This couch is beautiful and comfortable", 0.99);
-		this.sentences.put("Este sofá es bonito y cómodo", 0.0);
-		this.sentences.put("Ce canapé est beau et confortable", 0.06);
-		this.sentences.put("Questo divano è bello e comodo", 0.0);
-		this.sentences.put("Diese Couch ist schön und bequem", 0.24);
-		this.sentences.put("Этот диван красивый и удобный", 0.0);
+//		this.sentences.put("This couch is beautiful and comfortable", 0.99);
+//		this.sentences.put("Este sofá es bonito y cómodo", 0.0);
+//		this.sentences.put("Ce canapé est beau et confortable", 0.06);
+//		this.sentences.put("Questo divano è bello e comodo", 0.0);
+//		this.sentences.put("Diese Couch ist schön und bequem", 0.24);
+//		this.sentences.put("Этот диван красивый и удобный", 0.0);
 
 		//Test negative words
-		this.sentences.put("Esto no es muy difícil", 0.75);
-		this.sentences.put("Esto no es difícil", 0.75);
+//		this.sentences.put("Esto no es muy difícil", 0.75);
+//		this.sentences.put("Esto no es difícil", 0.75);
+		
+		//Test booster words
+		this.sentences.put("Esto no es muy difícil", 1.13);
+//		this.sentences.put("This is very ", 1.125);
+//		this.sentences.put("Esto no es difícil", 0.75);
 		
 		//Test ngrams
-		this.sentences.put("Esto es el argumento de un numero complejo y es muy difícil", -0.75);
-		this.sentences.put("Esto es un argumento en general", 0.00);
-		this.sentences.put("Una pelicula sin sentimiento y sin alegría", -0.75);
+//		this.sentences.put("Esto es el argumento de un numero complejo y es muy difícil", -0.75);
+//		this.sentences.put("Esto es un argumento en general", 0.00);
+//		this.sentences.put("Una pelicula sin sentimiento y sin alegría", -0.75);
 		
 		//Test text with several sentences
 		//TODO

@@ -23,6 +23,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonString;
+import javax.json.JsonNumber;
 import javax.json.JsonValue;
 
 /**
@@ -53,6 +54,7 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 	private static final HashMap<String, HashMap<String, double[]>> htPolarities = new HashMap<>();
 	private static final HashMap<String, HashMap<String, List<String>>> htNgrams = new HashMap<>();
 	private static final HashMap<String, List<String>> htNegativeWords = new HashMap<>();
+	private static final HashMap<String, HashMap<String, Double>> htBoosterWords = new HashMap<>();
 
 	static {
 		for (String i : new String[] { 
@@ -106,9 +108,7 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 				"/lexicon-json/negative-words/NegatingWordList.es.json",
 				"/lexicon-json/negative-words/NegatingWordList.fr.json",
 				"/lexicon-json/negative-words/NegatingWordList.it.json",
-				"/lexicon-json/negative-words/NegatingWordList.ru.json"
-
-				
+				"/lexicon-json/negative-words/NegatingWordList.ru.json"	
 		}) {
 
 			String lang = i.substring(46, 48).toUpperCase();
@@ -132,6 +132,42 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 			}
 
 		}	
+		
+		//Booster dictionaries
+		for (String i : new String[] { 
+				"/lexicon-json/booster-words/BoosterWordList.de.json",
+				"/lexicon-json/booster-words/BoosterWordList.en.json",
+				"/lexicon-json/booster-words/BoosterWordList.es.json",
+				"/lexicon-json/booster-words/BoosterWordList.fr.json",
+				"/lexicon-json/booster-words/BoosterWordList.it.json",
+				"/lexicon-json/booster-words/BoosterWordList.ru.json"
+
+				
+		}) {
+
+			String lang = i.substring(44, 46).toUpperCase();
+			try {
+				InputStream is = ComputePolarityFromLexiconPipe.class.getResourceAsStream(i);		
+				JsonReader jsonReader = Json.createReader(is);
+				JsonObject jsonObject = jsonReader.readObject();
+				jsonReader.close();
+				
+				HashMap<String, Double> boosterDict = new HashMap<>();
+				
+
+				for (String word : jsonObject.keySet()) {
+					JsonValue jsonValue = jsonObject.get(word);
+					Double a = ((JsonNumber) jsonValue).bigDecimalValue().doubleValue();
+					boosterDict.put(word, a);
+				}
+
+				htBoosterWords.put(lang, boosterDict);
+				
+			} catch (Exception e) {
+				logger.error("Exception processing: " + i + " message " + e.getMessage());
+			}
+
+		}
 
 	}
 	
@@ -244,6 +280,7 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 			HashMap<String, double[]> dict = htPolarities.get(lang);
 			HashMap<String, List<String>> ngramDict = htNgrams.get(lang);
 			List<String> negativeWordsDict = htNegativeWords.get(lang);
+			HashMap<String, Double> boosterWordsDict = htBoosterWords.get(lang);
 			
 			// When there is not a lexicon for the language
 			if (dict == null) {
@@ -251,7 +288,7 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 				return carrier;
 			}
 
-			double polarity = calculatePolarity(data.toString(), dict, ngramDict, negativeWordsDict);
+			double polarity = computePolarity(data.toString(), dict, ngramDict, negativeWordsDict, boosterWordsDict);
 			double polarityDecimalFormat = (double) Math.round(polarity * 100) / 100;
 			carrier.setProperty(polarityProp, polarityDecimalFormat);
 
@@ -264,15 +301,15 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 	}
 	
 	/**
-	 * Calculate the polarity of a text. For each sentence gets the polarity of the words.
+	 * Compute the polarity of a text. For each sentence gets the polarity of the words.
 	 *
 	 * @param data the text to calculate the polarity
 	 * @param dict the lexicon based on the language of the text
 	 * 
 	 * @return polarity of the text
 	 */
-	private double calculatePolarity(String data, HashMap<String, double[]> dict, HashMap<String,
-			List<String>> ngramDict, List<String> negativeWordsDict) {
+	private double computePolarity(String data, HashMap<String, double[]> dict, HashMap<String,
+			List<String>> ngramDict, List<String> negativeWordsDict, HashMap<String, Double> boosterWordsDict) {
 		double totalPolarity = 0.0d;
 		double weightSentence = 0.0d;
 		double totalWeightSentence = 0.0d;
@@ -295,10 +332,14 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 			int wordNum = 0;
 			int negationWordNum = 0;
 			boolean isNegation = false;
+			boolean isBoosterWordBefore = false;
+			
 			String[] words = sentence.split(" ");
+			double boosterWordValue = 0;
 
 			for(int sentenceIndex=0; sentenceIndex<words.length; sentenceIndex++) {
-
+				boolean isBoosterWord = false;
+				
 				if (checkNegationWord(words[sentenceIndex], negativeWordsDict)) {
 					isNegation = true;
 					negationWordNum = 0;
@@ -307,7 +348,17 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 					sentenceIndex+=(word.split(" ").length - 1);
 
 					double[] polarity = dict.get(word);
-					
+					double boosterValue = getBoosterWordValue(words[sentenceIndex], boosterWordsDict);
+					if(boosterValue != 0) {
+						
+						isBoosterWordBefore = true;
+						isBoosterWord = true;
+						boosterWordValue = boosterValue;
+						//Doesn't count the polarity of the booster word
+						polarity[0] = 0;
+						polarity[1] = 0;
+					}
+						
 					
 					if (polarity != null) {
 						
@@ -316,11 +367,16 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 							wordNum++; 
 						}
 						
+						if(isBoosterWordBefore && !isBoosterWord) {
+							res*=boosterWordValue;
+							isBoosterWordBefore = false;
+						}
+						
 						if (isNegation) {
 							negationWordNum++;
 							polarityScore += res;
 							
-							if (negationWordNum >= this.NEGATION_WORDS_COUNT || sentenceIndex == (words.length-1)) {
+							if (negationWordNum >= ComputePolarityFromLexiconPipe.NEGATION_WORDS_COUNT || sentenceIndex == (words.length-1)) {
 								totalPolarityScore += polarityScore * (-1);
 								isNegation = false;
 							}
@@ -346,11 +402,17 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 			}
 
 		}
-
+		
+		if(totalPolarity > 1) {
+			totalPolarity = 1;
+		}else if(totalPolarity < -1) {
+			totalPolarity = -1;
+		}
+		
 		return totalPolarity;
 	}
 	
-	
+
 	/**
 	 * Get the polarity of a word. Considering positive, negative and neutral 
 	 * scores, the highest score is choosen.
@@ -393,6 +455,22 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Gets the value of the booster word.
+	 *
+	 * @param word
+	 * @param boosterWordsDict a dictionary with booster words of a specific language and its value
+	 * 
+	 * @return the value of the booster word. If the word isn´t a booster word then return 0.
+	 */
+	private double getBoosterWordValue(String word, HashMap<String, Double> boosterWordsDict) {
+		double boosterValue = 0;
+		if (boosterWordsDict != null && boosterWordsDict.containsKey(word)) {
+			boosterValue = boosterWordsDict.get(word);
+		}
+		return boosterValue;
 	}
 	
 	/**

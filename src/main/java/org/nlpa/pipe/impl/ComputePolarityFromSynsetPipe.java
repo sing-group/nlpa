@@ -116,7 +116,7 @@ public class ComputePolarityFromSynsetPipe extends AbstractPipe {
 				return carrier;
 			}
 
-			double polarity = calculatePolarity(data, dict);
+			double polarity = computePolarity(data, dict);
 			double polarityDecimalFormat = (double) Math.round(polarity * 100) / 100;
 			carrier.setProperty(polarityProp, polarityDecimalFormat);
 
@@ -130,14 +130,14 @@ public class ComputePolarityFromSynsetPipe extends AbstractPipe {
 	
 	
 	/**
-	 * Calculate the polarity of a synset sequence. For each synset gets its polarity.
+	 * Compute the polarity of a synset sequence. For each synset gets its polarity.
 	 *
 	 * @param data which contains the synset sequence
 	 * @param dict the lexicon
 	 * 
 	 * @return polarity of the synset sequence
 	 */
-	private double calculatePolarity(FeatureVector data, HashMap<String, double[]> dict) {
+	private double computePolarity(FeatureVector data, HashMap<String, double[]> dict) {
 		double totalPolarityScore = 0.0;
 		double polarityScore = 0.0;
 		int words = 0;
