@@ -91,6 +91,7 @@ public class WordCounterFromStringBufferPipe extends AbstractPipe {
      * property indicated by wordCounterProp parameter
      *
      * @param wordCounterProp the name of the property to store the number of words
+     * @param regex The regex used to identify spaces
      */
     public WordCounterFromStringBufferPipe(String wordCounterProp, String regex) {
         super(new Class<?>[0], new Class<?>[0]);

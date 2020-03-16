@@ -109,7 +109,7 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
      * The property that indicates if emoticon property will be transform in a
      * synset
      */
-    private static Boolean replaceEmoticon = Boolean.parseBoolean(DEFAULT_REPLACE_EMOTICON_VALUE);
+    private Boolean replaceEmoticon = Boolean.parseBoolean(DEFAULT_REPLACE_EMOTICON_VALUE);
 
     /**
      * A pattern to detect puntuation marks
@@ -124,15 +124,13 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
 
     /* Load list of synset-emoticon relationship*/
     static {
-        if (replaceEmoticon) {
-            for (String i : new String[]{"/synsets-json/emoticons.json"}) {
-                InputStream is = InterjectionFromStringBufferPipe.class.getResourceAsStream(i);
-                JsonReader rdr = Json.createReader(is);
-                JsonObject jsonObject = rdr.readObject();
-                jsonObject.keySet().forEach((chars) -> {
-                    EMOTICON_SYNSETS.put(chars, jsonObject.getString(chars));
-                });
-            }
+        for (String i : new String[]{"/synsets-json/emoticons.json"}) {
+            InputStream is = InterjectionFromStringBufferPipe.class.getResourceAsStream(i);
+            JsonReader rdr = Json.createReader(is);
+            JsonObject jsonObject = rdr.readObject();
+            jsonObject.keySet().forEach((chars) -> {
+                EMOTICON_SYNSETS.put(chars, jsonObject.getString(chars));
+            });
         }
     }
 
@@ -205,8 +203,8 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
      * with emoticon property
      */
     @PipeParameter(name = "replaceemoticonname", description = "Establish replaceEmoticon value", defaultValue = DEFAULT_REPLACE_EMOTICON_VALUE)
-    public void setReplaceEmoticon(Boolean replaceEmoticonProp) {
-        replaceEmoticon = replaceEmoticonProp;
+    public void setReplaceEmoticon(Boolean replaceEmoticon) {
+        this.replaceEmoticon = replaceEmoticon;
     }
 
     /**
