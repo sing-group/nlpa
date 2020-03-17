@@ -187,7 +187,8 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
 
             // Identified property data type
             for (String propertyName : carrierPropertyList) {
-                field = carrier.getProperty(propertyName).toString();
+                Object carrierPropertyName = carrier.getProperty(propertyName);
+                field = (carrierPropertyName!=null)?carrierPropertyName.toString():"";
                 if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
                     type = identifyType(field);
                     if (detectedTypes.contains(propertyName)) {

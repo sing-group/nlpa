@@ -141,6 +141,10 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
         super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[0]);
     }
 
+    /**
+     * Creates a StringBuffer2SynsetSequencePipe Pipe, to assing replaceEmoticonProp value
+     * @param replaceEmoticonProp The value of preplaceEmoticonProp
+     */
     public StringBuffer2SynsetSequencePipe(Boolean replaceEmoticonProp) {
         super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[0]);
         replaceEmoticon = replaceEmoticonProp;
@@ -193,7 +197,7 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
      * @return The value of replaceEmoticon property
      */
     public Boolean isReplaceEmoticon() {
-        return replaceEmoticon;
+        return this.replaceEmoticon;
     }
 
     /**
@@ -396,7 +400,7 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
             if (!emoticon.equals("")) {
                 emoticon = emoticon.trim();
                 synsetID = EMOTICON_SYNSETS.get(emoticon);
-                if (!synsetID.equals("")) {
+                if (!"".equals(synsetID)) {
                     syns.add(new Pair<>(synsetID, emoticon));
                     Dictionary.getDictionary().add(synsetID);
                 }
