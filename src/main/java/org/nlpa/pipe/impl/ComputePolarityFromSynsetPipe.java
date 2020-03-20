@@ -6,6 +6,7 @@ import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
 import org.nlpa.types.FeatureVector;
+import org.nlpa.types.SynsetSequence;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -115,7 +116,7 @@ public class ComputePolarityFromSynsetPipe extends AbstractPipe {
 				carrier.setProperty(polarityProp, 0.0);
 				return carrier;
 			}
-
+			
 			double polarity = computePolarity(data, dict);
 			double polarityDecimalFormat = (double) Math.round(polarity * 100) / 100;
 			carrier.setProperty(polarityProp, polarityDecimalFormat);
@@ -142,7 +143,6 @@ public class ComputePolarityFromSynsetPipe extends AbstractPipe {
 		double polarityScore = 0.0;
 		int words = 0;
 		HashMap<String, Double> dataMap = (HashMap<String, Double>) data.getFeatures();
-
 		Set<String> keys = (Set<String>) dataMap.keySet();
 		
 		Iterator<String> keysIterator = keys.iterator();
@@ -151,8 +151,12 @@ public class ComputePolarityFromSynsetPipe extends AbstractPipe {
 	    	 double[] polarity = dict.get(babelnetId);
 	    	 
 	    	 if (polarity != null) {
-	    		 words++;
+	    		
+	    		 
 	    		 polarityScore = getScorePolarity(polarity[0], polarity[1]);
+	    		 if(polarityScore != 0) {
+	    			 words++;
+	    		 }
 	    		 double frequencyValue = dataMap.get(babelnetId);
 	    		 if(frequencyValue > 0) {
 	    			 polarityScore = polarityScore * frequencyValue;
@@ -162,8 +166,11 @@ public class ComputePolarityFromSynsetPipe extends AbstractPipe {
 	    	 
 	    	 totalPolarityScore += polarityScore;
 	     }
-		
-		return totalPolarityScore/words;
+	     
+		if(words > 0) {
+			totalPolarityScore = totalPolarityScore/words;
+		}
+		return totalPolarityScore;
 		
 	}
 	

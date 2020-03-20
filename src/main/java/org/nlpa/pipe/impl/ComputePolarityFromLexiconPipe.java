@@ -326,7 +326,7 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 
 		
 		for (String sentence : sentences) {
-			
+			System.out.println(polaritySentence);
 			double polarityScore = 0.0d;
 			double totalPolarityScore = 0.0d;
 			int wordNum = 0;
@@ -335,6 +335,8 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 			boolean isBoosterWordBefore = false;
 			
 			String[] words = sentence.split(" ");
+			words = cleanWords(words);
+			
 			double boosterWordValue = 0;
 
 			for(int sentenceIndex=0; sentenceIndex<words.length; sentenceIndex++) {
@@ -396,12 +398,14 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 				weightSentence = wordNum / 5.0;
 				totalWeightSentence += weightSentence;
 				
-				polaritySentence += (weightSentence * totalPolarityScore);
+				polaritySentence = polaritySentence +  (weightSentence * totalPolarityScore);
 				
-				totalPolarity = polaritySentence / totalWeightSentence;
+//				totalPolarity = polaritySentence / totalWeightSentence;
+				System.out.println(polaritySentence);
 			}
 
 		}
+		totalPolarity = polaritySentence / totalWeightSentence;
 		
 		if(totalPolarity > 1) {
 			totalPolarity = 1;
@@ -424,8 +428,9 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 	 */
 	private double getScorePolarity(double posScore, double negScore) {
 		double polarityScore = 0;
+		double totalScore = 1;
 		// The objectivity score
-		double objScore = 1 - (posScore + negScore);
+		double objScore = totalScore - (posScore + negScore);
 
 		if (objScore > (posScore + negScore)) {
 			// Neutral
@@ -498,6 +503,26 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 			}
 		}
 		return word;
+	}
+	
+	/**
+	 * Remove symbols from text.
+	 *
+	 * @param words the array of words to clean
+	 * 
+	 * @return the words already cleaning
+	 */
+	public String[] cleanWords(String[] words) {
+		String[] cleanWords = new String[words.length]; 
+
+		String pattern = "[!¡?¿;:,><\"]";
+		int cont = 0;
+		for(String word : words) {
+			cleanWords[cont] = word.replaceAll(pattern, "");
+			cont++;
+		}
+
+		return cleanWords;
 	}
 	
 }
