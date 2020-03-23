@@ -55,6 +55,8 @@ import org.bdp4j.pipe.SharedDataProducer;
 
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 import static org.nlpa.pipe.impl.FindEmoticonInStringBufferPipe.DEFAULT_EMOTICON_PROPERTY;
+import static org.nlpa.pipe.impl.FindEmojiInStringBufferPipe.DEFAULT_EMOJI_PROPERTY;
+
 
 /**
  * This pipe modifies the data of an Instance transforming it from StringBuffer
@@ -63,6 +65,7 @@ import static org.nlpa.pipe.impl.FindEmoticonInStringBufferPipe.DEFAULT_EMOTICON
  * @author Iñaki Velez
  * @author Enaitz Ezpeleta
  * @author José Ramón Méndez
+ * @author María Novo
  */
 @AutoService(Pipe.class)
 @TransformationPipe()
@@ -87,6 +90,12 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
      * The default value of replaceEmoticon property
      */
     private final static String DEFAULT_REPLACE_EMOTICON_VALUE = "true";
+    
+    /**
+     * The default value of replaceEmoji property
+     */
+    private final static String DEFAULT_REPLACE_EMOJI_VALUE = "true";
+    
 
     /**
      * List of puntuation marks accepted on the beggining of a word
@@ -106,10 +115,16 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
     private static Pattern acceptedCharOnMiddlePattern = Pattern.compile("[\\/\\()\\)\\-\\.,;:<>][\\/\\-\\.,;:<>]*");
 
     /**
-     * The property that indicates if emoticon property will be transform in a
-     * synset
+     * The property that indicates if emoji property will be transform in a
+ synset id
      */
     private Boolean replaceEmoticon = Boolean.parseBoolean(DEFAULT_REPLACE_EMOTICON_VALUE);
+
+    /**
+     * The property that indicates if emoji property will be transform in a
+     * synset id
+     */
+    private Boolean replaceEmoji = Boolean.parseBoolean(DEFAULT_REPLACE_EMOJI_VALUE);
 
     /**
      * A pattern to detect puntuation marks
@@ -117,19 +132,28 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
     private Pattern puntMarkPattern = Pattern.compile("\\p{Punct}");
 
     /**
-     * List of synset-emoticon relationship
+     * List of synset-emoji relationship
      */
     private final static Map<String, String> EMOTICON_SYNSETS = new HashMap<>();
+    private final static Map<String, String> EMOJI_SYNSETS = new HashMap<>();
 
 
-    /* Load list of synset-emoticon relationship*/
+    /* Load list of synset-emoji relationship*/
     static {
         for (String i : new String[]{"/synsets-json/emoticons.json"}) {
-            InputStream is = InterjectionFromStringBufferPipe.class.getResourceAsStream(i);
+            InputStream is = StringBuffer2SynsetSequencePipe.class.getResourceAsStream(i);
             JsonReader rdr = Json.createReader(is);
             JsonObject jsonObject = rdr.readObject();
             jsonObject.keySet().forEach((chars) -> {
-                EMOTICON_SYNSETS.put(chars, jsonObject.getString(chars));
+                EMOTICON_SYNSETS.put(chars.toLowerCase(), jsonObject.getString(chars));
+            });
+        }
+        for (String i : new String[]{"/synsets-json/emojis.json"}) {
+            InputStream is = StringBuffer2SynsetSequencePipe.class.getResourceAsStream(i);
+            JsonReader rdr = Json.createReader(is);
+            JsonObject jsonObject = rdr.readObject();
+            jsonObject.keySet().forEach((chars) -> {
+                EMOJI_SYNSETS.put(chars.toLowerCase(),jsonObject.getJsonObject(chars).getString("synsetID"));
             });
         }
     }
@@ -143,11 +167,13 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
 
     /**
      * Creates a StringBuffer2SynsetSequencePipe Pipe, to assing replaceEmoticonProp value
-     * @param replaceEmoticonProp The value of preplaceEmoticonProp
+     * @param replaceEmoticonProp The value of replaceEmoticonProp
+     * @param replaceEmojiProp  The value of replaceEmojiProp
      */
-    public StringBuffer2SynsetSequencePipe(Boolean replaceEmoticonProp) {
+    public StringBuffer2SynsetSequencePipe(Boolean replaceEmoticonProp, Boolean replaceEmojiProp) {
         super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[0]);
         replaceEmoticon = replaceEmoticonProp;
+        replaceEmoji = replaceEmojiProp;
     }
 
     /**
@@ -204,15 +230,34 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
      * Establish replaceEmoticon value
      *
      * @param replaceEmoticon True if you want to add the synsetID corresponding
-     * with emoticon property
+ with emoji property
      */
     @PipeParameter(name = "replaceemoticonname", description = "Establish replaceEmoticon value", defaultValue = DEFAULT_REPLACE_EMOTICON_VALUE)
     public void setReplaceEmoticon(Boolean replaceEmoticon) {
         this.replaceEmoticon = replaceEmoticon;
     }
+    /**
+     * Get the value of replaceEmoji property
+     *
+     * @return The value of replaceEmoji property
+     */
+    public Boolean isReplaceEmoji() {
+        return this.replaceEmoji;
+    }
 
     /**
-     * This method find fagments in text (str) thar are incorrect.
+     * Establish replaceEmoji value
+     *
+     * @param replaceEmoji True if you want to add the synsetID corresponding
+     * with emoji property
+     */
+    @PipeParameter(name = "replaceemojiname", description = "Establish replaceEmoji value", defaultValue = DEFAULT_REPLACE_EMOJI_VALUE)
+    public void setReplaceEmoji(Boolean replaceEmoji) {
+        this.replaceEmoji = replaceEmoji;
+    }
+
+    /**
+     * This method find fragments in text (str) thar are incorrect.
      *
      * @param str The original text
      * @param lang The language of the original text
@@ -223,7 +268,7 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
         StringTokenizer st = new StringTokenizer(str, " \t\n\r\u000b\f");
 
         // The value that will be returned
-        ArrayList<Pair<String, String>> returnValue = new ArrayList<Pair<String, String>>();
+        ArrayList<Pair<String, String>> returnValue = new ArrayList<>();
 
         while (st.hasMoreTokens()) {
             String current = st.nextToken().trim();
@@ -392,9 +437,8 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
         ArrayList<Pair<String, String>> syns = buildSynsetSequence(sv.getFixedText(),
                 ((String) carrier.getProperty(langProp)).toUpperCase());
 
-        // If there is emoticon property, replace with the corresponding synsetID
+        // If there is emoji property, replace with the corresponding synsetID
         if (replaceEmoticon) {
-
             String emoticon = carrier.getProperty(DEFAULT_EMOTICON_PROPERTY).toString();
             String synsetID;
             if (!emoticon.equals("")) {
@@ -402,6 +446,20 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
                 synsetID = EMOTICON_SYNSETS.get(emoticon);
                 if (!"".equals(synsetID)) {
                     syns.add(new Pair<>(synsetID, emoticon));
+                    Dictionary.getDictionary().add(synsetID);
+                }
+            }
+        }
+        
+        // If there is emoji property, replace with the corresponding synsetID
+        if (replaceEmoji) {
+            String emoji = carrier.getProperty(DEFAULT_EMOJI_PROPERTY).toString();
+            String synsetID;
+            if (!emoji.equals("")) {
+                emoji = emoji.trim();
+                synsetID = EMOJI_SYNSETS.get(emoji);
+                if (!"".equals(synsetID)) {
+                    syns.add(new Pair<>(synsetID, emoji));
                     Dictionary.getDictionary().add(synsetID);
                 }
             }

@@ -33,7 +33,7 @@ public class StringBuffer2SynsetSequencePipeTest {
 
     @Before
     public void setUp() {
-        instance = new StringBuffer2SynsetSequencePipe(false);
+        instance = new StringBuffer2SynsetSequencePipe(false, false);
         carrier = new Instance(new StringBuffer(data), null, name, source);
         carrier.setProperty(instance.getLangProp(), "EN");
     }
