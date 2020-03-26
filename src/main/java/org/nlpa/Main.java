@@ -134,7 +134,16 @@ public class Main {
 
         //TeeDatasetFromFeatureVectorPipe teeDatasetFSV = new TeeDatasetFromFeatureVectorPipe("outputtoks.csv");
         //teeDatasetFSV.setTransformersList(transformersList);
+        System.out.println("Default encoding: "+System.getProperty("file.encoding"));
+        System.setProperty("file.encoding", "UTF-8");
+
         /* create a example of pipe */
+         AbstractPipe p2= new SerialPipes(new AbstractPipe[]{new TargetAssigningFromPathPipe(),new StoreFileExtensionPipe(), 
+            new GuessDateFromFilePipe(), 
+            new File2StringBufferPipe(),
+            new TeeCSVFromStringBufferPipe("output.csv", true), 
+        });
+
         AbstractPipe p = new SerialPipes(new AbstractPipe[]{new TargetAssigningFromPathPipe(),
             new StoreFileExtensionPipe(), 
             new GuessDateFromFilePipe(), 
@@ -144,14 +153,15 @@ public class Main {
             new StripHTMLFromStringBufferPipe(),
             new MeasureLengthFromStringBufferPipe("length_after_html_drop"), 
             new GuessLanguageFromStringBufferPipe(),
+            new FindEmojiInStringBufferPipe("emojiTest", false, GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY, true, true),
             new StringBufferToLowerCasePipe(), 
             new InterjectionFromStringBufferPipe(),
             new StopWordFromStringBufferPipe(),
             new TeeCSVFromStringBufferPipe("output.csv", true), 
             //new StringBuffer2SynsetSequencePipe(),
-            new StringBuffer2TokenSequencePipe(),
-            new TokenSequence2FeatureVectorPipe(SequenceGroupingStrategy.COUNT),
-            new TeeCSVFromFeatureVectorPipe("outputtoks.csv")
+            //new StringBuffer2TokenSequencePipe(),
+            //new TokenSequence2FeatureVectorPipe(SequenceGroupingStrategy.COUNT),
+            //new TeeCSVFromFeatureVectorPipe("outputtoks.csv")
             //teeDatasetFSV
         });
 
