@@ -188,7 +188,7 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
             // Identified property data type
             for (String propertyName : carrierPropertyList) {
                 Object carrierPropertyName = carrier.getProperty(propertyName);
-                field = (carrierPropertyName!=null)?carrierPropertyName.toString():"";
+                field = (carrierPropertyName != null) ? carrierPropertyName.toString() : "";
                 if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
                     type = identifyType(field);
                     if (detectedTypes.contains(propertyName)) {
@@ -246,7 +246,7 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                 Dictionary dictionary = Dictionary.getDictionary();
 
                 for (String text : dictionary) {
-                    if (!text.equals("target")) {
+                    if (text != null && !text.equals("target")) {
                         dataset.addColumn(text, Double.class, 0);
                     }
                 }
@@ -267,6 +267,7 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                 Transformer t;
 
                 List<String> attributes = dataset.getDataset().getAttributes();
+                // System.out.println("attributes: " + attributes);
                 Object[] values = new Object[attributes.size()];
 
                 for (Instance entry : instanceList) {
@@ -275,47 +276,52 @@ public class TeeDatasetFromFeatureVectorPipe extends AbstractPipe implements Sha
                         String attName;
                         for (int index = 0; index < attributes.size(); index++) {
                             attName = attributes.get(index);
-                            if (attName.equals("id")) {
-                                values[indInstance] = entry.getName().toString();
-                                indInstance++;
-                            } else {
-                                if (dictionary.isIncluded(attName, true) && !attName.equals("target")) {
-                                    Double frequency = featureVector.getFrequencyValue(attName);
-                                    if (frequency > 0) {
-                                        values[indInstance] = frequency;
-                                    } else {
-                                        values[indInstance] = 0d;
-                                    }
-                                    index = indInstance;
+                            
+                            if (attName != null) {
+                                if (attName.equals("id")) {
+                                    values[indInstance] = entry.getName().toString();
                                     indInstance++;
                                 } else {
-                                    if (attName.equals("target")) {
-                                        field = entry.getTarget().toString();
-                                    } else {
-                                        field = (entry.getProperty(attName) != null) ? entry.getProperty(attName).toString() : null;//toString();
-                                    }
-                                    if ((t = transformersList.get(attName)) != null) {
-                                        values[indInstance] = t.transform(field);
-                                    } else {
-                                        if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
-                                            try {
-                                                values[indInstance] = Double.parseDouble(field);
-                                            } catch (NumberFormatException nfex) {
-                                                values[indInstance] = 0;
-                                                logger.warn("The value for field " + field + " is 0, because parse double is not possible. To change this, use a transformer." + nfex.getMessage());
-                                            }
+                                    if (dictionary.isIncluded(attName, true) && !attName.equals("target")) {
+
+                                        Double frequency = featureVector.getFrequencyValue(attName);
+                                        if (frequency > 0) {
+                                            values[indInstance] = frequency;
                                         } else {
                                             values[indInstance] = 0d;
                                         }
-                                    }
-                                    if (attName.equals("target")) {
-                                        Double doubleValue = Double.parseDouble(values[indInstance].toString());
-                                        String target_value = Integer.toString(doubleValue.intValue());
-                                        if (target_values.contains(target_value)) {
-                                            values[indInstance] = target_value + "";
+                                        index = indInstance;
+                                        indInstance++;
+                                    } else {
+
+                                        if (attName.equals("target")) {
+                                            field = entry.getTarget().toString();
+                                        } else {
+                                            field = (entry.getProperty(attName) != null && !entry.getProperty(attName).equals("")) ? entry.getProperty(attName).toString() : null;//toString();
                                         }
+                                        if ((t = transformersList.get(attName)) != null) {
+                                            values[indInstance] = t.transform(field);
+                                        } else {
+                                            if (field != null && !field.isEmpty() && !field.equals("") && !field.equals(" ")) {
+                                                try {
+                                                    values[indInstance] = Double.parseDouble(field);
+                                                } catch (NumberFormatException nfex) {
+                                                    values[indInstance] = 0;
+                                                    logger.warn("The value for field " + field + " is 0, because parse double is not possible. To change this, use a transformer." + nfex.getMessage());
+                                                }
+                                            } else {
+                                                values[indInstance] = 0d;
+                                            }
+                                        }
+                                        if (attName.equals("target")) {
+                                            Double doubleValue = Double.parseDouble(values[indInstance].toString());
+                                            String target_value = Integer.toString(doubleValue.intValue());
+                                            if (target_values.contains(target_value)) {
+                                                values[indInstance] = target_value + "";
+                                            }
+                                        }
+                                        indInstance++;
                                     }
-                                    indInstance++;
                                 }
                             }
                         }

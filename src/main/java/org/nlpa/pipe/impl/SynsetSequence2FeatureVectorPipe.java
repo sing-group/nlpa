@@ -62,7 +62,7 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
      */
     private static final Logger logger = LogManager.getLogger(SynsetSequence2FeatureVectorPipe.class);
 
-     /**
+    /**
      * The default value for the the grouping strategy
      */
     public static final String DEFAULT_GROUPING_STRATEGY = "COUNT";
@@ -189,8 +189,10 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
                     synsetFeatureVector = new HashMap<>();
                     for (Pair<String, String> pairSV : synsetVector.getSynsets()) {
                         String synsetId = pairSV.getObj1();
-                        if (synsetFeatureVector.get(synsetId) == null) {
-                            synsetFeatureVector.put(pairSV.getObj1(), 1d);
+                        if (synsetId != null) {
+                            if (synsetFeatureVector.get(synsetId) == null) {
+                                synsetFeatureVector.put(synsetId, 1d);
+                            }
                         }
                     }
                     carrier.setData(new FeatureVector(synsetFeatureVector));
@@ -202,8 +204,11 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
                     Map<String, Double> synsets = synsetFeatureVectorCountMatches.getFeatures();
                     int countSynsets = synsets.size();
                     for (Map.Entry<String, Double> entry : synsets.entrySet()) {
-                        Double frequency = entry.getValue() / countSynsets;
-                        synsets.put(entry.getKey(), frequency);
+                        String entryKey = entry.getKey();
+                        if (entryKey != null) {
+                            Double frequency = entry.getValue() / countSynsets;
+                            synsets.put(entryKey, frequency);
+                        }
                     }
                     carrier.setData(synsetFeatureVectorCountMatches);
 

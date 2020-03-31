@@ -54,7 +54,7 @@ public class Dictionary implements Iterable<String> {
      * required
      */
     private Set<String> textHashSet = new LinkedHashSet<>();
-    ;
+    
 
     /**
      * Indicates if the entries should be encoded
@@ -108,7 +108,9 @@ public class Dictionary implements Iterable<String> {
      * @param text The new text to add to the dictionary
      */
     public void add(String text) {
-        textHashSet.add(this.encode ? encodeBase64(text) : text);
+        if (text != null && !text.equals("")) {
+            textHashSet.add(this.encode ? encodeBase64(text) : text);
+        }
     }
 
     /**
@@ -230,7 +232,7 @@ public class Dictionary implements Iterable<String> {
     public String decodeBase64(String feat) {
         byte[] decodedBytes;
         try {
-            decodedBytes =  Base64.getDecoder().decode(feat);
+            decodedBytes = Base64.getDecoder().decode(feat);
             return new String(decodedBytes, "UTF-8");
         } catch (UnsupportedEncodingException ex) {
             logger.warn("[DECODE BASE 64]: " + ex.getMessage());

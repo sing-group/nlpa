@@ -1,92 +1,121 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.nlpa.pipe.impl;
 
-import org.bdp4j.types.Instance;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.nlpa.pipe.impl.ComputePolarityFromStringBufferPipe;
+import org.bdp4j.pipe.AbstractPipe;
+import org.bdp4j.pipe.SerialPipes;
+import org.bdp4j.types.Instance;
 
-/**
- *
- * @author María Novo
- */
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertNull;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
+
 public class ComputePolarityFromStringBufferPipeTest {
 
-    String data = "December is hre :-) , ho ho ho! Beat the Christmas days with us and we'll even give you 19% off online until 31 Dec. Visit us on here, #xx or @xx.";
-    String name = "basic_example/_spam_/7c63a8fd7ae52e350e354d63b23e1c3b.tsms";
-    String source = "basic_example/_spam_/7c63a8fd7ae52e350e354d63b23e1c3b.tsms";
+	public HashMap<String, Double> sentences = new HashMap<String, Double>();
+	
+	@Test
+	public void testNotStringBufferData() {
 
-    private static Instance carrier = null;
+		ComputePolarityFromStringBufferPipe polarityPipe = new ComputePolarityFromStringBufferPipe();
+		Instance instance = new Instance(new Integer(4), "polarity", "Test instance ID", new Integer(4));
 
-    private ComputePolarityFromStringBufferPipe instance;
+		Instance resultInstance = polarityPipe.pipe(instance);
+		Object polarity = resultInstance.getProperty("polarity");
+		assertNull(polarity);
+		
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void testNullInstance() {
 
-    public ComputePolarityFromStringBufferPipeTest() {
-    }
+		Instance instance = null;
+		new ComputePolarityFromStringBufferPipe().pipe(instance);
 
-    @Before
-    public void setUp() {
-        instance = new ComputePolarityFromStringBufferPipe();
-        carrier = new Instance(new StringBuffer(data), null, name, source);
-        carrier.setProperty("language", "EN");
-    }
+	}
+		
+	
+	@Test
+	public void testComputePolarity() {
+		
+		addSentences();
 
-    /**
-     * Test of getInputType method, of class
-     * ComputePolarityFromStringBufferPipe.
-     */
-    @Test
-    public void testGetInputType() {
-        Class<?> expResult = StringBuffer.class;
-        Class<?> result = instance.getInputType();
-        assertEquals(expResult, result);
-    }
+		AbstractPipe p = new SerialPipes(new AbstractPipe[]{new TargetAssigningFromPathPipe(),
+	            new StoreFileExtensionPipe(), 
+	            new GuessDateFromFilePipe(), 
+	            new File2StringBufferPipe(),
+	            new MeasureLengthFromStringBufferPipe(),
+	            new FindUrlInStringBufferPipe(),
+	            new StripHTMLFromStringBufferPipe(),
+	            new MeasureLengthFromStringBufferPipe("length_after_html_drop"), 
+	            new GuessLanguageFromStringBufferPipe(),
+	            new ContractionsFromStringBufferPipe(),
+	            new AbbreviationFromStringBufferPipe(),
+	            new SlangFromStringBufferPipe(),
+	            new StringBufferToLowerCasePipe(),
+	            new ComputePolarityFromStringBufferPipe()
+	        });
+				
+		 
+		Set<String> sentencesKeys = sentences.keySet();
+		Iterator<String> iterator = sentencesKeys.iterator();
 
-    /**
-     * Test of getOutputType method, of class
-     * ComputePolarityFromStringBufferPipe.
-     */
-    @Test
-    public void testGetOutputType() {
-        Class<?> expResult = StringBuffer.class;
-        Class<?> result = instance.getOutputType();
-        assertEquals(expResult, result);
-    }
+		while (iterator.hasNext()) {
 
-    /**
-     * Test of setExtensionProp method, of class
-     * ComputePolarityFromStringBufferPipe.
-     */
-    @Test
-    public void testSetExtensionProp() {
-        String popProp = "polarity";
-        instance.setExtensionProp(popProp);
-    }
+			String text = (String) iterator.next();
+			double sentencePolarity = sentences.get(text);
+			
+			Instance instance = new Instance(new StringBuffer(text), "polarity", "Test instance ID", new StringBuffer(text));
 
-    /**
-     * Test of getPolarityProp method, of class
-     * ComputePolarityFromStringBufferPipe.
-     */
-    @Test
-    public void testGetPolarityProp() {
-       String expResult = "polarity";
-        String result = instance.getPolarityProp();
-        assertEquals(expResult, result);
-    }
+			Instance resultInstance = p.pipe(instance);
 
-    /**
-     * Test of pipe method, of class ComputePolarityFromStringBufferPipe.
-     */
-    @Test
-    public void testPipe() {
-        Instance expResult = new Instance(new StringBuffer(data),null, name, source);
-        expResult.setProperty("language", "EN");
-        expResult.setProperty(instance.getPolarityProp(), 2);
+			double instancePolarity = (double) resultInstance.getProperty("polarity");
+			assertThat("Sentence <" + text + ">", instancePolarity, is(equalTo(sentencePolarity)));
+		}
 
-        Instance result = instance.pipe(carrier);
-        assertEquals(expResult,result);
-    }
+	}
+	
+	public void addSentences() {
+
+		// Test different dictionaries
+		this.sentences.put("This couch is beautiful and comfortable", 0.99);
+		this.sentences.put("Este sofá es bonito y cómodo", 0.0);
+		this.sentences.put("Ce canapé est beau et confortable", 0.06);
+		this.sentences.put("Questo divano è bello e comodo", 0.0);
+		this.sentences.put("Diese Couch ist schön und bequem", 0.24);
+		this.sentences.put("Этот диван красивый и удобный", 0.0);
+
+		//Test negative words
+		this.sentences.put("Esto no es muy difícil", 0.75);
+		this.sentences.put("Esto no es difícil", 0.75);
+		
+		//Test booster words
+		this.sentences.put("Esto no es muy difícil", 1.0);
+		this.sentences.put("This is very difficult", -0.89);
+		this.sentences.put("Esto no es difícil", 0.75);
+		this.sentences.put("Esto es difícil", -0.75);
+		this.sentences.put("Esto es muy muy difícil", -1.0);
+		
+		//Test ngrams
+		this.sentences.put("Esto es el argumento de un numero complejo y es muy difícil", -1.0);
+		this.sentences.put("Esto es un argumento en general", 0.00);
+		this.sentences.put("Una pelicula sin sentimiento y sin alegría", -0.75);
+		
+		//Test text with several sentences
+		this.sentences.put("This isn't difficult. This couch is beautiful and comfortable", 0.89);
+		this.sentences.put("This isn't difficult. This is beautiful, knottiness, effectuality, wiliness", 1.0);
+		
+		//Test weird text
+		this.sentences.put(". . ", 0.0);
+		this.sentences.put("Este móvil es bonito pero funciona bien", 0.0);
+
+	
+	}
+	
 }

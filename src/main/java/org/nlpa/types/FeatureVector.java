@@ -98,7 +98,7 @@ public class FeatureVector implements Serializable {
     public double getFrequencyValue(String feature) {
         if (features.containsKey(feature)) {
             for (Map.Entry<String, Double> entry : features.entrySet()) {
-                if (entry.getKey().equals(feature)) {
+                if (feature.equals(entry.getKey())) {
                     return entry.getValue();
                 }
             }
