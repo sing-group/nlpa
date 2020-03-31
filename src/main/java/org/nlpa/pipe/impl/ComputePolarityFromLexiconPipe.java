@@ -44,16 +44,28 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 	/**
 	 * Number of words that are modified by the word of negation that precede them
 	 */
-	private static final int NEGATION_WORDS_COUNT = 3;
+	private static final int NEGATION_SCOPE_WORDS = 3;
+	
+	/**
+	 * Total sum of the 3 polarities scores: Positive + Negative + Objective
+	 */
+	private static final double TOTAL_POLARITY_SCORE = 1.0;
 
 	/**
-	 * A hashset of polarities in different languages. NOTE: All JSON files (listed
-	 * below) containing the lexicon
-	 *
+	 * A hashmap of polarities in different languages. 
 	 */
 	private static final HashMap<String, HashMap<String, double[]>> htPolarities = new HashMap<>();
+	/**
+	 * A hashmap of n-grams for the different polarity dictionaries.
+	 */
 	private static final HashMap<String, HashMap<String, List<String>>> htNgrams = new HashMap<>();
+	/**
+	 * A hashmap of negation words in different languages.
+	 */
 	private static final HashMap<String, List<String>> htNegativeWords = new HashMap<>();
+	/**
+	 * A hashmap of booster words in different languages.
+	 */
 	private static final HashMap<String, HashMap<String, Double>> htBoosterWords = new HashMap<>();
 
 	static {
@@ -171,6 +183,14 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 
 	}
 	
+	
+	/**
+	 * Checks if the given word is a n-gram
+	 *
+	 * @param word 
+	 * 
+	 * @return true if the word is a n-gram, false in the other case
+	 */
 	public static boolean isNgram(String word) {
 		if(word.contains(" ")) {
 			return true;
@@ -178,6 +198,13 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 		return false;
 	}
 	
+	/**
+	 * Adds the given n-gram to the lexicon
+	 *
+	 * @param ngramWord a n-gram word
+	 * @param ngramsDict n-grams lexicon  
+	 * 
+	 */
 	public static void addNgramsDict(String ngramWord, HashMap<String, List<String>> ngramsDict) {
 		Set<String> ngramsKey = ngramsDict.keySet();
 		String[] words = ngramWord.split(" ");
@@ -200,6 +227,12 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 		}
 	}
 	
+	/**
+	 * Sorts the given n-gram dictionary from longest to shortest
+	 *
+	 * @param ngramsDict n-gram lexicon
+	 * 
+	 */
 	public static void sortNgramDictionary(HashMap<String, List<String>> ngramsDict) {
 		Set<String> ngramsKey = ngramsDict.keySet();
 		Iterator<String> it = ngramsKey.iterator();
@@ -259,15 +292,25 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 
 		return StringBuffer.class;
 	}
+	
+	/**
+     * Retrieves the property name for storing the sentiment polarity
+     *
+     * @return String containing the property name for storing the sentiment
+     * polarity
+     */
+	public String getPolarityProp() {
+		return this.polarityProp;
+	}
 
 	/**
-	 * Establish the name of the property where the language will be stored
+	 * Establish the name of the property where the sentiment polarity will be stored
 	 *
-	 * @param langProp The name of the property where the language is stored
+	 * @param polarityProp The name of the property where the sentiment polarity is stored
 	 */
-	@PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue = DEFAULT_LANG_PROPERTY)
-	public void setLangProp(String langProp) {
-		this.langProp = langProp;
+	@PipeParameter(name = "polarityPropName", description = "Indicates the property name to store the sentiment polarity", defaultValue = DEFAULT_POLARITY_PROPERTY)
+	public void setPolarityProp(String polarityProp) {
+		this.polarityProp = polarityProp;
 	}
 
 	@Override
@@ -305,6 +348,9 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 	 *
 	 * @param data the text to calculate the polarity
 	 * @param dict the lexicon based on the language of the text
+	 * @param ngramDict the n-gram lexicon based on the language of the text
+	 * @param negativeWordsDict the negative lexicon based on the language of the text
+	 * @param boosterWordsDict the booster lexicon based on the language of the text
 	 * 
 	 * @return polarity of the text
 	 */
@@ -326,7 +372,6 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 
 		
 		for (String sentence : sentences) {
-			System.out.println(polaritySentence);
 			double polarityScore = 0.0d;
 			double totalPolarityScore = 0.0d;
 			int wordNum = 0;
@@ -337,7 +382,7 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 			String[] words = sentence.split(" ");
 			words = cleanWords(words);
 			
-			double boosterWordValue = 0;
+			double boosterWordValue = 1;
 
 			for(int sentenceIndex=0; sentenceIndex<words.length; sentenceIndex++) {
 				boolean isBoosterWord = false;
@@ -352,10 +397,14 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 					double[] polarity = dict.get(word);
 					double boosterValue = getBoosterWordValue(words[sentenceIndex], boosterWordsDict);
 					if(boosterValue != 0) {
-						
+						if(isBoosterWordBefore) {
+							boosterWordValue *= boosterValue;
+						}else {
+							boosterWordValue = boosterValue;
+						}
 						isBoosterWordBefore = true;
 						isBoosterWord = true;
-						boosterWordValue = boosterValue;
+						
 						//Doesn't count the polarity of the booster word
 						polarity[0] = 0;
 						polarity[1] = 0;
@@ -371,6 +420,7 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 						
 						if(isBoosterWordBefore && !isBoosterWord) {
 							res*=boosterWordValue;
+							boosterWordValue = 1;
 							isBoosterWordBefore = false;
 						}
 						
@@ -378,7 +428,7 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 							negationWordNum++;
 							polarityScore += res;
 							
-							if (negationWordNum >= ComputePolarityFromLexiconPipe.NEGATION_WORDS_COUNT || sentenceIndex == (words.length-1)) {
+							if (negationWordNum >= ComputePolarityFromLexiconPipe.NEGATION_SCOPE_WORDS || sentenceIndex == (words.length-1)) {
 								totalPolarityScore += polarityScore * (-1);
 								isNegation = false;
 							}
@@ -399,9 +449,7 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 				totalWeightSentence += weightSentence;
 				
 				polaritySentence = polaritySentence +  (weightSentence * totalPolarityScore);
-				
-//				totalPolarity = polaritySentence / totalWeightSentence;
-				System.out.println(polaritySentence);
+			
 			}
 
 		}
@@ -428,9 +476,9 @@ public class ComputePolarityFromLexiconPipe extends AbstractPipe {
 	 */
 	private double getScorePolarity(double posScore, double negScore) {
 		double polarityScore = 0;
-		double totalScore = 1;
+	
 		// The objectivity score
-		double objScore = totalScore - (posScore + negScore);
+		double objScore = ComputePolarityFromLexiconPipe.TOTAL_POLARITY_SCORE - (posScore + negScore);
 
 		if (objScore > (posScore + negScore)) {
 			// Neutral

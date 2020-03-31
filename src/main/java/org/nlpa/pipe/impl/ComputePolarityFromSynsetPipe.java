@@ -33,6 +33,11 @@ public class ComputePolarityFromSynsetPipe extends AbstractPipe {
 	 * For logging purposes
 	 */
 	private static final Logger logger = LogManager.getLogger(ComputePolarityFromSynsetPipe.class);
+	
+	/**
+	 * Total sum of the 3 polarities scores: Positive + Negative + Objective
+	 */
+	private static final double TOTAL_POLARITY_SCORE = 1.0;
 
 	/**
 	 * A hashset of polarities.
@@ -170,6 +175,12 @@ public class ComputePolarityFromSynsetPipe extends AbstractPipe {
 		if(words > 0) {
 			totalPolarityScore = totalPolarityScore/words;
 		}
+		
+		if(totalPolarityScore > 1) {
+			totalPolarityScore = 1;
+		}else if(totalPolarityScore < -1) {
+			totalPolarityScore = -1;
+		}
 		return totalPolarityScore;
 		
 	}
@@ -186,7 +197,7 @@ public class ComputePolarityFromSynsetPipe extends AbstractPipe {
 	private double getScorePolarity(double posScore, double negScore) {
 		double polarityScore = 0;
 		// The objectivity score
-		double objScore = 1 - (posScore + negScore);
+		double objScore = ComputePolarityFromSynsetPipe.TOTAL_POLARITY_SCORE - (posScore + negScore);
 
 		if (objScore > (posScore + negScore)) {
 			// Neutral

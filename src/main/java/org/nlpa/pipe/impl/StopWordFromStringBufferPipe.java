@@ -149,7 +149,8 @@ public class StopWordFromStringBufferPipe extends AbstractPipe {
      * @param langProp The property that stores the language of text
      */
     public StopWordFromStringBufferPipe(String langProp) {
-        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[]{AbbreviationFromStringBufferPipe.class});
+        super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[]{AbbreviationFromStringBufferPipe.class, 
+        	ComputePolarityFromLexiconPipe.class, ComputePolarityFromSynsetPipe.class});
 
         this.langProp = langProp;
     }
