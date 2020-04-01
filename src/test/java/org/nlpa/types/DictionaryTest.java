@@ -148,18 +148,6 @@ public class DictionaryTest {
     }
 
     /**
-     * Test of iterator method, of class Dictionary.
-     */
-    @Test
-    public void testIterator() {
-        HashSet<String> synsetList = new LinkedHashSet<>();
-        synsetList.add("bn:12345678v");
-        Iterator<String> expResult = synsetList.iterator();
-        Iterator<String> result = instance.iterator();   
-        assertEquals(expResult, result);
-    }
-
-    /**
      * Test of clear method, of class Dictionary.
      */
     @Test
