@@ -150,7 +150,7 @@ public class StopWordFromStringBufferPipe extends AbstractPipe {
      */
     public StopWordFromStringBufferPipe(String langProp) {
         super(new Class<?>[]{GuessLanguageFromStringBufferPipe.class}, new Class<?>[]{AbbreviationFromStringBufferPipe.class, 
-        	ComputePolarityFromStringBufferPipe.class, ComputeSynsetPolarityFromFeatureVectorPipe.class});
+        	ComputePolarityFromStringBufferPipe.class, ComputeSynsetPolarityFromSynsetSequencePipe.class});
 
         this.langProp = langProp;
     }

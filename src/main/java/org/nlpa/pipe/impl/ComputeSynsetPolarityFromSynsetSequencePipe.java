@@ -5,13 +5,13 @@ import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
-import org.nlpa.types.FeatureVector;
+import org.bdp4j.util.Pair;
 import org.nlpa.types.SynsetSequence;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -27,12 +27,12 @@ import javax.json.JsonValue;
  * @author Patricia Martin Perez
  */
 @PropertyComputingPipe
-public class ComputeSynsetPolarityFromFeatureVectorPipe extends AbstractPipe {
+public class ComputeSynsetPolarityFromSynsetSequencePipe extends AbstractPipe {
 
 	/**
 	 * For logging purposes
 	 */
-	private static final Logger logger = LogManager.getLogger(ComputeSynsetPolarityFromFeatureVectorPipe.class);
+	private static final Logger logger = LogManager.getLogger(ComputeSynsetPolarityFromSynsetSequencePipe.class);
 	
 	/**
 	 * Total sum of the 3 polarities scores: Positive + Negative + Objective
@@ -46,7 +46,7 @@ public class ComputeSynsetPolarityFromFeatureVectorPipe extends AbstractPipe {
 
 	static {
 			try {
-				InputStream is = ComputeSynsetPolarityFromFeatureVectorPipe.class.getResourceAsStream("/lexicon-json/lexicon_babelnet.json");
+				InputStream is = ComputeSynsetPolarityFromSynsetSequencePipe.class.getResourceAsStream("/lexicon-json/lexicon_babelnet.json");
 				JsonReader jsonReader = Json.createReader(is);
 				JsonObject jsonObject = jsonReader.readObject();
 				jsonReader.close();
@@ -81,7 +81,7 @@ public class ComputeSynsetPolarityFromFeatureVectorPipe extends AbstractPipe {
 	 * Construct a ComputePolarityFromLexicon instance
 	 *
 	 */
-	public ComputeSynsetPolarityFromFeatureVectorPipe() {
+	public ComputeSynsetPolarityFromSynsetSequencePipe() {
 		super(new Class<?>[0], new Class<?>[0]);
 
 	}
@@ -93,7 +93,7 @@ public class ComputeSynsetPolarityFromFeatureVectorPipe extends AbstractPipe {
 	 */
 	@Override
 	public Class<?> getInputType() {
-		return FeatureVector.class;
+		return SynsetSequence.class;
 	}
 
 	/**
@@ -105,15 +105,15 @@ public class ComputeSynsetPolarityFromFeatureVectorPipe extends AbstractPipe {
 	 */
 	@Override
 	public Class<?> getOutputType() {
-		return FeatureVector.class;
+		return SynsetSequence.class;
 	}
 
 
 	@Override
 	public Instance pipe(Instance carrier) {
-		if (carrier.getData() instanceof FeatureVector) {
+		if (carrier.getData() instanceof SynsetSequence) {
 
-			FeatureVector data = (FeatureVector) carrier.getData();
+			SynsetSequence data = (SynsetSequence) carrier.getData();
 
 			HashMap<String, double[]> dict = htPolarities;
 			// When there is not a lexicon
@@ -127,7 +127,7 @@ public class ComputeSynsetPolarityFromFeatureVectorPipe extends AbstractPipe {
 			carrier.setProperty(polarityProp, polarityDecimalFormat);
 
 		} else {
-			logger.error("Data should be an FeatureVector when processing " + carrier.getName() + " but is a "
+			logger.error("Data should be a SynsetSequence when processing " + carrier.getName() + " but is a "
 					+ carrier.getData().getClass().getName());
 		}
 
@@ -143,44 +143,35 @@ public class ComputeSynsetPolarityFromFeatureVectorPipe extends AbstractPipe {
 	 * 
 	 * @return polarity of the synset sequence
 	 */
-	private double computePolarity(FeatureVector data, HashMap<String, double[]> dict) {
+	private double computePolarity(SynsetSequence data, HashMap<String, double[]> dict) {
 		double totalPolarityScore = 0.0;
 		double polarityScore = 0.0;
 		int words = 0;
-		HashMap<String, Double> dataMap = (HashMap<String, Double>) data.getFeatures();
-		Set<String> keys = (Set<String>) dataMap.keySet();
 		
-		Iterator<String> keysIterator = keys.iterator();
-	     while(keysIterator.hasNext()){
-	    	 String babelnetId = keysIterator.next();
-	    	 double[] polarity = dict.get(babelnetId);
+		List<Pair<String, String>> synsetsData = data.getSynsets();
+
+		Iterator<Pair<String,String>> synsets = synsetsData.iterator();
+	     while(synsets.hasNext()){
+	    	 Pair<String, String> pair = synsets.next();
+	    	 double[] polarity = dict.get(pair.getObj1());
 	    	 
 	    	 if (polarity != null) {
-	    		
-	    		 
+	 
 	    		 polarityScore = getScorePolarity(polarity[0], polarity[1]);
 	    		 if(polarityScore != 0) {
 	    			 words++;
 	    		 }
-	    		 double frequencyValue = dataMap.get(babelnetId);
-	    		 if(frequencyValue > 0) {
-	    			 polarityScore = polarityScore * frequencyValue;
-	    		 }
-
+	    		 
+	    		 totalPolarityScore += polarityScore;
 			}
 	    	 
-	    	 totalPolarityScore += polarityScore;
+	    	 
 	     }
 	     
 		if(words > 0) {
 			totalPolarityScore = totalPolarityScore/words;
 		}
 		
-		if(totalPolarityScore > 1) {
-			totalPolarityScore = 1;
-		}else if(totalPolarityScore < -1) {
-			totalPolarityScore = -1;
-		}
 		return totalPolarityScore;
 		
 	}
@@ -197,7 +188,7 @@ public class ComputeSynsetPolarityFromFeatureVectorPipe extends AbstractPipe {
 	private double getScorePolarity(double posScore, double negScore) {
 		double polarityScore = 0;
 		// The objectivity score
-		double objScore = ComputeSynsetPolarityFromFeatureVectorPipe.TOTAL_POLARITY_SCORE - (posScore + negScore);
+		double objScore = ComputeSynsetPolarityFromSynsetSequencePipe.TOTAL_POLARITY_SCORE - (posScore + negScore);
 
 		if (objScore > (posScore + negScore)) {
 			// Neutral
