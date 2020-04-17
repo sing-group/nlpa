@@ -122,9 +122,9 @@ public class Dictionary implements Iterable<String> {
      * dictionary or not
      */
     public boolean isIncluded(String text, boolean checkEncode) {
-        if (checkEncode) {
+        /*if (checkEncode) {
             text = (this.encode) ? encodeBase64(text) : text;
-        }
+        }*/
         return textHashSet.contains(text);
     }
 

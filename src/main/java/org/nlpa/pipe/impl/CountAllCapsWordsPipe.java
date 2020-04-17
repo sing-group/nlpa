@@ -25,7 +25,8 @@ public class CountAllCapsWordsPipe extends AbstractPipe {
     private static final Logger logger = LogManager.getLogger(CountAllCapsWordsPipe.class);
 
     /**
-     * The default property name where the number of all caps words will be stored
+     * The default property name where the number of all caps words will be
+     * stored
      */
     public static final String DEFAULT_ALL_CAPS_PROPERTY = "allCaps";
 
@@ -66,9 +67,11 @@ public class CountAllCapsWordsPipe extends AbstractPipe {
     }
 
     /**
-     * Establish the name of the property where the number of all caps words will be stored
+     * Establish the name of the property where the number of all caps words
+     * will be stored
      *
-     * @param allCapsProperty The name of the property where the number of all caps words
+     * @param allCapsProperty The name of the property where the number of all
+     * caps words
      */
     @PipeParameter(name = "allCapsProperty", description = "Indicates the property name to store the number of all caps words", defaultValue = DEFAULT_ALL_CAPS_PROPERTY)
     public void setAllCapsProperty(String allCapsProperty) {
@@ -78,7 +81,8 @@ public class CountAllCapsWordsPipe extends AbstractPipe {
     /**
      * Retrieves the property name for storing the number of all caps words
      *
-     * @return String containing the property name for storing the number of all caps words
+     * @return String containing the property name for storing the number of all
+     * caps words
      */
     public String getAllCapsProperty() {
         return allCapsProperty;
@@ -87,25 +91,25 @@ public class CountAllCapsWordsPipe extends AbstractPipe {
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
-        	int allCaps = 0;
+            int allCaps = 0;
             String text = carrier.getData().toString();
             String[] words = text.split(" ");
-            words = cleanWords(words); 
-            
-            for(String word : words) {
-            	int uppercase = 0;
-            	for(int i=0; i<word.length(); i++) {
-            		if(Character.isUpperCase(word.charAt(i))) {
-            			uppercase++;
-            		}
-            	}
-            	if(uppercase != 0 && uppercase == word.length()) {
-            		allCaps++;
-            	}
+            words = cleanWords(words);
+
+            for (String word : words) {
+                int uppercase = 0;
+                for (int i = 0; i < word.length(); i++) {
+                    if (Character.isUpperCase(word.charAt(i))) {
+                        uppercase++;
+                    }
+                }
+                if (uppercase != 0 && uppercase == word.length()) {
+                    allCaps++;
+                }
             }
-            
+
             carrier.setProperty(allCapsProperty, allCaps);
-            
+
         } else {
             logger.error("Data should be a StringBuffer when processing " + carrier.getName() + " but is a "
                     + carrier.getData().getClass().getName());
@@ -114,24 +118,23 @@ public class CountAllCapsWordsPipe extends AbstractPipe {
         return carrier;
     }
 
-    
-	/**
-	 * Remove symbols from text.
-	 *
-	 * @param words the array of words to clean
-	 * 
-	 * @return the words already cleaning
-	 */
-	public String[] cleanWords(String[] words) {
-		String[] cleanWords = new String[words.length]; 
+    /**
+     * Remove symbols from text.
+     *
+     * @param words the array of words to clean
+     *
+     * @return the words already cleaning
+     */
+    public String[] cleanWords(String[] words) {
+        String[] cleanWords = new String[words.length];
 
-		String pattern = "[^\\p{L}\\p{Nd}]+";
-		int cont = 0;
-		for(String word : words) {
-			cleanWords[cont] = word.replaceAll(pattern, "");
-			cont++;
-		}
+        String pattern = "[^\\p{L}\\p{Nd}]+";
+        int cont = 0;
+        for (String word : words) {
+            cleanWords[cont] = word.replaceAll(pattern, "");
+            cont++;
+        }
 
-		return cleanWords;
-	}
+        return cleanWords;
+    }
 }

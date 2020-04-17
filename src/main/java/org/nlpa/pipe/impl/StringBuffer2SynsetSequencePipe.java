@@ -89,12 +89,12 @@ public class StringBuffer2SynsetSequencePipe extends AbstractPipe implements Sha
     /**
      * The default value of replaceEmoticon property
      */
-    private final static String DEFAULT_REPLACE_EMOTICON_VALUE = "true";
+    private final static String DEFAULT_REPLACE_EMOTICON_VALUE = "false";
     
     /**
      * The default value of replaceEmoji property
      */
-    private final static String DEFAULT_REPLACE_EMOJI_VALUE = "true";
+    private final static String DEFAULT_REPLACE_EMOJI_VALUE = "false";
     
 
     /**
