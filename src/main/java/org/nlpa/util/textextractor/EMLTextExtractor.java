@@ -193,9 +193,9 @@ public class EMLTextExtractor extends TextExtractor {
         StringBuffer sbResult = new StringBuffer();
         ArrayList<Pair<String, InputStream>> parts = new ArrayList<>();
 
-        try {
+        try (FileInputStream fis = new FileInputStream(f)) {
             //Create a mime message
-            MimeMessage mimeMultipart = new MimeMessage(null, new FileInputStream(f));
+            MimeMessage mimeMultipart = new MimeMessage(null, fis);
 
             if (mimeMultipart.getSubject() != null) {
                 sbResult.append(mimeMultipart.getSubject()).append("\n");
@@ -215,12 +215,8 @@ public class EMLTextExtractor extends TextExtractor {
             for (Pair<String, InputStream> i : parts) {
                 String contentType = i.getObj1();
                 if (contentType.toLowerCase().indexOf("text/") == 0) {
-                    InputStream is = null;
-
-                    try {
-                        if (i.getObj2() instanceof InputStream) {
-                            is = (InputStream) i.getObj2();
-
+                    if (i.getObj2() instanceof InputStream) {
+                        try (InputStream is = (InputStream) i.getObj2();) {
                             byte contents[] = new byte[is.available()];
                             is.read(contents);
 
@@ -235,13 +231,9 @@ public class EMLTextExtractor extends TextExtractor {
                                 logger.warn("Charset guesed: " + cm.getName() + " [confidence=" + cm.getConfidence() + "/100]for " + f.getAbsolutePath() + " Content type: " + contentType);
                                 sbResult.append(new String(contents, Charset.forName(cm.getName())));
                             }
-                            is.close();
-                        }
-                    } catch (IOException e) {
-                        logger.warn("Error while processing " + f.getAbsolutePath() + " - " + e.getMessage());
-                    } finally {
-                        if (is != null) {
-                            is.close();
+
+                        } catch (IOException e) {
+                            logger.warn("Error while processing " + f.getAbsolutePath() + " - " + e.getMessage());
                         }
                     }
                 }
