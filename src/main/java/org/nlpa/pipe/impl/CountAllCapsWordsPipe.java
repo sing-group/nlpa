@@ -43,6 +43,18 @@ public class CountAllCapsWordsPipe extends AbstractPipe {
         super(new Class<?>[0], new Class<?>[0]);
 
     }
+    
+    /**
+     * Build a CountAllCapsWordsPipe that stores the number of words with all caps of a text in
+     * the property allCapsProperty
+     *
+     * @param allCapsProperty The name of the property for storing the number of all caps words
+     */
+    public CountAllCapsWordsPipe(String allCapsProperty) {
+        super(new Class<?>[0], new Class<?>[0]);
+
+        this.allCapsProperty = allCapsProperty;
+    }
 
     /**
      * Return the input type included the data attribute of an Instance
@@ -70,7 +82,7 @@ public class CountAllCapsWordsPipe extends AbstractPipe {
      * Establish the name of the property where the number of all caps words
      * will be stored
      *
-     * @param allCapsProperty The name of the property where the number of all
+     * @param allCapsProperty The name of the property for storing the number of all
      * caps words
      */
     @PipeParameter(name = "allCapsProperty", description = "Indicates the property name to store the number of all caps words", defaultValue = DEFAULT_ALL_CAPS_PROPERTY)

@@ -16,6 +16,11 @@ import com.google.auto.service.AutoService;
 
 /**
  * This pipe compute the compression ratio between the original text size and the compressed text size.
+ * 
+ * The compute is based on the next article: 
+ * Ntoulas, & Alexandros, & Najork, & Marc, & Manasse, Mark & Mark, & Fetterly, & Dennis,. (2006).
+ * Detecting Spam Web Pages through Content Analysis. Proceedings of the 15th International World 
+ * Wide Web Conference (WWW). DOI: 10.1145/1135777.1135794. 
  *
  * @author Patricia Martin Perez
  */
@@ -45,6 +50,18 @@ public class ComputeCompressionRatioPipe extends AbstractPipe {
     public ComputeCompressionRatioPipe() {
         super(new Class<?>[0], new Class<?>[0]);
 
+    }
+    
+    /**
+     * Build a ComputeCompressionRatioPipe that stores the compression ratio of a text in
+     * the property compressionRatioProperty
+     *
+     * @param compressionRatioProperty The name of the property for storing the compression ratio
+     */
+    public ComputeCompressionRatioPipe(String compressionRatioProperty) {
+        super(new Class<?>[0], new Class<?>[0]);
+
+        this.compressionRatioProperty = compressionRatioProperty;
     }
 
     /**
@@ -96,28 +113,24 @@ public class ComputeCompressionRatioPipe extends AbstractPipe {
             int originalTextSize = text.getBytes().length;
             int compressedTextSize = 0;
             
-            try {
+            try (
+            		ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+            		GZIPOutputStream zipOutputStream = new GZIPOutputStream(byteOutputStream);
+            	){
             	
-            	ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-				GZIPOutputStream zipOutputStream = new GZIPOutputStream(byteOutputStream);
 				zipOutputStream.write(text.getBytes());
 
-				compressedTextSize = byteOutputStream.size();
-				
-				byteOutputStream.close();
-	            zipOutputStream.close();
-	            
+				compressedTextSize = byteOutputStream.size();	            
 	            
 			} catch (IOException e) {
 				logger.error("Exception output streams " + e.getMessage());
 			}
             
             if(originalTextSize != 0) {
-            	 ratio = (double) compressedTextSize / (double) originalTextSize;
+            	 ratio = (double) originalTextSize / (double) compressedTextSize;
             }
             
-            double ratioDecimalFormat = (double) Math.round(ratio * 100) / 100;
-            carrier.setProperty(compressionRatioProperty, ratioDecimalFormat);
+            carrier.setProperty(compressionRatioProperty, ratio);
             
         } else {
             logger.error("Data should be a StringBuffer when processing " + carrier.getName() + " but is a "

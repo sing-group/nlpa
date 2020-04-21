@@ -81,7 +81,7 @@ public class ComputeCompressionRatioPipeTest {
     @Test
     public void testPipe() {
         Instance expResult = new Instance(new StringBuffer(data), null, name, source);
-        expResult.setProperty("compressionRatio", 0.08);
+        expResult.setProperty("compressionRatio", 12.0);
 
         Instance result = instance.pipe(carrier);
         assertTrue(expResult.equals(result));
