@@ -31,8 +31,8 @@ import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
 
 /**
- * This pipe adds the wordCounter property that is computed by counting the number of words
- * of a stringbuffer included in the data of the Instance
+ * This pipe adds the wordCounter property that is computed by counting the
+ * number of words of a stringbuffer included in the data of the Instance
  *
  * @author María Novo
  */
@@ -53,32 +53,33 @@ public class WordCounterFromStringBufferPipe extends AbstractPipe {
     /**
      * The default value of the regex to split the text
      */
-    public static final String  DEFAULT_REGEX_VALUE = "([\\W\\s]+)";
+    public static final String DEFAULT_REGEX_VALUE = "([\\W\\s]+)";
 
     /**
      * The property to store the number of words in the text
      */
     private String wordCounterProp = DEFAULT_WORD_COUNTER_PROPERTY;
 
-     /**
+    /**
      * The property to store the regex
      */
     private String regex = DEFAULT_REGEX_VALUE;
 
     /**
-     * Default constructor. Build a WordCounterFromStringBufferPipe that stores the umber of words in the
-     * default property ("word-counter")
+     * Default constructor. Build a WordCounterFromStringBufferPipe that stores
+     * the umber of words in the default property ("word-counter")
      */
     public WordCounterFromStringBufferPipe() {
         this(DEFAULT_WORD_COUNTER_PROPERTY);
-        
+
     }
 
     /**
-     * Build a WordCounterFromStringBufferPipe that stores the number of words in the
-     * property indicated by wordCounterProp parameter
+     * Build a WordCounterFromStringBufferPipe that stores the number of words
+     * in the property indicated by wordCounterProp parameter
      *
-     * @param wordCounterProp the name of the property to store the number of words
+     * @param wordCounterProp the name of the property to store the number of
+     * words
      */
     public WordCounterFromStringBufferPipe(String wordCounterProp) {
         super(new Class<?>[0], new Class<?>[0]);
@@ -87,10 +88,11 @@ public class WordCounterFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Build a WordCounterFromStringBufferPipe that stores the number of words in the
-     * property indicated by wordCounterProp parameter
+     * Build a WordCounterFromStringBufferPipe that stores the number of words
+     * in the property indicated by wordCounterProp parameter
      *
-     * @param wordCounterProp the name of the property to store the number of words
+     * @param wordCounterProp the name of the property to store the number of
+     * words
      * @param regex The regex used to identify spaces
      */
     public WordCounterFromStringBufferPipe(String wordCounterProp, String regex) {
@@ -99,8 +101,6 @@ public class WordCounterFromStringBufferPipe extends AbstractPipe {
         this.regex = regex;
         this.wordCounterProp = wordCounterProp;
     }
-
-    
 
     /**
      * Return the input type included the data attribute of an Instance
@@ -125,10 +125,11 @@ public class WordCounterFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
-     * Establish the name of the property to store the number of words in the text
-     *
-     * @param wordCounterProp the name of the property to store the number of words in the
+     * Establish the name of the property to store the number of words in the
      * text
+     *
+     * @param wordCounterProp the name of the property to store the number of
+     * words in the text
      */
     @PipeParameter(name = "wordcounterpropname", description = "Indicates the property name to store the number of words in the text", defaultValue = DEFAULT_WORD_COUNTER_PROPERTY)
     public void setWordCounterProp(String wordCounterProp) {
@@ -145,9 +146,28 @@ public class WordCounterFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
+     * Establish the regex used to split words
+     *
+     * @param regex the regex used to split words text
+     */
+    @PipeParameter(name = "regex", description = "Indicates the regex used to split words", defaultValue = DEFAULT_REGEX_VALUE)
+    public void setRegexProp(String regex) {
+        this.regex = regex;
+    }
+
+    /**
+     * Returns the regex used to split words
+     *
+     * @return the regex used to split words
+     */
+    public String getRegexProp() {
+        return this.regex;
+    }
+
+    /**
      * Process an Instance. This method takes an input Instance, calculates the
-     * number of words of the text, and returns it. This is the method by which all pipes
-     * are eventually run.
+     * number of words of the text, and returns it. This is the method by which
+     * all pipes are eventually run.
      *
      * @param carrier Instance to be processed.
      * @return Instance processed
@@ -157,7 +177,7 @@ public class WordCounterFromStringBufferPipe extends AbstractPipe {
         if (carrier.getData() instanceof StringBuffer) {
             StringBuffer sb = (StringBuffer) carrier.getData();
             String[] words = sb.toString().split(this.regex);
-            
+
             carrier.setProperty(wordCounterProp, words.length);
         } else {
             carrier.setProperty(wordCounterProp, 0);
