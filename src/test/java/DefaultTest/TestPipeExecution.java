@@ -18,7 +18,7 @@ import org.nlpa.pipe.impl.StringBuffer2SynsetSequencePipe;
 import org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe;
 import org.nlpa.pipe.impl.MeasureLengthFromStringBufferPipe;
 import org.nlpa.pipe.impl.InterjectionFromStringBufferPipe;
-import org.nlpa.pipe.impl.ComputePolarityFromStringBufferPipe;
+import org.nlpa.pipe.impl.ComputePolarityFromStringBufferPipe_;
 import org.nlpa.pipe.impl.NERFromStringBufferPipe;
 import org.nlpa.pipe.impl.StoreFileExtensionPipe;
 import org.nlpa.pipe.impl.FindHashtagInStringBufferPipe;
@@ -27,8 +27,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.SerialPipes;
-import org.bdp4j.transformers.Date2MillisTransformer;
-import org.bdp4j.transformers.Enum2IntTransformer;
+import org.bdp4j.transformers.attribute.Date2MillisTransformer;
+import org.bdp4j.transformers.attribute.Enum2IntTransformer;
 import org.bdp4j.types.Instance;
 import org.bdp4j.types.Transformer;
 import org.bdp4j.util.Configurator;
@@ -121,7 +121,7 @@ public class TestPipeExecution {
                 new SlangFromStringBufferPipe(),
                 new InterjectionFromStringBufferPipe(),
                 new StopWordFromStringBufferPipe(),
-                new ComputePolarityFromStringBufferPipe(),
+                new ComputePolarityFromStringBufferPipe_(),
                 new NERFromStringBufferPipe(),
                 new TeeCSVFromStringBufferPipe("output.csv", true),
                 new StringBuffer2SynsetSequencePipe(),

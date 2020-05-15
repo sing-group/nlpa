@@ -69,7 +69,7 @@ public class TokenSequence2FeatureVectorPipe extends AbstractPipe {
     /**
      * Indicates the group strategy to create the featureVector
      */
-    private SequenceGroupingStrategy groupStrategy = SequenceGroupingStrategy.FREQUENCY;
+    private SequenceGroupingStrategy groupStrategy = SequenceGroupingStrategy.COUNT;
 
     /**
      * Return the input type included the data attribute of a Instance

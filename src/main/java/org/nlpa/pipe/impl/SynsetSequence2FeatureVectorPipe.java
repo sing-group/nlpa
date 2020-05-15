@@ -70,7 +70,7 @@ public class SynsetSequence2FeatureVectorPipe extends AbstractPipe {
     /**
      * Indicates the grouping strategy to create the synsetFeatureVector
      */
-    private SequenceGroupingStrategy groupStrategy = SequenceGroupingStrategy.FREQUENCY;
+    private SequenceGroupingStrategy groupStrategy = SequenceGroupingStrategy.COUNT;
 
     /**
      * Return the input type included the data attribute of an Instance

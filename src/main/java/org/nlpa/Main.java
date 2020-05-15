@@ -42,9 +42,9 @@ import java.util.List;
 import java.util.Map;
 //import org.bdp4j.dataset.CSVDatasetReader;
 //import org.bdp4j.transformers.CheckVoidTransformer;
-import org.bdp4j.transformers.Date2MillisTransformer;
-import org.bdp4j.transformers.Enum2IntTransformer;
-import org.bdp4j.transformers.Url2BinaryTransformer;
+import org.bdp4j.transformers.attribute.Date2MillisTransformer;
+import org.bdp4j.transformers.attribute.Enum2IntTransformer;
+import org.bdp4j.transformers.attribute.Url2BinaryTransformer;
 import org.bdp4j.types.Transformer;
 
 /**

@@ -6,8 +6,8 @@ import org.bdp4j.types.Transformer;
 import java.util.HashMap;
 import java.util.Map;
 import org.bdp4j.dataset.CSVDatasetReader;
-import org.bdp4j.transformers.Date2MillisTransformer;
-import org.bdp4j.transformers.Enum2IntTransformer;
+import org.bdp4j.transformers.attribute.Date2MillisTransformer;
+import org.bdp4j.transformers.attribute.Enum2IntTransformer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
