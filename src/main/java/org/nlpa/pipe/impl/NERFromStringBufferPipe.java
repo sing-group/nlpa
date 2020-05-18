@@ -311,7 +311,13 @@ public class NERFromStringBufferPipe extends AbstractPipe {
 
                         String propertyValue = em.text();
                         if (identifiedEntitiesProperty.contains(property)) {
-                            hmProperties.put(property, propertyValue);
+                            String propertyExistingValue = hmProperties.get(property);
+                            if (propertyExistingValue != null) {
+                                String newPropertyValue = propertyExistingValue + " -- " + propertyValue;
+                                hmProperties.put(property, newPropertyValue);
+                            } else {
+                                hmProperties.put(property, propertyValue);
+                            }
                         }
 
                     }
