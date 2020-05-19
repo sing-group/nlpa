@@ -67,9 +67,8 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     private static final Logger logger = LogManager.getLogger(FindEmojiInStringBufferPipe.class);
 
     /**
-     * A hashset of emojis in english
+     * A hashset of emojis in different languages
      */
-    // Cambiar mapa de Strings a Object porque es un array asociativo
     private static final HashMap<String, HashMap<String, Trio<Pattern, String, Double>>> emojiDictionary = new HashMap<>();
     static {
         for (String i : new String[] { "/emoji-data/emojisID.de.json",

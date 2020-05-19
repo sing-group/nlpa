@@ -154,6 +154,7 @@ public class Main {
             new MeasureLengthFromStringBufferPipe("length_after_html_drop"), 
             new GuessLanguageFromStringBufferPipe(),
             new FindEmojiInStringBufferPipe("emojiTest", false, GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY, true, true),
+            new FindEmoticonInStringBufferPipe("emoticonTest", false, GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY, true, true),
             new StringBufferToLowerCasePipe(), 
             new InterjectionFromStringBufferPipe(),
             new StopWordFromStringBufferPipe(),

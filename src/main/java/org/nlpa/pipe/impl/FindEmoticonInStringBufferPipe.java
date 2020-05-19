@@ -18,9 +18,11 @@
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
- */ 
+ */
 
 package org.nlpa.pipe.impl;
+
+import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 import com.google.auto.service.AutoService;
 import org.apache.logging.log4j.LogManager;
@@ -30,11 +32,20 @@ import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
 import org.bdp4j.util.Pair;
+import org.nlpa.util.Trio;
 import org.bdp4j.util.EBoolean;
 
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
 import org.bdp4j.pipe.Pipe;
 
 /**
@@ -42,6 +53,7 @@ import org.bdp4j.pipe.Pipe;
  * should contain a StringBuffer
  *
  * @author José Ramón Méndez
+ * @author Rodrigo Currás Ferradás
  */
 @AutoService(Pipe.class)
 @PropertyComputingPipe()
@@ -53,20 +65,70 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
     private static final Logger logger = LogManager.getLogger(FindEmoticonInStringBufferPipe.class);
 
     /**
-     * Pattern for detecting emoticons
+     *  A hashset of emoticons in different languages.
+     *  The data structure includes polarity and sysnsetID for each emoticon
      */
-    private static final Pattern emoticonPattern = Pattern.compile("(\\:\\w+\\:|\\<[\\/\\\\]?3|[\\(\\)\\\\\\D|\\*\\$][\\-\\^]?[\\:\\;\\=]|[\\:\\;\\=B8][\\-\\^]?[3DOPp\\@\\$\\*\\\\\\)\\(\\/\\|])(?=\\s|[\\!\\.\\?]|$)");
+    private static final HashMap<String, HashMap<String, Trio<Pattern, String, Double>>> emoticonDictionary = new HashMap<>();
+    static {
+        for (String i : new String[] { "/emoticon-data/emoticonsID.de.json",
+                                       "/emoticon-data/emoticonsID.en.json",
+                                       "/emoticon-data/emoticonsID.es.json",
+                                       "/emoticon-data/emoticonsID.fr.json",
+                                       "/emoticon-data/emoticonsID.it.json",
+                                       "/emoticon-data/emoticonsID.pt.json",
+                                       "/emoticon-data/emoticonsID.ru.json"
+                                    }) {
+        String lang = i.substring(27, 29).toUpperCase();
+        System.out.println("Lang= "+ lang);
 
+        try{
+
+            System.setProperty("file.encoding", "UTF-16LE");
+            InputStream is = FindEmojiInStringBufferPipe.class.getResourceAsStream(i);
+            JsonReader rdr = Json.createReader(is);
+            JsonObject jsonObject = rdr.readObject();
+            rdr.close();
+
+            HashMap<String, Trio<Pattern, String, Double>> dict = new HashMap<>();
+            for(String emoticon: jsonObject.keySet()){
+                dict.put(emoticon,
+                        new Trio<>(Pattern.compile(Pattern.quote(emoticon)),
+                                jsonObject.getJsonObject(emoticon).getString("synsetID"),
+                                jsonObject.getJsonObject(emoticon).getJsonNumber("polarity").doubleValue()));
+            }
+            emoticonDictionary.put(lang, dict);
+
+        }catch (Exception e) {
+                logger.error("Exception processing: " + i + " message " + e.getMessage());
+                e.printStackTrace();
+            }                        
+        }
+    }
+
+    /**
+     * The name of the property where the language is stored
+     */
+    private String langProp = DEFAULT_LANG_PROPERTY;
         
     /**
      * The default value for removed emoticons
      */
-    public static final String DEFAULT_REMOVE_EMOTICON = "yes";
+    public static final String DEFAULT_REMOVE_EMOTICON = "no";
 
     /**
      * The default property name to store emoticons
      */
     public static final String DEFAULT_EMOTICON_PROPERTY = "emoticon";
+
+    /**
+     * The default value for replaced emoticons
+     */
+    public static final String DEFAULT_REPLACE_EMOTICON = "yes";
+
+    /**
+     * The default value for computing polarity
+     */
+    public static final String DEFAULT_CALCULATE_POLARITY = "yes";
 
     /**
      * Indicates if emoticons should be removed from data
@@ -77,6 +139,16 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
      * The property name to store emoticons
      */
     private String emoticonProp = DEFAULT_EMOTICON_PROPERTY;
+
+    /**
+     * Indicates if emoticons should be replaced 
+     */
+    private boolean replaceEmoticon = EBoolean.getBoolean(DEFAULT_REPLACE_EMOTICON);
+
+    /**
+     * Indicates if polarity should be calculated
+     */
+    private boolean calculatePolarity = EBoolean.getBoolean(DEFAULT_CALCULATE_POLARITY);
 
     /**
      * Return the input type included the data attribute of an Instance
@@ -119,6 +191,32 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
         this.removeEmoticon = removeEmoticon;
     }
 
+    @PipeParameter(name="replaceEmoticon", description = "Indicates if emoticons should be replaced or not", defaultValue = DEFAULT_REPLACE_EMOTICON)
+    public void setReplaceEmoticon(String replaceEmoticon){
+        this.replaceEmoticon = EBoolean.getBoolean(replaceEmoticon);
+    }
+
+    /**
+     * Indicates if emoticons should be replaced
+     * @param replaceEmoticon True if emoticons should be replaced
+     */
+    public void setReplaceEmoticon(boolean replaceEmoticon){
+        this.replaceEmoticon = replaceEmoticon;
+    }
+
+    @PipeParameter(name="calculatePolarity", description="Indicates if polarity of emoticons should be calculated or not", defaultValue = DEFAULT_CALCULATE_POLARITY)
+    public void setCalculatePolarity(String calculatePolarity){
+        this.calculatePolarity = EBoolean.getBoolean(calculatePolarity);
+    }
+
+    /**
+     * Indicates if emoticon polarity should be calculated
+     * @param calculatePolarity True if polarity should be calculated
+     */
+    public void setCalculatePolarity(boolean calculatePolarity){
+        this.calculatePolarity = calculatePolarity;
+    }
+
     /**
      * Checks whether emoticons should be removed
      *
@@ -126,6 +224,23 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
      */
     public boolean getRemoveEmoticon() {
         return this.removeEmoticon;
+    }
+
+    /**
+     * Checks wether emoticons should be replaced
+     * 
+     * @return True if emoticons should be replaced
+     */
+    public boolean getReplaceEmoticon(){
+        return this.replaceEmoticon;
+    }
+
+    /**
+     * Checks wether emoticons polarity should be calculated
+     * @return True if polarity should be calculated
+     */
+    public boolean isCalculatePolarity(){
+        return this.calculatePolarity;
     }
 
     /**
@@ -147,26 +262,14 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
         return this.emoticonProp;
     }
 
-    /**
-     * Will return true if s contains emoticons.
-     *
-     * @param s String to test
-     * @return true if string contains emoticon
-     */
-    public static boolean isEmoticon(String s) {
-        boolean ret = false;
-        if (s != null) {
-            ret = emoticonPattern.matcher(s).find();
-        }
-        return ret;
-    }
 
     /**
      * Default constructor. Construct a FindEmoticonInStringBufferPipe instance with the default
      * configuration value
      */
     public FindEmoticonInStringBufferPipe() {
-        this(DEFAULT_EMOTICON_PROPERTY, EBoolean.getBoolean(DEFAULT_REMOVE_EMOTICON));
+        this(DEFAULT_EMOTICON_PROPERTY, EBoolean.getBoolean(DEFAULT_REMOVE_EMOTICON), DEFAULT_LANG_PROPERTY,
+         EBoolean.getBoolean(DEFAULT_REPLACE_EMOTICON), EBoolean.getBoolean(DEFAULT_CALCULATE_POLARITY));
     }
 
     /**
@@ -175,12 +278,17 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
      *
      * @param emoticonProp The name of the property to store emoticons
      * @param removeEmoticon tells if emoticons should be removed
+     * @param replaceEmoticon tells if emoticons should be replaced
+     * @param calculatePolarity tells if polarity should be calculated
      */
-    public FindEmoticonInStringBufferPipe(String emoticonProp, boolean removeEmoticon) {
-        super(new Class<?>[0],new Class<?>[]{FindHashtagInStringBufferPipe.class});
+    public FindEmoticonInStringBufferPipe(String emoticonProp, boolean removeEmoticon,
+     String lang, boolean replaceEmoticon, boolean calculatePolarity) {
+        super(new Class<?>[] { GuessLanguageFromStringBufferPipe.class },new Class<?>[]{FindHashtagInStringBufferPipe.class});
 
         this.emoticonProp = emoticonProp;
         this.removeEmoticon = removeEmoticon;
+        this.replaceEmoticon = replaceEmoticon;
+        this.calculatePolarity = calculatePolarity;
     }
 
     /**
@@ -196,9 +304,79 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
         if (carrier.getData() instanceof StringBuffer) {
 
             String data = carrier.getData().toString();
-            Stack<Pair<Integer, Integer>> replacements = new Stack<>();
-
             String value = "";
+            String lang = (String)carrier.getProperty(langProp);
+
+            System.setProperty("file.encoding", "UTF-16LE");
+            try (FileOutputStream fw=new FileOutputStream("xxEmoti.txt")){
+                fw.write(data.getBytes("UTF-16LE"));
+                fw.flush();
+            }catch(Exception e){
+                System.err.println(e.getMessage());
+            }
+
+            HashMap<String, Trio<Pattern, String, Double>> dict = emoticonDictionary.get(lang);
+
+            if (dict == null){
+                return carrier; // When there is not a dictionary for the language
+            }
+
+            StringBuffer sb = (StringBuffer) carrier.getData();
+            if(replaceEmoticon){
+                for(String emoticon: dict.keySet()){
+                    Pattern pat = dict.get(emoticon).getObj1();
+                    Matcher match = pat.matcher(sb);
+                    int last = 0; 
+
+                    while(match.find(last)){
+                        last = match.start(0) + 1;
+                        // Now replaces emoji pattern by its meaning
+                        value += emoticon;
+                        sb = sb.replace(match.start(0), match.end(0), dict.get(emoticon).getObj2());
+                    }
+
+                }
+            }else if(removeEmoticon){
+                for(String emoticon: dict.keySet()){
+                    Pattern pat = dict.get(emoticon).getObj1();
+                    Matcher match = pat.matcher(sb);
+                    int last = 0; 
+
+                    while(match.find(last)){
+                        last = match.start(0) + 1;
+                        // Now replaces emoji pattern by its meaning
+                        value += emoticon;
+                        sb = sb.replace(match.start(0), match.end(1), "");
+                    }
+
+                }
+            }
+
+            carrier.setProperty(emoticonProp, value);
+
+            if(calculatePolarity){
+                double score = 0;
+                int numEmoticons = 0;
+
+                for(String emoticon: dict.keySet()){
+                    Pattern emoticonInPattern = dict.get(emoticon).getObj1();
+                    Matcher match = emoticonInPattern.matcher(data);
+                    int last = 0;
+                    while (match.find(last)) {
+                        last = match.start(0) + 1;
+                        score += dict.get(emoticon).getObj3();
+                        numEmoticons++;
+                        System.out.println("score=" + score);
+                    }
+
+                }
+                //Calculate arithmetic mean and store in a property
+                Double mean = score / (new Double(numEmoticons));
+                carrier.setProperty("polarity", mean);
+            }
+            /*
+           
+            Stack<Pair<Integer, Integer>> replacements = new Stack<>();
 
             if (isEmoticon(data)) {
                 Matcher m = emoticonPattern.matcher(data);
@@ -224,7 +402,11 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
                 logger.info("Emoticon not found for instance " + carrier.toString());
             }
 
-            carrier.setProperty(emoticonProp, value);
+
+                        carrier.setProperty(emoticonProp, value);
+            */
+
+
 
         }else{
           logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
