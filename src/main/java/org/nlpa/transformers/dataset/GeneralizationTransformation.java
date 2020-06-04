@@ -26,23 +26,35 @@ import org.apache.logging.log4j.Logger;
 import org.bdp4j.util.Pair;
 
 /**
- *
+ * This class contains all the methods necessary for the 
+ * reduction of dimensionality of a dataset based on the synsets it contains. 
+ * This is achieved through the generalization of similar synsets.
+ * Two synsets are considered similar if they are not too far away from each other
+ * and they both have a similar ham/spam rate (>= 90% or <= 10%)
+ * 
  * @author Javier Quintas Bergantiño
  */
 public class GeneralizationTransformation extends DatasetTransformer {
+
+    static final File fileOne = new File("outputsyns_file.map");
 
     static BabelNet bn = BabelNet.getInstance();
 
     /**
      * Map used to save the hypernyms to which synset pairs will generalize
      */
-    static Map<String, String> generalizeTo = new HashMap<String, String>();
-    static Map<String, String> auxGeneralizeTo = new HashMap<String, String>();
+    static Map<String, String> generalizeTo = new HashMap<>();
+    static Map<String, String> auxGeneralizeTo = new HashMap<>();
 
     /**
      * Max relationship degree that we will admit
      */
-    static int maxDegree = 5;
+    static int maxDegree;
+
+    /**
+     * Combine operator to use when joining attributes
+     */
+    static int combineOperator;
 
     /**
      * Map containing synsets as keys and their list of hypernyms as values
@@ -58,8 +70,8 @@ public class GeneralizationTransformation extends DatasetTransformer {
     /**
      * Auxiliar map used to save the relationship degree between two synsets
      */
-    static Map<Pair<String, String>, Integer> degreeMap = new HashMap<Pair<String, String>, Integer>();
-    static Map<String, List<String>> toGeneralizePrint = new HashMap<String, List<String>>();
+    static Map<Pair<String, String>, Integer> degreeMap = new HashMap<>();
+    static Map<String, List<String>> toGeneralizePrint = new HashMap<>();
 
     /**
      * For logging purposes
@@ -75,10 +87,19 @@ public class GeneralizationTransformation extends DatasetTransformer {
     @Override
     protected Dataset transformTemplate(Dataset dataset) {
 
+        Scanner scan = new Scanner(System.in);
+        logger.info("MaxDegree: ");
+        maxDegree = scan.nextInt();
+
+        do{
+            logger.info("Combine operator [1 -> sum, 2 -> or]: ");
+            combineOperator = scan.nextInt();
+        }while(combineOperator <= 0 || combineOperator >= 3);
+
         long startTime = System.currentTimeMillis();
 
         Dataset originalDataset = dataset;
-        System.out.println("Dataset cargado");
+        logger.info("Dataset loaded");
 
         //Filter Dataset columns
         List<String> synsetList = originalDataset.filterColumnNames("^bn:");
@@ -86,9 +107,9 @@ public class GeneralizationTransformation extends DatasetTransformer {
         logger.info("Original synset: {0}", synsetList.size());
 
         //Create a file that stores all the hypernyms on a map
-        cachedHypernyms = read();
+        cachedHypernyms = readMap();
         createCache(cachedHypernyms, synsetList);
-        cachedHypernyms = read();
+        cachedHypernyms = readMap();
 
         Map<String, List<String>> toGeneralize = new HashMap<>();
 
@@ -104,16 +125,15 @@ public class GeneralizationTransformation extends DatasetTransformer {
             //Generalize synsets with those that appear on its hypernym list and distance <= maxDegree
             originalDataset = generalizeDirectly(synsetList, originalDataset);
             synsetList = originalDataset.filterColumnNames("^bn:");
-            logger.info("Synsets generalized directly");
 
             toGeneralize.putAll(evaluate(originalDataset, synsetList, cachedHypernyms));
             for (String s : toGeneralize.keySet()) {
                 toGeneralizePrint.put(s, toGeneralize.get(s));
             }
-            System.out.println();
+            logger.info("");
 
             originalDataset = generalize(originalDataset, toGeneralize);
-            logger.info("Synsets generalizados");
+            logger.info("Synsets generalized");
 
             synsetList = originalDataset.filterColumnNames("^bn:");
 
@@ -129,10 +149,8 @@ public class GeneralizationTransformation extends DatasetTransformer {
     }
 
     /**
-     *
-     * ESP: Recibe una lista de synsets y comprueba si están guardados en disco,
-     * si no, los añade al mapa con una lista de sus respectivos hiperónimos
-     * ENG: Receives a synset list and checks if they are already stored, if
+     * 
+     * Receives a synset list and checks if they are already stored, if
      * not, they get added to the map along with a list of its hypernyms
      *
      * @param cachedHypernyms contains a map with <synsets, hypernyms> already
@@ -157,14 +175,12 @@ public class GeneralizationTransformation extends DatasetTransformer {
         }
 
         saveMap(cachedBabelUtils.getMapOfHypernyms());
-        //System.out.println("Saved elements: " + cachedBabelUtils.getMapOfHypernyms().size());
 
     }
 
     /**
      *
-     * ESP: Añade un synset nuevo al mapa guardado en disco ENG: Adds a new
-     * synset to the map saved in disk
+     * Adds a new synset to the map saved in disk
      *
      * @param cachedHypernyms contains a map with <synsets, hypernyms> already
      * saved in disk
@@ -189,12 +205,12 @@ public class GeneralizationTransformation extends DatasetTransformer {
 
     /**
      *
-     * ESP: algoritmo de ordenación ENG: sorting algorithm
+     * Sorting algorithm
      *
      * @param arr the array to sort
      * @param begin the index from which we will be sorting
      * @param end the index of the final element we will be sorting
-     * @return
+     * @return the sorted array
      */
     public static String[] quickSort(String[] arr, int begin, int end) {
         if (begin < end) {
@@ -208,8 +224,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
 
     /**
      *
-     * ESP: función necesaria para el correcto funcionamiento de quicksort ENG:
-     * essential function needed for quicksort algorithm
+     * Essential function needed for quicksort algorithm
      */
     private static int partition(String[] arr, int begin, int end) {
         String pivot = arr[end];
@@ -234,8 +249,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
 
     /**
      *
-     * ESP: Obtener los hiperónimos de un synset ENG: Obtains the hypernyms of a
-     * synset
+     * Obtains the hypernyms of a synset
      *
      * @param synset the synset from which we want to get its hypernyms
      * @return list of its hypernyms
@@ -247,7 +261,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
             toRet = cachedHypernyms.get(synset);
         } else {
             addNewCachedSynset(cachedHypernyms, synset);
-            cachedHypernyms = read();
+            cachedHypernyms = readMap();
             toRet = cachedHypernyms.get(synset);
         }
 
@@ -256,14 +270,12 @@ public class GeneralizationTransformation extends DatasetTransformer {
 
     /**
      *
-     * ESP: Generaliza aquellos synsets con otros que esten en su lista de
-     * hiperónimos y con una distancia límite indicada por maxDegree ENG:
      * Generalizes synsets with those that appear in its hypernyms list with a
      * distance less or equal to maxDegree
      *
      * @param synsetList the list of synsets in the dataset
      * @param originalDataset the original dataset
-     * @return
+     * @return dataset that had its vertical relationships generalized
      */
     public static Dataset generalizeDirectly(List<String> synsetList, Dataset originalDataset) {
         List<String> usedSynsets = new ArrayList<>();
@@ -322,7 +334,11 @@ public class GeneralizationTransformation extends DatasetTransformer {
                                 listAttributeNameToJoin.add(s1);
                                 listAttributeNameToJoin.add(s2);
 
-                                originalDataset.joinAttributes(listAttributeNameToJoin, s2, Dataset.COMBINE_SUM, !aux);
+                                switch(combineOperator){
+                                    case 1: originalDataset.joinAttributes(listAttributeNameToJoin, s2, Dataset.COMBINE_SUM, !aux);
+                                    break;
+                                    case 2: originalDataset.joinAttributes(listAttributeNameToJoin, s2, Dataset.COMBINE_OR, !aux);
+                                }
 
                                 if (!usedSynsets.contains(s1)) {
                                     usedSynsets.add(s1);
@@ -342,7 +358,12 @@ public class GeneralizationTransformation extends DatasetTransformer {
                                 listAttributeNameToJoin.add(s2);
                                 listAttributeNameToJoin.add(s1);
 
-                                originalDataset.joinAttributes(listAttributeNameToJoin, s1, Dataset.COMBINE_SUM, !aux);
+                                switch(combineOperator){
+                                    case 1: originalDataset.joinAttributes(listAttributeNameToJoin, s1, Dataset.COMBINE_SUM, !aux);
+                                    break;
+                                    case 2: originalDataset.joinAttributes(listAttributeNameToJoin, s1, Dataset.COMBINE_OR, !aux);
+                                    break;
+                                }
 
                                 keepGeneralizing = true;
 
@@ -358,14 +379,13 @@ public class GeneralizationTransformation extends DatasetTransformer {
                 }
             }
         }
-        System.out.println("");
+        logger.info("");
         return originalDataset;
     }
 
     /**
      *
-     * ESP: Determina el grado de parentesco entre dos synsets ENG: Determines
-     * the relationship degree between two synsets
+     * Determines the relationship degree between two synsets
      *
      * @param synset1 synset that we want to evaluate
      * @param synset2 synset that we want to evaluate
@@ -403,16 +423,14 @@ public class GeneralizationTransformation extends DatasetTransformer {
 
     /**
      *
-     * ESP: Función que evalúa relaciones más complejas entre dos synsets y
-     * decide si deben ser generalizados ENG: Function that evaluates more
-     * complex relations between two synsets and decides if they should be
-     * generalized
+     * Function that evaluates more
+     * complex relations between two synsets and decides if they should be generalized
      *
      * @param originalDataset the original dataset that we are working with
      * @param synsetList list of all the synsets in the dataset
      * @param cachedHypernyms map containing every synset and its hypernyms
      * (previously read from disk)
-     * @return
+     * @return map containing a synset as key and a list of synsets that should be generalized with it as value
      *
      */
     public static Map<String, List<String>> evaluate(Dataset originalDataset, List<String> synsetList, Map<String, List<String>> cachedHypernyms) {
@@ -488,8 +506,8 @@ public class GeneralizationTransformation extends DatasetTransformer {
     }
 
     /**
-     * ESP: función utilizada para reducir los synsets del dataset original ENG:
-     * used to reduce the number of synsets on the original dataset
+     * 
+     * Function used to reduce the number of synsets on the original dataset
      *
      * @param originalDataset the original dataset that we want to reduce
      * @param toGeneralize map of synsets that we will be generalizing
@@ -505,14 +523,20 @@ public class GeneralizationTransformation extends DatasetTransformer {
             listAttributeNameToJoin.addAll(toGeneralize.get(s1));
             String newAttributeName = generalizeTo.get(s1);
 
-            logger.info("Nuevo nombre de atributo: {0}", newAttributeName);
+            logger.info("New attribute name: {0}", newAttributeName);
 
             listAttributeNameToJoin.add(s1);
 
             logger.info("List to reduce: {0}", listAttributeNameToJoin);
 
             List<String> synsetList = originalDataset.filterColumnNames("^bn:");
-            originalDataset.joinAttributes(listAttributeNameToJoin, newAttributeName, Dataset.COMBINE_SUM, synsetList.contains(newAttributeName));
+            
+            switch(combineOperator){
+                case 1:  originalDataset.joinAttributes(listAttributeNameToJoin, newAttributeName, Dataset.COMBINE_SUM, synsetList.contains(newAttributeName));
+                break;
+                case 2:  originalDataset.joinAttributes(listAttributeNameToJoin, newAttributeName, Dataset.COMBINE_OR, synsetList.contains(newAttributeName));
+                break;
+            }
 
             logger.info("\n");
         }
@@ -524,21 +548,19 @@ public class GeneralizationTransformation extends DatasetTransformer {
 
     /**
      *
-     * ESP: Lee desde disco un archivo ".map" de tipo <String, List<String>>
-     * ENG: Reads a ".map" file from disk with type <String, List<String>>
+     * Reads a ".map" file from disk with type <String, List<String>>
      *
      * @return A map containing every synset (key) and a list of its hypernyms
      * (values)
      */
-    public static Map<String, List<String>> read() {
+    public static Map<String, List<String>> readMap() {
         try {
             //Poner aquí el nombre del fichero a cargar. Extensión ".map"
-            File toRead = new File("outputsyns_youtube_old.map");
-            if (!toRead.exists()) {
+            if (!fileOne.exists()) {
                 return new HashMap<>();
             }
             HashMap<String, List<String>> mapInFile;
-            try (FileInputStream fis = new FileInputStream(toRead);
+            try (FileInputStream fis = new FileInputStream(fileOne);
                     ObjectInputStream ois = new ObjectInputStream(fis)) {
                 mapInFile = (HashMap<String, List<String>>) ois.readObject();
             }
@@ -552,15 +574,13 @@ public class GeneralizationTransformation extends DatasetTransformer {
 
     /**
      *
-     * ESP: Para guardar el mapa de los synsets y sus hiperónimos en el disco
-     * ENG: Saves a map containing synsets and their hypernyms in a file
+     * Saves a map containing synsets and their hypernyms in a file
      *
      * @param mapOfHypernyms Map containing every synset (key) and a list of its
      * hypernyms (values)
      */
     public static void saveMap(Map<String, List<String>> mapOfHypernyms) {
         try {
-            File fileOne = new File("outputsyns_youtube_old.map");
             try (FileOutputStream fos = new FileOutputStream(fileOne);
                     ObjectOutputStream oos = new ObjectOutputStream(fos);) {
 
