@@ -36,7 +36,7 @@ import org.bdp4j.util.Pair;
  */
 public class GeneralizationTransformation extends DatasetTransformer {
 
-    static final File fileOne = new File("outputsyns_file.map");
+    static final File file = new File("outputsyns_file.map");
 
     static BabelNet bn = BabelNet.getInstance();
 
@@ -50,6 +50,8 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * Max relationship degree that we will admit
      */
     static int maxDegree;
+
+    static int generateFiles;
 
     /**
      * Combine operator to use when joining attributes
@@ -96,6 +98,11 @@ public class GeneralizationTransformation extends DatasetTransformer {
             combineOperator = scan.nextInt();
         }while(combineOperator <= 0 || combineOperator >= 3);
 
+        do{
+            logger.info("Generate files? [1 -> yes, 2 -> no]: ");
+            generateFiles = scan.nextInt();
+        }while (generateFiles <= 0 || generateFiles >= 3);
+
         long startTime = System.currentTimeMillis();
 
         Dataset originalDataset = dataset;
@@ -140,6 +147,12 @@ public class GeneralizationTransformation extends DatasetTransformer {
             toGeneralize.clear();
 
         } while (keepGeneralizing);
+
+        if(generateFiles == 1){
+            originalDataset.setOutputFile("relationshipDegree_" + maxDegree + ".csv");
+            originalDataset.generateCSV();
+            String arff = originalDataset.generateARFFWithComments(null, "relationshipDegree_" + maxDegree + ".arff");
+        }
 
         long endTime = System.currentTimeMillis();
         logger.info("Execution time in milliseconds: {0}", endTime - startTime);
@@ -556,11 +569,11 @@ public class GeneralizationTransformation extends DatasetTransformer {
     public static Map<String, List<String>> readMap() {
         try {
             //Poner aquí el nombre del fichero a cargar. Extensión ".map"
-            if (!fileOne.exists()) {
+            if (!file.exists()) {
                 return new HashMap<>();
             }
             HashMap<String, List<String>> mapInFile;
-            try (FileInputStream fis = new FileInputStream(fileOne);
+            try (FileInputStream fis = new FileInputStream(file);
                     ObjectInputStream ois = new ObjectInputStream(fis)) {
                 mapInFile = (HashMap<String, List<String>>) ois.readObject();
             }
@@ -581,7 +594,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      */
     public static void saveMap(Map<String, List<String>> mapOfHypernyms) {
         try {
-            try (FileOutputStream fos = new FileOutputStream(fileOne);
+            try (FileOutputStream fos = new FileOutputStream(file);
                     ObjectOutputStream oos = new ObjectOutputStream(fos);) {
 
                 oos.writeObject(mapOfHypernyms);
