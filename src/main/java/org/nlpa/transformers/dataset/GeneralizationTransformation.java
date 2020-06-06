@@ -148,7 +148,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
             logger.info("Synsets sorted");
 
             //Generalize synsets with those that appear on its hypernym list and distance <= maxDegree
-            originalDataset = generalizeDirectly(synsetList, originalDataset);
+            originalDataset = generalizeVertically(synsetList, originalDataset);
             synsetList = originalDataset.filterColumnNames("^bn:");
 
             toGeneralize.putAll(evaluate(originalDataset, synsetList, cachedHypernyms));
@@ -308,7 +308,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * @param originalDataset the original dataset
      * @return dataset that had its vertical relationships generalized
      */
-    private static Dataset generalizeDirectly(List<String> synsetList, Dataset originalDataset) {
+    private static Dataset generalizeVertically(List<String> synsetList, Dataset originalDataset) {
         List<String> usedSynsets = new ArrayList<>();
         for (String s1 : synsetList) {
             int index = synsetList.indexOf(s1);
