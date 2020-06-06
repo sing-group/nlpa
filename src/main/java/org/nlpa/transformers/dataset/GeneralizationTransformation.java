@@ -36,44 +36,46 @@ import org.bdp4j.util.Pair;
  */
 public class GeneralizationTransformation extends DatasetTransformer {
 
-    static final File file = new File("outputsyns_file.map");
+    private static final File file = new File("outputsyns_file.map");
+    private static final Dataset.CombineOperator DEFAULT_OPERATOR = Dataset.COMBINE_SUM;
+    private static final int DEFAULT_DEGREE = 2;
 
-    static BabelNet bn = BabelNet.getInstance();
+    private static BabelNet bn = BabelNet.getInstance();
 
     /**
      * Map used to save the hypernyms to which synset pairs will generalize
      */
-    static Map<String, String> generalizeTo = new HashMap<>();
-    static Map<String, String> auxGeneralizeTo = new HashMap<>();
+    private static Map<String, String> generalizeTo = new HashMap<>();
+    private static Map<String, String> auxGeneralizeTo = new HashMap<>();
 
     /**
      * Max relationship degree that we will admit
      */
     static int maxDegree;
 
-    static int generateFiles;
+    private static boolean generateFiles;
 
     /**
      * Combine operator to use when joining attributes
      */
-    static int combineOperator;
+    static Dataset.CombineOperator combineOperator;
 
     /**
      * Map containing synsets as keys and their list of hypernyms as values
      */
-    static Map<String, List<String>> cachedHypernyms;
+    private static Map<String, List<String>> cachedHypernyms;
 
     /**
      * Boolean variable needed to determine if the algorithm should keep
      * generalizing
      */
-    static boolean keepGeneralizing;
+    private static boolean keepGeneralizing;
 
     /**
      * Auxiliar map used to save the relationship degree between two synsets
      */
-    static Map<Pair<String, String>, Integer> degreeMap = new HashMap<>();
-    static Map<String, List<String>> toGeneralizePrint = new HashMap<>();
+    private static Map<Pair<String, String>, Integer> degreeMap = new HashMap<>();
+    private static Map<String, List<String>> toGeneralizePrint = new HashMap<>();
 
     /**
      * For logging purposes
@@ -81,27 +83,43 @@ public class GeneralizationTransformation extends DatasetTransformer {
     private static final Logger logger = LogManager.getLogger(GeneralizationTransformation.class);
 
     /**
+     * 
+     * Constructor that lets you customize execution options
+     * 
+     * @param degree the max degree that will be allowed
+     * @param operator the operator used to combine attributes
+     * @param generate decides whether output files will be generated or not
+     */
+    public GeneralizationTransformation(int degree, Dataset.CombineOperator operator, boolean generate){
+        this.maxDegree = degree;
+        this.combineOperator = operator;
+        this.generateFiles = generate;
+    }
+
+    /**
+     * 
+     * Constructor that lets you customize execution options
+     * 
+     * @param degree the max degree that will be allowed
+     * @param operator the operator used to combine attributes
+     */
+    public GeneralizationTransformation(int degree, Dataset.CombineOperator operator){
+        this.maxDegree = degree;
+        this.combineOperator = operator;
+        this.generateFiles = true;
+    }
+
+    /**
      * Default constructor.
      */
     public GeneralizationTransformation() {
+        this.maxDegree = DEFAULT_DEGREE;
+        this.combineOperator = DEFAULT_OPERATOR;
+        this.generateFiles = true;
     }
 
     @Override
     protected Dataset transformTemplate(Dataset dataset) {
-
-        Scanner scan = new Scanner(System.in);
-        logger.info("MaxDegree: ");
-        maxDegree = scan.nextInt();
-
-        do{
-            logger.info("Combine operator [1 -> sum, 2 -> or]: ");
-            combineOperator = scan.nextInt();
-        }while(combineOperator <= 0 || combineOperator >= 3);
-
-        do{
-            logger.info("Generate files? [1 -> yes, 2 -> no]: ");
-            generateFiles = scan.nextInt();
-        }while (generateFiles <= 0 || generateFiles >= 3);
 
         long startTime = System.currentTimeMillis();
 
@@ -148,7 +166,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
 
         } while (keepGeneralizing);
 
-        if(generateFiles == 1){
+        if(generateFiles){
             originalDataset.setOutputFile("relationshipDegree_" + maxDegree + ".csv");
             originalDataset.generateCSV();
             String arff = originalDataset.generateARFFWithComments(null, "relationshipDegree_" + maxDegree + ".arff");
@@ -171,7 +189,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * @param synsetList list of all the synsets that we want to check if they
      * are already in disk or not
      */
-    public static void createCache(Map<String, List<String>> cachedHypernyms, List<String> synsetList) {
+    private static void createCache(Map<String, List<String>> cachedHypernyms, List<String> synsetList) {
         CachedBabelUtils cachedBabelUtils = new CachedBabelUtils(cachedHypernyms);
 
         for (String s : synsetList) {
@@ -199,7 +217,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * saved in disk
      * @param synset synset that we want to add to disk
      */
-    public static void addNewCachedSynset(Map<String, List<String>> cachedHypernyms, String synset) {
+    private static void addNewCachedSynset(Map<String, List<String>> cachedHypernyms, String synset) {
         CachedBabelUtils cachedBabelUtils = new CachedBabelUtils(cachedHypernyms);
 
         if (!cachedBabelUtils.existsSynsetInMap(synset)) {
@@ -225,7 +243,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * @param end the index of the final element we will be sorting
      * @return the sorted array
      */
-    public static String[] quickSort(String[] arr, int begin, int end) {
+    private static String[] quickSort(String[] arr, int begin, int end) {
         if (begin < end) {
             int partitionIndex = partition(arr, begin, end);
 
@@ -290,7 +308,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * @param originalDataset the original dataset
      * @return dataset that had its vertical relationships generalized
      */
-    public static Dataset generalizeDirectly(List<String> synsetList, Dataset originalDataset) {
+    private static Dataset generalizeDirectly(List<String> synsetList, Dataset originalDataset) {
         List<String> usedSynsets = new ArrayList<>();
         for (String s1 : synsetList) {
             int index = synsetList.indexOf(s1);
@@ -347,11 +365,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
                                 listAttributeNameToJoin.add(s1);
                                 listAttributeNameToJoin.add(s2);
 
-                                switch(combineOperator){
-                                    case 1: originalDataset.joinAttributes(listAttributeNameToJoin, s2, Dataset.COMBINE_SUM, !aux);
-                                    break;
-                                    case 2: originalDataset.joinAttributes(listAttributeNameToJoin, s2, Dataset.COMBINE_OR, !aux);
-                                }
+                                originalDataset.joinAttributes(listAttributeNameToJoin, s2, combineOperator, !aux);
 
                                 if (!usedSynsets.contains(s1)) {
                                     usedSynsets.add(s1);
@@ -371,12 +385,8 @@ public class GeneralizationTransformation extends DatasetTransformer {
                                 listAttributeNameToJoin.add(s2);
                                 listAttributeNameToJoin.add(s1);
 
-                                switch(combineOperator){
-                                    case 1: originalDataset.joinAttributes(listAttributeNameToJoin, s1, Dataset.COMBINE_SUM, !aux);
-                                    break;
-                                    case 2: originalDataset.joinAttributes(listAttributeNameToJoin, s1, Dataset.COMBINE_OR, !aux);
-                                    break;
-                                }
+                                originalDataset.joinAttributes(listAttributeNameToJoin, s1, combineOperator, !aux);
+                                
 
                                 keepGeneralizing = true;
 
@@ -408,7 +418,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * @return degree of relationship between both synsets
      *
      */
-    public static int relationshipDegree(String synset1, String synset2,
+    private static int relationshipDegree(String synset1, String synset2,
             List<String> s1Hypernyms, List<String> s2Hypernyms) {
         if (s1Hypernyms.size() == 0) {
             return Integer.MIN_VALUE;
@@ -446,7 +456,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * @return map containing a synset as key and a list of synsets that should be generalized with it as value
      *
      */
-    public static Map<String, List<String>> evaluate(Dataset originalDataset, List<String> synsetList, Map<String, List<String>> cachedHypernyms) {
+    private static Map<String, List<String>> evaluate(Dataset originalDataset, List<String> synsetList, Map<String, List<String>> cachedHypernyms) {
         Map<String, List<String>> finalResult = new HashMap<>();
         List<String> usedSynsets = new ArrayList<>();
         for (String s1 : synsetList) {
@@ -528,7 +538,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * @return the originalDataset modified and reduced according to the
      * generalizable synsets
      */
-    public static Dataset generalize(Dataset originalDataset, Map<String, List<String>> toGeneralize) {
+    private static Dataset generalize(Dataset originalDataset, Map<String, List<String>> toGeneralize) {
 
         for (String s1 : toGeneralize.keySet()) {
 
@@ -544,12 +554,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
 
             List<String> synsetList = originalDataset.filterColumnNames("^bn:");
             
-            switch(combineOperator){
-                case 1:  originalDataset.joinAttributes(listAttributeNameToJoin, newAttributeName, Dataset.COMBINE_SUM, synsetList.contains(newAttributeName));
-                break;
-                case 2:  originalDataset.joinAttributes(listAttributeNameToJoin, newAttributeName, Dataset.COMBINE_OR, synsetList.contains(newAttributeName));
-                break;
-            }
+            originalDataset.joinAttributes(listAttributeNameToJoin, newAttributeName, combineOperator, synsetList.contains(newAttributeName));
 
             logger.info("\n");
         }
@@ -566,7 +571,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * @return A map containing every synset (key) and a list of its hypernyms
      * (values)
      */
-    public static Map<String, List<String>> readMap() {
+    private static Map<String, List<String>> readMap() {
         try {
             //Poner aquí el nombre del fichero a cargar. Extensión ".map"
             if (!file.exists()) {
@@ -592,7 +597,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * @param mapOfHypernyms Map containing every synset (key) and a list of its
      * hypernyms (values)
      */
-    public static void saveMap(Map<String, List<String>> mapOfHypernyms) {
+    private static void saveMap(Map<String, List<String>> mapOfHypernyms) {
         try {
             try (FileOutputStream fos = new FileOutputStream(file);
                     ObjectOutputStream oos = new ObjectOutputStream(fos);) {
