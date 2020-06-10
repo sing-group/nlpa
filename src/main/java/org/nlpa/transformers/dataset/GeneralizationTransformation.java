@@ -53,7 +53,10 @@ public class GeneralizationTransformation extends DatasetTransformer {
      */
     static int maxDegree;
 
-    private static boolean generateFiles;
+    /**
+     * Whether ".csv" and ".arff" files should be generated or not
+     */
+    static boolean generateFiles;
 
     /**
      * Combine operator to use when joining attributes
@@ -607,5 +610,53 @@ public class GeneralizationTransformation extends DatasetTransformer {
         } catch (Exception e) {
             logger.error("[SAVE MAP]" + e.getMessage());
         }
+    }
+
+    /**
+     *
+     * @return maxDegree variable value
+     */
+    public static int getMaxDegree() {
+        return maxDegree;
+    }
+
+    /**
+     *
+     * @param maxDegree the new value that maxDegree will have
+     */
+    public static void setMaxDegree(int maxDegree) {
+        GeneralizationTransformation.maxDegree = maxDegree;
+    }
+
+    /**
+     *
+     * @return generateFiles variable value
+     */
+    public static boolean isGenerateFiles() {
+        return generateFiles;
+    }
+
+    /**
+     *
+     * @param generateFiles the new value that generateFiles will have
+     */
+    public static void setGenerateFiles(boolean generateFiles) {
+        GeneralizationTransformation.generateFiles = generateFiles;
+    }
+
+    /**
+     *
+     * @return combineOperator variable value
+     */
+    public static Dataset.CombineOperator getCombineOperator() {
+        return combineOperator;
+    }
+
+    /**
+     *
+     * @param combineOperator the new value that combineOperator will have
+     */
+    public static void setCombineOperator(Dataset.CombineOperator combineOperator) {
+        GeneralizationTransformation.combineOperator = combineOperator;
     }
 }
