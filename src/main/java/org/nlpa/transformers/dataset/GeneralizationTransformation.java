@@ -85,7 +85,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * Auxiliar map used to save the relationship degree between two synsets
      */
     private static Map<Pair<String, String>, Integer> degreeMap = new HashMap<>();
-    private static Map<String, List<String>> toGeneralizePrint = new HashMap<>();
+   // private static Map<String, List<String>> toGeneralizePrint = new HashMap<>();
 
     /**
      * For logging purposes
@@ -102,7 +102,6 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * @param matchRate
      */
     public GeneralizationTransformation(int degree, Dataset.CombineOperator operator, boolean generate, double matchRate) {
-
         this.maxDegree = degree;
         this.combineOperator = operator;
         this.generateFiles = generate;
@@ -237,12 +236,12 @@ public class GeneralizationTransformation extends DatasetTransformer {
 
         long startTime = System.currentTimeMillis();
 
-        Dataset originalDataset = dataset;
+        //Dataset dataset = dataset;
 
         logger.info("Dataset loaded");
 
         //Filter Dataset columns
-        List<String> synsetList = originalDataset.filterColumnNames("^bn:");
+        List<String> synsetList = dataset.filterColumnNames("^bn:");
 
         logger.info("Number of synsets in original dataset: " + synsetList.size());
 
@@ -257,30 +256,21 @@ public class GeneralizationTransformation extends DatasetTransformer {
         do {
             keepGeneralizing = false;
 
-            //The synsetlist gets sorted by hypernym list size
+            //The synsetList gets sorted by hypernym list size
             String[] arr = synsetList.toArray(new String[0]);
             Arrays.sort(arr, (String a, String b) -> cachedHypernyms.get(a).size() - cachedHypernyms.get(b).size());
             synsetList = Arrays.asList(arr);
             logger.info("Synsets sorted");
 
             //Generalize synsets with those that appear on its hypernym list and distance <= maxDegree
-            originalDataset = generalizeVertically(synsetList, originalDataset);
+            dataset = generalizeVertically(synsetList, dataset);
 
-            //List<String> verticallyGeneralizedSynsetList = originalDataset.filterColumnNames("^bn:");
-            synsetList = originalDataset.filterColumnNames("^bn:");
-
-            Map<String, List<String>> evaluationResult = evaluate(originalDataset, synsetList, cachedHypernyms);
-            //Map<String, List<String>> evaluationResult = evaluate(originalDataset, verticallyGeneralizedSynsetList, cachedHypernyms);
+            Map<String, List<String>> evaluationResult = evaluate(dataset, cachedHypernyms);
             synsetsToGeneralize.putAll(evaluationResult);
 
-            for (String synset : synsetsToGeneralize.keySet()) {
-                toGeneralizePrint.put(synset, synsetsToGeneralize.get(synset));
-            }
+            dataset = generalizeHorizontally(dataset, synsetsToGeneralize);
 
-            originalDataset = generalizeHorizontally(originalDataset, synsetsToGeneralize);
-            //logger.info("Synsets generalized");
-
-            synsetList = originalDataset.filterColumnNames("^bn:");
+            synsetList = dataset.filterColumnNames("^bn:");
 
             synsetsToGeneralize.clear();
 
@@ -296,15 +286,15 @@ public class GeneralizationTransformation extends DatasetTransformer {
             int segundo = fecha.get(Calendar.SECOND);
             String currenDate = ano + mes + dia + "_" + hora + minuto + segundo;
 
-            originalDataset.setOutputFile(currenDate + "relationshipDegree_" + maxDegree + ".csv");
-            originalDataset.generateCSV();
-            originalDataset.generateARFFWithComments(null, currenDate + "relationshipDegree_" + maxDegree + ".arff");
+            dataset.setOutputFile(currenDate + "relationshipDegree_" + maxDegree + ".csv");
+            dataset.generateCSV();
+            dataset.generateARFFWithComments(null, currenDate + "relationshipDegree_" + maxDegree + ".arff");
         }
 
         long endTime = System.currentTimeMillis();
         logger.info("Execution time in milliseconds: " + (endTime - startTime));
 
-        return originalDataset;
+        return dataset;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -398,20 +388,19 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * distance less or equal to maxDegree
      *
      * @param synsetList the list of synsets in the dataset
-     * @param originalDataset the original dataset
+     * @param dataset the original dataset
      * @return dataset that had its vertical relationships generalized
      */
-    private Dataset generalizeVertically(List<String> synsetList, Dataset originalDataset) {
+    private Dataset generalizeVertically(List<String> synsetList, Dataset dataset) {
         List<String> usedSynsets = new ArrayList<>();
         Double inverseMatchRate = 1 - matchRate;
 
         for (String evaluatedSynset : synsetList) {
             int evaluatedSynsetIndex = synsetList.indexOf(evaluatedSynset);
 
-            float evaluatedSynsetPercentage = computePercentage(evaluatedSynset, originalDataset);
+            float evaluatedSynsetPercentage = computePercentage(evaluatedSynset, dataset);
 
             List<String> evaluatedSynsetHypernyms = getHypernyms(evaluatedSynset);
-            // logger.info("1.Synset 1: " + evaluatedSynset + " -> " + evaluatedSynsetResult + " -> " + evaluatedSynsetPercentage);
             if (evaluatedSynsetPercentage >= matchRate || evaluatedSynsetPercentage <= inverseMatchRate) {
                 for (String synset : synsetList.subList(evaluatedSynsetIndex + 1, synsetList.size())) {
 
@@ -419,7 +408,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
 
                     if (synsetHypernyms.contains(evaluatedSynset) || evaluatedSynsetHypernyms.contains(synset)) {
 
-                        float percentage = computePercentage(synset, originalDataset);
+                        float percentage = computePercentage(synset, dataset);
                         Pair<String, String> pair = new Pair<>(evaluatedSynset, synset);
 
                         if (!degreeMap.containsKey(pair)) {
@@ -432,11 +421,11 @@ public class GeneralizationTransformation extends DatasetTransformer {
 
                             List<String> synsetsToPrint = new ArrayList<>();
                             if (evaluatedSynsetHypernyms.contains(synset) && pairDegree <= maxDegree && pairDegree >= 0) {
-                                generalize(synset, evaluatedSynset, usedSynsets, synsetsToPrint, originalDataset);
+                                generalize(synset, evaluatedSynset, usedSynsets, synsetsToPrint, dataset);
                                 break;
                             } else if (synsetHypernyms.contains(evaluatedSynset) && pairDegree <= maxDegree && pairDegree >= 0) {
 
-                                generalize(evaluatedSynset, synset, usedSynsets, synsetsToPrint, originalDataset);
+                                generalize(evaluatedSynset, synset, usedSynsets, synsetsToPrint, dataset);
                                 keepGeneralizing = true;
                                 break;
                             }
@@ -446,7 +435,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
                 }
             }
         }
-        return originalDataset;
+        return dataset;
     }
 
     private void generalize(String hypernym, String synset, List<String> usedSynsets, List<String> synsetsToPrint, Dataset dataset) {
@@ -455,7 +444,6 @@ public class GeneralizationTransformation extends DatasetTransformer {
             synsetGeneralizations.put(synset, hypernym);
 
             synsetsToPrint.add(hypernym);
-            toGeneralizePrint.put(synset, synsetsToPrint);
 
             List<String> listAttributeNameToJoin = new ArrayList<>();
             listAttributeNameToJoin.add(synset);
@@ -507,7 +495,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * Function that evaluates more complex relations between two synsets and
      * decides if they should be generalized
      *
-     * @param originalDataset the original dataset that we are working with
+     * @param dataset the original dataset that we are working with
      * @param synsetList list of all the synsets in the dataset
      * @param cachedHypernyms map containing every synset and its hypernyms
      * (previously read from disk)
@@ -515,15 +503,17 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * be generalized with it as value
      *
      */
-    private Map<String, List<String>> evaluate(Dataset originalDataset, List<String> synsetList, Map<String, List<String>> cachedHypernyms) {
+    //private Map<String, List<String>> evaluate(Dataset dataset, List<String> synsetList, Map<String, List<String>> cachedHypernyms) {
+    private Map<String, List<String>> evaluate(Dataset dataset, Map<String, List<String>> cachedHypernyms) {
         Map<String, List<String>> evaluationResult = new HashMap<>();
         List<String> usedSynsets = new ArrayList<>();
         Double inverseMatchRate = 1 - matchRate;
+        List<String> synsetList = dataset.filterColumnNames("^bn:");
 
         for (String evaluatedSynset : synsetList) {
             //We get the evaluatedSynsetIndex of the synset*
             int evaluatedSynsetIndex = synsetList.indexOf(evaluatedSynset);
-            float evaluatedSynsetPercentage = computePercentage(evaluatedSynset, originalDataset);
+            float evaluatedSynsetPercentage = computePercentage(evaluatedSynset, dataset);
             List<String> synsetsToAddList = new ArrayList<>();
 
             if ((evaluatedSynsetPercentage >= matchRate || evaluatedSynsetPercentage <= inverseMatchRate) && !usedSynsets.contains(evaluatedSynset)) {
@@ -542,7 +532,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
                     Integer pairDegree = degreeMap.get(pair);
                     if (pairDegree >= 0 && pairDegree <= maxDegree && !usedSynsets.contains(synset) && !evaluationResult.containsKey(evaluatedSynset)) {
 
-                        float percentage = computePercentage(synset, originalDataset);
+                        float percentage = computePercentage(synset, dataset);
                         if ((percentage >= matchRate && evaluatedSynsetPercentage >= matchRate) || (percentage <= inverseMatchRate && evaluatedSynsetPercentage <= inverseMatchRate)) {
                             //Results from evaluating these synsets
                             if (evaluatedSynsetHypernyms.indexOf(synsetGeneralizations.get(evaluatedSynset)) <= evaluatedSynsetHypernyms.indexOf(auxSynsetGeneralizations.get(evaluatedSynset))) {
@@ -570,17 +560,17 @@ public class GeneralizationTransformation extends DatasetTransformer {
      *
      * Function used to reduce the number of synsets on the original dataset
      *
-     * @param originalDataset the original dataset that we want to reduce
+     * @param dataset the original dataset that we want to reduce
      * @param synsetsToGeneralize map of synsets that we will be generalizing
      *
-     * @return the originalDataset modified and reduced according to the
+     * @return the dataset modified and reduced according to the
      * generalizable synsets
      */
-    private Dataset generalizeHorizontally(Dataset originalDataset, Map<String, List<String>> synsetsToGeneralize) {
+    private Dataset generalizeHorizontally(Dataset dataset, Map<String, List<String>> synsetsToGeneralize) {
 
         List<String> listAttributeNameToJoin;
         for (String synset : synsetsToGeneralize.keySet()) {
-            List<String> synsetList = originalDataset.filterColumnNames("^bn:");
+            List<String> synsetList = dataset.filterColumnNames("^bn:");
 
             listAttributeNameToJoin = new ArrayList<>();
             listAttributeNameToJoin.addAll(synsetsToGeneralize.get(synset));
@@ -589,12 +579,12 @@ public class GeneralizationTransformation extends DatasetTransformer {
             logger.info("New attribute name: " + newAttributeName + ". List to reduce: " + listAttributeNameToJoin);
             listAttributeNameToJoin.add(synset);
 
-            originalDataset.joinAttributes(listAttributeNameToJoin, newAttributeName, combineOperator, synsetList.contains(newAttributeName));
+            dataset.joinAttributes(listAttributeNameToJoin, newAttributeName, combineOperator, synsetList.contains(newAttributeName));
         }
 
-        logger.info("[generalizeHorizontally] Number of features after reducing: " + originalDataset.filterColumnNames("^bn:").size());
+        logger.info("[generalizeHorizontally] Number of features after reducing: " + dataset.filterColumnNames("^bn:").size());
 
-        return originalDataset;
+        return dataset;
     }
 
     /**
