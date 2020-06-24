@@ -24,7 +24,6 @@ package org.nlpa.pipe.impl;
 
 import com.google.auto.service.AutoService;
 import javax.json.JsonObject;
-import com.vdurmont.emoji.EmojiParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
@@ -33,14 +32,12 @@ import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
 import org.bdp4j.util.EBoolean;
-import org.bdp4j.util.Pair;
 import org.nlpa.util.Trio;
 
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,7 +45,7 @@ import java.util.regex.Pattern;
 import javax.json.Json;
 import javax.json.JsonReader;
 
-//import com.vdurmont.emoji.EmojiManager;
+
 
 /**
  * This pipe finds and eventually drops emojis The data of the instance should
@@ -187,6 +184,15 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     public void setRemoveEmoji(boolean removeEmoji) {
         this.removeEmoji = removeEmoji;
     }
+    
+    /**
+     * Checks whether emojis should be removed
+     *
+     * @return True if emojis should be removed
+     */
+    public boolean getRemoveEmoji() {
+        return this.removeEmoji;
+    }
 
     /**
      * Establish the name of the property where the language will be stored
@@ -205,15 +211,6 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
      */
     public String getLangProp() {
         return this.langProp;
-    }
-
-    /**
-     * Checks whether emojis should be removed
-     *
-     * @return True if emojis should be removed
-     */
-    public boolean getRemoveEmoji() {
-        return this.removeEmoji;
     }
 
     /**
@@ -240,10 +237,20 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
      * 
      * @return True if emojis should be replaced
      */
-    public boolean isReplaceEmoji() {
+    public boolean getReplaceEmoji() {
         return replaceEmoji;
     }
 
+    /**
+     * Indicates if emoji should be removed from data
+     *
+     * @param removeEmoji True if emojis should be removed
+     */
+    @PipeParameter(name = "replaceEmoji", description = "Indicates if the emojis should be removed or not", defaultValue = DEFAULT_REPLACE_EMOJI)
+    public void setReplaceEmoji(String replaceEmoji) {
+        this.replaceEmoji = EBoolean.parseBoolean(replaceEmoji);
+    }
+    
     /**
      * Indicates if emojis should be replaced
      *
@@ -253,10 +260,23 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
         this.replaceEmoji = replaceEmoji;
     }
 
+    @PipeParameter(name="calculatePolarity", description="Indicates if polarity of emoticons should be calculated or not", defaultValue = DEFAULT_CALCULATE_POLARITY)
+    public void setCalculatePolarity(String calculatePolarity){
+        this.calculatePolarity = EBoolean.getBoolean(calculatePolarity);
+    }
+
+    /**
+     * Indicates if emoji polarity should be calculated
+     * @param calculatePolarity True if polarity should be calculated
+     */
+    public void setCalculatePolarity(boolean calculatePolarity){
+        this.calculatePolarity = calculatePolarity;
+    }
+    
     /**
      * @return True if polarity should be calculated
      */
-    public boolean isCalculatePolarity() {
+    public boolean getCalculatePolarity() {
         return calculatePolarity;
     }
 
@@ -275,6 +295,7 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
      *
      * @param emojiProp    The name of the property to store emojis
      * @param removeEmoji  tells if emojis should be removed
+     * @param langProp The language of the text
      * @param replaceEmoji tells if emojis should be replaced by its meaning
      * @param calculatePolarity tells if emoji polarity should be calculated
      */
@@ -300,7 +321,6 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
-
             String data = carrier.getData().toString();
 
             System.setProperty("file.encoding", "UTF-16LE");
@@ -316,10 +336,15 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
             String lang = (String) carrier.getProperty(langProp);
             HashMap<String, Trio<Pattern, String, Double>> dict = emojiDictionary.get(lang);
 
+           
             if (dict == null){
+                logger.info("Language " + carrier.getProperty(langProp) + " not supported when processing " + carrier.getName() + " in FindEmojiInStringBufferPipe");
+                carrier.setProperty(emojiProp, "");
+            	carrier.setProperty("emojiPolarity", 0); 
                 return carrier; // When there is not a dictionary for the language
             }
-               
+            
+            
             StringBuffer sb = (StringBuffer) carrier.getData();
             if (replaceEmoji) {
                 for (String emoji : dict.keySet()) {
@@ -338,6 +363,7 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
 
                 }
             } else if (removeEmoji) {
+                System.out.println("REMOVE");
                 for (String emoji : dict.keySet()) {
                     Pattern pat = dict.get(emoji).getObj1();
                     Matcher match = pat.matcher(sb);
@@ -346,11 +372,10 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
                         value += emoji;
                         last = match.start(0) + 1;
                         // Now deletes emojis
-                        sb = sb.replace(match.start(0), match.end(1), "");
+                        sb = sb.replace(match.start(0), match.end(0), "");
                     }
                 }
             }
-
             carrier.setProperty(emojiProp, value);
 
             if (calculatePolarity) {
@@ -370,9 +395,16 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
                 }
                 //Calculate arithmetic mean and store in a property
                 Double mean = score / (new Double(numEmojis));
-                carrier.setProperty("polarity", mean);
+                carrier.setProperty("emojiPolarity", mean);
             }
 
+            try (FileOutputStream fw2=new FileOutputStream("xxResult.txt")){
+                fw2.write(sb.toString().getBytes("UTF-16LE"));
+                fw2.flush();
+            }catch(Exception e){
+                System.err.println(e.getMessage());
+            }
+            
         } else {
             logger.error("Data should be an StrinBuffer when processing " + carrier.getName() + " but is a "
                     + carrier.getData().getClass().getName());

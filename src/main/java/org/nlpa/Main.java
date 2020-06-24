@@ -42,9 +42,9 @@ import java.util.List;
 import java.util.Map;
 //import org.bdp4j.dataset.CSVDatasetReader;
 //import org.bdp4j.transformers.CheckVoidTransformer;
-import org.bdp4j.transformers.Date2MillisTransformer;
-import org.bdp4j.transformers.Enum2IntTransformer;
-import org.bdp4j.transformers.Url2BinaryTransformer;
+//import org.bdp4j.transformers.Date2MillisTransformer;
+//import org.bdp4j.transformers.Enum2IntTransformer;
+//import org.bdp4j.transformers.Url2BinaryTransformer;
 import org.bdp4j.types.Transformer;
 
 /**
@@ -153,8 +153,8 @@ public class Main {
             new StripHTMLFromStringBufferPipe(),
             new MeasureLengthFromStringBufferPipe("length_after_html_drop"), 
             new GuessLanguageFromStringBufferPipe(),
-            new FindEmojiInStringBufferPipe("emojiTest", false, GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY, true, true),
-            new FindEmoticonInStringBufferPipe("emoticonTest", false, GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY, true, true),
+            new FindEmojiInStringBufferPipe("emojiTest", true, GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY, false, true),
+            new FindEmoticonInStringBufferPipe("emoticonTest", true, GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY, false, true),
             new StringBufferToLowerCasePipe(), 
             new InterjectionFromStringBufferPipe(),
             new StopWordFromStringBufferPipe(),

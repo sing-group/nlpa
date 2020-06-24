@@ -79,12 +79,11 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
                                        "/emoticon-data/emoticonsID.ru.json"
                                     }) {
         String lang = i.substring(27, 29).toUpperCase();
-        System.out.println("Lang= "+ lang);
 
         try{
 
             System.setProperty("file.encoding", "UTF-16LE");
-            InputStream is = FindEmojiInStringBufferPipe.class.getResourceAsStream(i);
+            InputStream is = FindEmoticonInStringBufferPipe.class.getResourceAsStream(i);
             JsonReader rdr = Json.createReader(is);
             JsonObject jsonObject = rdr.readObject();
             rdr.close();
@@ -225,6 +224,25 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
     public boolean getRemoveEmoticon() {
         return this.removeEmoticon;
     }
+    
+    /**
+     * Establish the name of the property where the language will be stored
+     *
+     * @param langProp The name of the property where the language is stored
+     */
+    @PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue = DEFAULT_LANG_PROPERTY)
+    public void setLangProp(String langProp) {
+        this.langProp = langProp;
+    }
+
+    /**
+     * Returns the name of the property in which the language is stored
+     *
+     * @return the name of the property where the language is stored
+     */
+    public String getLangProp() {
+        return this.langProp;
+    }
 
     /**
      * Checks wether emoticons should be replaced
@@ -239,7 +257,7 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
      * Checks wether emoticons polarity should be calculated
      * @return True if polarity should be calculated
      */
-    public boolean isCalculatePolarity(){
+    public boolean getCalculatePolarity(){
         return this.calculatePolarity;
     }
 
@@ -318,6 +336,9 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
             HashMap<String, Trio<Pattern, String, Double>> dict = emoticonDictionary.get(lang);
 
             if (dict == null){
+                logger.info("Language " + carrier.getProperty(langProp) + " not supported when processing " + carrier.getName() + " in FindEmoticonInStringBufferPipe");
+                carrier.setProperty(emoticonProp, "");
+                carrier.setProperty("emoticonPolarity", 0);
                 return carrier; // When there is not a dictionary for the language
             }
 
@@ -330,7 +351,7 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
 
                     while(match.find(last)){
                         last = match.start(0) + 1;
-                        // Now replaces emoji pattern by its meaning
+                        // Now replaces emoticon pattern by its meaning
                         value += emoticon;
                         sb = sb.replace(match.start(0), match.end(0), dict.get(emoticon).getObj2());
                     }
@@ -344,9 +365,9 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
 
                     while(match.find(last)){
                         last = match.start(0) + 1;
-                        // Now replaces emoji pattern by its meaning
+                        // Now deletes emoticon pattern from text
                         value += emoticon;
-                        sb = sb.replace(match.start(0), match.end(1), "");
+                        sb = sb.replace(match.start(0), match.end(0), "");
                     }
 
                 }
@@ -366,47 +387,15 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
                         last = match.start(0) + 1;
                         score += dict.get(emoticon).getObj3();
                         numEmoticons++;
-                        System.out.println("score=" + score);
                     }
 
                 }
                 //Calculate arithmetic mean and store in a property
                 Double mean = score / (new Double(numEmoticons));
-                carrier.setProperty("polarity", mean);
+                carrier.setProperty("emoticonPolarity", mean);
             }
-            /*
-           
-            Stack<Pair<Integer, Integer>> replacements = new Stack<>();
-
-            if (isEmoticon(data)) {
-                Matcher m = emoticonPattern.matcher(data);
-
-                while (m.find()) {
-                    value += m.group(1) + " ";
-                    if (removeEmoticon) {
-                        replacements.push(new Pair<>(m.start(1), m.end(1)));
-                    }
-                }
-
-                while (!replacements.empty()) {
-                    Pair<Integer, Integer> current = replacements.pop();
-                    data = (current.getObj1() > 0 ? data.substring(0, current.getObj1()) : "")
-                            + //if startindex is 0 do not concatenate
-                            (current.getObj2() < (data.length() - 1) ? data.substring(current.getObj2()) : ""); //if endindex=newSb.length()-1 do not concatenate
-                }
-
-                if (removeEmoticon) {
-                    carrier.setData(new StringBuffer(data));
-                }
-            } else {
-                logger.info("Emoticon not found for instance " + carrier.toString());
-            }
-
-
-                        carrier.setProperty(emoticonProp, value);
-            */
-
-
+            System.out.println("DATA: ");
+            System.out.println(sb.toString());
 
         }else{
           logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
