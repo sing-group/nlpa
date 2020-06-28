@@ -13,11 +13,13 @@ import org.junit.Test;
  */
 public class FindEmojiInStringBufferPipeTest {
 
-	String data = "December is hre :-), ho ho ho! 🎅  Beat the Christmas days with us and we'll even give you 19% off online until 31 Dec. Visit us on #xx or @xx";
+	String data = "December is hre :-), ho ho ho!🎅Beat the Christmas days with us and we'll even give you 19% off online until 31 Dec. Visit us on #xx or @xx";
 	String name = "basic_example/_spam_/7c63a8fd7ae52e350e354d63b23e1c3b.tsms";
 	String source = "basic_example/_spam_/7c63a8fd7ae52e350e354d63b23e1c3b.tsms";
 	private static String SUPPORTED_LANGUAGE = "EN";
 	private static String DEFAULT_EMOJI_PROP = "emoji";
+	private static String DEFAULT_POLARITY_PROP = "emojiPolarity";
+	private static String DEFAULT_LANG_PROP = "language";
 	
 	
 	private static Instance carrier = null;
@@ -31,7 +33,7 @@ public class FindEmojiInStringBufferPipeTest {
 	@Before
 	public void setUp() throws Exception {
 		instance = new FindEmojiInStringBufferPipe();
-		instanceRemove = new FindEmojiInStringBufferPipe(DEFAULT_EMOJI_PROP, true, SUPPORTED_LANGUAGE, false, false);
+		instanceRemove = new FindEmojiInStringBufferPipe(DEFAULT_EMOJI_PROP, true, DEFAULT_LANG_PROP, false, false);
 		carrier = new Instance(new StringBuffer(data), null, name, source);
 		carrier.setProperty(instance.getLangProp(), SUPPORTED_LANGUAGE);
 	}
@@ -166,14 +168,15 @@ public class FindEmojiInStringBufferPipeTest {
 	 */
 	@Test
 	public void testPipe() {
-		String expData = "December is hre :-), ho ho ho! Santa_Claus  Beat the Christmas days with us and we'll even give you 19% off online until 31 Dec. Visit us on #xx or @xx";
+		String expData = "December is hre :-), ho ho ho!Santa_ClausBeat the Christmas days with us and we'll even give you 19% off online until 31 Dec. Visit us on #xx or @xx";
 		Double expDataPolarity = 0.318;
 		Instance expResult = new Instance(new StringBuffer(expData), null, name, source);
 		expResult.setProperty(instance.getLangProp(), SUPPORTED_LANGUAGE);
-		expResult.setProperty(instance.getEmojiProp(), DEFAULT_EMOJI_PROP);
+		expResult.setProperty(instance.getEmojiProp(), "🎅");
+		expResult.setProperty(DEFAULT_POLARITY_PROP, expDataPolarity);
 		
 		Instance result = instance.pipe(carrier);
-		assertTrue(expResult.getData().toString().equals(result.getData().toString())); 
+		assertTrue(expResult.equals(result));
 		assertTrue(result.getProperty("emojiPolarity").equals(expDataPolarity));
 	}
 	
@@ -183,17 +186,15 @@ public class FindEmojiInStringBufferPipeTest {
 	 */
 	@Test
 	public void testPipeRemoveEmoji() {
-		String expData = "December is hre :-), ho ho ho!  Beat the Christmas days with us and we'll even give you 19% off online until 31 Dec. Visit us on #xx or @xx";
+		String expData = "December is hre :-), ho ho ho!Beat the Christmas days with us and we'll even give you 19% off online until 31 Dec. Visit us on #xx or @xx";
 		Instance expResult = new Instance(new StringBuffer(expData), null, name, source);
-		expResult.setProperty(instanceRemove.getLangProp(), SUPPORTED_LANGUAGE);
-		expResult.setProperty(instanceRemove.getEmojiProp(), DEFAULT_EMOJI_PROP);
-		System.out.println("Carrier \n "+ carrier.getData().toString());
+		expResult.setProperty(DEFAULT_LANG_PROP, "EN");
+		expResult.setProperty(instanceRemove.getEmojiProp(), "🎅");		
 		
+		carrier.setProperty(instanceRemove.getLangProp(),SUPPORTED_LANGUAGE);
 		
 		Instance result = instanceRemove.pipe(carrier);
-		System.out.println("expResult: " + expResult.getData().toString());
-		System.out.println("result: "+ result.getData().toString());
-		assertTrue(expResult.getData().toString().equals(result.getData().toString()));
+		assertTrue(expResult.equals(result));
 	}
 	
 	/**
@@ -216,11 +217,12 @@ public class FindEmojiInStringBufferPipeTest {
 		
 		Instance expResult = new Instance(new StringBuffer(expData), null, noSuppLanguageName, noSuppLanguageSource);
 		expResult.setProperty(instance.getLangProp(), noSuppLanguage);
-		expResult.setProperty(instance.getEmojiProp(), DEFAULT_EMOJI_PROP);
+		expResult.setProperty(instance.getEmojiProp(), "");
+		expResult.setProperty(DEFAULT_POLARITY_PROP, 0.0);
 		
 		Instance result = instance.pipe(noSuppLanguageCarrier);
-		assertTrue(expResult.getData().toString().equals(result.getData().toString()));
-		assertTrue(result.getProperty("emojiPolarity").equals(0));
+		assertTrue(expResult.equals(result));
+		assertTrue(result.getProperty("emojiPolarity").equals(0.0));
 	}
 
 	

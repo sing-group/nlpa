@@ -340,7 +340,7 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
             if (dict == null){
                 logger.info("Language " + carrier.getProperty(langProp) + " not supported when processing " + carrier.getName() + " in FindEmojiInStringBufferPipe");
                 carrier.setProperty(emojiProp, "");
-            	carrier.setProperty("emojiPolarity", 0); 
+            	carrier.setProperty("emojiPolarity", 0.0); 
                 return carrier; // When there is not a dictionary for the language
             }
             
@@ -363,7 +363,7 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
 
                 }
             } else if (removeEmoji) {
-                System.out.println("REMOVE");
+               
                 for (String emoji : dict.keySet()) {
                     Pattern pat = dict.get(emoji).getObj1();
                     Matcher match = pat.matcher(sb);
@@ -389,13 +389,17 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
                         last = match.start(0) + 1;
                         score += dict.get(emoji).getObj3();
                         numEmojis++;
-                        System.out.println("score=" + score);
+                       
                     }
                     
                 }
                 //Calculate arithmetic mean and store in a property
                 Double mean = score / (new Double(numEmojis));
-                carrier.setProperty("emojiPolarity", mean);
+                if( Double.isNaN(mean)) {
+                	carrier.setProperty("emojiPolarity", 0.0);
+                }else {
+                	carrier.setProperty("emojiPolarity", mean);                	
+                }
             }
 
             try (FileOutputStream fw2=new FileOutputStream("xxResult.txt")){

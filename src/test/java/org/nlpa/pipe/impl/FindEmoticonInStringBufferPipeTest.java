@@ -19,6 +19,8 @@ public class FindEmoticonInStringBufferPipeTest {
 
 	private static String SUPPORTED_LANGUAGE = "EN";
 	private static String DEFAULT_EMOTICON_PROP = "emoticon";
+	private static String DEFAULT_POLARITY_PROP = "emoticonPolarity";
+	private static String DEFAULT_LANG_PROP = "language";
 
 	private static Instance carrier = null;
 	private FindEmoticonInStringBufferPipe instance;
@@ -30,7 +32,7 @@ public class FindEmoticonInStringBufferPipeTest {
 	@Before
 	public void setUp() throws Exception {
 		instance = new FindEmoticonInStringBufferPipe();
-		instanceRemove = new FindEmoticonInStringBufferPipe(DEFAULT_EMOTICON_PROP, true, SUPPORTED_LANGUAGE, false, false);
+		instanceRemove = new FindEmoticonInStringBufferPipe(DEFAULT_EMOTICON_PROP, true, DEFAULT_LANG_PROP, false, false);
 		carrier = new Instance(new StringBuffer(data), null, name, source);
 		carrier.setProperty(instance.getLangProp(), SUPPORTED_LANGUAGE);
 	}
@@ -216,7 +218,7 @@ public class FindEmoticonInStringBufferPipeTest {
 		
 		Instance result = instance.pipe(noSuppLanguageCarrier);
 		assertTrue(expResult.getData().toString().equals(result.getData().toString()));
-		assertTrue(result.getProperty("emoticonPolarity").equals(0));
+		assertTrue(result.getProperty(DEFAULT_POLARITY_PROP).equals(0.0));
 		
 
 	}

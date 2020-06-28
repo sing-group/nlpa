@@ -338,7 +338,7 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
             if (dict == null){
                 logger.info("Language " + carrier.getProperty(langProp) + " not supported when processing " + carrier.getName() + " in FindEmoticonInStringBufferPipe");
                 carrier.setProperty(emoticonProp, "");
-                carrier.setProperty("emoticonPolarity", 0);
+                carrier.setProperty("emoticonPolarity", 0.0);
                 return carrier; // When there is not a dictionary for the language
             }
 
@@ -392,10 +392,13 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
                 }
                 //Calculate arithmetic mean and store in a property
                 Double mean = score / (new Double(numEmoticons));
-                carrier.setProperty("emoticonPolarity", mean);
+                if(Double.isNaN(mean)) {
+                	carrier.setProperty("emoticonPolarity", 0.0);
+                }else {            	
+                	carrier.setProperty("emoticonPolarity", mean);
+                }
+                
             }
-            System.out.println("DATA: ");
-            System.out.println(sb.toString());
 
         }else{
           logger.error("Data should be an StrinBuffer when processing "+carrier.getName()+" but is a "+carrier.getData().getClass().getName());
