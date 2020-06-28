@@ -51,9 +51,6 @@ public class MainUI {
 	private File selectedFolder = null;
 	private JTextArea leftTA;
 	private JTable rightTable;
-	/*
-	 * private JTextArea rightTA;
-	 */
 
 	/**
 	 * Launches the application.
@@ -282,7 +279,7 @@ public class MainUI {
 		rightResults.add(rightTable);
 
 		// Model for right results table
-		rightTable.setModel(new DefaultTableModel(5, 2) {
+		rightTable.setModel(new DefaultTableModel(3, 2) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
 				// all cells non editable
@@ -311,7 +308,6 @@ public class MainUI {
 		// Notification panel
 		JPanel notificationPanel = new JPanel();
 		notificationPanel.setBackground(UIManager.getColor("TextArea.inactiveForeground"));
-		// notificationPanel.setBorder(new EmptyBorder(1, 5, 5, 5));
 		GridBagConstraints gbcNotification = new GridBagConstraints();
 		gbcNotification.fill = GridBagConstraints.BOTH;
 		gbcNotification.gridx = 0;
@@ -365,8 +361,6 @@ public class MainUI {
 	public void showInstanceResults(Instance instance) {
 		Object emojiPolarityProperty = instance.getProperty("emojiPolarity");
 		Object emoticonPolarityProperty = instance.getProperty("emoticonPolarity");
-		Object emojiProp = instance.getProperty("emojiTest");
-		Object emoticonProp = instance.getProperty("emoticonTest");
 
 		leftTA.setText((String) instance.getData().toString());
 
@@ -383,20 +377,6 @@ public class MainUI {
 			rightTable.setValueAt("0.0", 2, 1);
 		} else {
 			rightTable.setValueAt(emoticonPolarityProperty, 2, 1);
-		}
-
-		rightTable.setValueAt("EmojiProp", 3, 0);
-		rightTable.setValueAt("EmoticonProp", 4, 0);
-
-		if (emojiProp.toString() == null || emojiProp.toString().equals("")) {
-			rightTable.setValueAt("None", 3, 1);
-		} else {
-			rightTable.setValueAt(emojiProp.toString(), 3, 1);
-		}
-		if (emoticonProp.toString() == null || emoticonProp.toString().equals("")) {
-			rightTable.setValueAt("None", 4, 1);
-		} else {
-			rightTable.setValueAt(emoticonProp.toString(), 4, 1);
 		}
 	}
 
@@ -499,7 +479,7 @@ public class MainUI {
 						instance = AppCore.calculateStringPolarities(text);
 						showInstanceResults(instance);
 						rightTable.setVisible(true);
-						notificationTA.setText("Results ready");
+						notificationTA.setText("Results ready.");
 					}
 				} else { // If a folder was selected
 					AppCore.generateInstances(selectedFolder.getAbsolutePath());
