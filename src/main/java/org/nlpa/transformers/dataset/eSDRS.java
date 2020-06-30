@@ -32,7 +32,7 @@ import org.bdp4j.util.Pair;
  *
  * @author Javier Quintas Bergantiño
  */
-public class GeneralizationTransformation extends DatasetTransformer {
+public class eSDRS extends DatasetTransformer {
 
     private static final File FILE = new File("outputsyns_file.map");
     private static final Dataset.CombineOperator DEFAULT_OPERATOR = Dataset.COMBINE_SUM;
@@ -85,12 +85,12 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * Auxiliar map used to save the relationship degree between two synsets
      */
     private static Map<Pair<String, String>, Integer> degreeMap = new HashMap<>();
-   // private static Map<String, List<String>> toGeneralizePrint = new HashMap<>();
+    //private static Map<String, List<String>> toGeneralizePrint = new HashMap<>();
 
     /**
      * For logging purposes
      */
-    private static final Logger logger = LogManager.getLogger(GeneralizationTransformation.class);
+    private static final Logger logger = LogManager.getLogger(eSDRS.class);
 
     /**
      *
@@ -101,7 +101,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * @param generate decides whether output files will be generated or not
      * @param matchRate
      */
-    public GeneralizationTransformation(int degree, Dataset.CombineOperator operator, boolean generate, double matchRate) {
+    public eSDRS(int degree, Dataset.CombineOperator operator, boolean generate, double matchRate) {
         this.maxDegree = degree;
         this.combineOperator = operator;
         this.generateFiles = generate;
@@ -116,7 +116,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * @param operator the operator used to combine attributes
      * @param generate decides whether output files will be generated or not
      */
-    public GeneralizationTransformation(int degree, Dataset.CombineOperator operator, boolean generate) {
+    public eSDRS(int degree, Dataset.CombineOperator operator, boolean generate) {
         this(degree, operator, generate, DEFAULT_MATCH_RATE);
     }
 
@@ -127,7 +127,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * @param degree the max degree that will be allowed
      * @param operator the operator used to combine attributes
      */
-    public GeneralizationTransformation(int degree, Dataset.CombineOperator operator) {
+    public eSDRS(int degree, Dataset.CombineOperator operator) {
         this(degree, operator, true, DEFAULT_MATCH_RATE);
     }
 
@@ -137,7 +137,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      *
      * @param degree the max degree that will be allowed
      */
-    public GeneralizationTransformation(int degree) {
+    public eSDRS(int degree) {
         this(degree, DEFAULT_OPERATOR, true, DEFAULT_MATCH_RATE);
     }
 
@@ -147,7 +147,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      *
      * @param operator the operator used to combine attributes
      */
-    public GeneralizationTransformation(Dataset.CombineOperator operator) {
+    public eSDRS(Dataset.CombineOperator operator) {
         this(DEFAULT_DEGREE, operator, true, DEFAULT_MATCH_RATE);
     }
 
@@ -155,7 +155,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * Default constructor.
      *
      */
-    public GeneralizationTransformation() {
+    public eSDRS() {
         this(DEFAULT_DEGREE, DEFAULT_OPERATOR, true, DEFAULT_MATCH_RATE);
     }
 
@@ -237,7 +237,6 @@ public class GeneralizationTransformation extends DatasetTransformer {
         long startTime = System.currentTimeMillis();
 
         //Dataset dataset = dataset;
-
         logger.info("Dataset loaded");
 
         //Filter Dataset columns
@@ -265,7 +264,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
             //Generalize synsets with those that appear on its hypernym list and distance <= maxDegree
             dataset = generalizeVertically(synsetList, dataset);
 
-            Map<String, List<String>> evaluationResult = evaluate(dataset, cachedHypernyms);
+            Map<String, List<String>> evaluationResult = evaluate(dataset);
             synsetsToGeneralize.putAll(evaluationResult);
 
             dataset = generalizeHorizontally(dataset, synsetsToGeneralize);
@@ -295,7 +294,6 @@ public class GeneralizationTransformation extends DatasetTransformer {
         logger.info("Execution time in milliseconds: " + (endTime - startTime));
 
         return dataset;
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -314,7 +312,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
         for (String synset : synsetList) {
             if (!cachedBabelUtils.existsSynsetInMap(synset)) {
                 cachedBabelUtils.addSynsetToCache(synset, BabelUtils.getDefault().getAllHypernyms(synset));
-                logger.info("Adding " + synset);
+//                logger.info("Adding " + synset);
 
                 for (String h : cachedBabelUtils.getCachedSynsetHypernymsList(synset)) {
                     if (!cachedBabelUtils.existsSynsetInMap(h)) {
@@ -340,7 +338,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
 
         if (!cachedBabelUtils.existsSynsetInMap(synset)) {
             cachedBabelUtils.addSynsetToCache(synset, BabelUtils.getDefault().getAllHypernyms(synset));
-            logger.info("Adding " + synset);
+//            logger.info("Adding " + synset);
 
             for (String hypernym : cachedBabelUtils.getCachedSynsetHypernymsList(synset)) {
                 if (!cachedBabelUtils.existsSynsetInMap(hypernym)) {
@@ -367,17 +365,17 @@ public class GeneralizationTransformation extends DatasetTransformer {
         return cachedHypernyms.get(synset);
     }
 
-    private float computePercentage(String evaluatedSynset, Dataset dataset) {
+    private float computeSpamPercentage(String evaluatedSynset, Dataset dataset) {
 
         String evaluatedSynsetExpression = String.format(GENERAL_EXPRESSION, evaluatedSynset);
 
         Map<String, Integer> evaluatedSynsetResult = dataset.evaluateColumns(evaluatedSynsetExpression,
-                int.class,
+                Integer.class,
                 new String[]{evaluatedSynset},
                 new Class[]{double.class},
                 "target");
-        float ham = (float) evaluatedSynsetResult.get("0");
-        float spam = (float) evaluatedSynsetResult.get("1");
+        float ham = evaluatedSynsetResult.get("0").floatValue();
+        float spam = evaluatedSynsetResult.get("1").floatValue();
 
         return (spam / (ham + spam));
     }
@@ -397,18 +395,16 @@ public class GeneralizationTransformation extends DatasetTransformer {
 
         for (String evaluatedSynset : synsetList) {
             int evaluatedSynsetIndex = synsetList.indexOf(evaluatedSynset);
-
-            float evaluatedSynsetPercentage = computePercentage(evaluatedSynset, dataset);
+            
+            float evaluatedSynsetSpamPercentage = computeSpamPercentage(evaluatedSynset, dataset);
 
             List<String> evaluatedSynsetHypernyms = getHypernyms(evaluatedSynset);
-            if (evaluatedSynsetPercentage >= matchRate || evaluatedSynsetPercentage <= inverseMatchRate) {
+            if (evaluatedSynsetSpamPercentage >= matchRate || evaluatedSynsetSpamPercentage <= inverseMatchRate) {
                 for (String synset : synsetList.subList(evaluatedSynsetIndex + 1, synsetList.size())) {
-
                     List<String> synsetHypernyms = getHypernyms(synset);
 
                     if (synsetHypernyms.contains(evaluatedSynset) || evaluatedSynsetHypernyms.contains(synset)) {
-
-                        float percentage = computePercentage(synset, dataset);
+                        float spamPercentage = computeSpamPercentage(synset, dataset);
                         Pair<String, String> pair = new Pair<>(evaluatedSynset, synset);
 
                         if (!degreeMap.containsKey(pair)) {
@@ -416,7 +412,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
                             degreeMap.put(pair, degree);
                         }
 
-                        if ((percentage >= matchRate && evaluatedSynsetPercentage >= matchRate) || (percentage <= inverseMatchRate && evaluatedSynsetPercentage <= inverseMatchRate)) {
+                        if ((spamPercentage >= matchRate && evaluatedSynsetSpamPercentage >= matchRate) || (spamPercentage <= inverseMatchRate && evaluatedSynsetSpamPercentage <= inverseMatchRate)) {
                             Integer pairDegree = degreeMap.get(pair);
 
                             List<String> synsetsToPrint = new ArrayList<>();
@@ -424,7 +420,6 @@ public class GeneralizationTransformation extends DatasetTransformer {
                                 generalize(synset, evaluatedSynset, usedSynsets, synsetsToPrint, dataset);
                                 break;
                             } else if (synsetHypernyms.contains(evaluatedSynset) && pairDegree <= maxDegree && pairDegree >= 0) {
-
                                 generalize(evaluatedSynset, synset, usedSynsets, synsetsToPrint, dataset);
                                 keepGeneralizing = true;
                                 break;
@@ -504,45 +499,47 @@ public class GeneralizationTransformation extends DatasetTransformer {
      *
      */
     //private Map<String, List<String>> evaluate(Dataset dataset, List<String> synsetList, Map<String, List<String>> cachedHypernyms) {
-    private Map<String, List<String>> evaluate(Dataset dataset, Map<String, List<String>> cachedHypernyms) {
+    private Map<String, List<String>> evaluate(Dataset dataset) {
         Map<String, List<String>> evaluationResult = new HashMap<>();
         List<String> usedSynsets = new ArrayList<>();
         Double inverseMatchRate = 1 - matchRate;
         List<String> synsetList = dataset.filterColumnNames("^bn:");
 
-        for (String evaluatedSynset : synsetList) {
+        synsetList.forEach((evaluatedSynset) -> {
             //We get the evaluatedSynsetIndex of the synset*
             int evaluatedSynsetIndex = synsetList.indexOf(evaluatedSynset);
-            float evaluatedSynsetPercentage = computePercentage(evaluatedSynset, dataset);
+            float evaluatedSynsetSpamPercentage = computeSpamPercentage(evaluatedSynset, dataset);
             List<String> synsetsToAddList = new ArrayList<>();
 
-            if ((evaluatedSynsetPercentage >= matchRate || evaluatedSynsetPercentage <= inverseMatchRate) && !usedSynsets.contains(evaluatedSynset)) {
-                logger.info("Synset 1: " + evaluatedSynset + " -> " + evaluatedSynsetPercentage);
+            if ((evaluatedSynsetSpamPercentage >= matchRate || evaluatedSynsetSpamPercentage <= inverseMatchRate) && !usedSynsets.contains(evaluatedSynset)) {
+                logger.info("Synset 1: " + evaluatedSynset + " -> " + evaluatedSynsetSpamPercentage);
                 //Iterate through a sublist of the original synset that contains only from the next synset to evaluatedSynset onwards
                 List<String> evaluatedSynsetHypernyms = getHypernyms(evaluatedSynset);
                 for (String synset : synsetList.subList(evaluatedSynsetIndex + 1, synsetList.size())) {
 
                     List<String> synsetHypernyms = getHypernyms(synset);
                     Pair<String, String> pair = new Pair<>(evaluatedSynset, synset);
-
+                    int pairDegree;
                     if (!degreeMap.containsKey(pair)) {
-                        int degree = relationshipDegree(evaluatedSynset, synset, evaluatedSynsetHypernyms, synsetHypernyms);
-                        degreeMap.put(pair, degree);
-                    }
-                    Integer pairDegree = degreeMap.get(pair);
-                    if (pairDegree >= 0 && pairDegree <= maxDegree && !usedSynsets.contains(synset) && !evaluationResult.containsKey(evaluatedSynset)) {
+                        pairDegree = relationshipDegree(evaluatedSynset, synset, evaluatedSynsetHypernyms, synsetHypernyms);
+                        degreeMap.put(pair, pairDegree);
+                        //int degree = relationshipDegree(evaluatedSynset, synset, evaluatedSynsetHypernyms, synsetHypernyms);
+                        //degreeMap.put(pair, degree);
 
-                        float percentage = computePercentage(synset, dataset);
-                        if ((percentage >= matchRate && evaluatedSynsetPercentage >= matchRate) || (percentage <= inverseMatchRate && evaluatedSynsetPercentage <= inverseMatchRate)) {
-                            //Results from evaluating these synsets
-                            if (evaluatedSynsetHypernyms.indexOf(synsetGeneralizations.get(evaluatedSynset)) <= evaluatedSynsetHypernyms.indexOf(auxSynsetGeneralizations.get(evaluatedSynset))) {
-                                synsetGeneralizations.put(evaluatedSynset, auxSynsetGeneralizations.get(evaluatedSynset));
+                        //Integer pairDegree = degreeMap.get(pair);
+                        if (pairDegree >= 0 && pairDegree <= maxDegree && !usedSynsets.contains(synset) && !evaluationResult.containsKey(evaluatedSynset)) {
+
+                            float spamPercentage = computeSpamPercentage(synset, dataset);
+                            if ((spamPercentage >= matchRate && evaluatedSynsetSpamPercentage >= matchRate) || (spamPercentage <= inverseMatchRate && evaluatedSynsetSpamPercentage <= inverseMatchRate)) {
+                                //Results from evaluating these synsets
+                                if (evaluatedSynsetHypernyms.indexOf(synsetGeneralizations.get(evaluatedSynset)) <= evaluatedSynsetHypernyms.indexOf(auxSynsetGeneralizations.get(evaluatedSynset))) {
+                                    synsetGeneralizations.put(evaluatedSynset, auxSynsetGeneralizations.get(evaluatedSynset));
+                                }
+                                usedSynsets.add(synset);
+                                synsetsToAddList.add(synset);
+
+                                keepGeneralizing = true;
                             }
-
-                            usedSynsets.add(synset);
-                            synsetsToAddList.add(synset);
-
-                            keepGeneralizing = true;
                         }
                     }
                 }
@@ -551,7 +548,7 @@ public class GeneralizationTransformation extends DatasetTransformer {
             if (synsetsToAddList.size() > 0) {
                 evaluationResult.put(evaluatedSynset, synsetsToAddList);
             }
-        }
+        });
 
         return evaluationResult;
     }
@@ -563,13 +560,15 @@ public class GeneralizationTransformation extends DatasetTransformer {
      * @param dataset the original dataset that we want to reduce
      * @param synsetsToGeneralize map of synsets that we will be generalizing
      *
-     * @return the dataset modified and reduced according to the
-     * generalizable synsets
+     * @return the dataset modified and reduced according to the generalizable
+     * synsets
      */
     private Dataset generalizeHorizontally(Dataset dataset, Map<String, List<String>> synsetsToGeneralize) {
 
         List<String> listAttributeNameToJoin;
         for (String synset : synsetsToGeneralize.keySet()) {
+            //  toGeneralizePrint.put(synset, synsetsToGeneralize.get(synset));
+
             List<String> synsetList = dataset.filterColumnNames("^bn:");
 
             listAttributeNameToJoin = new ArrayList<>();
