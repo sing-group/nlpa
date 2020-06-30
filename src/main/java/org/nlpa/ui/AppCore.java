@@ -72,16 +72,17 @@ public class AppCore {
 	 * @param str text that will be processed
 	 * @return the instance after being processed by the pipes
 	 */
-	public static Instance calculateStringPolarities(StringBuffer str) {
+	public static Collection<Instance> calculateStringPolarities(StringBuffer str) {
 		checkDependencies();
 
 		Instance carrier = new Instance(str, "polarity", "TextPolarity", str);
+		instances.add(carrier);
 		// Create the output directory if it doesn't exist
 		File outputDirectory = new File("./output");
 		if (!outputDirectory.exists()) {
 			outputDirectory.mkdir();
 		}
-		return p.pipe(carrier);
+		return p.pipeAll(instances);
 	}
 
 	/**

@@ -182,7 +182,7 @@ public class MainUI {
 		gbcBtnPanel.gridx = 0;
 		gbcBtnPanel.gridy = 2;
 		leftPanel.add(leftBtnPanel, gbcBtnPanel);
-		leftBtnPanel.setBorder(new EmptyBorder(8, 1, 1, 1));
+		leftBtnPanel.setBorder(new EmptyBorder(5, 1, 1, 1));
 
 		// Button to start computing the input data
 		JButton startButton = new JButton("Start");
@@ -258,7 +258,7 @@ public class MainUI {
 		GridBagConstraints gbcRightResultPanel = new GridBagConstraints();
 		gbcRightResultPanel.fill = GridBagConstraints.BOTH;
 		gbcRightResultPanel.anchor = GridBagConstraints.NORTH;
-		gbcRightResultPanel.insets = new Insets(1, 0, 0, 0);
+		gbcRightResultPanel.insets = new Insets(1, 0, 3, 0);
 		gbcRightResultPanel.gridx = 0;
 		gbcRightResultPanel.gridy = 1;
 		rightResults.setLayout(new GridLayout(0, 1, 0, 0));
@@ -475,8 +475,8 @@ public class MainUI {
 						notificationTA.setText("Write a text or select a folder to process");
 					} else {
 						StringBuffer text = new StringBuffer(leftTA.getText());
-
-						instance = AppCore.calculateStringPolarities(text);
+						Object[] instancesArray = AppCore.calculateStringPolarities(text).toArray();
+						instance = (Instance) instancesArray[0]; //get the only one in the array
 						showInstanceResults(instance);
 						rightTable.setVisible(true);
 						notificationTA.setText("Results ready.");
