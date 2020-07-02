@@ -36,7 +36,7 @@ public class eSDRS extends DatasetTransformer {
 
     private static final File FILE = new File("outputsyns_file.map");
     private static final Dataset.CombineOperator DEFAULT_OPERATOR = Dataset.COMBINE_SUM;
-    private static final int DEFAULT_DEGREE = 2;
+    private static final int DEFAULT_DEGREE = 3;
     private static final double DEFAULT_MATCH_RATE = 0.99;
     /**
      * Expression needed to generalize synsets
@@ -74,6 +74,7 @@ public class eSDRS extends DatasetTransformer {
      * Map containing synsets as keys and their list of hypernyms as values
      */
     private Map<String, List<String>> cachedHypernyms;
+    CachedBabelUtils cachedH = new CachedBabelUtils();
 
     /**
      * Boolean variable needed to determine if the algorithm should keep
@@ -246,9 +247,8 @@ public class eSDRS extends DatasetTransformer {
 
         //Create a FILE that stores all the hypernyms on a map
         cachedHypernyms = readMap();
-        createCache(cachedHypernyms, synsetList);
-        cachedHypernyms = readMap();
-
+        createCache(synsetList);
+        
         Map<String, List<String>> synsetsToGeneralize = new HashMap<>();
 
         //Loop that keeps generalizing while possible
@@ -306,22 +306,23 @@ public class eSDRS extends DatasetTransformer {
      * @param synsetList list of all the synsets that we want to check if they
      * are already in disk or not
      */
-    private void createCache(Map<String, List<String>> cachedHypernyms, List<String> synsetList) {
+    private void createCache(List<String> synsetList) {
         CachedBabelUtils cachedBabelUtils = new CachedBabelUtils(cachedHypernyms);
 
+        BabelUtils bUtils = BabelUtils.getDefault();
         for (String synset : synsetList) {
             if (!cachedBabelUtils.existsSynsetInMap(synset)) {
-                cachedBabelUtils.addSynsetToCache(synset, BabelUtils.getDefault().getAllHypernyms(synset));
-//                logger.info("Adding " + synset);
+                cachedBabelUtils.addSynsetToCache(synset, bUtils.getAllHypernyms(synset));
 
-                for (String h : cachedBabelUtils.getCachedSynsetHypernymsList(synset)) {
-                    if (!cachedBabelUtils.existsSynsetInMap(h)) {
-                        cachedBabelUtils.addSynsetToCache(h, BabelUtils.getDefault().getAllHypernyms(h));
+                for (String hypernym : cachedBabelUtils.getCachedSynsetHypernymsList(synset)) {
+                    if (!cachedBabelUtils.existsSynsetInMap(hypernym)) {
+                        cachedBabelUtils.addSynsetToCache(hypernym, bUtils.getAllHypernyms(hypernym));
                     }
                 }
             }
         }
-        saveMap(cachedBabelUtils.getMapOfHypernyms());
+        cachedHypernyms = cachedBabelUtils.getMapOfHypernyms();
+        saveMap(cachedHypernyms);
 
     }
 
@@ -333,21 +334,22 @@ public class eSDRS extends DatasetTransformer {
      * saved in disk
      * @param synset synset that we want to add to disk
      */
-    private void addNewCachedSynset(Map<String, List<String>> cachedHypernyms, String synset) {
+    private List<String> addSynsetToCache(String synset) {
         CachedBabelUtils cachedBabelUtils = new CachedBabelUtils(cachedHypernyms);
-
+        BabelUtils bUtils = BabelUtils.getDefault();
+        List<String> hypernyms = null;
         if (!cachedBabelUtils.existsSynsetInMap(synset)) {
-            cachedBabelUtils.addSynsetToCache(synset, BabelUtils.getDefault().getAllHypernyms(synset));
-//            logger.info("Adding " + synset);
-
+            hypernyms = bUtils.getAllHypernyms(synset);
+            cachedBabelUtils.addSynsetToCache(synset, hypernyms);
             for (String hypernym : cachedBabelUtils.getCachedSynsetHypernymsList(synset)) {
                 if (!cachedBabelUtils.existsSynsetInMap(hypernym)) {
-                    cachedBabelUtils.addSynsetToCache(hypernym, BabelUtils.getDefault().getAllHypernyms(hypernym));
+                    cachedBabelUtils.addSynsetToCache(hypernym, bUtils.getAllHypernyms(hypernym));
                 }
             }
         }
-
-        saveMap(cachedBabelUtils.getMapOfHypernyms());
+        cachedHypernyms = cachedBabelUtils.getMapOfHypernyms();
+        saveMap(cachedHypernyms);
+        return hypernyms;
     }
 
     /**
@@ -358,11 +360,11 @@ public class eSDRS extends DatasetTransformer {
      * @return list of its hypernyms
      */
     private List<String> getHypernyms(String synset) {
-        if (!cachedHypernyms.keySet().contains(synset)) {
-            addNewCachedSynset(cachedHypernyms, synset);
-            cachedHypernyms = readMap();
+        if (cachedHypernyms.containsKey(synset)) {
+            return cachedHypernyms.get(synset);
+        } else {
+            return addSynsetToCache(synset);
         }
-        return cachedHypernyms.get(synset);
     }
 
     private float computeSpamPercentage(String evaluatedSynset, Dataset dataset) {
@@ -395,7 +397,7 @@ public class eSDRS extends DatasetTransformer {
 
         for (String evaluatedSynset : synsetList) {
             int evaluatedSynsetIndex = synsetList.indexOf(evaluatedSynset);
-            
+
             float evaluatedSynsetSpamPercentage = computeSpamPercentage(evaluatedSynset, dataset);
 
             List<String> evaluatedSynsetHypernyms = getHypernyms(evaluatedSynset);
@@ -498,7 +500,6 @@ public class eSDRS extends DatasetTransformer {
      * be generalized with it as value
      *
      */
-    //private Map<String, List<String>> evaluate(Dataset dataset, List<String> synsetList, Map<String, List<String>> cachedHypernyms) {
     private Map<String, List<String>> evaluate(Dataset dataset) {
         Map<String, List<String>> evaluationResult = new HashMap<>();
         List<String> usedSynsets = new ArrayList<>();
@@ -512,7 +513,7 @@ public class eSDRS extends DatasetTransformer {
             List<String> synsetsToAddList = new ArrayList<>();
 
             if ((evaluatedSynsetSpamPercentage >= matchRate || evaluatedSynsetSpamPercentage <= inverseMatchRate) && !usedSynsets.contains(evaluatedSynset)) {
-                logger.info("Synset 1: " + evaluatedSynset + " -> " + evaluatedSynsetSpamPercentage);
+                //logger.info("Synset 1: " + evaluatedSynset + " -> " + evaluatedSynsetSpamPercentage);
                 //Iterate through a sublist of the original synset that contains only from the next synset to evaluatedSynset onwards
                 List<String> evaluatedSynsetHypernyms = getHypernyms(evaluatedSynset);
                 for (String synset : synsetList.subList(evaluatedSynsetIndex + 1, synsetList.size())) {
@@ -523,10 +524,7 @@ public class eSDRS extends DatasetTransformer {
                     if (!degreeMap.containsKey(pair)) {
                         pairDegree = relationshipDegree(evaluatedSynset, synset, evaluatedSynsetHypernyms, synsetHypernyms);
                         degreeMap.put(pair, pairDegree);
-                        //int degree = relationshipDegree(evaluatedSynset, synset, evaluatedSynsetHypernyms, synsetHypernyms);
-                        //degreeMap.put(pair, degree);
-
-                        //Integer pairDegree = degreeMap.get(pair);
+                        
                         if (pairDegree >= 0 && pairDegree <= maxDegree && !usedSynsets.contains(synset) && !evaluationResult.containsKey(evaluatedSynset)) {
 
                             float spamPercentage = computeSpamPercentage(synset, dataset);
@@ -567,7 +565,6 @@ public class eSDRS extends DatasetTransformer {
 
         List<String> listAttributeNameToJoin;
         for (String synset : synsetsToGeneralize.keySet()) {
-            //  toGeneralizePrint.put(synset, synsetsToGeneralize.get(synset));
 
             List<String> synsetList = dataset.filterColumnNames("^bn:");
 
@@ -575,7 +572,6 @@ public class eSDRS extends DatasetTransformer {
             listAttributeNameToJoin.addAll(synsetsToGeneralize.get(synset));
             String newAttributeName = synsetGeneralizations.get(synset);
 
-            logger.info("New attribute name: " + newAttributeName + ". List to reduce: " + listAttributeNameToJoin);
             listAttributeNameToJoin.add(synset);
 
             dataset.joinAttributes(listAttributeNameToJoin, newAttributeName, combineOperator, synsetList.contains(newAttributeName));
@@ -595,17 +591,15 @@ public class eSDRS extends DatasetTransformer {
      */
     private Map<String, List<String>> readMap() {
         try {
-            //Poner aquí el nombre del fichero a cargar. Extensión ".map"
             if (!FILE.exists()) {
                 return new HashMap<>();
             }
-            HashMap<String, List<String>> mapInFile;
+
             try (FileInputStream fis = new FileInputStream(FILE);
                     ObjectInputStream ois = new ObjectInputStream(fis)) {
-                mapInFile = (HashMap<String, List<String>>) ois.readObject();
+                cachedHypernyms = (HashMap<String, List<String>>) ois.readObject();
             }
-            //print All data in MAP
-            return mapInFile;
+            return cachedHypernyms;
         } catch (Exception e) {
             logger.error("[READ]" + e.getMessage());
         }

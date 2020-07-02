@@ -81,6 +81,12 @@ public class DatasetFeatureRepresentation extends DatasetTransformer {
         this.combineOperator = combineOperator;
     }
 
+    /**
+     * Constructor
+     *
+     * @param featuresDataset Source dataset from which attributes is taken
+     * @param operator operator to indicate how to combine attribute values
+     */
     public DatasetFeatureRepresentation(Dataset featuresDataset, Dataset.CombineOperator operator) {
         this.featuresDataset = featuresDataset;
         this.combineOperator = operator;
@@ -93,20 +99,6 @@ public class DatasetFeatureRepresentation extends DatasetTransformer {
      */
     public DatasetFeatureRepresentation(Dataset featuresDataset) {
         this(featuresDataset, DEFAULT_OPERATOR);
-    }
-
-    private Object[][] addValue(Object[][] instanceList, int index, String attributeName, Object attributeValue) {
-        //System.out.println("attribute: " + attributeName + " -- " + "attributeValue: " + attributeValue);
-
-        int currenAttributePosition = featuresDataset.getWekaDataset().attribute(attributeName).index();
-        Double currentPositionValue = (Double) instanceList[index][currenAttributePosition];
-        if (featuresDataset.getWekaDataset().attribute(attributeName).isNominal()) {
-            instanceList[index][currenAttributePosition] = attributeValue.toString();
-        } else {
-            instanceList[index][currenAttributePosition] = (currentPositionValue != null && currentPositionValue > 0) ? combineOperator.combine(Double.parseDouble(attributeValue.toString()), currentPositionValue) : Double.parseDouble(attributeValue.toString());
-        }
-
-        return instanceList;
     }
 
     /**
@@ -148,10 +140,8 @@ public class DatasetFeatureRepresentation extends DatasetTransformer {
                     if (!cacheBUtils.existsSynsetInMap(attributeName)) {
                         hypernyms = butils.getAllHypernyms(attributeName);
                         cacheBUtils.addSynsetToCache(attributeName, hypernyms);
-                        //System.out.println("attributeName: " +  attributeName + " >> " + hypernyms);
                     } else {
                         hypernyms = cacheBUtils.getCachedSynsetHypernymsList(attributeName);
-                        //System.out.println("attributeName caché: " +  attributeName + " >> " + hypernyms);
                     }
 
                     for (String hypernym : hypernyms) {
@@ -182,10 +172,21 @@ public class DatasetFeatureRepresentation extends DatasetTransformer {
         Map<String, Transformer> transformersList = new HashMap<>();
         transformersList.put("date", new Date2MillisTransformer());
         transformersList.put("target", new Enum2IntTransformer(transformList));
-        
-        transformedDataset.generateARFFWithComments(transformersList, "transformedDataset.arff");
-        //dataset = transformedDataset;
+
         return transformedDataset;
+    }
+    
+    private Object[][] addValue(Object[][] instanceList, int index, String attributeName, Object attributeValue) {
+
+        int currenAttributePosition = featuresDataset.getWekaDataset().attribute(attributeName).index();
+        Double currentPositionValue = (Double) instanceList[index][currenAttributePosition];
+        if (featuresDataset.getWekaDataset().attribute(attributeName).isNominal()) {
+            instanceList[index][currenAttributePosition] = attributeValue.toString();
+        } else {
+            instanceList[index][currenAttributePosition] = (currentPositionValue != null && currentPositionValue > 0) ? combineOperator.combine(Double.parseDouble(attributeValue.toString()), currentPositionValue) : Double.parseDouble(attributeValue.toString());
+        }
+
+        return instanceList;
     }
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
