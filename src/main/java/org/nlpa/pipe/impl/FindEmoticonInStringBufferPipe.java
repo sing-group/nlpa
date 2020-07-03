@@ -30,12 +30,14 @@ import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
+import org.bdp4j.util.Pair;
 import org.nlpa.util.Trio;
 import org.bdp4j.util.EBoolean;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,12 +79,11 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
             "/emoticon-data/emoticonsID.ru.json"
         }) {
             String lang = i.substring(27, 29).toUpperCase();
-            System.out.println("Lang= " + lang);
 
             try {
 
                 System.setProperty("file.encoding", "UTF-16LE");
-                InputStream is = FindEmojiInStringBufferPipe.class.getResourceAsStream(i);
+                InputStream is = FindEmoticonInStringBufferPipe.class.getResourceAsStream(i);
                 JsonReader rdr = Json.createReader(is);
                 JsonObject jsonObject = rdr.readObject();
                 rdr.close();
@@ -226,6 +227,25 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
     }
 
     /**
+     * Establish the name of the property where the language will be stored
+     *
+     * @param langProp The name of the property where the language is stored
+     */
+    @PipeParameter(name = "langpropname", description = "Indicates the property name to store the language", defaultValue = DEFAULT_LANG_PROPERTY)
+    public void setLangProp(String langProp) {
+        this.langProp = langProp;
+    }
+
+    /**
+     * Returns the name of the property in which the language is stored
+     *
+     * @return the name of the property where the language is stored
+     */
+    public String getLangProp() {
+        return this.langProp;
+    }
+
+    /**
      * Checks wether emoticons should be replaced
      *
      * @return True if emoticons should be replaced
@@ -277,7 +297,6 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
      *
      * @param emoticonProp The name of the property to store emoticons
      * @param removeEmoticon tells if emoticons should be removed
-     * @param lang
      * @param replaceEmoticon tells if emoticons should be replaced
      * @param calculatePolarity tells if polarity should be calculated
      */
@@ -318,6 +337,9 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
             HashMap<String, Trio<Pattern, String, Double>> dict = emoticonDictionary.get(lang);
 
             if (dict == null) {
+                logger.info("Language " + carrier.getProperty(langProp) + " not supported when processing " + carrier.getName() + " in FindEmoticonInStringBufferPipe");
+                carrier.setProperty(emoticonProp, "");
+                carrier.setProperty("emoticonPolarity", 0.0);
                 return carrier; // When there is not a dictionary for the language
             }
 
@@ -330,7 +352,7 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
 
                     while (match.find(last)) {
                         last = match.start(0) + 1;
-                        // Now replaces emoji pattern by its meaning
+                        // Now replaces emoticon pattern by its meaning
                         value += emoticon;
                         sb = sb.replace(match.start(0), match.end(0), dict.get(emoticon).getObj2());
                     }
@@ -343,10 +365,11 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
 
                     while (match.find(last)) {
                         last = match.start(0) + 1;
-                        // Now replaces emoji pattern by its meaning
+                        // Now deletes emoticon pattern from text
                         value += emoticon;
-                        sb = sb.replace(match.start(0), match.end(1), "");
+                        sb = sb.replace(match.start(0), match.end(0), "");
                     }
+
                 }
             }
 
@@ -364,14 +387,19 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
                         last = match.start(0) + 1;
                         score += dict.get(emoticon).getObj3();
                         numEmoticons++;
-                        logger.info("score=" + score);
                     }
 
                 }
                 //Calculate arithmetic mean and store in a property
                 Double mean = score / (new Double(numEmoticons));
-                carrier.setProperty("polarity", mean);
-            }           
+                if (Double.isNaN(mean)) {
+                    carrier.setProperty("emoticonPolarity", 0.0);
+                } else {
+                    carrier.setProperty("emoticonPolarity", mean);
+                }
+
+            }
+
         } else {
             logger.error("Data should be an StrinBuffer when processing " + carrier.getName() + " but is a " + carrier.getData().getClass().getName());
         }
