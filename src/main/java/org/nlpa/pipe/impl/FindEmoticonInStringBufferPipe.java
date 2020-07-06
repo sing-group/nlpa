@@ -326,12 +326,6 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
             String lang = (String)carrier.getProperty(langProp);
 
             System.setProperty("file.encoding", "UTF-16LE");
-            try (FileOutputStream fw=new FileOutputStream("xxEmoti.txt")){
-                fw.write(data.getBytes("UTF-16LE"));
-                fw.flush();
-            }catch(Exception e){
-                System.err.println(e.getMessage());
-            }
 
             HashMap<String, Trio<Pattern, String, Double>> dict = emoticonDictionary.get(lang);
 

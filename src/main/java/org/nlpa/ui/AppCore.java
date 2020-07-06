@@ -74,7 +74,7 @@ public class AppCore {
 	 */
 	public static Collection<Instance> calculateStringPolarities(StringBuffer str) {
 		checkDependencies();
-
+		instances = new ArrayList<Instance>();
 		Instance carrier = new Instance(str, "polarity", "TextPolarity", str);
 		instances.add(carrier);
 		// Create the output directory if it doesn't exist

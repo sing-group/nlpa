@@ -321,21 +321,14 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     @Override
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
+        	
             String data = carrier.getData().toString();
-
-            System.setProperty("file.encoding", "UTF-16LE");
-            try (FileOutputStream fw=new FileOutputStream("xx.txt")){
-                fw.write(data.getBytes("UTF-16LE"));
-                fw.flush();
-            }catch(Exception e){
-                System.err.println(e.getMessage());
-            }
-
             String value = "";
-
             String lang = (String) carrier.getProperty(langProp);
+            
+            System.setProperty("file.encoding", "UTF-16LE");
+            
             HashMap<String, Trio<Pattern, String, Double>> dict = emojiDictionary.get(lang);
-
            
             if (dict == null){
                 logger.info("Language " + carrier.getProperty(langProp) + " not supported when processing " + carrier.getName() + " in FindEmojiInStringBufferPipe");
@@ -402,12 +395,6 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
                 }
             }
 
-            try (FileOutputStream fw2=new FileOutputStream("xxResult.txt")){
-                fw2.write(sb.toString().getBytes("UTF-16LE"));
-                fw2.flush();
-            }catch(Exception e){
-                System.err.println(e.getMessage());
-            }
             
         } else {
             logger.error("Data should be an StrinBuffer when processing " + carrier.getName() + " but is a "
