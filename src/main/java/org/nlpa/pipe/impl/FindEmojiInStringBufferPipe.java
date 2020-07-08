@@ -244,7 +244,7 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     /**
      * Indicates if emoji should be removed from data
      *
-     * @param removeEmoji True if emojis should be removed
+     * @param replaceEmoji True if emojis should be removed
      */
     @PipeParameter(name = "replaceEmoji", description = "Indicates if the emojis should be removed or not", defaultValue = DEFAULT_REPLACE_EMOJI)
     public void setReplaceEmoji(String replaceEmoji) {

@@ -54,6 +54,7 @@ public class MainUI {
 
 	/**
 	 * Launches the application.
+	 * @param args Arguments of the application
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -356,7 +357,6 @@ public class MainUI {
 	 * Updates UI to show current instance result values
 	 * 
 	 * @param instance
-	 * @throws UnsupportedEncodingException 
 	 */
 	public void showInstanceResults(Instance instance) {
 		Object emojiPolarityProperty = instance.getProperty("emojiPolarity");
