@@ -297,6 +297,7 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
      *
      * @param emoticonProp The name of the property to store emoticons
      * @param removeEmoticon tells if emoticons should be removed
+     * @param lang The name of the language used in the text
      * @param replaceEmoticon tells if emoticons should be replaced
      * @param calculatePolarity tells if polarity should be calculated
      */
@@ -327,12 +328,6 @@ public class FindEmoticonInStringBufferPipe extends AbstractPipe {
             String lang = (String) carrier.getProperty(langProp);
 
             System.setProperty("file.encoding", "UTF-16LE");
-            try (FileOutputStream fw = new FileOutputStream("xxEmoti.txt")) {
-                fw.write(data.getBytes("UTF-16LE"));
-                fw.flush();
-            } catch (Exception e) {
-                logger.error("[PIPE]" + e.getMessage());
-            }
 
             HashMap<String, Trio<Pattern, String, Double>> dict = emoticonDictionary.get(lang);
 

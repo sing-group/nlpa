@@ -35,7 +35,6 @@ import org.nlpa.util.Trio;
 
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -257,10 +256,11 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
         this.replaceEmoji = replaceEmoji;
     }
 
-     /**
+    /**
      * Indicates if polarity of emoticons should be calculated
      *
-     * @param calculatePolarity True if polarity of emoticons should be calculated
+     * @param calculatePolarity True if polarity of emoticons should be
+     * calculated
      */
     @PipeParameter(name = "calculatePolarity", description = "Indicates if polarity of emoticons should be calculated", defaultValue = DEFAULT_CALCULATE_POLARITY)
     public void setCalculatePolarity(String calculatePolarity) {
@@ -279,7 +279,7 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     /**
      * @return True if polarity should be calculated
      */
-    public boolean isCalculatePolarity() {
+    public boolean getCalculatePolarity() {
         return calculatePolarity;
     }
 
@@ -325,18 +325,11 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
     public Instance pipe(Instance carrier) {
         if (carrier.getData() instanceof StringBuffer) {
             String data = carrier.getData().toString();
+            String value = "";
+            String lang = (String) carrier.getProperty(langProp);
 
             System.setProperty("file.encoding", "UTF-16LE");
-            try (FileOutputStream fw = new FileOutputStream("xx.txt")) {
-                fw.write(data.getBytes("UTF-16LE"));
-                fw.flush();
-            } catch (Exception e) {
-                logger.error("[PIPE]"+e.getMessage());
-            }
 
-            String value = "";
-
-            String lang = (String) carrier.getProperty(langProp);
             HashMap<String, Trio<Pattern, String, Double>> dict = emojiDictionary.get(lang);
 
             if (dict == null) {
@@ -397,13 +390,6 @@ public class FindEmojiInStringBufferPipe extends AbstractPipe {
                 } else {
                     carrier.setProperty("emojiPolarity", mean);
                 }
-            }
-
-            try (FileOutputStream fw2 = new FileOutputStream("xxResult.txt")) {
-                fw2.write(sb.toString().getBytes("UTF-16LE"));
-                fw2.flush();
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
             }
 
         } else {
