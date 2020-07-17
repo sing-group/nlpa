@@ -7,9 +7,9 @@ package org.nlpa.util;
  */
 public class Trio<T1, T2, T3> {
 
-    T1 obj1;
-    T2 obj2;
-    T3 obj3;
+    private T1 obj1;
+    private T2 obj2;
+    private T3 obj3;
 
     /**
      * Constructor
