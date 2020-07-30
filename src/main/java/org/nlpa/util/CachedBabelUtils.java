@@ -2,7 +2,6 @@ package org.nlpa.util;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -12,8 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.nlpa.util.BabelUtils;
 
 /**
  *
@@ -87,7 +84,7 @@ public class CachedBabelUtils implements Serializable {
     }
 
     /**
-     * gets the hypernym of the synset n-leves abode. If the level value
+     * gets the hypernym of the synset n-leves above. If the level value
      * exceeded the number of items in the list, it returns the last available
      * item.
      *
@@ -96,12 +93,14 @@ public class CachedBabelUtils implements Serializable {
      * @return a string with the hypernym synset ID
      */
     public String getCachedHypernym(String synset, int level) {
-        if (mapOfHypernyms.get(synset) != null) {
-            int elements = (mapOfHypernyms.get(synset).size());
+        List<String> hypernymsList = mapOfHypernyms.get(synset);
+        
+        if (hypernymsList != null) {
+            int elements = (hypernymsList.size());
             if (level >= elements) {
-                return mapOfHypernyms.get(synset).get(elements - 1);
+                return hypernymsList.get(elements - 1);
             } else {
-                return mapOfHypernyms.get(synset).get(level);
+                return hypernymsList.get(level);
             }
         }
         return null;
@@ -121,16 +120,7 @@ public class CachedBabelUtils implements Serializable {
             return null;
         }
     }
-
-//    public void cachedScalateSynset (String synset, int levels) {
-//    	if (!mapOfHypernyms.containsKey(synset)) {
-//    		List<String> tmpList = new ArrayList<String>(mapOfHypernyms.get(synset));
-//    		for (int i=1; i<=levels; i++) {
-//    			tmpList.remove(0);
-//    		}
-//    		mapOfHypernyms.put(tmpList.get(0), tmpList);		
-//    	}
-//    }
+    
     /**
      * to get the Map of the class.
      *

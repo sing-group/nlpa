@@ -5,20 +5,25 @@
  */
 package org.nlpa.transformers.dataset;
 
-import com.google.common.cache.Cache;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bdp4j.transformers.attribute.Date2MillisTransformer;
 import org.bdp4j.transformers.attribute.Enum2IntTransformer;
 import org.bdp4j.types.Dataset;
 import org.bdp4j.types.DatasetTransformer;
-import org.bdp4j.types.Instance;
 import org.bdp4j.types.Transformer;
 import org.nlpa.util.BabelUtils;
 import org.nlpa.util.CachedBabelUtils;
@@ -39,11 +44,30 @@ public class DatasetFeatureRepresentation extends DatasetTransformer {
      */
     private Dataset featuresDataset;
     private static final Dataset.CombineOperator DEFAULT_OPERATOR = Dataset.COMBINE_SUM;
+    private static final File FILE = new File("outputsyns_file.map");
 
     /**
      * Combine operator to use when joining attributes
      */
     private Dataset.CombineOperator combineOperator = DEFAULT_OPERATOR;
+
+    /**
+     * Map containing synsets as keys and their list of hypernyms as values
+     */
+    private final static Map<String, List<String>> CACHED_HYPERNYMS = new HashMap<>();
+
+    /**
+     * For logging purposes
+     */
+    private static final Logger logger = LogManager.getLogger(eSDRS.class);
+
+    static {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE))) {
+            CACHED_HYPERNYMS.putAll((HashMap<String, List<String>>) ois.readObject());
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("[READ]" + e.getMessage());
+        }
+    }
 
     /**
      * Get featuresDataset attribute value
@@ -110,11 +134,10 @@ public class DatasetFeatureRepresentation extends DatasetTransformer {
      */
     @Override
     protected Dataset transformTemplate(Dataset dataset) { //(testing dataset)
-        CachedBabelUtils cacheBUtils = new CachedBabelUtils();
-
         List<String> featuresDatasetAttributes = featuresDataset.getAttributes();
         List<String> datasetAttributes = dataset.getAttributes();
-        BabelUtils butils = BabelUtils.getDefault();
+
+        createCache(datasetAttributes);
         Object[][] rowsToAdd = new Object[dataset.getInstances().size()][featuresDatasetAttributes.size()];
 
         for (int i = 0; i < dataset.getInstances().size(); i++) {
@@ -136,13 +159,7 @@ public class DatasetFeatureRepresentation extends DatasetTransformer {
                     rowsToAdd = addValue(rowsToAdd, i, attributeName, datasetAttributeValue);
                 } else {
                     // If synset does not exists in cache, get hypernyms
-                    List<String> hypernyms;
-                    if (!cacheBUtils.existsSynsetInMap(attributeName)) {
-                        hypernyms = butils.getAllHypernyms(attributeName);
-                        cacheBUtils.addSynsetToCache(attributeName, hypernyms);
-                    } else {
-                        hypernyms = cacheBUtils.getCachedSynsetHypernymsList(attributeName);
-                    }
+                    List<String> hypernyms = CACHED_HYPERNYMS.get(attributeName);
 
                     for (String hypernym : hypernyms) {
                         if (featuresDatasetAttributes.contains(hypernym)) {
@@ -175,7 +192,7 @@ public class DatasetFeatureRepresentation extends DatasetTransformer {
 
         return transformedDataset;
     }
-    
+
     private Object[][] addValue(Object[][] instanceList, int index, String attributeName, Object attributeValue) {
 
         int currenAttributePosition = featuresDataset.getWekaDataset().attribute(attributeName).index();
@@ -187,6 +204,79 @@ public class DatasetFeatureRepresentation extends DatasetTransformer {
         }
 
         return instanceList;
+    }
+
+    /**
+     *
+     * Receives a synset list and checks if they are already stored, if not,
+     * they get added to the map along with a list of its hypernyms
+     *
+     * @param cachedHypernyms contains a map with <synsets, hypernyms> already
+     * saved in disk
+     * @param synsetList list of all the synsets that we want to check if they
+     * are already in disk or not
+     */
+    private void createCache(List<String> synsetList) {
+        CachedBabelUtils cachedBabelUtils = new CachedBabelUtils(new HashMap<>(CACHED_HYPERNYMS));
+
+        BabelUtils bUtils = BabelUtils.getDefault();
+        for (String synset : synsetList) {
+            if (!cachedBabelUtils.existsSynsetInMap(synset)) {
+                cachedBabelUtils.addSynsetToCache(synset, bUtils.getAllHypernyms(synset));
+
+                for (String hypernym : cachedBabelUtils.getCachedSynsetHypernymsList(synset)) {
+                    if (!cachedBabelUtils.existsSynsetInMap(hypernym)) {
+                        cachedBabelUtils.addSynsetToCache(hypernym, bUtils.getAllHypernyms(hypernym));
+                    }
+                }
+            }
+        }
+
+        CACHED_HYPERNYMS.clear();
+        CACHED_HYPERNYMS.putAll(cachedBabelUtils.getMapOfHypernyms());
+        saveCachedHypernyms();
+    }
+
+    /**
+     *
+     * Adds a new synset to the map saved in disk
+     *
+     * @param cachedHypernyms contains a map with <synsets, hypernyms> already
+     * saved in disk
+     * @param synset synset that we want to add to disk
+     */
+    private List<String> addSynsetToCache(String synset) {
+        CachedBabelUtils cachedBabelUtils = new CachedBabelUtils(new HashMap<>(CACHED_HYPERNYMS));
+        BabelUtils bUtils = BabelUtils.getDefault();
+        List<String> hypernyms = null;
+        if (!cachedBabelUtils.existsSynsetInMap(synset)) {
+            hypernyms = bUtils.getAllHypernyms(synset);
+            cachedBabelUtils.addSynsetToCache(synset, hypernyms);
+            for (String hypernym : cachedBabelUtils.getCachedSynsetHypernymsList(synset)) {
+                if (!cachedBabelUtils.existsSynsetInMap(hypernym)) {
+                    cachedBabelUtils.addSynsetToCache(hypernym, bUtils.getAllHypernyms(hypernym));
+                }
+            }
+        }
+
+        CACHED_HYPERNYMS.clear();
+        CACHED_HYPERNYMS.putAll(cachedBabelUtils.getMapOfHypernyms());
+        return hypernyms;
+    }
+
+    /**
+     *
+     * Saves a map containing synsets and their hypernyms in a FILE
+     *
+     * @param mapOfHypernyms Map containing every synset (key) and a list of its
+     * hypernyms (values)
+     */
+    private static void saveCachedHypernyms() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE))) {
+            oos.writeObject(CACHED_HYPERNYMS);
+        } catch (Exception e) {
+            logger.error("[SAVE MAP]" + e.getMessage());
+        }
     }
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
@@ -240,11 +330,10 @@ public class DatasetFeatureRepresentation extends DatasetTransformer {
         DatasetFeatureRepresentation dfr = new DatasetFeatureRepresentation(generalizatedDataset);
 
         Dataset newDataset = dfr.transform(testingDataset);
-        
+
         testingDataset.generateARFFWithComments(transformersList, "testingDataset.arff");
         generalizatedDataset.generateARFFWithComments(transformersList, "generalizatedDataset.arff");
         newDataset.generateARFFWithComments(transformersList, "newDataset.arff");
-                
 
     }
 
