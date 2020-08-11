@@ -185,9 +185,7 @@ public class ComputePolarityFromStringBufferPipe extends AbstractPipe {
 
     /**
      * Checks if the given word is a n-gram
-     *
-     * @param word
-     *
+     * @param word The workd which is studied
      * @return true if the word is a n-gram, false in the other case
      */
     public static boolean isNgram(String word) {

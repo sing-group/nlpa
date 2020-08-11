@@ -18,7 +18,7 @@ import com.google.auto.service.AutoService;
  * This pipe compute the compression ratio between the original text size and the compressed text size.
  * 
  * The compute is based on the next article: 
- * Ntoulas, & Alexandros, & Najork, & Marc, & Manasse, Mark & Mark, & Fetterly, & Dennis,. (2006).
+ * Ntoulas, &amp; Alexandros, &amp; Najork, &amp; Marc, &amp; Manasse, Mark &amp; Mark, &amp; Fetterly, &amp; Dennis,. (2006).
  * Detecting Spam Web Pages through Content Analysis. Proceedings of the 15th International World 
  * Wide Web Conference (WWW). DOI: 10.1145/1135777.1135794. 
  *

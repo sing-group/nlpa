@@ -35,7 +35,7 @@ import org.nlpa.util.Trio;
  * dimensionality of a dataset based on the synsets it contains. This is
  * achieved through the generalization of similar synsets. Two synsets are
  * considered similar if they are not too far away from each other and they both
- * have a similar ham/spam rate (>= 90% or <= 10%)
+ * have a similar ham/spam rate (&gt;= 90% or &lt;= 10%)
  *
  * @author Javier Quintas Bergantiño
  */
@@ -125,7 +125,7 @@ public class eSDRS extends DatasetTransformer {
      * @param degree the max degree that will be allowed
      * @param operator the operator used to combine attributes
      * @param generate decides whether output files will be generated or not
-     * @param matchRate
+     * @param matchRate the match rate
      */
     public eSDRS(int degree, Dataset.CombineOperator operator, boolean generate, double matchRate) {
         this.maxDegree = degree;
