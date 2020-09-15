@@ -21,6 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
+import java.util.function.DoublePredicate;
+import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
 import java.util.logging.Level;
 import java.util.stream.IntStream;
 
@@ -314,7 +317,7 @@ public class eSDRS extends DatasetTransformer {
         createCache(synsetList);
         logger.info("Cache created");
 
-        Map<String, List<String>> synsetsToGeneralize = new HashMap<>();
+        Map<String, Set<String>> synsetsToGeneralize = new HashMap<>();
 
         //Loop that keeps generalizing while possible
         do {
@@ -329,23 +332,30 @@ public class eSDRS extends DatasetTransformer {
             try {
                 //Generalize synsets with those that appear on its hypernym list and distance <= maxDegree
                 dataset = generalizeVertically(synsetList, dataset);
-            } catch (ExecutionException ex) {
-                java.util.logging.Logger.getLogger(eSDRS.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                logger.error("[GENERALIZE VERTICALLY]" + ex);
+                ex.printStackTrace();
             }
             logger.info("End generalizeVertically");
 
             logger.info("Start evaluate");
-            Map<String, List<String>> evaluationResult;
+            Map<String, Set<String>> evaluationResult;
             try {
                 evaluationResult = evaluate(dataset);
                 synsetsToGeneralize.putAll(evaluationResult);
-            } catch (ExecutionException ex) {
-                java.util.logging.Logger.getLogger(eSDRS.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                logger.error("[EVALUATE]" + ex);
+                ex.printStackTrace();
             }
 
             logger.info("End evaluate");
             logger.info("Start generalizeHorizontally");
-            dataset = generalizeHorizontally(dataset, synsetsToGeneralize);
+            try {
+                dataset = generalizeHorizontally(dataset, synsetsToGeneralize);
+            } catch (Exception ex) {
+                logger.error("[GENERALIZE HORIZONTALLY]" + ex);
+                ex.printStackTrace();
+            }
             logger.info("End generalizeHorizontally");
             synsetList = dataset.filterColumnNames("^bn:");
 
@@ -458,6 +468,7 @@ public class eSDRS extends DatasetTransformer {
                 "target");
         double ham = evaluatedSynsetResult.get("0").doubleValue();
         double spam = evaluatedSynsetResult.get("1").doubleValue();
+
         return (spam / (ham + spam));
     }
 
@@ -502,7 +513,6 @@ public class eSDRS extends DatasetTransformer {
                     .toArray(Trio[]::new);
         }
         for (int i = 0; i < synsetsData.length - 1; i++) {
-            logger.info(i);
             String evaluatedSynset = synsetsData[i].getObj1();
 
             List<String> evaluatedSynsetHypernyms = synsetsData[i].getObj2();
@@ -513,16 +523,24 @@ public class eSDRS extends DatasetTransformer {
 
                 if (synsetHypernyms.contains(evaluatedSynset) || evaluatedSynsetHypernyms.contains(synset)) {
                     Pair<String, String> pair = new Pair<>(evaluatedSynset, synset);
-                    int pairDegree = degreeMap.computeIfAbsent(pair, p -> relationshipDegree(evaluatedSynset, synset, evaluatedSynsetHypernyms, synsetHypernyms, synsetList, synsetsData));
-                    List<String> synsetsToPrint = new ArrayList<>();
-                    if (pairDegree <= maxDegree && pairDegree >= 0) {
-                        if (evaluatedSynsetHypernyms.contains(synset)) {
-                            generalize(synset, evaluatedSynset, usedSynsets, synsetsToPrint, dataset);
-                            break;
-                        } else if (synsetHypernyms.contains(evaluatedSynset)) {
-                            generalize(evaluatedSynset, synset, usedSynsets, synsetsToPrint, dataset);
-                            keepGeneralizing = true;
-                            break;
+                    HypernymAndDegree hypernymAndDegree = relationshipDegree(evaluatedSynset, synset, evaluatedSynsetHypernyms, synsetHypernyms, synsetList, synsetsData);
+                    if (hypernymAndDegree != null) {
+                        int pairDegree = degreeMap.computeIfAbsent(pair, p -> hypernymAndDegree.getDegree());
+                        String hypernym = hypernymAndDegree.getHypernym();
+                        List<String> synsetsToPrint = new ArrayList<>();
+                        if (pairDegree <= maxDegree && pairDegree > 0) {
+                            if (!evaluatedSynset.equals(hypernym) && hypernym != null) {
+                                auxSynsetGeneralizations.put(evaluatedSynset, hypernym);
+                            }
+                            if (evaluatedSynsetHypernyms.contains(synset)) {
+                                generalize(synset, evaluatedSynset, usedSynsets, synsetsToPrint, dataset);
+                                break;
+                            } else if (synsetHypernyms.contains(evaluatedSynset)) {
+                                generalize(evaluatedSynset, synset, usedSynsets, synsetsToPrint, dataset);
+                                keepGeneralizing = true;
+                                break;
+                            }
+
                         }
                     }
                 }
@@ -537,7 +555,6 @@ public class eSDRS extends DatasetTransformer {
             boolean synsetIsUsed = usedSynsets.contains(hypernym);
 
             synsetGeneralizations.put(synset, hypernym);
-
             synsetsToPrint.add(hypernym);
 
             List<String> listAttributeNameToJoin = new ArrayList<>();
@@ -545,13 +562,32 @@ public class eSDRS extends DatasetTransformer {
             listAttributeNameToJoin.add(hypernym);
 
             SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
-            System.out.print("Join Attributes Vertically " + format.format(new Date()));
+            String before = format.format(new Date());
             dataset.joinAttributes(listAttributeNameToJoin, hypernym, combineOperator, !synsetIsUsed);
-            System.out.println(" - " + format.format(new Date()));
+            System.out.println("V: " + hypernym + ": " + listAttributeNameToJoin + ".  From " + before + " to " + format.format(new Date()));
 
             usedSynsets.add(synset);
         } catch (Exception ex) {
             logger.warn("[GENERALIZE] " + ex.getMessage(), ex);
+        }
+    }
+
+    private static class HypernymAndDegree {
+
+        private String hypernym;
+        private int degree;
+
+        public HypernymAndDegree(String hypernym, int degree) {
+            this.hypernym = hypernym;
+            this.degree = degree;
+        }
+
+        public String getHypernym() {
+            return hypernym;
+        }
+
+        public int getDegree() {
+            return degree;
         }
     }
 
@@ -564,59 +600,74 @@ public class eSDRS extends DatasetTransformer {
      * @param synset1Hypernyms list containing all the hypernyms of synset1
      * @param synset2Hypernyms list containing all the hypernyms of synset2
      *
-     * @return degree of relationship between both synsets
+     * @return hypernym and degree of relationship between both synsets
      *
      */
-    private int relationshipDegree(String synset1, String synset2,
+    private HypernymAndDegree relationshipDegree(
+            String synset1, String synset2,
             List<String> synset1Hypernyms, List<String> synset2Hypernyms, List<String> synsetList,
-            Trio<String, List<String>, Double>[] synsetsData) {
+            Trio<String, List<String>, Double>[] synsetsData
+    ) {
+        String hypernym = null;
+        List<String> synsetPath = null;
 
-        if (synset1Hypernyms.isEmpty()) {
-            return Integer.MIN_VALUE;
-        }
+        if (synset1.equals(synset2)) {
+            return new HypernymAndDegree(synset1, 0);
+        } else if (synset2Hypernyms.contains(synset1)) {
+            hypernym = synset1;
+            synsetPath = synset2Hypernyms.subList(0, synset2Hypernyms.indexOf(synset1) + 1);
+        } else if (synset1Hypernyms.contains(synset2)) {
+            hypernym = synset2;
+            synsetPath = synset1Hypernyms.subList(0, synset1Hypernyms.indexOf(synset2) + 1);
+        } else {
+            common_hypernym:
+            for (int i = 1; i < synset1Hypernyms.size(); i++) {
+                String hypernym1 = synset1Hypernyms.get(i);
+                for (int j = 1; j < synset2Hypernyms.size(); j++) {
+                    String hypernym2 = synset2Hypernyms.get(j);
 
-        double inverseMatchRate = 1 - matchRate;
-        int positionSynset1 = synsetList.indexOf(synset1);
-        int positionSynset2 = synsetList.indexOf(synset2);
-        double spamPercentageSynset1 = synsetsData[positionSynset1].getObj3();
-        double spamPercentageSynset2 = synsetsData[positionSynset2].getObj3();
-        if ((spamPercentageSynset1 >= matchRate && spamPercentageSynset2 >= matchRate) || (spamPercentageSynset1 <= inverseMatchRate && spamPercentageSynset2 <= inverseMatchRate)) {
-            String firstSynset1Hypernym = synset1Hypernyms.get(0);
-            int index;
-            double firstSynset1HypernymSpamPercentage = (synsetList.indexOf(firstSynset1Hypernym) >= 0) ? synsetsData[synsetList.indexOf(firstSynset1Hypernym)].getObj3() : spamPercentageSynset1;
-            // synset2 father of synset1
-
-            if (firstSynset1Hypernym.equals(synset2) && ((firstSynset1HypernymSpamPercentage >= matchRate && spamPercentageSynset1 >= matchRate) || (firstSynset1HypernymSpamPercentage <= inverseMatchRate && spamPercentageSynset2 <= inverseMatchRate))) {
-//                System.out.println("1. " + synset1 + ": " + synset1Hypernyms + " - % " + spamPercentageSynset1);
-//                System.out.println("2. " + synset2 + " - % " + spamPercentageSynset2);
-                auxSynsetGeneralizations.put(synset1, firstSynset1Hypernym);
-                return 1;
-            } else if ((index = synset2Hypernyms.indexOf(firstSynset1Hypernym)) >= 0) { // synset2 hypernyms contains father of synset1
-                boolean sameClass = true;
-                for (int i = 0; i <= index; i++) {
-                    String currentSynset = synset2Hypernyms.get(i);
-                    double currentSynsetSpamPercentage = (synsetList.indexOf(currentSynset) >= 0) ? synsetsData[synsetList.indexOf(currentSynset)].getObj3() : firstSynset1HypernymSpamPercentage;
-                    if ((currentSynsetSpamPercentage >= matchRate && firstSynset1HypernymSpamPercentage < matchRate) || (currentSynsetSpamPercentage < inverseMatchRate && firstSynset1HypernymSpamPercentage >= inverseMatchRate)) {
-                        sameClass = false;
-                        break;
-                    } else {
-//                        System.out.println("3. " + firstSynset1Hypernym + " - % " + firstSynset1HypernymSpamPercentage);
-//                        System.out.println("4. " + currentSynset + " - % " + currentSynsetSpamPercentage);
+                    if (hypernym1.equals(hypernym2)) {
+                        hypernym = hypernym1;
+                        synsetPath = new ArrayList<>();
+                        synsetPath.addAll(synset1Hypernyms.subList(0, i + 1));
+                        synsetPath.addAll(synset2Hypernyms.subList(0, j));
+                        break common_hypernym;
                     }
-
                 }
-
-                if (sameClass) {
-                    auxSynsetGeneralizations.put(synset1, firstSynset1Hypernym);
-                    return synset2Hypernyms.indexOf(firstSynset1Hypernym);
-                }
-            } else {
-                return 1 + relationshipDegree(synset1, synset2,
-                        synset1Hypernyms.subList(1, synset1Hypernyms.size()),
-                        synset2Hypernyms, synsetList, synsetsData);
             }
         }
-        return Integer.MIN_VALUE;
+
+        if (synsetPath == null || hypernym == null) {
+            return null;
+        } else {
+            ToDoubleFunction<String> getSpamPercentage = synset -> {
+                int index = synsetList.indexOf(synset);
+                return index >= 0 ? synsetsData[index].getObj3() : Double.NaN;
+            };
+
+            double synset1SpamPercentage = getSpamPercentage.applyAsDouble(synset1);
+
+            final double inverseMatchRate = 1 - matchRate;
+            if (synset1SpamPercentage < matchRate && synset1SpamPercentage > inverseMatchRate) {
+                return null;
+            }
+
+            Predicate<String> hasSameClassAsSynset1 = synset -> {
+                double spamPercentage = getSpamPercentage.applyAsDouble(synset);
+
+                return Double.isNaN(spamPercentage)
+                        || (synset1SpamPercentage >= matchRate && spamPercentage >= matchRate)
+                        || (synset1SpamPercentage <= inverseMatchRate && spamPercentage <= inverseMatchRate);
+            };
+
+            for (String synset : synsetPath.subList(1, synsetPath.size())) {
+                if (!hasSameClassAsSynset1.test(synset)) {
+                    return null;
+                }
+            }
+
+            return new HypernymAndDegree(hypernym, synsetPath.size() - 1);
+        }
     }
 
     /**
@@ -632,8 +683,8 @@ public class eSDRS extends DatasetTransformer {
      * be generalized with it as value
      *
      */
-    private Map<String, List<String>> evaluate(Dataset dataset) throws ExecutionException {
-        Map<String, List<String>> evaluationResult = new HashMap<>();
+    private Map<String, Set<String>> evaluate(Dataset dataset) throws ExecutionException {
+        Map<String, Set<String>> evaluationResult = new HashMap<>();
         Set<String> usedSynsets = new HashSet<>();
         List<String> synsetList = dataset.filterColumnNames("^bn:");
         Trio<String, List<String>, Double>[] synsetsData;
@@ -645,11 +696,11 @@ public class eSDRS extends DatasetTransformer {
                     .map(synset -> new Trio<>(synset, CACHED_HYPERNYMS.get(synset), computeSpamPercentage(synset, dataset)))
                     .toArray(Trio[]::new);
         }
+
+        System.out.println("synsetsData.length: " + synsetsData.length);
         for (int i = 0; i < synsetsData.length - 1; i++) {
             String evaluatedSynset = synsetsData[i].getObj1();
-
-            List<String> synsetsToAddList = new ArrayList<>();
-
+            Set<String> synsetsToAddList = new HashSet<>();
             if (!usedSynsets.contains(evaluatedSynset)) {
                 List<String> evaluatedSynsetHypernyms = synsetsData[i].getObj2();
                 for (int j = i + 1; j < synsetsData.length; j++) {
@@ -657,16 +708,22 @@ public class eSDRS extends DatasetTransformer {
                     List<String> synsetHypernyms = synsetsData[j].getObj2();
                     Pair<String, String> pair = new Pair<>(evaluatedSynset, synset);
 
-                    int pairDegree = degreeMap.computeIfAbsent(pair, p -> relationshipDegree(evaluatedSynset, synset, evaluatedSynsetHypernyms, synsetHypernyms, synsetList, synsetsData));
+                    HypernymAndDegree hypernymandDegree = relationshipDegree(evaluatedSynset, synset, evaluatedSynsetHypernyms, synsetHypernyms, synsetList, synsetsData);
+                    if (hypernymandDegree != null) {
+                        int pairDegree = degreeMap.computeIfAbsent(pair, p -> hypernymandDegree.getDegree());
+                        String hypernym = hypernymandDegree.getHypernym();
+                        if (pairDegree > 0 && pairDegree <= maxDegree && !usedSynsets.contains(synset) && !evaluationResult.containsKey(evaluatedSynset)) {
+                            auxSynsetGeneralizations.put(evaluatedSynset, hypernym);
+                            String auxEvaluatedSynset = auxSynsetGeneralizations.get(evaluatedSynset);
 
-                    if (pairDegree >= 0 && pairDegree <= maxDegree && !usedSynsets.contains(synset) && !evaluationResult.containsKey(evaluatedSynset)) {
-                        if (evaluatedSynsetHypernyms.indexOf(synsetGeneralizations.get(evaluatedSynset)) <= evaluatedSynsetHypernyms.indexOf(auxSynsetGeneralizations.get(evaluatedSynset))) {
-                            synsetGeneralizations.put(evaluatedSynset, auxSynsetGeneralizations.get(evaluatedSynset));
+                            if ((evaluatedSynsetHypernyms.indexOf(synsetGeneralizations.get(evaluatedSynset)) <= evaluatedSynsetHypernyms.indexOf(auxEvaluatedSynset)) && auxEvaluatedSynset != null) {
+                                synsetGeneralizations.put(evaluatedSynset, auxEvaluatedSynset);
+                            }
+                            usedSynsets.add(synset);
+                            synsetsToAddList.add(synset);
+
+                            keepGeneralizing = true;
                         }
-                        usedSynsets.add(synset);
-                        synsetsToAddList.add(synset);
-
-                        keepGeneralizing = true;
                     }
                 }
             }
@@ -688,7 +745,7 @@ public class eSDRS extends DatasetTransformer {
      * @return the dataset modified and reduced according to the generalizable
      * synsets
      */
-    private Dataset generalizeHorizontally(Dataset dataset, Map<String, List<String>> synsetsToGeneralize) {
+    private Dataset generalizeHorizontally(Dataset dataset, Map<String, Set<String>> synsetsToGeneralize) {
 
         List<String> listAttributeNameToJoin;
         for (String synset : synsetsToGeneralize.keySet()) {
@@ -699,14 +756,14 @@ public class eSDRS extends DatasetTransformer {
 
             listAttributeNameToJoin.add(synset);
 
-            SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
-            System.out.print("JoinAttributes Horizontally " + format.format(new Date()));
-            dataset.joinAttributes(listAttributeNameToJoin, newAttributeName, combineOperator, synsetList.contains(newAttributeName));
-            System.out.println(" - " + format.format(new Date()));
+            if (newAttributeName != null && !listAttributeNameToJoin.isEmpty()) {
+                SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
+                String before = format.format(new Date());
+                dataset.joinAttributes(listAttributeNameToJoin, newAttributeName, combineOperator, synsetList.contains(newAttributeName));
+                System.out.println("H: " + newAttributeName + ": " + listAttributeNameToJoin + ".  From " + before + " to " + format.format(new Date()));
+            }
         }
-
         logger.info("[generalizeHorizontally] Number of features after reducing: " + dataset.filterColumnNames("^bn:").size());
-
         return dataset;
     }
 
