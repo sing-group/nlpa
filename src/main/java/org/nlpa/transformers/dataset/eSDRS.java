@@ -365,7 +365,6 @@ public class eSDRS extends DatasetTransformer {
 //        for (Map.Entry<String, Double> entry : generalizatedSynsetsWithClass.entrySet()) {
 //            System.out.println(entry.getKey() + ": " + entry.getValue());
 //        }
-
         if (generateFiles) {
             Calendar fecha = Calendar.getInstance();
             int ano = fecha.get(Calendar.YEAR);
@@ -466,7 +465,7 @@ public class eSDRS extends DatasetTransformer {
                 .toArray(Trio[]::new);
     }
 
-    Trio<String, List<String>, Double>[] getSynsetsData(List<String> synsetList, Dataset dataset) throws ExecutionException {
+    private Trio<String, List<String>, Double>[] getSynsetsData(List<String> synsetList, Dataset dataset) throws ExecutionException {
         ForkJoinPool forkJoinPool = new ForkJoinPool(maxThreads);
         try {
             return forkJoinPool.submit(() -> getSynsetsDataInParallel(synsetList, dataset))
@@ -658,7 +657,6 @@ public class eSDRS extends DatasetTransformer {
             };
 
             double synset1SpamPercentage = getSpamPercentage.applyAsDouble(synset1);
-
             final double inverseMatchRate = 1 - matchRate;
             if (synset1SpamPercentage < matchRate && synset1SpamPercentage > inverseMatchRate) {
                 return null;

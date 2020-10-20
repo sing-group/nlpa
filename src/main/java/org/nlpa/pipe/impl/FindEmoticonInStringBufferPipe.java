@@ -30,14 +30,11 @@ import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
-import org.bdp4j.util.Pair;
 import org.nlpa.util.Trio;
 import org.bdp4j.util.EBoolean;
 
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
