@@ -109,6 +109,7 @@ License along with this program.  If not, see
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <!--
         <repository>
             <id>spring-maven</id>
             <name>Spring Maven</name>
@@ -121,6 +122,20 @@ License along with this program.  If not, see
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        -->
+        <repository>
+            <id>jcenter-maven</id>
+            <name>JCenter Repository</name>
+            <url>https://jcenter.bintray.com/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
         <repository>
             <id>sing-maven-releases</id>
             <name>SING Maven Releases</name>
