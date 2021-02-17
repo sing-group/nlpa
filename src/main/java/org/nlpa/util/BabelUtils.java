@@ -22,7 +22,10 @@
 package org.nlpa.util;
 
 import org.bdp4j.util.Pair;
-
+import org.nlpa.util.babelnet.KnowledgeBase;
+import org.nlpa.util.babelnet.KnowledgeGraph;
+import org.nlpa.util.babelnet.KnowledgeGraphFactory;
+import org.nlpa.util.babelnet.KnowledgeGraphScorer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,6 +45,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
+import java.io.IOException;
+
+import it.uniroma1.lcl.jlt.ling.Word;
+import it.uniroma1.lcl.jlt.util.ScoredItem;
+
 
 /**
  * This class encapsulates all required information to support Babelfy and
@@ -421,4 +430,53 @@ public class BabelUtils {
         }
         return returnValue;
     }
+
+    /**
+     * Build a list of sysntets from a text
+     *
+     * @param fixedText The text to be transformed into synsets
+     * @param lang The language to identify the synsets
+     * @return A vector of synsets. Each synset is represented in a pair (S,T)
+     * where S stands for the synset ID and T for the text that matches this
+     * synset ID
+     */
+    public ArrayList<Pair<String, String>> buildSynsetSequence2(String fixedText, String lang) {
+        //http://www.smo.uhi.ac.uk/~oduibhin/oideasra/interfaces/winbabelnet.htm
+        List<Word> words=new ArrayList<>();
+        StringTokenizer st=new StringTokenizer(fixedText);
+        while(st.hasMoreTokens())
+            words.add(new Word(st.nextToken()));
+
+        //KnowledgeConfiguration kbConfig=KnowledgeConfiguration.getInstance();
+        try{
+            KnowledgeGraphFactory factory = KnowledgeGraphFactory.getInstance(KnowledgeBase.BABELNET);
+            KnowledgeGraph kGraph = factory.getKnowledgeGraph(words);
+            KnowledgeGraphScorer scorer=KnowledgeGraphScorer.DEGREE;
+            
+            Map<String, Double> scores = scorer.score(kGraph);
+            for (String concept : scores.keySet()) {
+                double score = scores.get(concept);
+                for (Word word : kGraph.wordsForConcept(concept))
+                    word.addLabel(concept, score);
+            }
+            for (Word word : words) {
+                System.out.println("\n\t" + word.getWord() + " -- ID " + word.getId() +" => SENSE DISTRIBUTION: ");
+                for (ScoredItem<String> label : word.getLabels()) {
+                    System.out.println("\t [" + label.getItem() + "]:" +/*String.format(*/label.getScore()/*)*/);
+                }
+            }
+            return null;
+        }catch(IOException e){
+            return null;
+        }
+    }
+
+	public static void main(String args[]){
+		ArrayList<Pair<String, String>> result=BabelUtils.getDefault().buildSynsetSequence2("This is an example of text", "EN");
+
+        for (Pair<String,String> current: result){
+            System.out.println(""+current.getObj1()+"->"+current.getObj2());
+        }
+	}
+
 }
