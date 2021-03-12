@@ -137,37 +137,45 @@ public class DatasetFeatureRepresentation extends DatasetTransformer {
         List<String> featuresDatasetAttributes = featuresDataset.getAttributes();
         List<String> datasetAttributes = dataset.getAttributes();
 
-        createCache(datasetAttributes);
+        createCache(dataset.filterColumnNames("^bn"));
         Object[][] rowsToAdd = new Object[dataset.getInstances().size()][featuresDatasetAttributes.size()];
 
         for (int i = 0; i < dataset.getInstances().size(); i++) {
             for (int a = 0; a < datasetAttributes.size(); a++) {
                 // If featureDataset contains current attribute, set value to transformedDataset
                 String attributeName = datasetAttributes.get(a);
-                Object datasetAttributeValue = null;
+
+                Object datasetAttributeValue = 0;
                 if (attributeName.equals("target")) {
                     for (int v = 0; v < dataset.getInstances().get(i).attribute(a).numValues(); v++) {
                         if (Double.parseDouble(dataset.getInstances().get(i).attribute(a).value(v)) == dataset.getInstances().get(i).value(a)) {
                             datasetAttributeValue = dataset.getInstances().get(i).attribute(a).value(v);
                         }
                     }
+                } else if (attributeName.equals("id")) {
+                    datasetAttributeValue = dataset.getInstances().get(i).stringValue(a);
                 } else {
                     datasetAttributeValue = dataset.getInstances().get(i).value(a);
                 }
-
                 if (featuresDatasetAttributes.contains(attributeName)) {
                     rowsToAdd = addValue(rowsToAdd, i, attributeName, datasetAttributeValue);
                 } else {
                     // If synset does not exists in cache, get hypernyms
                     List<String> hypernyms = CACHED_HYPERNYMS.get(attributeName);
-
                     for (String hypernym : hypernyms) {
                         if (featuresDatasetAttributes.contains(hypernym)) {
                             rowsToAdd = addValue(rowsToAdd, i, hypernym, datasetAttributeValue);
-                            System.out.println("synset : " + attributeName + " - hypernym: " + hypernym);
                             break;
                         }
                     }
+                }
+            }
+        }
+
+        for (Object[] rows : rowsToAdd) {
+            for (int i = 0; i < rows.length; i++) {
+                if (rows[i] == null) {
+                    rows[i] = 0;
                 }
             }
         }
@@ -182,23 +190,19 @@ public class DatasetFeatureRepresentation extends DatasetTransformer {
         Dataset transformedDataset = new Dataset("Transformed dataset", attributes, 0);
         transformedDataset.addRows(rowsToAdd);
 
-        Map<String, Integer> transformList = new HashMap<>();
-        transformList.put("ham", 0);
-        transformList.put("spam", 1);
-        //Se define la lista de transformadores
-        Map<String, Transformer> transformersList = new HashMap<>();
-        transformersList.put("date", new Date2MillisTransformer());
-        transformersList.put("target", new Enum2IntTransformer(transformList));
-
         return transformedDataset;
     }
 
     private Object[][] addValue(Object[][] instanceList, int index, String attributeName, Object attributeValue) {
 
         int currenAttributePosition = featuresDataset.getWekaDataset().attribute(attributeName).index();
+
         Double currentPositionValue = (Double) instanceList[index][currenAttributePosition];
+
         if (featuresDataset.getWekaDataset().attribute(attributeName).isNominal()) {
             instanceList[index][currenAttributePosition] = attributeValue.toString();
+        } else if (featuresDataset.getWekaDataset().attribute(attributeName).isString()) {
+            instanceList[index][currenAttributePosition] = attributeValue.toString();        
         } else {
             instanceList[index][currenAttributePosition] = (currentPositionValue != null && currentPositionValue > 0) ? combineOperator.combine(Double.parseDouble(attributeValue.toString()), currentPositionValue) : Double.parseDouble(attributeValue.toString());
         }
@@ -281,60 +285,79 @@ public class DatasetFeatureRepresentation extends DatasetTransformer {
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
 
-        Map<String, Integer> transformList = new HashMap<>();
-        transformList.put("ham", 0);
-        transformList.put("spam", 1);
-        //Se define la lista de transformadores
-        Map<String, Transformer> transformersList = new HashMap<>();
-        transformersList.put("date", new Date2MillisTransformer());
-        transformersList.put("target", new Enum2IntTransformer(transformList));
+        try {
+            Map<String, Integer> transformList = new HashMap<>();
+            transformList.put("ham", 0);
+            transformList.put("spam", 1);
+            //Se define la lista de transformadores
+            Map<String, Transformer> transformersList = new HashMap<>();
+            transformersList.put("date", new Date2MillisTransformer());
+            transformersList.put("target", new Enum2IntTransformer(transformList));
 
-        BufferedReader reader = new BufferedReader(new FileReader("outputsyns_testJavier_17440.arff"));
-        ArffLoader.ArffReader arff = new ArffLoader.ArffReader(reader);
-        Instances data = arff.getData();
+            BufferedReader reader = new BufferedReader(new FileReader("outputsyns_testJavier_17440.arff"));
+            ArffLoader.ArffReader arff = new ArffLoader.ArffReader(reader);
+            Instances data = arff.getData();
 
-        Dataset originalDataset = new Dataset(data);
+            Dataset originalDataset = new Dataset(data);
 
-        Dataset[] stratifiedDataset = originalDataset.split(true, 20, 80);
+            originalDataset.setOutputFile("1outputsyns_testJavier_17440.csv");
+            originalDataset.generateCSV();
 
-        List<String> attributesToDelete = new ArrayList<>();
-        attributesToDelete.add("id");
-        attributesToDelete.add("word-counter");
-        attributesToDelete.add("synset-counter");
-        attributesToDelete.add("polarity");
-        attributesToDelete.add("language-reliability");
-        attributesToDelete.add("date");
-        attributesToDelete.add("length");
-        attributesToDelete.add("URLs");
-        attributesToDelete.add("interjection");
-        attributesToDelete.add("sit");
-        attributesToDelete.add("polarity");
-        attributesToDelete.add("synsetPolarity");
-        attributesToDelete.add("allCaps");
-        attributesToDelete.add("compressionRatio");
-        attributesToDelete.add("interjectionRatio");
-        attributesToDelete.add("NERDATE");
-        attributesToDelete.add("NERMONEY");
-        attributesToDelete.add("NERNUMBER");
-        attributesToDelete.add("NERADDRESS");
-        attributesToDelete.add("NERLOCATION");
+            Dataset[] stratifiedDataset = originalDataset.split(true, 20, 80);
+            stratifiedDataset[0].setOutputFile("InitialTestingDataset.csv");
+            stratifiedDataset[0].generateCSV();
 
-        for (Dataset dataset : stratifiedDataset) {
-            dataset.deleteAttributeColumns(attributesToDelete);
+            List<String> attributesToDelete = new ArrayList<>();
+            attributesToDelete.add("id");
+            attributesToDelete.add("word-counter");
+            attributesToDelete.add("synset-counter");
+            attributesToDelete.add("polarity");
+            attributesToDelete.add("language-reliability");
+            attributesToDelete.add("date");
+            attributesToDelete.add("length");
+            attributesToDelete.add("URLs");
+            attributesToDelete.add("interjection");
+            attributesToDelete.add("sit");
+            attributesToDelete.add("polarity");
+            attributesToDelete.add("synsetPolarity");
+            attributesToDelete.add("allCaps");
+            attributesToDelete.add("compressionRatio");
+            attributesToDelete.add("interjectionRatio");
+            attributesToDelete.add("NERDATE");
+            attributesToDelete.add("NERMONEY");
+            attributesToDelete.add("NERNUMBER");
+            attributesToDelete.add("NERADDRESS");
+            attributesToDelete.add("NERLOCATION");
+
+            for (Dataset dataset : stratifiedDataset) {
+                dataset.deleteAttributeColumns(attributesToDelete);
+            }
+            Dataset testingDataset = stratifiedDataset[0];
+            Dataset trainingDataset = stratifiedDataset[1];
+
+            eSDRS gESDRS = new eSDRS();
+
+            Dataset generalizatedDataset = gESDRS.transform(trainingDataset);
+            generalizatedDataset.setOutputFile("1generalizatedTrainingDataset.csv");
+            generalizatedDataset.generateCSV();
+
+            System.out.println("Initial Training: " + trainingDataset.getAttributes());
+            System.out.println("Instances: " + trainingDataset.getInstances().get(1));
+            System.out.println("Training: " + generalizatedDataset.getAttributes());
+
+            DatasetFeatureRepresentation dfr = new DatasetFeatureRepresentation(generalizatedDataset);
+
+            Dataset newDataset = dfr.transform(testingDataset);
+            newDataset.setOutputFile("1generalizatedTestingDataset.csv");
+            newDataset.generateCSV();
+
+            System.out.println("Testing : " + newDataset.getAttributes());
+            testingDataset.generateARFFWithComments(transformersList, "testingDataset.arff");
+            generalizatedDataset.generateARFFWithComments(transformersList, "generalizatedDataset.arff");
+            newDataset.generateARFFWithComments(transformersList, "newDataset.arff");
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        Dataset testingDataset = stratifiedDataset[0];
-        Dataset trainingDataset = stratifiedDataset[1];
-
-        eSDRS gESDRS = new eSDRS();
-        Dataset generalizatedDataset = gESDRS.transform(trainingDataset);
-        DatasetFeatureRepresentation dfr = new DatasetFeatureRepresentation(generalizatedDataset);
-
-        Dataset newDataset = dfr.transform(testingDataset);
-
-        testingDataset.generateARFFWithComments(transformersList, "testingDataset.arff");
-        generalizatedDataset.generateARFFWithComments(transformersList, "generalizatedDataset.arff");
-        newDataset.generateARFFWithComments(transformersList, "newDataset.arff");
-
     }
 
 }

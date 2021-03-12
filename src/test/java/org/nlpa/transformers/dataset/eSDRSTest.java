@@ -13,6 +13,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import static org.nlpa.matchers.IsEqualToInstance.containsInstancesInOrder;
+import org.nlpa.transformers.dataset.tree.SynsetNode;
+import org.nlpa.transformers.dataset.tree.SynsetNodeBuilder;
+import org.nlpa.transformers.dataset.tree.SynsetNodeTest;
 import weka.core.Attribute;
 import weka.core.Instance;
 
@@ -29,7 +32,7 @@ public class eSDRSTest {
 
     @Before
     public void setUp() {
-        esdrs = new eSDRS(2, Dataset.COMBINE_SUM, false, 0.90);
+        esdrs = new eSDRS(2, Dataset.COMBINE_SUM, 0.90);
     }
 
     /**
@@ -52,41 +55,22 @@ public class eSDRSTest {
     }
 
     /**
-     * Test of getMatchRate method, of class eSDRS.
+     * Test of getRequiredSimilarity method, of class eSDRS.
      */
     @Test
-    public void testGetMatchRate() {
+    public void testGetRequiredSimilarity() {
         double expResult = 0.90;
-        double result = esdrs.getMatchRate();
+        double result = esdrs.getRequiredSimilarity();
         assertEquals(expResult, result, 0.0);
     }
 
     /**
-     * Test of setMatchRate method, of class eSDRS.
+     * Test of setRequiredSimilarity method, of class eSDRS.
      */
     @Test
-    public void testSetMatchRate() {
+    public void testSetRequiredSimilarity() {
         double matchRate = 0.95;
-        esdrs.setMatchRate(matchRate);
-    }
-
-    /**
-     * Test of isGenerateFiles method, of class eSDRS.
-     */
-    @Test
-    public void testIsGenerateFiles() {
-        boolean expResult = false;
-        boolean result = esdrs.isGenerateFiles();
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of setGenerateFiles method, of class eSDRS.
-     */
-    @Test
-    public void testSetGenerateFiles() {
-        boolean generateFiles = false;
-        esdrs.setGenerateFiles(generateFiles);
+        esdrs.setRequiredSimilarity(matchRate);
     }
 
     /**
@@ -108,42 +92,17 @@ public class eSDRSTest {
         esdrs.setCombineOperator(combineOperator);
     }
 
-    /**
-     * Test of getMaxThreads method, of class eSDRS.
-     */
     @Test
-    public void testGetMaxThreads() {
-        int expResult = 120;
-        int result = esdrs.getMaxThreads();
-        assertEquals(expResult, result);
-    }
+    public void test() {
+        List<SynsetNode> trees = SynsetNodeBuilder.buildTrees(SynsetNodeTest.class.getResourceAsStream("test.tree"));
 
-    /**
-     * Test of setMaxThreads method, of class eSDRS.
-     */
-    @Test
-    public void testSetMaxThreads() {
-        int maxThreads = 20;
-        esdrs.setMaxThreads(maxThreads);
-    }
-
-    /**
-     * Test of isLimitMaxThreads method, of class eSDRS.
-     */
-    @Test
-    public void testIsLimitMaxThreads() {
-        boolean expResult = false;
-        boolean result = esdrs.isLimitMaxThreads();
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of setLimitMaxThreads method, of class eSDRS.
-     */
-    @Test
-    public void testSetLimitMaxThreads() {
-        boolean limitMaxThreads = false;
-        esdrs.setLimitMaxThreads(limitMaxThreads);
+        for (SynsetNode tree : trees) {
+            System.out.println("BEFORE");
+            System.out.println(tree.toStringDeep());
+            System.out.println("AFTER");
+            this.esdrs.generalizeVertically(tree, "s");
+            System.out.println(tree.toStringDeep());
+        }
     }
 
     /**

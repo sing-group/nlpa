@@ -1,0 +1,9 @@
+a,b|i1:s,i2:s,i4:n,i5:n
+	c
+	d|i1:s,i2:s
+		e
+			x|i2:s
+		f
+			g|i2:s,i3:s
+	h
+	i|i4:n
