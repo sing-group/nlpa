@@ -244,8 +244,11 @@ public class DatasetFeatureRepresentationTest {
         attributes.add(new Attribute("bn:00093430v"));
         attributes.add(new Attribute("bn:00049156n"));
         attributes.add(new Attribute("bn:00054316n"));
+        attributes.add(new Attribute("bn:00018748n"));
         attributes.add(new Attribute("bn:00007731n"));
-        attributes.add(new Attribute("bn:00062164n"));
+        attributes.add(new Attribute("bn:00052061n"));
+        attributes.add(new Attribute("bn:00053079n"));
+        attributes.add(new Attribute("bn:00029424n"));
         attributes.add(new Attribute("bn:00036129n"));
         attributes.add(new Attribute("bn:00090408v"));
         attributes.add(new Attribute("bn:00056068n"));
@@ -285,19 +288,19 @@ public class DatasetFeatureRepresentationTest {
         attributes.add(new Attribute("bn:00071570n"));
         attributes.add(new Attribute("target", target_values));
         Dataset expInstancesDataset = new Dataset("result ", attributes, 0);
-        
+         
 
         Instance instance = expInstancesDataset.createDenseInstance();
         instance.setValue(0, 0d);
         instance.setValue(1, 0d);
         instance.setValue(2, 0d);
         instance.setValue(3, 1d);
-        instance.setValue(4, 0d);
+        instance.setValue(4, 1d);
         instance.setValue(5, 0d);
         instance.setValue(6, 0d);
         instance.setValue(7, 0d);
         instance.setValue(8, 0d);
-        instance.setValue(9, 1d);
+        instance.setValue(9, 0d);
         instance.setValue(10, 0d);
         instance.setValue(11, 0d);
         instance.setValue(12, 0d);
@@ -331,6 +334,9 @@ public class DatasetFeatureRepresentationTest {
         instance.setValue(40, 0d);
         instance.setValue(41, 0d);
         instance.setValue(42, 0d);
+        instance.setValue(43, 0d);
+        instance.setValue(44, 0d);
+        instance.setValue(45, 0d);
 
         Dataset result = dfr.transformTemplate(testingDataset);
         assertEquals(expInstancesDataset.getAttributes(), result.getAttributes());

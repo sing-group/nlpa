@@ -26,8 +26,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  *
@@ -42,26 +40,63 @@ public class SynsetNode {
 
     private Map<Serializable, Double> frequenciesCache;
 
+    /**
+     * Constructor only with synset id
+     *
+     * @param synsetId Synset id
+     */
     public SynsetNode(String synsetId) {
         this(synsetId, null);
     }
 
+    /**
+     * Constructor with a collection of synset ids
+     *
+     * @param synsetIds Collection of Synset ids
+     */
     public SynsetNode(Collection<String> synsetIds) {
         this(synsetIds, null);
     }
 
+    /**
+     * Constructor with a synset id and the parent node
+     *
+     * @param synsetId Synset id
+     * @param parent SynsetNode parent
+     */
     public SynsetNode(String synsetId, SynsetNode parent) {
         this(synsetId, parent, emptySet());
     }
 
+    /**
+     * Constructor with a collection of synset ids and parent
+     *
+     * @param synsetIds Collection of synset ids
+     * @param parent SynsetNode parent
+     */
     public SynsetNode(Collection<String> synsetIds, SynsetNode parent) {
         this(synsetIds, parent, emptySet());
     }
 
+    /**
+     * Constructor with a synset id,the parent node and his children
+     *
+     * @param synsetId Synset id
+     * @param parent SynsetNode parent
+     * @param children Collection of children
+     */
     public SynsetNode(String synsetId, SynsetNode parent, Collection<SynsetNode> children) {
         this(singleton(synsetId), parent, children);
     }
 
+    /**
+     * Constructor with a collection of synset ids,the parent node and his
+     * children
+     *
+     * @param synsetIds Collection of synset ids
+     * @param parent SynsetNode parent
+     * @param children Collection of children
+     */
     public SynsetNode(Collection<String> synsetIds, SynsetNode parent, Collection<SynsetNode> children) {
         this.synsets = new LinkedHashSet<>(synsetIds);
 
@@ -72,14 +107,30 @@ public class SynsetNode {
         this.frequenciesCache = new HashMap<>();
     }
 
+    /**
+     * Gets the parent node
+     *
+     * @return The parent node
+     */
     public SynsetNode getParent() {
         return this.parent;
     }
 
+    /**
+     * Query if the node has parent
+     *
+     * @return True if the node has parent, false otherwise
+     */
     public boolean hasParent() {
         return this.parent != null;
     }
 
+    /**
+     * Estabilish the parent of node
+     *
+     * @param parent the parent node
+     * @return True if parent has estabilished
+     */
     public boolean setParent(SynsetNode parent) {
         if (this.parent == parent) {
             return false;
@@ -97,10 +148,21 @@ public class SynsetNode {
         return true;
     }
 
+    /**
+     * Checks if a node is parent of another
+     *
+     * @param child Node to check parent
+     * @return True if a node is parent of child, false otherwise
+     */
     public boolean isParentOf(SynsetNode child) {
         return this.children.contains(child);
     }
 
+    /**
+     * Gets the first child of a node
+     *
+     * @return The first child of a node
+     */
     public SynsetNode getChild() {
         if (this.children.isEmpty()) {
             return null;
@@ -108,10 +170,21 @@ public class SynsetNode {
         return this.children.iterator().next();
     }
 
+    /**
+     * Gets the list of children for a node
+     *
+     * @return The list of children for a node
+     */
     public List<SynsetNode> getChildren() {
         return unmodifiableList(new ArrayList<>(this.children));
     }
 
+    /**
+     * Add a new child to a node
+     *
+     * @param child Node to add
+     * @return True if child is added, false otherwise
+     */
     public boolean addChild(SynsetNode child) {
         return child.setParent(this);
     }
@@ -120,6 +193,12 @@ public class SynsetNode {
         this.children.add(child);
     }
 
+    /**
+     * Remove a child from a node
+     *
+     * @param child Child node to remove
+     * @return True if the child has removed successfully, false otherwise
+     */
     public boolean removeChild(SynsetNode child) {
         if (this.isParentOf(child)) {
             return child.setParent(null);
@@ -132,10 +211,20 @@ public class SynsetNode {
         this.children.remove(child);
     }
 
+    /**
+     * Gets the top node that doesn't have parent
+     *
+     * @return The top node that doesn't have parent
+     */
     public SynsetNode getRoot() {
         return this.hasParent() ? this.getParent().getRoot() : this;
     }
 
+    /**
+     * Gets the leafs of a node, this is the nodes without children
+     *
+     * @return The leafs of a node
+     */
     public List<SynsetNode> getLeafs() {
         if (this.children.isEmpty()) {
             return singletonList(this);
@@ -149,46 +238,75 @@ public class SynsetNode {
         }
     }
 
+    /**
+     * Gets a list with all descendants nodes
+     *
+     * @return A list with all descendants nodes
+     */
     public List<SynsetNode> getDescendants() {
         return this.getDescendants(Integer.MAX_VALUE);
     }
-    
+
+    /**
+     * Gets a list with the descendants nodes until a max distance
+     *
+     * @param maxDistance Max distance to get descendants
+     * @return A list with the descendants nodes until a max distance
+     */
     public List<SynsetNode> getDescendants(int maxDistance) {
         if (maxDistance <= 0 || this.children.isEmpty()) {
             return emptyList();
         } else {
             List<SynsetNode> descendants = new ArrayList<>(this.children);
-
             this.children.forEach(child -> descendants.addAll(child.getDescendants(maxDistance - 1)));
-            
             return unmodifiableList(descendants);
         }
     }
-    
+
+    /**
+     * Gets a list with the descendants nodes until a max distance and excluding
+     * a collection of synset nodes
+     *
+     * @param maxDistance Max distance to get descendants
+     * @param exclusions Collection of synsets nodes to exclude
+     * @return A list with the descendants nodes until a max distance and
+     * excluding a collection of synset nodes
+     */
     public List<SynsetNodePath> getPathToDescendants(int maxDistance, Collection<SynsetNode> exclusions) {
         List<SynsetNodePath> paths = new ArrayList<>();
         paths.add(new SynsetNodePath(this));
 
         if (maxDistance > 0 && !this.children.isEmpty()) {
             this.children.stream()
-                .filter(node -> !exclusions.contains(node))
-                .map(child -> child.getPathToDescendants(maxDistance - 1, exclusions))
-                .flatMap(List::stream)
-                .map(path -> path.prepend(this))
-                .forEach(paths::add);
+                    .filter(node -> !exclusions.contains(node))
+                    .map(child -> child.getPathToDescendants(maxDistance - 1, exclusions))
+                    .flatMap(List::stream)
+                    .map(path -> path.prepend(this))
+                    .forEach(paths::add);
         }
-        
         return paths;
     }
 
+    /**
+     * Gets a list with all descendants nodes including the self node
+     *
+     * @return A list with all descendants nodes including the self node
+     */
     public List<SynsetNode> getDescendantAndSelf() {
         List<SynsetNode> descendants = new ArrayList<>(this.getDescendants());
         descendants.add(this);
 
         return unmodifiableList(descendants);
-
     }
 
+    /**
+     * Gets a list with all descendants nodes including the self node from a
+     * synset id
+     *
+     * @param synsetId Synset id
+     * @return A list with all descendants nodes including the self node from a
+     * synset id
+     */
     public SynsetNode getSelfOrDescendantBySynset(String synsetId) {
         if (this.synsets.contains(synsetId)) {
             return this;
@@ -199,11 +317,15 @@ public class SynsetNode {
                     return synsetNode;
                 }
             }
-
             return null;
         }
     }
 
+    /**
+     * Gets the degree if first ancestor with instances
+     *
+     * @return The degree if first ancestor with instances
+     */
     public int getFirstAncestorWithInstancesDegree() {
         int degree = 1;
 
@@ -221,8 +343,12 @@ public class SynsetNode {
         return degree;
     }
 
-     public SynsetNode getFirstAncestorWithInstances() {
-        
+    /**
+     * Gets the first ancestor with instances
+     *
+     * @return the first ancestor with instances
+     */
+    public SynsetNode getFirstAncestorWithInstances() {
         SynsetNode ancestor = this.getParent();
         if (!ancestor.hasInstances()) {
             while (ancestor.hasParent() && !ancestor.getParent().hasInstances()) {
@@ -232,34 +358,39 @@ public class SynsetNode {
         return ancestor.getParent();
     }
 
+    /**
+     * Checks if a node is ancestor of another
+     *
+     * @param descendant Descendant node to check
+     * @return True if the node is ancestor of the descendant node
+     */
     public boolean isAncestorOf(SynsetNode descendant) {
         if (this.isParentOf(descendant)) {
             return true;
         } else {
-            for (SynsetNode child : this.children) {
-                if (child.isAncestorOf(descendant)) {
-                    return true;
-                }
-            }
-
-            return false;
+            return this.children.stream().anyMatch((child) -> (child.isAncestorOf(descendant)));
         }
     }
 
+    /**
+     * Remove the descendant of a node
+     *
+     * @param descendant The node to remove
+     * @return True if the descendant was successfully removed, false otherwise
+     */
     public boolean removeDescendant(SynsetNode descendant) {
         if (this.removeChild(descendant)) {
             return true;
         } else {
-            for (SynsetNode child : this.children) {
-                if (child.removeDescendant(descendant)) {
-                    return true;
-                }
-            }
-
-            return false;
+            return this.children.stream().anyMatch((child) -> (child.removeDescendant(descendant)));
         }
     }
 
+    /**
+     * Gets the first synset in synsets list
+     *
+     * @return The first synset in synsets list
+     */
     public String getReferenceSynset() {
         if (this.synsets.isEmpty()) {
             return "";
@@ -267,73 +398,110 @@ public class SynsetNode {
         return this.synsets.iterator().next();
     }
 
+    /**
+     * Gets a list of synsets from a node
+     *
+     * @return A list of synsets from a node
+     */
     public List<String> getSynsets() {
         return unmodifiableList(new ArrayList<>(this.synsets));
     }
 
+    /**
+     * Indicates if a node has synsets or not
+     *
+     * @return True if a node has synsets, false otherwise
+     */
     public boolean hasSynsets() {
         return !this.synsets.isEmpty();
     }
 
+    /**
+     * Checks if node or its children has synsets
+     *
+     * @return True if node or its children has synsets
+     */
     public boolean hasSynsetsDeep() {
         if (this.children.isEmpty()) {
             return this.hasSynsets();
         } else if (this.hasSynsets()) {
             return true;
         } else {
-            for (SynsetNode child : this.children) {
-                if (child.hasSynsetsDeep()) {
-                    return true;
-                }
-            }
-
-            return false;
+            return this.children.stream().anyMatch((child) -> (child.hasSynsetsDeep()));
         }
     }
 
+    /**
+     * Checks if the node contains the given id
+     *
+     * @param synsetId
+     * @return True if the node contains the given id
+     */
     public boolean hasSynset(String synsetId) {
         return this.synsets.contains(synsetId);
     }
 
+    /**
+     * Checks if the node or any of its descendants contains the given synset id
+     *
+     * @param synsetId
+     * @return True if the node or any of its descendants contains the given
+     * synset id
+     */
     public boolean hasDescendantSynset(String synsetId) {
         if (this.hasSynset(synsetId)) {
             return true;
         } else {
-            for (SynsetNode child : children) {
-                if (child.hasDescendantSynset(synsetId)) {
-                    return true;
-                }
-            }
-            return false;
+            return children.stream().anyMatch((child) -> (child.hasDescendantSynset(synsetId)));
         }
     }
 
+    /**
+     * Gets the number of synsets from a node
+     *
+     * @return The number of synsets from a node
+     */
     public int countSynsets() {
         return this.synsets.size();
     }
 
+    /**
+     * Gets the instances of a node
+     *
+     * @return The instances of a node
+     */
     public Set<SynsetInstance> getInstances() {
         return this.hasInstances() ? unmodifiableSet(this.instances) : this.instances;
     }
 
+    /**
+     * Checks if a node has instances
+     *
+     * @return True if a node has instances, false otherwise
+     */
     public boolean hasInstances() {
         return !this.instances.isEmpty();
     }
 
+    /**
+     * Checks if a node or its children has instances
+     *
+     * @return True if a node or its children has instances, false otherwise
+     */
     public boolean hasInstancesDeep() {
         if (this.hasInstances()) {
             return true;
         } else {
-            for (SynsetNode child : this.children) {
-                if (child.hasInstancesDeep()) {
-                    return true;
-                }
-            }
-
-            return false;
+            return this.children.stream().anyMatch((child) -> (child.hasInstancesDeep()));
         }
     }
 
+    /**
+     * Add an instance to a node
+     *
+     * @param instance The instance to add
+     * @return True if the instance was added successfully, false otherwise
+     */
     public boolean addInstance(SynsetInstance instance) {
         if (this.instances.add(instance)) {
             this.clearFrequencyCache();
@@ -343,6 +511,13 @@ public class SynsetNode {
         }
     }
 
+    /**
+     * Gets the frequency to the given target
+     *
+     * @param target The target that represents the class of instance(ham/spam,
+     * 0/1, etc)
+     * @return The frequency to the given target
+     */
     public double getTargetFrequency(Serializable target) {
         if (!this.frequenciesCache.containsKey(target)) {
             this.frequenciesCache.put(target, calculateTargetFrequency(target, this.instances));
@@ -351,6 +526,15 @@ public class SynsetNode {
         return frequenciesCache.get(target);
     }
 
+    /**
+     * Combines instances of both nodes and then gets the frequency to the given
+     * target
+     *
+     * @param target The target that represents the class of instance(ham/spam,
+     * 0/1, etc)
+     * @param node The node to combine frequencies
+     * @return The combined frequency
+     */
     public double getCombinedTargetFrequency(Serializable target, SynsetNode node) {
         Set<SynsetInstance> combinedInstances = new HashSet<>(this.instances);
         combinedInstances.addAll(node.instances);
@@ -358,19 +542,39 @@ public class SynsetNode {
         return calculateTargetFrequency(target, combinedInstances);
     }
 
+    /**
+     * Combines instances of all nodes and then gets the frequency to the given
+     * target
+     *
+     * @param target The target that represents the class of instance(ham/spam,
+     * 0/1, etc)
+     * @param node The collection of nodes to combine frequencies
+     * @return The combined frequency
+     */
     public double getCombinedTargetFrequency(Serializable target, Collection<SynsetNode> node) {
         Set<SynsetInstance> combinedInstances = new HashSet<>(this.instances);
         node.stream()
-            .map(SynsetNode::getInstances)
-            .forEach(combinedInstances::addAll);
+                .map(SynsetNode::getInstances)
+                .forEach(combinedInstances::addAll);
 
         return calculateTargetFrequency(target, combinedInstances);
     }
 
+    /**
+     * Clear frequency caché
+     */
     private void clearFrequencyCache() {
         this.frequenciesCache.clear();
     }
 
+    /**
+     * Calculate the frequency to the given target from instances
+     *
+     * @param target The target that represents the class of instance(ham/spam,
+     * 0/1, etc)
+     * @param instances Instances to calculate frequency
+     * @return The frequency to the given target from instances
+     */
     private static double calculateTargetFrequency(Serializable target, Set<SynsetInstance> instances) {
         double targetCount = instances.stream()
                 .filter(sample -> sample.getTarget().equals(target))
@@ -379,10 +583,18 @@ public class SynsetNode {
         return targetCount / instances.size();
     }
 
+    /**
+     *
+     * @param nodes
+     */
     public void generalize(SynsetNode... nodes) {
         this.generalize(Arrays.asList(nodes));
     }
 
+    /**
+     * 
+     * @param nodes 
+     */
     public void generalize(Collection<SynsetNode> nodes) {
 //        for (SynsetNode node : nodes) {
 //            if (node.getSynsets().isEmpty() || !this.isAncestorOf(node)) {

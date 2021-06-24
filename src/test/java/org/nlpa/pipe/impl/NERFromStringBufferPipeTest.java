@@ -139,7 +139,7 @@ public class NERFromStringBufferPipeTest {
         String expectedData = " is hre :), ho ho ho! 🎅 Beat the Christmas days with us and we'll even give you 19% off online until Visit us on <a href=\"www.xx.com\">here</a>, #xx or @xx.";
 
         Instance expResult = new Instance(new StringBuffer(expectedData), null, name, source);
-        expResult.setProperty("NERDATE", "31 Dec.");
+        expResult.setProperty("NERDATE", "December -- 31 Dec.");
         expResult.setProperty("NERMONEY", "");
         expResult.setProperty("NERNUMBER", "");
         expResult.setProperty("NERADDRESS", "");
@@ -149,3 +149,4 @@ public class NERFromStringBufferPipeTest {
         assertTrue(expResult.equals(result));
     }
 }
+

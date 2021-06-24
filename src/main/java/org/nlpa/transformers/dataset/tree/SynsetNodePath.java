@@ -17,46 +17,47 @@ import java.util.stream.Collectors;
  * @author María Novo
  */
 public class SynsetNodePath {
+
     private final SynsetNode root;
     private final LinkedList<SynsetNode> path;
-    
+
     public SynsetNodePath(SynsetNode node) {
         this.path = new LinkedList<>();
         this.path.add(node);
         this.root = node;
     }
-    
+
     public SynsetNodePath(SynsetNode root, Collection<SynsetNode> path) {
         if (path.contains(root)) {
             throw new IllegalArgumentException("root is not in path");
         }
-        
+
         this.path = new LinkedList<>(path);
         this.root = root;
     }
-    
+
     public SynsetNodePath(Collection<SynsetNode> path) {
         this.path = new LinkedList<>(path);
         this.root = path.stream()
-            .sorted((s1, s2) -> Integer.compare(s1.getDegree(), s2.getDegree()))
-            .findFirst()
-            .orElseThrow(IllegalArgumentException::new);
+                .sorted((s1, s2) -> Integer.compare(s1.getDegree(), s2.getDegree()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
-    
+
     private SynsetNodePath(Collection<SynsetNode> path, SynsetNode prepend, SynsetNode append) {
         this.path = new LinkedList<>(path);
-        
+
         if (prepend != null) {
             this.path.addFirst(prepend);
         }
         if (append != null) {
             this.path.addLast(append);
         }
-        
+
         this.root = this.path.stream()
-            .sorted((s1, s2) -> Integer.compare(s1.getDegree(), s2.getDegree()))
-            .findFirst()
-            .orElseThrow(IllegalArgumentException::new);
+                .sorted((s1, s2) -> Integer.compare(s1.getDegree(), s2.getDegree()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public SynsetNode getRoot() {
@@ -72,15 +73,15 @@ public class SynsetNodePath {
                 .filter(node -> node != this.root)
                 .collect(Collectors.toList());
     }
-    
+
     public SynsetNode getFirst() {
         return this.path.getFirst();
     }
-    
+
     public SynsetNode getLast() {
         return this.path.getLast();
     }
-    
+
     public int getLength() {
         return this.path.size();
     }
@@ -88,16 +89,33 @@ public class SynsetNodePath {
     public boolean contains(SynsetNode node) {
         return this.path.contains(node);
     }
-    
+
     public boolean allMatch(Predicate<SynsetNode> test) {
         return this.path.stream().allMatch(test);
     }
-    
+
     public SynsetNodePath prepend(SynsetNode node) {
         return new SynsetNodePath(this.path, node, null);
     }
-    
+
     public SynsetNodePath append(SynsetNode node) {
         return new SynsetNodePath(this.path, null, node);
+    }
+
+    public boolean equals(SynsetNodePath item) {
+        if (!item.getFirst().equals(this.getFirst())) {
+            return false;
+        }
+        if (!item.getLast().equals(this.getLast())) {
+            return false;
+        }
+        if (item.getLength() != this.getLength()) {
+            return false;
+        }
+
+        if (!item.getPath().equals(this.getPath())) {
+            return false;
+        }
+        return true;
     }
 }

@@ -64,7 +64,7 @@ public class eSDRS extends DatasetTransformer {
                 }
             };
 
-    static enum Datatype {
+    public static enum Datatype {
         FREQUENCY,
         BINARY,
         APPEARENCES_NUMBER

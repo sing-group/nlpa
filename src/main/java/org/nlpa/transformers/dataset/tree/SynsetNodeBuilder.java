@@ -51,12 +51,18 @@ public class SynsetNodeBuilder {
                         }
                     } else if (currentTabs < previousTabs) {
                         for (int i = 0; i < previousTabs - currentTabs; i++) {
-                            currentNode = currentNode.getParent();
+                            if (currentNode != null) {
+                                currentNode = currentNode.getParent();
+                            }
                         }
 
-                        currentNode.getParent().addChild(node);
+                        if (currentNode != null) {
+                            currentNode.getParent().addChild(node);
+                        }
                     } else {
-                        currentNode.getParent().addChild(node);
+                        if (currentNode != null) {
+                            currentNode.getParent().addChild(node);
+                        }
                     }
 
                     currentNode = node;
