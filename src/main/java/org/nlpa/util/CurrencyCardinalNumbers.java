@@ -1,7 +1,9 @@
 package org.nlpa.util;
 
+import edu.utah.bmi.nlp.core.NERRule;
 import edu.utah.bmi.nlp.core.Span;
 import edu.utah.bmi.nlp.core.SimpleParser;
+import edu.utah.bmi.nlp.fastcner.FastCNER;
 import edu.utah.bmi.nlp.fastner.FastNER;
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,6 +14,8 @@ import java.util.Map;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static edu.utah.bmi.nlp.core.DeterminantValueSet.Determinants.ACTUAL;
 
 public class CurrencyCardinalNumbers {
     private List<String> listOfEntitiesFound;
@@ -174,6 +178,49 @@ public class CurrencyCardinalNumbers {
             });
         }
     }
+    public void testingCurrencyFastNER4 (String textoPrueba){
+        HashMap<Integer, NERRule> rules = new HashMap<>();
+        rules.put(0, new NERRule(0, "20.5 $", "TEST", 0.1, ACTUAL));
+
+        FastCNER fcrp = new FastCNER(rules);
+        fcrp.setReplicationSupport(true);
+        HashMap<String, ArrayList<Span>> result;
+        result = fcrp.processString(textoPrueba);
+        for (Map.Entry<String, ArrayList<Span>> entry : result.entrySet()) {
+            System.out.println(entry.getKey() + ":\t");
+            entry.getValue().forEach((span) -> {
+                System.out.println("\t" + textoPrueba.substring(span.getBegin(), span.getEnd()).replaceAll(" +"," "));
+            });
+        }
+
+    }
+
+    public void testingCurrencyFastNER5 (String textoPrueba){
+        HashMap<Integer, NERRule> rules = new HashMap<>();
+        rules.put(0, new NERRule(0, "$", "TEST", 0.1, ACTUAL));
+
+        FastCNER fcrp = new FastCNER(rules);
+        fcrp.setReplicationSupport(true);
+        HashMap<String, ArrayList<Span>> result;
+        result = fcrp.processString(textoPrueba);
+        if (!result.isEmpty()){
+            String rule = "@fastner\n" + "\\d+\t CURRENCY\n";
+
+            ArrayList<Span> tokens = SimpleParser.tokenizeDecimalSmartWSentences(textoPrueba, true).get(0);
+            FastNER fastNER = new FastNER(rule);
+            HashMap<String, ArrayList<Span>> res = fastNER.processSpanList(tokens);
+        }
+
+        for (Map.Entry<String, ArrayList<Span>> entry : result.entrySet()) {
+            System.out.println(entry.getKey() + ":\t");
+            entry.getValue().forEach((span) -> {
+                System.out.println("\t" + textoPrueba.substring(span.getBegin(), span.getEnd()).replaceAll(" +"," "));
+            });
+        }
+
+    }
+
+
 
     //public String deleteCardinalNumbersFromStringEs (String string){
     //    Pattern pattern;
