@@ -27,8 +27,10 @@ import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.SerialPipes;
 import org.bdp4j.types.Instance;
 import org.bdp4j.util.InstanceListUtils;
+import org.checkerframework.checker.units.qual.C;
 import org.nlpa.pipe.impl.*;
 import org.nlpa.types.SequenceGroupingStrategy;
+import org.nlpa.util.CurrencyCardinalNumbers;
 import org.nlpa.util.textextractor.EMLTextExtractor;
 
 import java.io.File;
@@ -36,10 +38,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 //import org.bdp4j.dataset.CSVDatasetReader;
 //import org.bdp4j.transformers.CheckVoidTransformer;
 import org.bdp4j.transformers.Date2MillisTransformer;
@@ -70,110 +69,28 @@ public class Main {
      * The main method for the running application
      */
     public static void main(String[] args) {
-        // System.out.println("Program started.");
-        if (args.length == 0) {
-            generateInstances("tests3/");
-        } else {
-            generateInstances(args[0]);
-        }
+        //Testing Currency Cardinal Numbers Class
+        String stringIntroduced = "";
+        do{
+            System.out.println("Escriba la cadena a detectar");
+            Scanner scanner = new Scanner(System.in);
+            stringIntroduced = scanner.nextLine();
+            CurrencyCardinalNumbers currencyCardinalNumbers = new CurrencyCardinalNumbers();
+           //String stringToReturn = currencyCardinalNumbers.testingRegularExpressions(stringIntroduced);
+           //if (stringToReturn.equals(stringIntroduced)){
+           //    System.out.println("Ninguna entidad encontrada en el texto : " + stringIntroduced);
+           //}else {
+           //    System.out.println("Texto final : " + stringToReturn );
+           //    //System.out.println("Entidades encontradas : " + currencyCardinalNumbers.getListOfEntitiesFound().toString() );
 
-        // Configurations
-        EMLTextExtractor.setCfgPartSelectedOnAlternative("text/plain");
+           //}
+            currencyCardinalNumbers.testingCurrencyFastNER3(stringIntroduced);
 
-        for (Instance i : instances) {
-            logger.info("Instance data before pipe: " + i.getData().toString());
-        }
+        }while(!stringIntroduced.equals("0"));
 
-        /*
-         * Create an example to identify methods which have ParameterPipe annotations.
-         */
- /*
-         * Method[] methods = SynsetVector2SynsetFeatureVectorPipe.class.getMethods();
-         * PipeParameter parameterPipe; for (Method method : methods) { parameterPipe =
-         * method.getAnnotation(PipeParameter.class);//Obtienes los métodos que tengan
-         * alguna anotación de tipo ParameterPipe if (parameterPipe != null) { String
-         * parameterName = parameterPipe.name(); String parameterDescription =
-         * parameterPipe.description(); String defaultValue =
-         * parameterPipe.defaultValue(); Class<?>[] types = method.getParameterTypes();
-         * // Obtienes los tipos de los parámetros para un método
-         * //System.out.println(parameterName + " --> " + parameterDescription); } }
-         */
- /*
-         * // Parámetro para el transformador Enum2IntTransformer de la propiedad target
-         * Map<String, Integer> transformList = new HashMap<>();
-         * transformList.put("ham", 0); transformList.put("spam", 1); //Se define la
-         * lista de transformadores Map<String, Transformer<Object>> transformersList =
-         * new HashMap<>(); transformersList.put("date", new Date2MillisTransformer());
-         * transformersList.put("target", new Enum2IntTransformer(transformList));
-         * 
-         * //TeeCSVDatasetFromSynsetFeatureVectorPipe teeCSVDatasetFSV = new
-         * TeeCSVDatasetFromSynsetFeatureVectorPipe();
-         * //teeCSVDatasetFSV.setTransformersList(transformersList);
-         * 
-         * String filePath =
-         * "outputsyns.csv";//Main.class.getResource("/outputsyns.csv").getPath();
-         * DatasetFromFile jml = new DatasetFromFile(filePath, transformersList);
-         * jml.loadFile();
-         */
-        //Then load the dataset to use it with Weka TM
-        Map<String, Integer> targetValues = new HashMap<>();
-        targetValues.put("ham", 0);
-        targetValues.put("spam", 1);
-
-        //Lets define transformers for the dataset
-        Map<String, Transformer> transformersList = new HashMap<>();
-        transformersList.put("target", new Enum2IntTransformer(targetValues));
-        transformersList.put("date", new Date2MillisTransformer());
-        transformersList.put("URLs", new Url2BinaryTransformer());
-//        long before = System.currentTimeMillis();
-//        System.out.println("before");
-//        weka.core.Instances data = (new CSVDatasetReader("output_spam_ass.csv", transformersList)).loadFile().getWekaDataset();
-//        System.out.println(" -- DATA --- \r\n " + data);
-//        long time = System.currentTimeMillis() - before;
-//        System.out.println("time: " + time);
-
-        TeeDatasetFromFeatureVectorPipe teeDatasetFSV = new TeeDatasetFromFeatureVectorPipe();
-        teeDatasetFSV.setTransformersList(transformersList);
-        /* create a example of pipe */
-        AbstractPipe p = new SerialPipes(new AbstractPipe[]{new TargetAssigningFromPathPipe(),
-            new StoreFileExtensionPipe(), 
-            new GuessDateFromFilePipe(), 
-            new File2StringBufferPipe(),
-            new MeasureLengthFromStringBufferPipe(),
-            new FindUrlInStringBufferPipe(),
-            new StripHTMLFromStringBufferPipe(),
-            new MeasureLengthFromStringBufferPipe("length_after_html_drop"), 
-            new GuessLanguageFromStringBufferPipe(),
-            new StringBufferToLowerCasePipe(), 
-            new InterjectionFromStringBufferPipe(),
-            new StopWordFromStringBufferPipe(),
-            new TeeCSVFromStringBufferPipe("output.csv", true), 
-            new StringBuffer2SynsetSequencePipe(),
-            new SynsetSequence2FeatureVectorPipe(SequenceGroupingStrategy.COUNT),
-            // new TeeCSVFromFeatureVectorPipe("outputsyns.csv"),
-            teeDatasetFSV
-        });
-
-        if (!p.checkDependencies()) {
-            System.out.println("Pipe dependencies are not satisfied");
-//          System.out.println(AbstractPipe.getErrorMesage()); // TODO why is this an error?
-            System.exit(1);
-        } else {
-            System.out.println("Pipe dependencies are satisfied");
-        }
-
-        instances = InstanceListUtils.dropInvalid(instances);
-
-        //Pipe all instances
-        p.pipeAll(instances);
-
-        for (Instance i : instances) {
-            logger.info("Instance data after pipe: " + i.getSource() + " "
-                    + (((i.getData().toString().length()) > 10)
-                    ? (i.getData().toString().substring(0, 10) + "...")
-                    : i.getData().toString()));
-        }
     }
+
+
 
     /**
      * Generate a instance List on instances attribute by recursivelly finding

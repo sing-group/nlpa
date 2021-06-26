@@ -1,9 +1,14 @@
 package org.nlpa.util;
 
+import edu.utah.bmi.nlp.core.Span;
+import edu.utah.bmi.nlp.core.SimpleParser;
+import edu.utah.bmi.nlp.fastner.FastNER;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,13 +29,16 @@ public class CurrencyCardinalNumbers {
             "|" + "(" + beforeAHundredCardinalNumberEs + whiteSpace + "(" + "(y)" + whiteSpace + tenFirstCardinalNumberEs + ")".concat("?")  + ")";
 
     //((100|200-900)[ ]*(0-99)?|0-99)
-
-     private static final String regularExpresionforCardinalNumbersBeforeAThousandEs = "(" + "(" + hundredCardinalNumberEs +
-             "|" + beforeAThousandCardinalNumberEs + ")" + whiteSpace + "(" + regularExpresionforCardinalNumbersBeforeAHundredEs.concat("?") + ")" + ")" + "|" + "(" + regularExpresionforCardinalNumbersBeforeAHundredEs + ")";
+    private static final String regularExpresionforCardinalNumbersBeforeAThousandEs = "(" + "(" + hundredCardinalNumberEs +
+                                    "|" + beforeAThousandCardinalNumberEs + ")" + whiteSpace + "(" + regularExpresionforCardinalNumbersBeforeAHundredEs.concat("?") + ")" +
+                                    ")" + "|" + "(" + regularExpresionforCardinalNumbersBeforeAHundredEs + ")";
 
     //The rest cardinals names without accent
 
-    private static final String restOfCardinalsToFindEs = "(gugolquatruplex|gugoltriplex|gugolduplex|gugolplex|gugol|centillones|centillon|vigintillones|vigintillon|tredecillones|tredecillon|duodecillones|duodecillon|undecillones|undecillon|decillones|decillon|nonillones|nonillon|octillones|octillon|septillones|septillon|sextillones|sextillon|quintillones|quintillon|cuatrillones|cuatrillon|trillones|trillon|billones|billon|millones|millon|mil)";
+    private static final String restOfCardinalsToFindEs = "(gugolquatruplex|gugoltriplex|gugolduplex|gugolplex|gugol|centillones|centillon|" +
+                                                            "vigintillones|vigintillon|tredecillones|tredecillon|duodecillones|duodecillon|undecillones|undecillon|decillones|" +
+                                                            "decillon|nonillones|nonillon|octillones|octillon|septillones|septillon|sextillones|sextillon|quintillones|quintillon|" +
+                                                            "cuatrillones|cuatrillon|trillones|trillon|billones|billon|millones|millon|mil)";
 
     //Cardinal numbers in english
     private static final String tenFirstCardinalNumberEn = "(zero|one|two|three|four|five|six|seven|eight|nine)";
@@ -42,7 +50,9 @@ public class CurrencyCardinalNumbers {
             "|" + "(" + beforeAHundredCardinalNumberEn + whiteSpace + tenFirstCardinalNumberEn.concat("?") + ")";
 
     //The rest cardinals names in english
-    private static final String restOfCardinalsToFindEn = "(googolplex|googol|centillion|vigintillion|novemdecillion|octodecillion|septendecillion|sexdecillion|quindecillion|quattuordecillion|tredecillion|duodecillion|undecillion|decillion|nonillion|octillion|septillion|sextillion|quintillion|quadrillion|trillion|billiard|billion|milliard|million|thousand|hundred|";
+    private static final String restOfCardinalsToFindEn = "(googolplex|googol|centillion|vigintillion|novemdecillion|octodecillion|" +
+                                                                "septendecillion|sexdecillion|quindecillion|quattuordecillion|tredecillion|duodecillion|undecillion|decillion|nonillion|octillion|" +
+                                                                "septillion|sextillion|quintillion|quadrillion|trillion|billiard|billion|milliard|million|thousand|hundred)";
 
     public CurrencyCardinalNumbers (){
         listOfEntitiesFound = new ArrayList<String>();
@@ -68,7 +78,7 @@ public class CurrencyCardinalNumbers {
             toModify = deleteFromAPattern(Pattern.compile(regularExpresionforCardinalNumbersBeforeAThousandEs), toModify);
             toModify = deleteFromAPattern(Pattern.compile(restOfCardinalsToFindEs), toModify);
 
-            //If the string didnt suffered a modification, it means that doesnt have any cardinal matches so it will return the
+            //If the string didnt suffered a modification, it means that it doesnt have any cardinal matches so it will return the string as it entered into the method
             return toModify;
         }else return toModify;
 
@@ -92,6 +102,77 @@ public class CurrencyCardinalNumbers {
             return toReturn;
         }
         return stringToDeleteMatches;
+    }
+
+    public void testingDatesFastNER1 (String textoPrueba){
+
+        String rule = "@fastner\n" + "\\> 0 \\< 32 / \\> 0  \\< 13 / \\> 0 \\< 3000 \\> -1 \\< 24 : \\> -1 \\< 60 \t DATE\n";
+
+        ArrayList<Span> tokens = SimpleParser.tokenizeDecimalSmartWSentences(textoPrueba, true).get(0);
+        FastNER fastNER = new FastNER(rule);
+        HashMap<String, ArrayList<Span>> res = fastNER.processSpanList(tokens);
+        for (Map.Entry<String, ArrayList<Span>> entry : res.entrySet()) {
+            System.out.println(entry.getKey() + ":\t");
+            entry.getValue().forEach((span) -> {
+                System.out.println("\t" + textoPrueba.substring(span.getBegin(), span.getEnd()));
+            });
+        }
+    }
+    public void testingDatesFastNER2 (String textoPrueba){
+
+        String rule = "@fastner\n" + "\\> 0 \\< 32 - \\> 0  \\< 13 - \\> 0 \\< 3000 \\> -1 \\< 24 : \\> -1 \\< 60 \t DATE\n";
+
+        ArrayList<Span> tokens = SimpleParser.tokenizeDecimalSmartWSentences(textoPrueba, true).get(0);
+        FastNER fastNER = new FastNER(rule);
+        HashMap<String, ArrayList<Span>> res = fastNER.processSpanList(tokens);
+        for (Map.Entry<String, ArrayList<Span>> entry : res.entrySet()) {
+            System.out.println(entry.getKey() + ":\t");
+            entry.getValue().forEach((span) -> {
+                System.out.println("\t" + textoPrueba.substring(span.getBegin(), span.getEnd()));
+            });
+        }
+    }
+
+    public void testingCurrencyFastNER1 (String textoPrueba){
+        String rule = "@fastner\n" + "peso argentino \t CURRENCY\n";
+
+        ArrayList<Span> tokens = SimpleParser.tokenizeDecimalSmartWSentences(textoPrueba, true).get(0);
+        FastNER fastNER = new FastNER(rule);
+        HashMap<String, ArrayList<Span>> res = fastNER.processSpanList(tokens);
+        for (Map.Entry<String, ArrayList<Span>> entry : res.entrySet()) {
+            System.out.println(entry.getKey() + ":\t");
+            entry.getValue().forEach((span) -> {
+                System.out.println("\t" + textoPrueba.substring(span.getBegin(), span.getEnd()));
+            });
+        }
+    }
+
+    public void testingCurrencyFastNER2 (String textoPrueba){
+        String rule = "@fastner\n" + "\\d+ \t CURRENCY\n";
+
+        ArrayList<Span> tokens = SimpleParser.tokenizeDecimalSmartWSentences(textoPrueba, true).get(0);
+        FastNER fastNER = new FastNER(rule);
+        HashMap<String, ArrayList<Span>> res = fastNER.processSpanList(tokens);
+        for (Map.Entry<String, ArrayList<Span>> entry : res.entrySet()) {
+            System.out.println(entry.getKey() + ":\t");
+            entry.getValue().forEach((span) -> {
+                System.out.println("\t" + textoPrueba.substring(span.getBegin(), span.getEnd()).replaceAll(" +"," "));
+            });
+        }
+    }
+
+    public void testingCurrencyFastNER3 (String textoPrueba){
+        String rule = "@fastner\n" + "mil novecientos treinta $\t CURRENCY\n";
+
+        ArrayList<Span> tokens = SimpleParser.tokenizeDecimalSmartWSentences(textoPrueba, true).get(0);
+        FastNER fastNER = new FastNER(rule);
+        HashMap<String, ArrayList<Span>> res = fastNER.processSpanList(tokens);
+        for (Map.Entry<String, ArrayList<Span>> entry : res.entrySet()) {
+            System.out.println(entry.getKey() + ":\t");
+            entry.getValue().forEach((span) -> {
+                System.out.println("\t" + textoPrueba.substring(span.getBegin(), span.getEnd()).replaceAll(" +"," "));
+            });
+        }
     }
 
     //public String deleteCardinalNumbersFromStringEs (String string){

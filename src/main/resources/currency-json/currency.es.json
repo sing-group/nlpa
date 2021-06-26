@@ -1,810 +1,810 @@
 {
 	"Name":"Dólar australiano",
-	"Name_Plural":"Dólares australianos",
+	"NamePlural":"Dólares australianos",
 	"ISO":"AUD",
 	"Symbol":"$"
 },
 {
 	"Name":"Lek albanés",
-	"Name_Plural":"Leks albaneses",
+	"NamePlural":"Leks albaneses",
 	"ISO":"ALL",
 	"Symbol":"L"
 },
 {
 	"Name":"Dinar argelino",
-	"Name_Plural":"Dinares argelinos",
+	"NamePlural":"Dinares argelinos",
 	"ISO":"DZD",
 	"Symbol":"دج"
 },
 {
 	"Name":"Peso argentino",
-	"Name_Plural":"Pesos argentinos",
+	"NamePlural":"Pesos argentinos",
 	"ISO":"ARS",
 	"Symbol":"$"
 },
 {
 	"Name":"Florín arubeño",
-	"Name_Plural":"Florines arubeños",
+	"NamePlural":"Florines arubeños",
 	"ISO":"AWG",
 	"Symbol":"ƒ"
 },
 {
 	"Name":"Libra esterlina",
-	"Name_Plural":"Libras esterlinas",
+	"NamePlural":"Libras esterlinas",
 	"ISO":"GBP",
 	"Symbol":"£"
 },
 {
 	"Name":"Dólar de las Bahamas",
-	"Name_Plural":"Dólares de las Bahamas",
+	"NamePlural":"Dólares de las Bahamas",
 	"ISO":"BSD",
 	"Symbol":"B$"
 },
 {
 	"Name":"Dinar de Bahréin",
-	"Name_Plural":"Dinares de Bahréin",
+	"NamePlural":"Dinares de Bahréin",
 	"ISO":"BHD",
 	"Symbol":".د.ب"
 },
 {
 	"Name":"Taka de Bangladesh",
-	"Name_Plural":"Takas de Bangladesh",
+	"NamePlural":"Takas de Bangladesh",
 	"ISO":"BDT",
 	"Symbol":"Tk"
 },
 {
 	"Name":"Dólar de Barbados",
-	"Name_Plural":"Dólares de Barbados",
+	"NamePlural":"Dólares de Barbados",
 	"ISO":"BBD",
 	"Symbol":"BBD"
 },
 {
 	"Name":"Rublo bielorruso",
-	"Name_Plural":"Rublos bielorrusos",
+	"NamePlural":"Rublos bielorrusos",
 	"ISO":"BYR",
 	"Symbol":"Br"
 },
 {
 	"Name":"Dólar de Belice",
-	"Name_Plural":"Dólares de Belice",
+	"NamePlural":"Dólares de Belice",
 	"ISO":"BZD",
 	"Symbol":"BZ$"
 },
 {
 	"Name":"Dólar de Bermudas",
-	"Name_Plural":"Dólares de Bermudas",
+	"NamePlural":"Dólares de Bermudas",
 	"ISO":"BMD",
 	"Symbol":"BD$"
 },
 {
 	"Name":"Ngultrum de Bhutan",
-	"Name_Plural":"Ngultrums de Bhutan",
+	"NamePlural":"Ngultrums de Bhutan",
 	"ISO":"BTN",
 	"Symbol":"Nu."
 },
 {
 	"Name":"Boliviano",
-	"Name_Plural":"Bolivianos",
+	"NamePlural":"Bolivianos",
 	"ISO":"BOB",
 	"Symbol":"Bs"
 },
 {
 	"Name":"Pula de Botsuana",
-	"Name_Plural":"Pulas de Botsuana",
+	"NamePlural":"Pulas de Botsuana",
 	"ISO":"BWP",
 	"Symbol":"P"
 },
 {
 	"Name":"Real brasileño",
-	"Name_Plural":"Reales brasileños",
+	"NamePlural":"Reales brasileños",
 	"ISO":"BRL",
 	"Symbol":"R$"
 },
 {
 	"Name":"Dólar de Brunéi",
-	"Name_Plural":"Dólares de Brunéi",
+	"NamePlural":"Dólares de Brunéi",
 	"ISO":"BND",
 	"Symbol":"B$"
 },
 {
 	"Name":"Lev búlgaro",
-	"Name_Plural":"Levs búlgaros",
+	"NamePlural":"Levs búlgaros",
 	"ISO":"BGN",
 	"Symbol":"лв"
 },
 {
 	"Name":"Franco burundí",
-	"Name_Plural":"Francos burundíes",
+	"NamePlural":"Francos burundíes",
 	"ISO":"BIF",
 	"Symbol":"FBu"
 },
 {
 	"Name":"Dólar canadiense",
-	"Name_Plural":"Dólares canadiensees",
+	"NamePlural":"Dólares canadiensees",
 	"ISO":"CAD",
 	"Symbol":"C$"
 },
 {
 	"Name":"Yuan chino",
-	"Name_Plural":"Yuanes chinos",
+	"NamePlural":"Yuanes chinos",
 	"ISO":"CNY",
 	"Symbol":"¥"
 },
 {
 	"Name":"Riel camboyano",
-	"Name_Plural":"Rieles camboyanos",
+	"NamePlural":"Rieles camboyanos",
 	"ISO":"KHR",
 	"Symbol":"KHR"
 },
 {
 	"Name":"Escudo caboverdiano",
-	"Name_Plural":"Escudos caboverdianos",
+	"NamePlural":"Escudos caboverdianos",
 	"ISO":"CVE",
 	"Symbol":"Esc"
 },
 {
 	"Name":"Dólar de las Islas Caimán",
-	"Name_Plural":"Dólares de las Islas Caimán",
+	"NamePlural":"Dólares de las Islas Caimán",
 	"ISO":"KYD",
 	"Symbol":"$"
 },
 {
 	"Name":"Franco (BCEAO)",
-	"Name_Plural":"Francos (BCEAO)",
+	"NamePlural":"Francos (BCEAO)",
 	"ISO":"XOF",
 	"Symbol":"BCEAO"
 },
 {
 	"Name":"Franco (BEAC)",
-	"Name_Plural":"Francos (BEAC)",
+	"NamePlural":"Francos (BEAC)",
 	"ISO":"XAF",
 	"Symbol":"BEAC"
 },
 {
 	"Name":"Peso chileno",
-	"Name_Plural":"Pesos chilenos",
+	"NamePlural":"Pesos chilenos",
 	"ISO":"CLP",
 	"Symbol":"$"
 },
 {
 	"Name":"Peso colombiano",
-	"Name_Plural":"Pesos colombianos",
+	"NamePlural":"Pesos colombianos",
 	"ISO":"COP",
 	"Symbol":"$"
 },
 {
 	"Name":"Franco comorano",
-	"Name_Plural":"Francos comoranos",
+	"NamePlural":"Francos comoranos",
 	"ISO":"KMF",
 	"Symbol":"KMF"
 },
 {
 	"Name":"Colón costarricense",
-	"Name_Plural":"Colones costarricenses",
+	"NamePlural":"Colones costarricenses",
 	"ISO":"CRC",
 	"Symbol":"₡"
 },
 {
 	"Name":"Kuna croata",
-	"Name_Plural":"Kunas croatas",
+	"NamePlural":"Kunas croatas",
 	"ISO":"HRK",
 	"Symbol":"kn"
 },
 {
 	"Name":"Peso cubano",
-	"Name_Plural":"Pesos cubanos",
+	"NamePlural":"Pesos cubanos",
 	"ISO":"CUP",
 	"Symbol":"$MN"
 },
 {
 	"Name":"Corona checa",
-	"Name_Plural":"Coronas checas",
+	"NamePlural":"Coronas checas",
 	"ISO":"CZK",
 	"Symbol":"Kč"
 },
 {
 	"Name":"Corona danesa",
-	"Name_Plural":"Coronas danesas",
+	"NamePlural":"Coronas danesas",
 	"ISO":"DKK",
 	"Symbol":"kr"
 },
 {
 	"Name":"Franco yibutiano",
-	"Name_Plural":"Francos yibutianos",
+	"NamePlural":"Francos yibutianos",
 	"ISO":"DJF",
 	"Symbol":"Fdj"
 },
 {
 	"Name":"Peso dominicano",
-	"Name_Plural":"Pesos dominicanos",
+	"NamePlural":"Pesos dominicanos",
 	"ISO":"DOP",
 	"Symbol":"RD$"
 },
 {
 	"Name":"Euro",
-	"Name_Plural":"Euros",
+	"NamePlural":"Euros",
 	"ISO":"EUR",
 	"Symbol":"€"
 },
 {
 	"Name":"Dólar del Caribe Oriental",
-	"Name_Plural":"Dólares del Caribe Oriental",
+	"NamePlural":"Dólares del Caribe Oriental",
 	"ISO":"XCD",
 	"Symbol":"EC$"
 },
 {
 	"Name":"Libra egipcia",
-	"Name_Plural":"Libras egipcias",
+	"NamePlural":"Libras egipcias",
 	"ISO":"EGP",
 	"Symbol":"ج.م"
 },
 {
 	"Name":"El Colon del Salvador",
-	"Name_Plural":"El Colon del Salvador",
+	"NamePlural":"El Colon del Salvador",
 	"ISO":"SVC",
 	"Symbol":"₡"
 },
 {
 	"Name":"Corona estonia",
-	"Name_Plural":"Coronas estonias",
+	"NamePlural":"Coronas estonias",
 	"ISO":"EEK",
 	"Symbol":"EEK"
 },
 {
 	"Name":"Birr etíope",
-	"Name_Plural":"Birrs etíopes",
+	"NamePlural":"Birrs etíopes",
 	"ISO":"ETB",
 	"Symbol":"Br"
 },
 {
 	"Name":"Libra malvinense",
-	"Name_Plural":"Libras malvinenses",
+	"NamePlural":"Libras malvinenses",
 	"ISO":"FKP",
 	"Symbol":"£"
 },
 {
 	"Name":"Dólar de Fiji",
-	"Name_Plural":"Dólares de Fiji",
+	"NamePlural":"Dólares de Fiji",
 	"ISO":"FJD",
 	"Symbol":"FJ$"
 },
 {
 	"Name":"Dalasi gambiano",
-	"Name_Plural":"Dalasis gambianos",
+	"NamePlural":"Dalasis gambianos",
 	"ISO":"GMD",
 	"Symbol":"D"
 },
 {
 	"Name":"Quetzal de Guatemala",
-	"Name_Plural":"Quetzals de Guatemala",
+	"NamePlural":"Quetzals de Guatemala",
 	"ISO":"GTQ",
 	"Symbol":"Q"
 },
 {
 	"Name":"Franco guineano",
-	"Name_Plural":"Francos guineanos",
+	"NamePlural":"Francos guineanos",
 	"ISO":"GNF",
 	"Symbol":"FG"
 },
 {
 	"Name":"Dólar guyanés",
-	"Name_Plural":"Dólares guyanéses",
+	"NamePlural":"Dólares guyanéses",
 	"ISO":"GYD",
 	"Symbol":"GY$"
 },
 {
 	"Name":"Cedi ghanes",
-	"Name_Plural":"Cedis ghaneses",
+	"NamePlural":"Cedis ghaneses",
 	"ISO":"GHS",
 	"Symbol":"GHS"
 },
 {
 	"Name":"Dólar de Hong Kong",
-	"Name_Plural":"Dólares de Hong Kong",
+	"NamePlural":"Dólares de Hong Kong",
 	"ISO":"HKD",
 	"Symbol":"HK$"
 },
 {
 	"Name":"Gourde haitiano",
-	"Name_Plural":"Gourdes haitianos",
+	"NamePlural":"Gourdes haitianos",
 	"ISO":"HTG",
 	"Symbol":""
 },
 {
 	"Name":"Lempira hondureña",
-	"Name_Plural":"Lempiras hondureñas",
+	"NamePlural":"Lempiras hondureñas",
 	"ISO":"HNL",
 	"Symbol":"L"
 },
 {
 	"Name":"Florín húngaro",
-	"Name_Plural":"Florines húngaros",
+	"NamePlural":"Florines húngaros",
 	"ISO":"HUF",
 	"Symbol":"Ft"
 },
 {
 	"Name":"Rupia indonesia",
-	"Name_Plural":"Rupias indonesias",
+	"NamePlural":"Rupias indonesias",
 	"ISO":"IDR",
 	"Symbol":"Rp"
 },
 {
 	"Name":"Rupia india",
-	"Name_Plural":"Rupias indias",
+	"NamePlural":"Rupias indias",
 	"ISO":"INR",
 	"Symbol":"Rs."
 },
 {
 	"Name":"Corona islandesa",
-	"Name_Plural":"Coronas islandesas",
+	"NamePlural":"Coronas islandesas",
 	"ISO":"ISK",
 	"Symbol":"kr"
 },
 {
 	"Name":"Rial iraní",
-	"Name_Plural":"Riales iraníes",
+	"NamePlural":"Riales iraníes",
 	"ISO":"IRR",
 	"Symbol":""
 },
 {
 	"Name":"Dinar iraquí",
-	"Name_Plural":"Dinares iraquíes",
+	"NamePlural":"Dinares iraquíes",
 	"ISO":"IQD",
 	"Symbol":"ع.د"
 },
 {
 	"Name":"Shekel israelí",
-	"Name_Plural":"Shekels israelíes",
+	"NamePlural":"Shekels israelíes",
 	"ISO":"ILS",
 	"Symbol":"₪"
 },
 {
 	"Name":"Yen japonés",
-	"Name_Plural":"Yenes japoneses",
+	"NamePlural":"Yenes japoneses",
 	"ISO":"JPY",
 	"Symbol":"¥"
 },
 {
 	"Name":"Dinar jordano",
-	"Name_Plural":"Dinares jordanos",
+	"NamePlural":"Dinares jordanos",
 	"ISO":"JOD",
 	"Symbol":"JOD"
 },
 {
 	"Name":"Tenge kazako",
-	"Name_Plural":"Tenges kazakos",
+	"NamePlural":"Tenges kazakos",
 	"ISO":"KZT",
 	"Symbol":"KZT"
 },
 {
 	"Name":"Chelín keniano",
-	"Name_Plural":"Chelines kenianos",
+	"NamePlural":"Chelines kenianos",
 	"ISO":"KES",
 	"Symbol":"KSh"
 },
 {
 	"Name":"Won coreano",
-	"Name_Plural":"Wones coreanos",
+	"NamePlural":"Wones coreanos",
 	"ISO":"KRW",
 	"Symbol":"₩"
 },
 {
 	"Name":"Dinar kuwaití",
-	"Name_Plural":"Dinares kuwaitís",
+	"NamePlural":"Dinares kuwaitís",
 	"ISO":"KWD",
 	"Symbol":"د.ك"
 },
 {
 	"Name":"Kirguistán Som",
-	"Name_Plural":"Kirguistán Som",
+	"NamePlural":"Kirguistán Som",
 	"ISO":"KGS",
 	"Symbol":"KGS"
 },
 {
 	"Name":"Pataca de Macao",
-	"Name_Plural":"Patacas de Macao",
+	"NamePlural":"Patacas de Macao",
 	"ISO":"MOP",
 	"Symbol":"$"
 },
 {
 	"Name":"Dinar macedonio",
-	"Name_Plural":"Dinares macedonios",
+	"NamePlural":"Dinares macedonios",
 	"ISO":"MKD",
 	"Symbol":"MKD"
 },
 {
 	"Name":"Kwacha malawiano",
-	"Name_Plural":"Kwachas malawianos",
+	"NamePlural":"Kwachas malawianos",
 	"ISO":"MWK",
 	"Symbol":"MK"
 },
 {
 	"Name":"Ringgit malayo",
-	"Name_Plural":"Ringgits malayos",
+	"NamePlural":"Ringgits malayos",
 	"ISO":"MYR",
 	"Symbol":"RM"
 },
 {
 	"Name":"Rupia de Maldivas",
-	"Name_Plural":"Rupias de Maldivas",
+	"NamePlural":"Rupias de Maldivas",
 	"ISO":"MVR",
 	"Symbol":"Rf"
 },
 {
 	"Name":"Ouguiya de Mauritania",
-	"Name_Plural":"Ouguiyas de Mauritania",
+	"NamePlural":"Ouguiyas de Mauritania",
 	"ISO":"MRO",
 	"Symbol":"UM"
 },
 {
 	"Name":"Rupia mauricia",
-	"Name_Plural":"Rupias mauricias",
+	"NamePlural":"Rupias mauricias",
 	"ISO":"MUR",
 	"Symbol":"₨"
 },
 {
 	"Name":"Peso mexicano",
-	"Name_Plural":"Pesos mexicanos",
+	"NamePlural":"Pesos mexicanos",
 	"ISO":"MXN",
 	"Symbol":"$"
 },
 {
 	"Name":"Leu moldavo",
-	"Name_Plural":"Leus moldavos",
+	"NamePlural":"Leus moldavos",
 	"ISO":"MDL",
 	"Symbol":"MDL"
 },
 {
 	"Name":"Tugrik mongol",
-	"Name_Plural":"Tugriks mongoles",
+	"NamePlural":"Tugriks mongoles",
 	"ISO":"MNT",
 	"Symbol":"₮"
 },
 {
 	"Name":"Dirham marroquí",
-	"Name_Plural":"Dirhams marroquís",
+	"NamePlural":"Dirhams marroquís",
 	"ISO":"MAD",
 	"Symbol":"د.م."
 },
 {
 	"Name":"Kyat de Myanmar",
-	"Name_Plural":"Kyats de Myanmar",
+	"NamePlural":"Kyats de Myanmar",
 	"ISO":"MMK",
 	"Symbol":"K"
 },
 {
 	"Name":"Dólar de Namibia",
-	"Name_Plural":"Dólares de Namibia",
+	"NamePlural":"Dólares de Namibia",
 	"ISO":"NAD",
 	"Symbol":"N$"
 },
 {
 	"Name":"Rupia nepalí",
-	"Name_Plural":"Rupias nepalís",
+	"NamePlural":"Rupias nepalís",
 	"ISO":"NPR",
 	"Symbol":"₨"
 },
 {
 	"Name":"Guilder antillano",
-	"Name_Plural":"Guilderes antillanos",
+	"NamePlural":"Guilderes antillanos",
 	"ISO":"ANG",
 	"Symbol":"NAƒ"
 },
 {
 	"Name":"Dólar neozelandés",
-	"Name_Plural":"Dólares neozelandeses",
+	"NamePlural":"Dólares neozelandeses",
 	"ISO":"NZD",
 	"Symbol":"$"
 },
 {
 	"Name":"Córdoba nicaragüense",
-	"Name_Plural":"Córdobas nicaragüenses",
+	"NamePlural":"Córdobas nicaragüenses",
 	"ISO":"NIO",
 	"Symbol":"C$"
 },
 {
 	"Name":"Naira nigeriano",
-	"Name_Plural":"Nairas nigerianos",
+	"NamePlural":"Nairas nigerianos",
 	"ISO":"NGN",
 	"Symbol":"₦"
 },
 {
 	"Name":"Won de Corea del Norte",
-	"Name_Plural":"Wons de Corea del Norte",
+	"NamePlural":"Wons de Corea del Norte",
 	"ISO":"KPW",
 	"Symbol":"₩"
 },
 {
 	"Name":"Corona noruega",
-	"Name_Plural":"Coronas noruegas",
+	"NamePlural":"Coronas noruegas",
 	"ISO":"NOK",
 	"Symbol":"kr"
 },
 {
 	"Name":"Rial omaní",
-	"Name_Plural":"Riales omanís",
+	"NamePlural":"Riales omanís",
 	"ISO":"OMR",
 	"Symbol":"ر.ع."
 },
 {
 	"Name":"Franco ",
-	"Name_Plural":"Francos",
+	"NamePlural":"Francos",
 	"ISO":"XPF",
 	"Symbol":"F"
 },
 {
 	"Name":"Rupia pakistaní",
-	"Name_Plural":"Rupias pakistanís",
+	"NamePlural":"Rupias pakistanís",
 	"ISO":"PKR",
 	"Symbol":"Rs."
 },
 {
 	"Name":"Balboa panameño",
-	"Name_Plural":"Balboas panameños",
+	"NamePlural":"Balboas panameños",
 	"ISO":"PAB",
 	"Symbol":"B"
 },
 {
 	"Name":"Kina de Papúa Nueva Guinea",
-	"Name_Plural":"Kinas de Papúa Nueva Guinea",
+	"NamePlural":"Kinas de Papúa Nueva Guinea",
 	"ISO":"PGK",
 	"Symbol":"K"
 },
 {
 	"Name":"Guaraní paraguayo",
-	"Name_Plural":"Guaranís paraguayos",
+	"NamePlural":"Guaranís paraguayos",
 	"ISO":"PYG",
 	"Symbol":""
 },
 {
 	"Name":"Nuevo Sol peruano",
-	"Name_Plural":"Nuevo Sol peruanos",
+	"NamePlural":"Nuevo Sol peruanos",
 	"ISO":"PEN",
 	"Symbol":"S/."
 },
 {
 	"Name":"Peso filipino",
-	"Name_Plural":"Pesos filipinos",
+	"NamePlural":"Pesos filipinos",
 	"ISO":"PHP",
 	"Symbol":"₱"
 },
 {
 	"Name":"Zloty polaco",
-	"Name_Plural":"Zlotys polacos",
+	"NamePlural":"Zlotys polacos",
 	"ISO":"PLN",
 	"Symbol":"zł"
 },
 {
 	"Name":"Riyal Qatarí",
-	"Name_Plural":"Riyales Qatarís",
+	"NamePlural":"Riyales Qatarís",
 	"ISO":"QAR",
 	"Symbol":"ر.ق"
 },
 {
 	"Name":"Leu rumano",
-	"Name_Plural":"Leus rumanos",
+	"NamePlural":"Leus rumanos",
 	"ISO":"RON",
 	"Symbol":"L"
 },
 {
 	"Name":"Rublo ruso",
-	"Name_Plural":"Rublos rusos",
+	"NamePlural":"Rublos rusos",
 	"ISO":"RUB",
 	"Symbol":"руб"
 },
 {
 	"Name":"Franco ruandés",
-	"Name_Plural":"Francos ruandeses",
+	"NamePlural":"Francos ruandeses",
 	"ISO":"RWF",
 	"Symbol":"RF"
 },
 {
 	"Name":"Franco suizo",
-	"Name_Plural":"Francos suizos",
+	"NamePlural":"Francos suizos",
 	"ISO":"CHF",
 	"Symbol":"CHF"
 },
 {
 	"Name":"Tala de Samoa",
-	"Name_Plural":"Talas de Samoa",
+	"NamePlural":"Talas de Samoa",
 	"ISO":"WST",
 	"Symbol":"WS$"
 },
 {
 	"Name":"Dobra de Santo Tomé",
-	"Name_Plural":"Dobras de Santo Tomé",
+	"NamePlural":"Dobras de Santo Tomé",
 	"ISO":"STD",
 	"Symbol":"Db"
 },
 {
 	"Name":"Riyal saudí",
-	"Name_Plural":"Riyales saudís",
+	"NamePlural":"Riyales saudís",
 	"ISO":"SAR",
 	"Symbol":"ر.س"
 },
 {
 	"Name":"Rupia de Seychelles",
-	"Name_Plural":"Rupias de Seychelles",
+	"NamePlural":"Rupias de Seychelles",
 	"ISO":"SCR",
 	"Symbol":"SR"
 },
 {
 	"Name":"Leone de Sierra Leona",
-	"Name_Plural":"Leones de Sierra Leona",
+	"NamePlural":"Leones de Sierra Leona",
 	"ISO":"SLL",
 	"Symbol":"Le"
 },
 {
 	"Name":"Dólar de Singapur",
-	"Name_Plural":"Dólares de Singapur",
+	"NamePlural":"Dólares de Singapur",
 	"ISO":"SGD",
 	"Symbol":"S$"
 },
 {
 	"Name":"Corona eslovaca",
-	"Name_Plural":"Coronas eslovacas",
+	"NamePlural":"Coronas eslovacas",
 	"ISO":"SKK",
 	"Symbol":"Sk"
 },
 {
 	"Name":"Dólar de las Islas Salomón",
-	"Name_Plural":"Dólares de las Islas Salomón",
+	"NamePlural":"Dólares de las Islas Salomón",
 	"ISO":"SBD",
 	"Symbol":"SI$"
 },
 {
 	"Name":"Chelín somalí",
-	"Name_Plural":"Chelínes somalís",
+	"NamePlural":"Chelínes somalís",
 	"ISO":"SOS",
 	"Symbol":"So."
 },
 {
 	"Name":"Rand sudafricano",
-	"Name_Plural":"Randes sudafricanos",
+	"NamePlural":"Randes sudafricanos",
 	"ISO":"ZAR",
 	"Symbol":"R"
 },
 {
 	"Name":"Rupia de Sri Lanka",
-	"Name_Plural":"Rupias de Sri Lanka",
+	"NamePlural":"Rupias de Sri Lanka",
 	"ISO":"LKR",
 	"Symbol":"ரூ"
 },
 {
 	"Name":"Libra de Santa Helena",
-	"Name_Plural":"Libras de Santa Helena",
+	"NamePlural":"Libras de Santa Helena",
 	"ISO":"SHP",
 	"Symbol":"£"
 },
 {
 	"Name":"Libra sudanesa",
-	"Name_Plural":"Libras sudanesas",
+	"NamePlural":"Libras sudanesas",
 	"ISO":"SDG",
 	"Symbol":"SDG"
 },
 {
 	"Name":"Lilangeni de Suazilandia",
-	"Name_Plural":"Lilangenis de Suazilandia",
+	"NamePlural":"Lilangenis de Suazilandia",
 	"ISO":"SZL",
 	"Symbol":"SZL"
 },
 {
 	"Name":"Corona sueca",
-	"Name_Plural":"Coronas suecas",
+	"NamePlural":"Coronas suecas",
 	"ISO":"SEK",
 	"Symbol":"kr"
 },
 {
 	"Name":"Libra siria",
-	"Name_Plural":"Libras sirias",
+	"NamePlural":"Libras sirias",
 	"ISO":"SYP",
 	"Symbol":"SYP"
 },
 {
 	"Name":"Baht tailandés",
-	"Name_Plural":"Bahts tailandeses",
+	"NamePlural":"Bahts tailandeses",
 	"ISO":"THB",
 	"Symbol":"฿"
 },
 {
 	"Name":"Lira turca",
-	"Name_Plural":"Liras turcas",
+	"NamePlural":"Liras turcas",
 	"ISO":"TRY",
 	"Symbol":"YTL"
 },
 {
 	"Name":"Dólar taiwanés",
-	"Name_Plural":"Dólares taiwaneses",
+	"NamePlural":"Dólares taiwaneses",
 	"ISO":"TWD",
 	"Symbol":"NT$"
 },
 {
 	"Name":"Chelín tanzano",
-	"Name_Plural":"Chelines tanzanos",
+	"NamePlural":"Chelines tanzanos",
 	"ISO":"TZS",
 	"Symbol":"x"
 },
 {
 	"Name":"Paʻanga o dólar tongano",
-	"Name_Plural":"Paʻangas o dólares tonganos",
+	"NamePlural":"Paʻangas o dólares tonganos",
 	"ISO":"TOP",
 	"Symbol":"T$"
 },
 {
 	"Name":"Dólar de Trinidad y Tobago",
-	"Name_Plural":"Dólares de Trinidad y Tobago",
+	"NamePlural":"Dólares de Trinidad y Tobago",
 	"ISO":"TTD",
 	"Symbol":"TTD"
 },
 {
 	"Name":"Dinar tunecino",
-	"Name_Plural":"Dinares tunecinos",
+	"NamePlural":"Dinares tunecinos",
 	"ISO":"TND",
 	"Symbol":"د.ت"
 },
 {
 	"Name":"Dólar estadounidense",
-	"Name_Plural":"Dólares estadounidenses",
+	"NamePlural":"Dólares estadounidenses",
 	"ISO":"USD",
 	"Symbol":"$"
 },
 {
 	"Name":"Dirham de Emiratos Arabes Unidos",
-	"Name_Plural":"Dirhams de Emiratos Arabes Unidos",
+	"NamePlural":"Dirhams de Emiratos Arabes Unidos",
 	"ISO":"AED",
 	"Symbol":"د.إ"
 },
 {
 	"Name":"Chelín ugandés",
-	"Name_Plural":"Chelines ugandeses",
+	"NamePlural":"Chelines ugandeses",
 	"ISO":"UGX",
 	"Symbol":"USh"
 },
 {
 	"Name":"Grivnia de Ucrania",
-	"Name_Plural":"Grivnias de Ucrania",
+	"NamePlural":"Grivnias de Ucrania",
 	"ISO":"UAH",
 	"Symbol":""
 },
 {
 	"Name":"Peso uruguayo",
-	"Name_Plural":"Pesos uruguayos",
+	"NamePlural":"Pesos uruguayos",
 	"ISO":"UYU",
 	"Symbol":"UYU"
 },
 {
 	"Name":"Uzbekistán Sum",
-	"Name_Plural":"Uzbekistán Sums",
+	"NamePlural":"Uzbekistán Sums",
 	"ISO":"UZS",
 	"Symbol":"UZS"
 },
 {
 	"Name":"Vatu de Vanuatu",
-	"Name_Plural":"Vatus de Vanuatu",
+	"NamePlural":"Vatus de Vanuatu",
 	"ISO":"VUV",
 	"Symbol":"Vt"
 },
 {
 	"Name":"Dong de Vietnam",
-	"Name_Plural":"Dongs de Vietnam",
+	"NamePlural":"Dongs de Vietnam",
 	"ISO":"VND",
 	"Symbol":"₫"
 },
 {
 	"Name":"Bolívar venezolano",
-	"Name_Plural":"Bolívares venezolanos",
+	"NamePlural":"Bolívares venezolanos",
 	"ISO":"VEF",
 	"Symbol":"VEF"
 },
 {
 	"Name":"Rial yemení",
-	"Name_Plural":"Riales yemenís",
+	"NamePlural":"Riales yemenís",
 	"ISO":"YER",
 	"Symbol":"YER"
 },
 {
 	"Name":"Kwacha zambiano",
-	"Name_Plural":"Kwachas zambianos",
+	"NamePlural":"Kwachas zambianos",
 	"ISO":"ZMK",
 	"Symbol":"ZMK"
 },
