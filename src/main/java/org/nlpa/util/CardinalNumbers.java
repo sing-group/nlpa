@@ -192,8 +192,13 @@ public class CardinalNumbers {
             if (isFound) {
                 String[] beforeAndAfterAMillion = pattern.split(textToFindCardinals,2);
                 String stringAfterAMillion = beforeAndAfterAMillion[1].replaceAll(" +", " ").trim();
-                String cardinalAfterAMillion = beforeAMillion(stringAfterAMillion);
-                String rule = "un millon " + cardinalAfterAMillion +  "\t Cardinal \n";
+                String rule = "";
+                if (!stringAfterAMillion.isEmpty()){
+                    String cardinalAfterAMillion = beforeATrillion(stringAfterAMillion);
+                    rule = "un millon " + cardinalAfterAMillion +  "\t Cardinal \n";
+                }else {
+                    rule = "un millon" + "\t Cardinal \n";
+                }
                 toReturn = findWithFastNERToken(rule,textToFindCardinals);
                 return toReturn;
             }
@@ -228,8 +233,13 @@ public class CardinalNumbers {
             if (isFound) {
                 String[] beforeAndAfterABillion = pattern.split(textToFindCardinals,2);
                 String stringAfterABillion = beforeAndAfterABillion[1].replaceAll(" +", " ").trim();
-                String cardinalAfterABillion = beforeABillion(stringAfterABillion);
-                String rule = "un billon " + cardinalAfterABillion +  "\t Cardinal \n";
+                String rule = "";
+                if (!stringAfterABillion.isEmpty()){
+                    String cardinalAfterABillion = beforeATrillion(stringAfterABillion);
+                    rule = "un billon " + cardinalAfterABillion +  "\t Cardinal \n";
+                }else {
+                    rule = "un billon" + "\t Cardinal \n";
+                }
                 toReturn = findWithFastNERToken(rule,textToFindCardinals);
                 return toReturn;
             }
@@ -265,8 +275,14 @@ public class CardinalNumbers {
             if (isFound) {
                 String[] beforeAndAfterATrillion = pattern.split(textToFindCardinals,2);
                 String stringAfterATrillion = beforeAndAfterATrillion[1].replaceAll(" +", " ").trim();
-                String cardinalAfterATrillion = beforeATrillion(stringAfterATrillion);
-                String rule = "un trillon " + cardinalAfterATrillion +  "\t Cardinal \n";
+                String rule = "";
+                if (!stringAfterATrillion.isEmpty()){
+                    String cardinalAfterATrillion = beforeATrillion(stringAfterATrillion);
+                    rule = "un trillon " + cardinalAfterATrillion +  "\t Cardinal \n";
+                }else {
+                    rule = "un trillon" + "\t Cardinal \n";
+                }
+
                 toReturn = findWithFastNERToken(rule,textToFindCardinals);
                 return toReturn;
             }
