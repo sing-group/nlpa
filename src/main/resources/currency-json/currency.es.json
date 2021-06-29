@@ -1,810 +1,137 @@
 {
-	"Name":"Dólar australiano",
-	"NamePlural":"Dólares australianos",
-	"ISO":"AUD",
-	"Symbol":"$"
-},
-{
-	"Name":"Lek albanés",
-	"NamePlural":"Leks albaneses",
-	"ISO":"ALL",
-	"Symbol":"L"
-},
-{
-	"Name":"Dinar argelino",
-	"NamePlural":"Dinares argelinos",
-	"ISO":"DZD",
-	"Symbol":"دج"
-},
-{
-	"Name":"Peso argentino",
-	"NamePlural":"Pesos argentinos",
-	"ISO":"ARS",
-	"Symbol":"$"
-},
-{
-	"Name":"Florín arubeño",
-	"NamePlural":"Florines arubeños",
-	"ISO":"AWG",
-	"Symbol":"ƒ"
-},
-{
-	"Name":"Libra esterlina",
-	"NamePlural":"Libras esterlinas",
-	"ISO":"GBP",
-	"Symbol":"£"
-},
-{
-	"Name":"Dólar de las Bahamas",
-	"NamePlural":"Dólares de las Bahamas",
-	"ISO":"BSD",
-	"Symbol":"B$"
-},
-{
-	"Name":"Dinar de Bahréin",
-	"NamePlural":"Dinares de Bahréin",
-	"ISO":"BHD",
-	"Symbol":".د.ب"
-},
-{
-	"Name":"Taka de Bangladesh",
-	"NamePlural":"Takas de Bangladesh",
-	"ISO":"BDT",
-	"Symbol":"Tk"
-},
-{
-	"Name":"Dólar de Barbados",
-	"NamePlural":"Dólares de Barbados",
-	"ISO":"BBD",
-	"Symbol":"BBD"
-},
-{
-	"Name":"Rublo bielorruso",
-	"NamePlural":"Rublos bielorrusos",
-	"ISO":"BYR",
-	"Symbol":"Br"
-},
-{
-	"Name":"Dólar de Belice",
-	"NamePlural":"Dólares de Belice",
-	"ISO":"BZD",
-	"Symbol":"BZ$"
-},
-{
-	"Name":"Dólar de Bermudas",
-	"NamePlural":"Dólares de Bermudas",
-	"ISO":"BMD",
-	"Symbol":"BD$"
-},
-{
-	"Name":"Ngultrum de Bhutan",
-	"NamePlural":"Ngultrums de Bhutan",
-	"ISO":"BTN",
-	"Symbol":"Nu."
-},
-{
-	"Name":"Boliviano",
-	"NamePlural":"Bolivianos",
-	"ISO":"BOB",
-	"Symbol":"Bs"
-},
-{
-	"Name":"Pula de Botsuana",
-	"NamePlural":"Pulas de Botsuana",
-	"ISO":"BWP",
-	"Symbol":"P"
-},
-{
-	"Name":"Real brasileño",
-	"NamePlural":"Reales brasileños",
-	"ISO":"BRL",
-	"Symbol":"R$"
-},
-{
-	"Name":"Dólar de Brunéi",
-	"NamePlural":"Dólares de Brunéi",
-	"ISO":"BND",
-	"Symbol":"B$"
-},
-{
-	"Name":"Lev búlgaro",
-	"NamePlural":"Levs búlgaros",
-	"ISO":"BGN",
-	"Symbol":"лв"
-},
-{
-	"Name":"Franco burundí",
-	"NamePlural":"Francos burundíes",
-	"ISO":"BIF",
-	"Symbol":"FBu"
-},
-{
-	"Name":"Dólar canadiense",
-	"NamePlural":"Dólares canadiensees",
-	"ISO":"CAD",
-	"Symbol":"C$"
-},
-{
-	"Name":"Yuan chino",
-	"NamePlural":"Yuanes chinos",
-	"ISO":"CNY",
-	"Symbol":"¥"
-},
-{
-	"Name":"Riel camboyano",
-	"NamePlural":"Rieles camboyanos",
-	"ISO":"KHR",
-	"Symbol":"KHR"
-},
-{
-	"Name":"Escudo caboverdiano",
-	"NamePlural":"Escudos caboverdianos",
-	"ISO":"CVE",
-	"Symbol":"Esc"
-},
-{
-	"Name":"Dólar de las Islas Caimán",
-	"NamePlural":"Dólares de las Islas Caimán",
-	"ISO":"KYD",
-	"Symbol":"$"
-},
-{
-	"Name":"Franco (BCEAO)",
-	"NamePlural":"Francos (BCEAO)",
-	"ISO":"XOF",
-	"Symbol":"BCEAO"
-},
-{
-	"Name":"Franco (BEAC)",
-	"NamePlural":"Francos (BEAC)",
-	"ISO":"XAF",
-	"Symbol":"BEAC"
-},
-{
-	"Name":"Peso chileno",
-	"NamePlural":"Pesos chilenos",
-	"ISO":"CLP",
-	"Symbol":"$"
-},
-{
-	"Name":"Peso colombiano",
-	"NamePlural":"Pesos colombianos",
-	"ISO":"COP",
-	"Symbol":"$"
-},
-{
-	"Name":"Franco comorano",
-	"NamePlural":"Francos comoranos",
-	"ISO":"KMF",
-	"Symbol":"KMF"
-},
-{
-	"Name":"Colón costarricense",
-	"NamePlural":"Colones costarricenses",
-	"ISO":"CRC",
-	"Symbol":"₡"
-},
-{
-	"Name":"Kuna croata",
-	"NamePlural":"Kunas croatas",
-	"ISO":"HRK",
-	"Symbol":"kn"
-},
-{
-	"Name":"Peso cubano",
-	"NamePlural":"Pesos cubanos",
-	"ISO":"CUP",
-	"Symbol":"$MN"
-},
-{
-	"Name":"Corona checa",
-	"NamePlural":"Coronas checas",
-	"ISO":"CZK",
-	"Symbol":"Kč"
-},
-{
-	"Name":"Corona danesa",
-	"NamePlural":"Coronas danesas",
-	"ISO":"DKK",
-	"Symbol":"kr"
-},
-{
-	"Name":"Franco yibutiano",
-	"NamePlural":"Francos yibutianos",
-	"ISO":"DJF",
-	"Symbol":"Fdj"
-},
-{
-	"Name":"Peso dominicano",
-	"NamePlural":"Pesos dominicanos",
-	"ISO":"DOP",
-	"Symbol":"RD$"
-},
-{
-	"Name":"Euro",
-	"NamePlural":"Euros",
-	"ISO":"EUR",
-	"Symbol":"€"
-},
-{
-	"Name":"Dólar del Caribe Oriental",
-	"NamePlural":"Dólares del Caribe Oriental",
-	"ISO":"XCD",
-	"Symbol":"EC$"
-},
-{
-	"Name":"Libra egipcia",
-	"NamePlural":"Libras egipcias",
-	"ISO":"EGP",
-	"Symbol":"ج.م"
-},
-{
-	"Name":"El Colon del Salvador",
-	"NamePlural":"El Colon del Salvador",
-	"ISO":"SVC",
-	"Symbol":"₡"
-},
-{
-	"Name":"Corona estonia",
-	"NamePlural":"Coronas estonias",
-	"ISO":"EEK",
-	"Symbol":"EEK"
-},
-{
-	"Name":"Birr etíope",
-	"NamePlural":"Birrs etíopes",
-	"ISO":"ETB",
-	"Symbol":"Br"
-},
-{
-	"Name":"Libra malvinense",
-	"NamePlural":"Libras malvinenses",
-	"ISO":"FKP",
-	"Symbol":"£"
-},
-{
-	"Name":"Dólar de Fiji",
-	"NamePlural":"Dólares de Fiji",
-	"ISO":"FJD",
-	"Symbol":"FJ$"
-},
-{
-	"Name":"Dalasi gambiano",
-	"NamePlural":"Dalasis gambianos",
-	"ISO":"GMD",
-	"Symbol":"D"
-},
-{
-	"Name":"Quetzal de Guatemala",
-	"NamePlural":"Quetzals de Guatemala",
-	"ISO":"GTQ",
-	"Symbol":"Q"
-},
-{
-	"Name":"Franco guineano",
-	"NamePlural":"Francos guineanos",
-	"ISO":"GNF",
-	"Symbol":"FG"
-},
-{
-	"Name":"Dólar guyanés",
-	"NamePlural":"Dólares guyanéses",
-	"ISO":"GYD",
-	"Symbol":"GY$"
-},
-{
-	"Name":"Cedi ghanes",
-	"NamePlural":"Cedis ghaneses",
-	"ISO":"GHS",
-	"Symbol":"GHS"
-},
-{
-	"Name":"Dólar de Hong Kong",
-	"NamePlural":"Dólares de Hong Kong",
-	"ISO":"HKD",
-	"Symbol":"HK$"
-},
-{
-	"Name":"Gourde haitiano",
-	"NamePlural":"Gourdes haitianos",
-	"ISO":"HTG",
-	"Symbol":""
-},
-{
-	"Name":"Lempira hondureña",
-	"NamePlural":"Lempiras hondureñas",
-	"ISO":"HNL",
-	"Symbol":"L"
-},
-{
-	"Name":"Florín húngaro",
-	"NamePlural":"Florines húngaros",
-	"ISO":"HUF",
-	"Symbol":"Ft"
-},
-{
-	"Name":"Rupia indonesia",
-	"NamePlural":"Rupias indonesias",
-	"ISO":"IDR",
-	"Symbol":"Rp"
-},
-{
-	"Name":"Rupia india",
-	"NamePlural":"Rupias indias",
-	"ISO":"INR",
-	"Symbol":"Rs."
-},
-{
-	"Name":"Corona islandesa",
-	"NamePlural":"Coronas islandesas",
-	"ISO":"ISK",
-	"Symbol":"kr"
-},
-{
-	"Name":"Rial iraní",
-	"NamePlural":"Riales iraníes",
-	"ISO":"IRR",
-	"Symbol":""
-},
-{
-	"Name":"Dinar iraquí",
-	"NamePlural":"Dinares iraquíes",
-	"ISO":"IQD",
-	"Symbol":"ع.د"
-},
-{
-	"Name":"Shekel israelí",
-	"NamePlural":"Shekels israelíes",
-	"ISO":"ILS",
-	"Symbol":"₪"
-},
-{
-	"Name":"Yen japonés",
-	"NamePlural":"Yenes japoneses",
-	"ISO":"JPY",
-	"Symbol":"¥"
-},
-{
-	"Name":"Dinar jordano",
-	"NamePlural":"Dinares jordanos",
-	"ISO":"JOD",
-	"Symbol":"JOD"
-},
-{
-	"Name":"Tenge kazako",
-	"NamePlural":"Tenges kazakos",
-	"ISO":"KZT",
-	"Symbol":"KZT"
-},
-{
-	"Name":"Chelín keniano",
-	"NamePlural":"Chelines kenianos",
-	"ISO":"KES",
-	"Symbol":"KSh"
-},
-{
-	"Name":"Won coreano",
-	"NamePlural":"Wones coreanos",
-	"ISO":"KRW",
-	"Symbol":"₩"
-},
-{
-	"Name":"Dinar kuwaití",
-	"NamePlural":"Dinares kuwaitís",
-	"ISO":"KWD",
-	"Symbol":"د.ك"
-},
-{
-	"Name":"Kirguistán Som",
-	"NamePlural":"Kirguistán Som",
-	"ISO":"KGS",
-	"Symbol":"KGS"
-},
-{
-	"Name":"Pataca de Macao",
-	"NamePlural":"Patacas de Macao",
-	"ISO":"MOP",
-	"Symbol":"$"
-},
-{
-	"Name":"Dinar macedonio",
-	"NamePlural":"Dinares macedonios",
-	"ISO":"MKD",
-	"Symbol":"MKD"
-},
-{
-	"Name":"Kwacha malawiano",
-	"NamePlural":"Kwachas malawianos",
-	"ISO":"MWK",
-	"Symbol":"MK"
-},
-{
-	"Name":"Ringgit malayo",
-	"NamePlural":"Ringgits malayos",
-	"ISO":"MYR",
-	"Symbol":"RM"
-},
-{
-	"Name":"Rupia de Maldivas",
-	"NamePlural":"Rupias de Maldivas",
-	"ISO":"MVR",
-	"Symbol":"Rf"
-},
-{
-	"Name":"Ouguiya de Mauritania",
-	"NamePlural":"Ouguiyas de Mauritania",
-	"ISO":"MRO",
-	"Symbol":"UM"
-},
-{
-	"Name":"Rupia mauricia",
-	"NamePlural":"Rupias mauricias",
-	"ISO":"MUR",
-	"Symbol":"₨"
-},
-{
-	"Name":"Peso mexicano",
-	"NamePlural":"Pesos mexicanos",
-	"ISO":"MXN",
-	"Symbol":"$"
-},
-{
-	"Name":"Leu moldavo",
-	"NamePlural":"Leus moldavos",
-	"ISO":"MDL",
-	"Symbol":"MDL"
-},
-{
-	"Name":"Tugrik mongol",
-	"NamePlural":"Tugriks mongoles",
-	"ISO":"MNT",
-	"Symbol":"₮"
-},
-{
-	"Name":"Dirham marroquí",
-	"NamePlural":"Dirhams marroquís",
-	"ISO":"MAD",
-	"Symbol":"د.م."
-},
-{
-	"Name":"Kyat de Myanmar",
-	"NamePlural":"Kyats de Myanmar",
-	"ISO":"MMK",
-	"Symbol":"K"
-},
-{
-	"Name":"Dólar de Namibia",
-	"NamePlural":"Dólares de Namibia",
-	"ISO":"NAD",
-	"Symbol":"N$"
-},
-{
-	"Name":"Rupia nepalí",
-	"NamePlural":"Rupias nepalís",
-	"ISO":"NPR",
-	"Symbol":"₨"
-},
-{
-	"Name":"Guilder antillano",
-	"NamePlural":"Guilderes antillanos",
-	"ISO":"ANG",
-	"Symbol":"NAƒ"
-},
-{
-	"Name":"Dólar neozelandés",
-	"NamePlural":"Dólares neozelandeses",
-	"ISO":"NZD",
-	"Symbol":"$"
-},
-{
-	"Name":"Córdoba nicaragüense",
-	"NamePlural":"Córdobas nicaragüenses",
-	"ISO":"NIO",
-	"Symbol":"C$"
-},
-{
-	"Name":"Naira nigeriano",
-	"NamePlural":"Nairas nigerianos",
-	"ISO":"NGN",
-	"Symbol":"₦"
-},
-{
-	"Name":"Won de Corea del Norte",
-	"NamePlural":"Wons de Corea del Norte",
-	"ISO":"KPW",
-	"Symbol":"₩"
-},
-{
-	"Name":"Corona noruega",
-	"NamePlural":"Coronas noruegas",
-	"ISO":"NOK",
-	"Symbol":"kr"
-},
-{
-	"Name":"Rial omaní",
-	"NamePlural":"Riales omanís",
-	"ISO":"OMR",
-	"Symbol":"ر.ع."
-},
-{
-	"Name":"Franco ",
-	"NamePlural":"Francos",
-	"ISO":"XPF",
-	"Symbol":"F"
-},
-{
-	"Name":"Rupia pakistaní",
-	"NamePlural":"Rupias pakistanís",
-	"ISO":"PKR",
-	"Symbol":"Rs."
-},
-{
-	"Name":"Balboa panameño",
-	"NamePlural":"Balboas panameños",
-	"ISO":"PAB",
-	"Symbol":"B"
-},
-{
-	"Name":"Kina de Papúa Nueva Guinea",
-	"NamePlural":"Kinas de Papúa Nueva Guinea",
-	"ISO":"PGK",
-	"Symbol":"K"
-},
-{
-	"Name":"Guaraní paraguayo",
-	"NamePlural":"Guaranís paraguayos",
-	"ISO":"PYG",
-	"Symbol":""
-},
-{
-	"Name":"Nuevo Sol peruano",
-	"NamePlural":"Nuevo Sol peruanos",
-	"ISO":"PEN",
-	"Symbol":"S/."
-},
-{
-	"Name":"Peso filipino",
-	"NamePlural":"Pesos filipinos",
-	"ISO":"PHP",
-	"Symbol":"₱"
-},
-{
-	"Name":"Zloty polaco",
-	"NamePlural":"Zlotys polacos",
-	"ISO":"PLN",
-	"Symbol":"zł"
-},
-{
-	"Name":"Riyal Qatarí",
-	"NamePlural":"Riyales Qatarís",
-	"ISO":"QAR",
-	"Symbol":"ر.ق"
-},
-{
-	"Name":"Leu rumano",
-	"NamePlural":"Leus rumanos",
-	"ISO":"RON",
-	"Symbol":"L"
-},
-{
-	"Name":"Rublo ruso",
-	"NamePlural":"Rublos rusos",
-	"ISO":"RUB",
-	"Symbol":"руб"
-},
-{
-	"Name":"Franco ruandés",
-	"NamePlural":"Francos ruandeses",
-	"ISO":"RWF",
-	"Symbol":"RF"
-},
-{
-	"Name":"Franco suizo",
-	"NamePlural":"Francos suizos",
-	"ISO":"CHF",
-	"Symbol":"CHF"
-},
-{
-	"Name":"Tala de Samoa",
-	"NamePlural":"Talas de Samoa",
-	"ISO":"WST",
-	"Symbol":"WS$"
-},
-{
-	"Name":"Dobra de Santo Tomé",
-	"NamePlural":"Dobras de Santo Tomé",
-	"ISO":"STD",
-	"Symbol":"Db"
-},
-{
-	"Name":"Riyal saudí",
-	"NamePlural":"Riyales saudís",
-	"ISO":"SAR",
-	"Symbol":"ر.س"
-},
-{
-	"Name":"Rupia de Seychelles",
-	"NamePlural":"Rupias de Seychelles",
-	"ISO":"SCR",
-	"Symbol":"SR"
-},
-{
-	"Name":"Leone de Sierra Leona",
-	"NamePlural":"Leones de Sierra Leona",
-	"ISO":"SLL",
-	"Symbol":"Le"
-},
-{
-	"Name":"Dólar de Singapur",
-	"NamePlural":"Dólares de Singapur",
-	"ISO":"SGD",
-	"Symbol":"S$"
-},
-{
-	"Name":"Corona eslovaca",
-	"NamePlural":"Coronas eslovacas",
-	"ISO":"SKK",
-	"Symbol":"Sk"
-},
-{
-	"Name":"Dólar de las Islas Salomón",
-	"NamePlural":"Dólares de las Islas Salomón",
-	"ISO":"SBD",
-	"Symbol":"SI$"
-},
-{
-	"Name":"Chelín somalí",
-	"NamePlural":"Chelínes somalís",
-	"ISO":"SOS",
-	"Symbol":"So."
-},
-{
-	"Name":"Rand sudafricano",
-	"NamePlural":"Randes sudafricanos",
-	"ISO":"ZAR",
-	"Symbol":"R"
-},
-{
-	"Name":"Rupia de Sri Lanka",
-	"NamePlural":"Rupias de Sri Lanka",
-	"ISO":"LKR",
-	"Symbol":"ரூ"
-},
-{
-	"Name":"Libra de Santa Helena",
-	"NamePlural":"Libras de Santa Helena",
-	"ISO":"SHP",
-	"Symbol":"£"
-},
-{
-	"Name":"Libra sudanesa",
-	"NamePlural":"Libras sudanesas",
-	"ISO":"SDG",
-	"Symbol":"SDG"
-},
-{
-	"Name":"Lilangeni de Suazilandia",
-	"NamePlural":"Lilangenis de Suazilandia",
-	"ISO":"SZL",
-	"Symbol":"SZL"
-},
-{
-	"Name":"Corona sueca",
-	"NamePlural":"Coronas suecas",
-	"ISO":"SEK",
-	"Symbol":"kr"
-},
-{
-	"Name":"Libra siria",
-	"NamePlural":"Libras sirias",
-	"ISO":"SYP",
-	"Symbol":"SYP"
-},
-{
-	"Name":"Baht tailandés",
-	"NamePlural":"Bahts tailandeses",
-	"ISO":"THB",
-	"Symbol":"฿"
-},
-{
-	"Name":"Lira turca",
-	"NamePlural":"Liras turcas",
-	"ISO":"TRY",
-	"Symbol":"YTL"
-},
-{
-	"Name":"Dólar taiwanés",
-	"NamePlural":"Dólares taiwaneses",
-	"ISO":"TWD",
-	"Symbol":"NT$"
-},
-{
-	"Name":"Chelín tanzano",
-	"NamePlural":"Chelines tanzanos",
-	"ISO":"TZS",
-	"Symbol":"x"
-},
-{
-	"Name":"Paʻanga o dólar tongano",
-	"NamePlural":"Paʻangas o dólares tonganos",
-	"ISO":"TOP",
-	"Symbol":"T$"
-},
-{
-	"Name":"Dólar de Trinidad y Tobago",
-	"NamePlural":"Dólares de Trinidad y Tobago",
-	"ISO":"TTD",
-	"Symbol":"TTD"
-},
-{
-	"Name":"Dinar tunecino",
-	"NamePlural":"Dinares tunecinos",
-	"ISO":"TND",
-	"Symbol":"د.ت"
-},
-{
-	"Name":"Dólar estadounidense",
-	"NamePlural":"Dólares estadounidenses",
-	"ISO":"USD",
-	"Symbol":"$"
-},
-{
-	"Name":"Dirham de Emiratos Arabes Unidos",
-	"NamePlural":"Dirhams de Emiratos Arabes Unidos",
-	"ISO":"AED",
-	"Symbol":"د.إ"
-},
-{
-	"Name":"Chelín ugandés",
-	"NamePlural":"Chelines ugandeses",
-	"ISO":"UGX",
-	"Symbol":"USh"
-},
-{
-	"Name":"Grivnia de Ucrania",
-	"NamePlural":"Grivnias de Ucrania",
-	"ISO":"UAH",
-	"Symbol":""
-},
-{
-	"Name":"Peso uruguayo",
-	"NamePlural":"Pesos uruguayos",
-	"ISO":"UYU",
-	"Symbol":"UYU"
-},
-{
-	"Name":"Uzbekistán Sum",
-	"NamePlural":"Uzbekistán Sums",
-	"ISO":"UZS",
-	"Symbol":"UZS"
-},
-{
-	"Name":"Vatu de Vanuatu",
-	"NamePlural":"Vatus de Vanuatu",
-	"ISO":"VUV",
-	"Symbol":"Vt"
-},
-{
-	"Name":"Dong de Vietnam",
-	"NamePlural":"Dongs de Vietnam",
-	"ISO":"VND",
-	"Symbol":"₫"
-},
-{
-	"Name":"Bolívar venezolano",
-	"NamePlural":"Bolívares venezolanos",
-	"ISO":"VEF",
-	"Symbol":"VEF"
-},
-{
-	"Name":"Rial yemení",
-	"NamePlural":"Riales yemenís",
-	"ISO":"YER",
-	"Symbol":"YER"
-},
-{
-	"Name":"Kwacha zambiano",
-	"NamePlural":"Kwachas zambianos",
-	"ISO":"ZMK",
-	"Symbol":"ZMK"
-},
+	"Dólar australiano":{"NamePlural":"Dólares australianos","ISO":"AUD","Symbol":"$"},
+	"Lek albanés":{"NamePlural":"Leks albaneses","ISO":"ALL","Symbol":"L"},
+	"Dinar argelino":{"NamePlural":"Dinares argelinos","ISO":"DZD","Symbol":"دج"},
+	"Peso argentino":{"NamePlural":"Pesos argentinos","ISO":"ARS","Symbol":"$"},
+	"Florín arubeño":{"NamePlural":"Florines arubeños","ISO":"AWG","Symbol":"ƒ"},
+	"Libra esterlina":{"NamePlural":"Libras esterlinas","ISO":"GBP","Symbol":"£"},
+	"Dólar de las Bahamas":{"NamePlural":"Dólares de las Bahamas","ISO":"BSD","Symbol":"B$"},
+	"Dinar de Bahréin":{"NamePlural":"Dinares de Bahréin","ISO":"BHD","Symbol":".د.ب"},
+	"Taka de Bangladesh":{"NamePlural":"Takas de Bangladesh","ISO":"BDT","Symbol":"Tk"},
+	"Dólar de Barbados":{"NamePlural":"Dólares de Barbados","ISO":"BBD","Symbol":"BBD"},
+	"Rublo bielorruso":{"NamePlural":"Rublos bielorrusos","ISO":"BYR","Symbol":"Br"},
+	"Dólar de Belice":{"NamePlural":"Dólares de Belice","ISO":"BZD","Symbol":"BZ$"},
+	"Dólar de Bermudas":{"NamePlural":"Dólares de Bermudas","ISO":"BMD","Symbol":"BD$"},
+	"Ngultrum de Bhutan":{"NamePlural":"Ngultrums de Bhutan","ISO":"BTN","Symbol":"Nu."},
+	"Boliviano":{"NamePlural":"Bolivianos","ISO":"BOB","Symbol":"Bs"},
+	"Pula de Botsuana":{"NamePlural":"Pulas de Botsuana","ISO":"BWP","Symbol":"P"},
+	"Real brasileño":{"NamePlural":"Reales brasileños","ISO":"BRL","Symbol":"R$"},
+	"Dólar de Brunéi":{"NamePlural":"Dólares de Brunéi","ISO":"BND","Symbol":"B$"},
+	"Lev búlgaro":{"NamePlural":"Levs búlgaros","ISO":"BGN","Symbol":"лв"},
+	"Franco burundí":{"NamePlural":"Francos burundíes","ISO":"BIF","Symbol":"FBu"},
+	"Dólar canadiense":{"NamePlural":"Dólares canadiensees","ISO":"CAD","Symbol":"C$"},
+	"Yuan chino":{"NamePlural":"Yuanes chinos","ISO":"CNY","Symbol":"¥"},
+	"Riel camboyano":{"NamePlural":"Rieles camboyanos","ISO":"KHR","Symbol":"KHR"},
+	"Escudo caboverdiano":{"NamePlural":"Escudos caboverdianos","ISO":"CVE","Symbol":"Esc"},
+	"Dólar de las Islas Caimán":{"NamePlural":"Dólares de las Islas Caimán","ISO":"KYD","Symbol":"$"},
+	"Franco (BCEAO)":{"NamePlural":"Francos (BCEAO)","ISO":"XOF","Symbol":"BCEAO"},
+	"Franco (BEAC)":{"NamePlural":"Francos (BEAC)","ISO":"XAF","Symbol":"BEAC"},
+	"Peso chileno":{"NamePlural":"Pesos chilenos","ISO":"CLP","Symbol":"$"},
+	"Peso colombiano":{"NamePlural":"Pesos colombianos","ISO":"COP","Symbol":"$"},
+	"Franco comorano":{"NamePlural":"Francos comoranos","ISO":"KMF","Symbol":"KMF"},
+	"Colón costarricense":{"NamePlural":"Colones costarricenses","ISO":"CRC","Symbol":"₡"},
+	"Kuna croata":{"NamePlural":"Kunas croatas","ISO":"HRK","Symbol":"kn"},
+	"Peso cubano":{"NamePlural":"Pesos cubanos","ISO":"CUP","Symbol":"$MN"},
+	"Corona checa":{"NamePlural":"Coronas checas","ISO":"CZK","Symbol":"Kč"},
+	"Corona danesa":{"NamePlural":"Coronas danesas","ISO":"DKK","Symbol":"kr"},
+	"Franco yibutiano":{"NamePlural":"Francos yibutianos","ISO":"DJF","Symbol":"Fdj"},
+	"Peso dominicano":{"NamePlural":"Pesos dominicanos","ISO":"DOP","Symbol":"RD$"},
+	"Euro":{"NamePlural":"Euros","ISO":"EUR","Symbol":"€"},
+	"Dólar del Caribe Oriental":{"NamePlural":"Dólares del Caribe Oriental","ISO":"XCD","Symbol":"EC$"},
+	"Libra egipcia":{"NamePlural":"Libras egipcias","ISO":"EGP","Symbol":"ج.م"},
+	"El Colon del Salvador":{"NamePlural":"El Colon del Salvador","ISO":"SVC","Symbol":"₡"},
+	"Corona estonia":{"NamePlural":"Coronas estonias","ISO":"EEK","Symbol":"EEK"},
+	"Birr etíope":{"NamePlural":"Birrs etíopes","ISO":"ETB","Symbol":"Br"},
+	"Libra malvinense":{"NamePlural":"Libras malvinenses","ISO":"FKP","Symbol":"£"},
+	"Dólar de Fiji":{"NamePlural":"Dólares de Fiji","ISO":"FJD","Symbol":"FJ$"},
+	"Dalasi gambiano":{"NamePlural":"Dalasis gambianos","ISO":"GMD","Symbol":"D"},
+	"Quetzal de Guatemala":{"NamePlural":"Quetzals de Guatemala","ISO":"GTQ","Symbol":"Q"},
+	"Franco guineano":{"NamePlural":"Francos guineanos","ISO":"GNF","Symbol":"FG"},
+	"Dólar guyanés":{"NamePlural":"Dólares guyanéses","ISO":"GYD","Symbol":"GY$"},
+	"Cedi ghanes":{"NamePlural":"Cedis ghaneses","ISO":"GHS","Symbol":"GHS"},
+	"Dólar de Hong Kong":{"NamePlural":"Dólares de Hong Kong","ISO":"HKD","Symbol":"HK$"},
+	"Gourde haitiano":{"NamePlural":"Gourdes haitianos","ISO":"HTG","Symbol":""},
+	"Lempira hondureña":{"NamePlural":"Lempiras hondureñas","ISO":"HNL","Symbol":"L"},
+	"Florín húngaro":{"NamePlural":"Florines húngaros","ISO":"HUF","Symbol":"Ft"},
+	"Rupia indonesia":{"NamePlural":"Rupias indonesias","ISO":"IDR","Symbol":"Rp"},
+	"Rupia india":{"NamePlural":"Rupias indias","ISO":"INR","Symbol":"Rs."},
+	"Corona islandesa":{"NamePlural":"Coronas islandesas","ISO":"ISK","Symbol":"kr"},
+	"Rial iraní":{"NamePlural":"Riales iraníes","ISO":"IRR","Symbol":""},
+	"Dinar iraquí":{"NamePlural":"Dinares iraquíes","ISO":"IQD","Symbol":"ع.د"},
+	"Shekel israelí":{"NamePlural":"Shekels israelíes","ISO":"ILS","Symbol":"₪"},
+	"Yen japonés":{"NamePlural":"Yenes japoneses","ISO":"JPY","Symbol":"¥"},
+	"Dinar jordano":{"NamePlural":"Dinares jordanos","ISO":"JOD","Symbol":"JOD"},
+	"Tenge kazako":{"NamePlural":"Tenges kazakos","ISO":"KZT","Symbol":"KZT"},
+	"Chelín keniano":{"NamePlural":"Chelines kenianos","ISO":"KES","Symbol":"KSh"},
+	"Won coreano":{"NamePlural":"Wones coreanos","ISO":"KRW","Symbol":"₩"},
+	"Dinar kuwaití":{"NamePlural":"Dinares kuwaitís","ISO":"KWD","Symbol":"د.ك"},
+	"Kirguistán Som":{"NamePlural":"Kirguistán Som","ISO":"KGS","Symbol":"KGS"},
+	"Pataca de Macao":{"NamePlural":"Patacas de Macao","ISO":"MOP","Symbol":"$"},
+	"Dinar macedonio":{"NamePlural":"Dinares macedonios","ISO":"MKD","Symbol":"MKD"},
+	"Kwacha malawiano":{"NamePlural":"Kwachas malawianos","ISO":"MWK","Symbol":"MK"},
+	"Ringgit malayo":{"NamePlural":"Ringgits malayos","ISO":"MYR","Symbol":"RM"},
+	"Rupia de Maldivas":{"NamePlural":"Rupias de Maldivas","ISO":"MVR","Symbol":"Rf"},
+	"Ouguiya de Mauritania":{"NamePlural":"Ouguiyas de Mauritania","ISO":"MRO","Symbol":"UM"},
+	"Rupia mauricia":{"NamePlural":"Rupias mauricias","ISO":"MUR","Symbol":"₨"},
+	"Peso mexicano":{"NamePlural":"Pesos mexicanos","ISO":"MXN","Symbol":"$"},
+	"Leu moldavo":{"NamePlural":"Leus moldavos","ISO":"MDL","Symbol":"MDL"},
+	"Tugrik mongol":{"NamePlural":"Tugriks mongoles","ISO":"MNT","Symbol":"₮"},
+	"Dirham marroquí":{"NamePlural":"Dirhams marroquís","ISO":"MAD","Symbol":"د.م."},
+	"Kyat de Myanmar":{"NamePlural":"Kyats de Myanmar","ISO":"MMK","Symbol":"K"},
+	"Dólar de Namibia":{"NamePlural":"Dólares de Namibia","ISO":"NAD","Symbol":"N$"},
+	"Rupia nepalí":{"NamePlural":"Rupias nepalís","ISO":"NPR","Symbol":"₨"},
+	"Guilder antillano":{"NamePlural":"Guilderes antillanos","ISO":"ANG","Symbol":"NAƒ"},
+	"Dólar neozelandés":{"NamePlural":"Dólares neozelandeses","ISO":"NZD","Symbol":"$"},
+	"Córdoba nicaragüense":{"NamePlural":"Córdobas nicaragüenses","ISO":"NIO","Symbol":"C$"},
+	"Naira nigeriano":{"NamePlural":"Nairas nigerianos","ISO":"NGN","Symbol":"₦"},
+	"Won de Corea del Norte":{"NamePlural":"Wons de Corea del Norte","ISO":"KPW","Symbol":"₩"},
+	"Corona noruega":{"NamePlural":"Coronas noruegas","ISO":"NOK","Symbol":"kr"},
+	"Rial omaní":{"NamePlural":"Riales omanís","ISO":"OMR","Symbol":"ر.ع."},
+	"Franco ":{"NamePlural":"Francos","ISO":"XPF","Symbol":"F"},
+	"Rupia pakistaní":{"NamePlural":"Rupias pakistanís","ISO":"PKR","Symbol":"Rs."},
+	"Balboa panameño":{"NamePlural":"Balboas panameños","ISO":"PAB","Symbol":"B"},
+	"Kina de Papúa Nueva Guinea":{"NamePlural":"Kinas de Papúa Nueva Guinea","ISO":"PGK","Symbol":"K"},
+	"Guaraní paraguayo":{"NamePlural":"Guaranís paraguayos","ISO":"PYG","Symbol":""},
+	"Nuevo Sol peruano":{"NamePlural":"Nuevo Sol peruanos","ISO":"PEN","Symbol":"S/."},
+	"Peso filipino":{"NamePlural":"Pesos filipinos","ISO":"PHP","Symbol":"₱"},
+	"Zloty polaco":{"NamePlural":"Zlotys polacos","ISO":"PLN","Symbol":"zł"},
+	"Riyal Qatarí":{"NamePlural":"Riyales Qatarís","ISO":"QAR","Symbol":"ر.ق"},
+	"Leu rumano":{"NamePlural":"Leus rumanos","ISO":"RON","Symbol":"L"},
+	"Rublo ruso":{"NamePlural":"Rublos rusos","ISO":"RUB","Symbol":"руб"},
+	"Franco ruandés":{"NamePlural":"Francos ruandeses","ISO":"RWF","Symbol":"RF"},
+	"Franco suizo":{"NamePlural":"Francos suizos","ISO":"CHF","Symbol":"CHF"},
+	"Tala de Samoa":{"NamePlural":"Talas de Samoa","ISO":"WST","Symbol":"WS$"},
+	"Dobra de Santo Tomé":{"NamePlural":"Dobras de Santo Tomé","ISO":"STD","Symbol":"Db"},
+	"Riyal saudí":{"NamePlural":"Riyales saudís","ISO":"SAR","Symbol":"ر.س"},
+	"Rupia de Seychelles":{"NamePlural":"Rupias de Seychelles","ISO":"SCR","Symbol":"SR"},
+	"Leone de Sierra Leona":{"NamePlural":"Leones de Sierra Leona","ISO":"SLL","Symbol":"Le"},
+	"Dólar de Singapur":{"NamePlural":"Dólares de Singapur","ISO":"SGD","Symbol":"S$"},
+	"Corona eslovaca":{"NamePlural":"Coronas eslovacas","ISO":"SKK","Symbol":"Sk"},
+	"Dólar de las Islas Salomón":{"NamePlural":"Dólares de las Islas Salomón","ISO":"SBD","Symbol":"SI$"},
+	"Chelín somalí":{"NamePlural":"Chelínes somalís","ISO":"SOS","Symbol":"So."},
+	"Rand sudafricano":{"NamePlural":"Randes sudafricanos","ISO":"ZAR","Symbol":"R"},
+	"Rupia de Sri Lanka":{"NamePlural":"Rupias de Sri Lanka","ISO":"LKR","Symbol":"ரூ"},
+	"Libra de Santa Helena":{"NamePlural":"Libras de Santa Helena","ISO":"SHP","Symbol":"£"},
+	"Libra sudanesa":{"NamePlural":"Libras sudanesas","ISO":"SDG","Symbol":"SDG"},
+	"Lilangeni de Suazilandia":{"NamePlural":"Lilangenis de Suazilandia","ISO":"SZL","Symbol":"SZL"},
+	"Corona sueca":{"NamePlural":"Coronas suecas","ISO":"SEK","Symbol":"kr"},
+	"Libra siria":{"NamePlural":"Libras sirias","ISO":"SYP","Symbol":"SYP"},
+	"Baht tailandés":{"NamePlural":"Bahts tailandeses","ISO":"THB","Symbol":"฿"},
+	"Lira turca":{"NamePlural":"Liras turcas","ISO":"TRY","Symbol":"YTL"},
+	"Dólar taiwanés":{"NamePlural":"Dólares taiwaneses","ISO":"TWD","Symbol":"NT$"},
+	"Chelín tanzano":{"NamePlural":"Chelines tanzanos","ISO":"TZS","Symbol":"x"},
+	"Paʻanga o dólar tongano":{"NamePlural":"Paʻangas o dólares tonganos","ISO":"TOP","Symbol":"T$"},
+	"Dólar de Trinidad y Tobago":{"NamePlural":"Dólares de Trinidad y Tobago","ISO":"TTD","Symbol":"TTD"},
+	"Dinar tunecino":{"NamePlural":"Dinares tunecinos","ISO":"TND","Symbol":"د.ت"},
+	"Dólar estadounidense":{"NamePlural":"Dólares estadounidenses","ISO":"USD","Symbol":"$"},
+	"Dirham de Emiratos Arabes Unidos":{"NamePlural":"Dirhams de Emiratos Arabes Unidos","ISO":"AED","Symbol":"د.إ"},
+	"Chelín ugandés":{"NamePlural":"Chelines ugandeses","ISO":"UGX","Symbol":"USh"},
+	"Grivnia de Ucrania":{"NamePlural":"Grivnias de Ucrania","ISO":"UAH","Symbol":""},
+	"Peso uruguayo":{"NamePlural":"Pesos uruguayos","ISO":"UYU","Symbol":"UYU"},
+	"Uzbekistán Sum":{"NamePlural":"Uzbekistán Sums","ISO":"UZS","Symbol":"UZS"},
+	"Vatu de Vanuatu":{"NamePlural":"Vatus de Vanuatu","ISO":"VUV","Symbol":"Vt"},
+	"Dong de Vietnam":{"NamePlural":"Dongs de Vietnam","ISO":"VND","Symbol":"₫"},
+	"Bolívar venezolano":{"NamePlural":"Bolívares venezolanos","ISO":"VEF","Symbol":"VEF"},
+	"Rial yemení":{"NamePlural":"Riales yemenís","ISO":"YER","Symbol":"YER"},
+	"Kwacha zambiano":{"NamePlural":"Kwachas zambianos","ISO":"ZMK","Symbol":"ZMK"}
+}

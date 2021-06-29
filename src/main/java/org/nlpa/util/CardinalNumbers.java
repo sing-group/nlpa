@@ -3,6 +3,7 @@ package org.nlpa.util;
 import edu.utah.bmi.nlp.core.SimpleParser;
 import edu.utah.bmi.nlp.core.Span;
 import edu.utah.bmi.nlp.fastner.FastNER;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,10 +25,66 @@ public class CardinalNumbers {
     public CardinalNumbers() {
     }
 
-    public void findCardinalsInTheText (String textToFindCardinals){
-        //Falta por implementar
+    //Metodo que devuelve una lista de los cardinales encontrados en la cadena de texto que se le pasa por parámetro (falta procesar el texto que se pasa por parámetro poniendo todo a minuscula, quitando espacios y separadores)
+    public List<String> findAllCardinalsInTheText (String textToFindCardinals){
+        List<String> listOfEntitiesFound = new ArrayList<>();
+        String entityFound = "";
+
+        //Limpiar la cadena para facilitar la busqueda
+        textToFindCardinals = StringUtils.stripAccents(textToFindCardinals);
+        textToFindCardinals = textToFindCardinals.toLowerCase();
+        textToFindCardinals = textToFindCardinals.trim();
+        textToFindCardinals = textToFindCardinals.replaceAll("\t", " ");
+        textToFindCardinals = textToFindCardinals.replaceAll("\n", " ");
+        textToFindCardinals = textToFindCardinals.replaceAll(" +", " ");
+
+
+        Boolean theSearchIsOver = false;
+        do{
+            entityFound = findCardinalInText(textToFindCardinals);
+            if (!entityFound.isEmpty() && !listOfEntitiesFound.contains(entityFound)){
+                listOfEntitiesFound.add(entityFound);
+                textToFindCardinals = deleteAEntityWithPattern(entityFound,textToFindCardinals);
+            }else theSearchIsOver = true;
+        }while (!theSearchIsOver);
+        return listOfEntitiesFound;
     }
 
+    //Metodo privado para eliminar ciertos caracteres en una cadena a traves de un patron, devuelve la cadena resultante con un espacio en blanco donde estaban las entidades
+    private String deleteAEntityWithPattern (String entity, String textToDeleteEntity){
+        String textToReturn = "";
+        Pattern pattern = Pattern.compile(entity);
+        Matcher matcher = pattern.matcher(textToDeleteEntity);
+        Boolean isFound = matcher.find();
+        if (isFound){
+            String[] textSplited = pattern.split(textToDeleteEntity);
+            StringBuilder sb = new StringBuilder();
+            for (String string : textSplited){
+                sb.append(string + " ");
+            }
+            textToReturn = sb.toString();
+            return textToReturn;
+        }
+        return textToReturn;
+    }
+
+    public String findCardinalInText (String textToFindCardinals){
+        String entityToReturn = "";
+        if (textToFindCardinals.contains("trillones") || textToFindCardinals.contains("trillon")){
+            entityToReturn = beforeAQuatrillion(textToFindCardinals);
+        }else if (textToFindCardinals.contains("billones") || textToFindCardinals.contains("billon")){
+            entityToReturn = beforeATrillion(textToFindCardinals);
+        }else if (textToFindCardinals.contains("millones") || textToFindCardinals.contains("millon")){
+            entityToReturn = beforeABillion(textToFindCardinals);
+        }else if (textToFindCardinals.contains("mil")){
+            entityToReturn = beforeAMillion(textToFindCardinals);
+        }else{
+            entityToReturn = beforeOneThousand(textToFindCardinals);
+        }
+        return entityToReturn;
+    }
+
+    //Metodo que hace búsqueda de numeros cardinales entre 0 y 999, devuelve el cardinal encontrado o una cadena vacia (todo clean code)
     public String beforeOneThousand (String textToFindCardinals){
         String rule = "";
         String cardinalToAdd = "";
@@ -127,6 +184,7 @@ public class CardinalNumbers {
         return toReturn;
     }
 
+    //Metodo que busca en una cadena un numero cardinal entre 0 y 999 999, devuelve el cardinal encontrado o una cadena vacia (todo clean code)
     public String beforeAMillion (String textToFindCardinals){
             Pattern pattern = Pattern.compile("mil");
             Matcher matcher = pattern.matcher(textToFindCardinals);
@@ -164,6 +222,7 @@ public class CardinalNumbers {
 
     }
 
+    //Metodo que busca en una cadena un numero cardinal entre 0 y 999 999 999 999, devuelve el cardinal encontrado o una cadena vacia (todo clean code)
     public String beforeABillion (String textToFindCardinals){
         Pattern pattern = Pattern.compile("millones");
         Matcher matcher = pattern.matcher(textToFindCardinals);
@@ -205,6 +264,8 @@ public class CardinalNumbers {
         }
         return beforeAMillion(textToFindCardinals);
     }
+
+    //Metodo que busca en una cadena un numero cardinal entre 0 y 999 999 999 999 999 999, devuelve el cardinal encontrado o una cadena vacia (todo clean code)
     public String beforeATrillion (String textToFindCardinals){
         Pattern pattern = Pattern.compile("billones");
         Matcher matcher = pattern.matcher(textToFindCardinals);
@@ -247,6 +308,7 @@ public class CardinalNumbers {
         return beforeABillion(textToFindCardinals);
     }
 
+    //Metodo que busca en una cadena un numero cardinal entre 0 y 999 999 999 999 999 999 999 999, devuelve el cardinal encontrado o una cadena vacia (todo clean code)
     public String beforeAQuatrillion (String textToFindCardinals){
         Pattern pattern = Pattern.compile("trillones");
         Matcher matcher = pattern.matcher(textToFindCardinals);
@@ -290,6 +352,7 @@ public class CardinalNumbers {
         return beforeATrillion(textToFindCardinals);
     }
 
+    //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro, puede devolver una lista con los elementos encontrados o un string vacio
     public String findWithFastNERToken (String rule, String textToFindTokens){
         FastNER fastNER = new FastNER(rule);
         ArrayList<Span> tokens = SimpleParser.tokenizeDecimalSmartWSentences(textToFindTokens, true).get(0);
