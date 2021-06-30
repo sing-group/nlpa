@@ -81,7 +81,93 @@ public class CardinalNumbers {
         }else{
             entityToReturn = beforeOneThousand(textToFindCardinals);
         }
+
+        if (!entityToReturn.isEmpty()){
+            String entityWithFractionalPart = fractionalPartOfACardinalNumber(entityToReturn,textToFindCardinals);
+            if (!entityWithFractionalPart.isEmpty()){
+                entityToReturn = entityWithFractionalPart;
+            }
+        }
         return entityToReturn;
+    }
+
+    //Revisar esto
+    public String fractionalPartOfACardinalNumber (String cardinalNumberFound ,String textToFindCardinals){
+        String rule = "";
+        String cardinalToAdd = "";
+        String toReturn = "";
+        List<String> result = new ArrayList<>();
+
+        Boolean hasTenths = false;
+        Boolean hasTenthsWithAnd = false;
+        Boolean hasSpecialTenths = false;
+        Boolean hasUnits = false;
+
+        for(String cardinalNumber : tenthsEs){
+                rule = cardinalNumberFound + " con " + cardinalNumber.concat(" y ") + "\t Cardinal \n";
+                findWithFastNERToken(rule,textToFindCardinals);
+                cardinalToAdd = findWithFastNERToken(rule,textToFindCardinals);
+                if (!cardinalToAdd.isEmpty() && !result.contains(cardinalToAdd)){
+                    hasTenthsWithAnd = true;
+                    result.add(cardinalToAdd);
+                    break;
+                }else{
+                    rule = cardinalNumberFound + " con " + cardinalNumber + "\t Cardinal \n";
+                    findWithFastNERToken(rule,textToFindCardinals);
+                    if (!cardinalToAdd.isEmpty() && !result.contains(cardinalToAdd)){
+                        result.add(cardinalToAdd);
+                        hasTenths = true;
+                        break;
+                    }
+
+                }
+        }
+
+        //Special Tenths (solo si no tiene tenthsWithAnd y tenths)
+        if (!hasTenthsWithAnd && !hasTenths){
+            for(String cardinalNumber : specialTenthsEs) {
+                rule = cardinalNumberFound + " con " + cardinalNumber + "\t Cardinal \n";
+                findWithFastNERToken(rule,textToFindCardinals);
+                cardinalToAdd = findWithFastNERToken(rule,textToFindCardinals);
+                if (!cardinalToAdd.isEmpty() && !result.contains(cardinalToAdd)){
+                    result.add(cardinalToAdd);
+                    hasSpecialTenths = true;
+                    break;
+                }
+            }
+        }
+
+        //Units (solo si no tiene tenths y specialTenths)
+        if (hasTenthsWithAnd && !hasTenths && !hasSpecialTenths){
+            for(String cardinalNumber : unitsEs) {
+                String fractionalFirstPart = printList(result);
+                rule = fractionalFirstPart + cardinalNumber + "\t Cardinal \n";
+                findWithFastNERToken(rule,textToFindCardinals);
+                cardinalToAdd = findWithFastNERToken(rule,textToFindCardinals);
+                if (!cardinalToAdd.isEmpty() && !result.contains(cardinalToAdd)){
+                    result.clear();
+                    hasUnits = true;
+                    result.add(cardinalToAdd);
+                    break;
+                }
+            }
+        }else{
+            for(String cardinalNumber : unitsEs) {
+                rule = cardinalNumber + "\t Cardinal \n";
+                findWithFastNERToken(rule,textToFindCardinals);
+                cardinalToAdd = findWithFastNERToken(rule,textToFindCardinals);
+                if (!cardinalToAdd.isEmpty() && !result.contains(cardinalToAdd)){
+                    result.add(cardinalToAdd);
+                    break;
+                }
+            }
+        }
+        if (hasTenthsWithAnd && !hasUnits){
+            result.clear();
+        }
+
+        toReturn = printList(result);
+        return toReturn;
     }
 
     //Metodo que hace búsqueda de numeros cardinales entre 0 y 999, devuelve el cardinal encontrado o una cadena vacia (todo clean code)
