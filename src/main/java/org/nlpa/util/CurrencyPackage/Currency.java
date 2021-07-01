@@ -1,4 +1,4 @@
-package org.nlpa.util;
+package org.nlpa.util.CurrencyPackage;
 
 import edu.utah.bmi.nlp.core.NERRule;
 import edu.utah.bmi.nlp.core.SimpleParser;
@@ -6,7 +6,6 @@ import edu.utah.bmi.nlp.core.Span;
 import edu.utah.bmi.nlp.fastcner.FastCNER;
 import edu.utah.bmi.nlp.fastner.FastNER;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.C;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -32,8 +31,8 @@ public class Currency {
 
         HashMap <Integer, List<String>> listOfEntities = getCurrenciesEs();
         HashMap <String, List<String>> allCurrencyEntitiesInText = findAllCurrencyEntities(listOfEntities,textToFindAllCurrencies);
-        CardinalNumbers cardinalNumbers = new CardinalNumbers();
-        List<String> cardinalNumbersFoundInText = cardinalNumbers.findAllCardinalsInTheText(textToFindAllCurrencies);
+        CardinalNumbersEs cardinalNumbersEs = new CardinalNumbersEs();
+        List<String> cardinalNumbersFoundInText = cardinalNumbersEs.findAllCardinalsInTheText(textToFindAllCurrencies);
         List<String> numberEntitiesFoundInText = findAllNumberEntities(textToFindAllCurrencies);
 
         List<String> listOfNamesInPlural = allCurrencyEntitiesInText.get("NamesPlural");

@@ -1,4 +1,4 @@
-package org.nlpa.util;
+package org.nlpa.util.CurrencyPackage;
 
 import edu.utah.bmi.nlp.core.SimpleParser;
 import edu.utah.bmi.nlp.core.Span;
@@ -12,20 +12,20 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CardinalNumbers {
-    private static final String zeroEs = "cero";
-    private static final String[] unitsEs = {"uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve"};
-    private static final String[] specialTenthsEs = {"diez","once","doce","trece","catorce","quince","dieciséis","dieciseis",
+public class CardinalNumbersEs {
+    private static final String zero = "cero";
+    private static final String[] units = {"uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve"};
+    private static final String[] specialTenths = {"diez","once","doce","trece","catorce","quince","dieciséis","dieciseis",
                                       "diecisiete","dieciocho","diecinueve","veinte","veintiuno","veintidos","veintitres",
                                       "veinticuatro","veinticinco","veintiseis","veintisiete","veintiocho","veintinueve"};
-    private static final String[] tenthsEs = {"treinta","cuarenta","cincuenta","sesenta","setenta","ochenta","noventa"};
-    private static final String specialHundredEs = "cien";
-    private static final String [] hundredsEs = {"novecientos","ochocientos","setecientos","seiscientos","quinientos","cuatrocientos","trescientos","doscientos","ciento"};
+    private static final String[] tenths = {"treinta","cuarenta","cincuenta","sesenta","setenta","ochenta","noventa"};
+    private static final String specialHundred = "cien";
+    private static final String [] hundreds = {"novecientos","ochocientos","setecientos","seiscientos","quinientos","cuatrocientos","trescientos","doscientos","ciento"};
 
-    public CardinalNumbers() {
+    public CardinalNumbersEs() {
     }
 
-    //Metodo que devuelve una lista de los cardinales encontrados en la cadena de texto que se le pasa por parámetro (falta procesar el texto que se pasa por parámetro poniendo todo a minuscula, quitando espacios y separadores)
+    //Metodo que devuelve una lista de los cardinales encontrados en la cadena de texto que se le pasa por parámetro
     public List<String> findAllCardinalsInTheText (String textToFindCardinals){
         List<String> listOfEntitiesFound = new ArrayList<>();
         String entityFound = "";
@@ -103,7 +103,7 @@ public class CardinalNumbers {
         Boolean hasSpecialTenths = false;
         Boolean hasUnits = false;
 
-        for(String cardinalNumber : tenthsEs){
+        for(String cardinalNumber : tenths){
                 rule = cardinalNumberFound + " con " + cardinalNumber.concat(" y ") + "\t Cardinal \n";
                 findWithFastNERToken(rule,textToFindCardinals);
                 cardinalToAdd = findWithFastNERToken(rule,textToFindCardinals);
@@ -125,7 +125,7 @@ public class CardinalNumbers {
 
         //Special Tenths (solo si no tiene tenthsWithAnd y tenths)
         if (!hasTenthsWithAnd && !hasTenths){
-            for(String cardinalNumber : specialTenthsEs) {
+            for(String cardinalNumber : specialTenths) {
                 rule = cardinalNumberFound + " con " + cardinalNumber + "\t Cardinal \n";
                 findWithFastNERToken(rule,textToFindCardinals);
                 cardinalToAdd = findWithFastNERToken(rule,textToFindCardinals);
@@ -139,7 +139,7 @@ public class CardinalNumbers {
 
         //Units (solo si no tiene tenths y specialTenths)
         if (hasTenthsWithAnd && !hasTenths && !hasSpecialTenths){
-            for(String cardinalNumber : unitsEs) {
+            for(String cardinalNumber : units) {
                 String fractionalFirstPart = printList(result);
                 rule = fractionalFirstPart + cardinalNumber + "\t Cardinal \n";
                 findWithFastNERToken(rule,textToFindCardinals);
@@ -152,7 +152,7 @@ public class CardinalNumbers {
                 }
             }
         }else{
-            for(String cardinalNumber : unitsEs) {
+            for(String cardinalNumber : units) {
                 rule = cardinalNumber + "\t Cardinal \n";
                 findWithFastNERToken(rule,textToFindCardinals);
                 cardinalToAdd = findWithFastNERToken(rule,textToFindCardinals);
@@ -185,7 +185,7 @@ public class CardinalNumbers {
         Boolean hasUnits = false;
 
         //First step: Hundreds
-        for(String cardinalNumber : hundredsEs){
+        for(String cardinalNumber : hundreds){
             rule = cardinalNumber + "\t Cardinal \n";
             cardinalToAdd = findWithFastNERToken(rule,textToFindCardinals);
             if (!cardinalToAdd.isEmpty() && !result.contains(cardinalToAdd)){
@@ -197,7 +197,7 @@ public class CardinalNumbers {
 
         //Second step: Special Hundred (solo si no hay hundreds)
         if (!hasHundreds){
-            rule = specialHundredEs + "\t Cardinal \n";
+            rule = specialHundred + "\t Cardinal \n";
             findWithFastNERToken(rule,textToFindCardinals);
             cardinalToAdd = findWithFastNERToken(rule,textToFindCardinals);
             if (!cardinalToAdd.isEmpty() && !result.contains(cardinalToAdd)){
@@ -208,7 +208,7 @@ public class CardinalNumbers {
 
         //Third step: Tenths (solo si no hay specialHundreds)
         if (!hasSpecialHundreds){
-            for(String cardinalNumber : tenthsEs){
+            for(String cardinalNumber : tenths){
                 rule = cardinalNumber.concat(" y ") + "\t Cardinal \n";
                 findWithFastNERToken(rule,textToFindCardinals);
                 cardinalToAdd = findWithFastNERToken(rule,textToFindCardinals);
@@ -230,7 +230,7 @@ public class CardinalNumbers {
 
         //Fourth step: Special Tenths (solo si no tiene special hundreds, tenthsWithAnd y tenths)
         if (!hasSpecialHundreds && !hasTenthsWithAnd && !hasTenths){
-            for(String cardinalNumber : specialTenthsEs) {
+            for(String cardinalNumber : specialTenths) {
                 rule = cardinalNumber + "\t Cardinal \n";
                 findWithFastNERToken(rule,textToFindCardinals);
                 cardinalToAdd = findWithFastNERToken(rule,textToFindCardinals);
@@ -244,7 +244,7 @@ public class CardinalNumbers {
 
         //Fifth step : Units (solo si no tiene special hundreds, tenths y specialTenths)
         if (!hasSpecialHundreds && !hasTenths && !hasSpecialTenths){
-            for(String cardinalNumber : unitsEs) {
+            for(String cardinalNumber : units) {
                 rule = cardinalNumber + "\t Cardinal \n";
                 findWithFastNERToken(rule,textToFindCardinals);
                 cardinalToAdd = findWithFastNERToken(rule,textToFindCardinals);
@@ -258,7 +258,7 @@ public class CardinalNumbers {
 
         //Last step: zero (No cumple ninguna de las anteriores)
         if (!hasHundreds && !hasSpecialHundreds && !hasTenths && !hasSpecialTenths && !hasUnits){
-            rule = zeroEs + "\t Cardinal \n";
+            rule = zero + "\t Cardinal \n";
             findWithFastNERToken(rule,textToFindCardinals);
             cardinalToAdd = findWithFastNERToken(rule,textToFindCardinals);
             if (!cardinalToAdd.isEmpty() && !result.contains(cardinalToAdd)){
