@@ -237,7 +237,7 @@ public class Currency {
                 numberEntitiesFound.add(entity);
             }
         }
-        String ruleNumberWithSingleQuote = "\\d+ , \\d+ \t CURRENCY\n";
+        String ruleNumberWithSingleQuote = "\\d+ ' \\d+ \t CURRENCY\n";
         String [] entityFoundNumberWithSingleQuote = findWithFastNERToken(ruleNumberWithSingleQuote, textToFindEntities).split(" ");
         for (String entity : entityFoundNumberWithSingleQuote){
             if (!entity.isEmpty() && !numberEntitiesFound.contains(entity)){
