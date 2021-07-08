@@ -8,6 +8,7 @@ import edu.utah.bmi.nlp.fastner.FastNER;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import java.io.InputStream;
@@ -21,8 +22,30 @@ import java.util.regex.Pattern;
 import static edu.utah.bmi.nlp.core.DeterminantValueSet.Determinants.ACTUAL;
 
 public class Currency {
-
+    private static final HashMap<String, List<String>> currencyEntities = new HashMap<>();
     public Currency() {
+    }
+
+    static {
+        try {
+
+            InputStream is = DateEntity.class.getResourceAsStream("/currency-json/currency.es.json");
+            JsonReader rdr = Json.createReader(is);
+            JsonObject jsonObject = rdr.readObject();
+            rdr.close();
+
+            for (String currencyKeyName : jsonObject.keySet()) {
+                List<String> list = new ArrayList<>();
+                JsonArray jsonArray = jsonObject.getJsonObject(currencyKeyName).getJsonArray("Array");
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    list.add(jsonArray.getString(i));
+                }
+                currencyEntities.put(currencyKeyName, list);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public List<String> findAllCurrenciesAsociatedToANumber (String textToFindAllCurrencies){
@@ -230,14 +253,14 @@ public class Currency {
                 numberEntitiesFound.add(entity);
             }
         }
-        String ruleNumberWithComma = "\\d+ , \\d+ \t CURRENCY\n";
+        String ruleNumberWithComma = "\\d , \\d \t CURRENCY\n";
         String [] entityFoundNumberWithComma = findWithFastNERToken(ruleNumberWithComma, textToFindEntities).split(" ");
         for (String entity : entityFoundNumberWithComma){
             if (!entity.isEmpty() && !numberEntitiesFound.contains(entity)){
                 numberEntitiesFound.add(entity);
             }
         }
-        String ruleNumberWithSingleQuote = "\\d+ ' \\d+ \t CURRENCY\n";
+        String ruleNumberWithSingleQuote = "\\d ' \\d \t CURRENCY\n";
         String [] entityFoundNumberWithSingleQuote = findWithFastNERToken(ruleNumberWithSingleQuote, textToFindEntities).split(" ");
         for (String entity : entityFoundNumberWithSingleQuote){
             if (!entity.isEmpty() && !numberEntitiesFound.contains(entity)){
