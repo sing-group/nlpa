@@ -29,7 +29,7 @@ public class RegExpressionForDates {
     }
     static{
         try{
-            InputStream is = DateEntity.class.getResourceAsStream("/regexpressionfordates-json/datesToMatch.json");
+            InputStream is = DateEntity.class.getResourceAsStream("/testdatesfnandre/DateFormat.json");;
             JsonReader rdr = Json.createReader(is);
             JsonArray array = rdr.readArray();
             rdr.close();
@@ -57,6 +57,15 @@ public class RegExpressionForDates {
             }
         });
         return keys;
+    }
+
+    public String testingRegExpressionTime (String textToTest){
+        long startTime = System.nanoTime();
+        List<String> dateFormated = matchDatesWithRegExpressionKey(getKeysSorted());
+        testPatternRegExp(dateFormated,textToTest);
+        long endTime = System.nanoTime();
+
+        return "Duración Expresión Regular: " + (endTime-startTime)/1e6 + " ms";
     }
 
     public List<String> matchDatesWithRegExpressionKey(List<String> keysSorted){

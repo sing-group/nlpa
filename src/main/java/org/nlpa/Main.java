@@ -27,24 +27,22 @@ import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.SerialPipes;
 import org.bdp4j.types.Instance;
 import org.bdp4j.util.InstanceListUtils;
-import org.checkerframework.checker.units.qual.C;
 import org.nlpa.pipe.impl.*;
-import org.nlpa.types.SequenceGroupingStrategy;
-import org.nlpa.util.CurrencyCardinalNumbers;
 import org.nlpa.util.textextractor.EMLTextExtractor;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 //import org.bdp4j.dataset.CSVDatasetReader;
 //import org.bdp4j.transformers.CheckVoidTransformer;
-import org.bdp4j.transformers.Date2MillisTransformer;
-import org.bdp4j.transformers.Enum2IntTransformer;
-import org.bdp4j.transformers.Url2BinaryTransformer;
-import org.bdp4j.types.Transformer;
+
 
 /**
  * Main class for SKI4Spam project
@@ -69,13 +67,66 @@ public class Main {
      * The main method for the running application
      */
     public static void main(String[] args) {
-        //Testing Currency Cardinal Numbers Class
+        System.out.println("Program started");
+        if (args.length == 0) {
+            System.out.println("Selecciona el texto para crear las instancias");
+            File file = showFileSelector();
+            generateInstances(file.getAbsolutePath());
+        } else {
+            generateInstances(args[0]);
+        }
+
+        //Configurations
+        EMLTextExtractor.setCfgPartSelectedOnAlternative("text/plain");
+
+        for (Instance i : instances){
+            logger.info("Instance data before pipe: " + i.getData().toString());
+        }
+
+        //Then load the dataset to use it with Weka TM
+        Map<String, Integer> targetValues = new HashMap<>();
+        targetValues.put("ham", 0);
+        targetValues.put("spam", 1);
+
+        System.out.println("Default encoding: "+System.getProperty("file.encoding"));
+        System.setProperty("file.encoding", "UTF-8");
+
+        AbstractPipe p = new SerialPipes(new AbstractPipe[]{
+                new TargetAssigningFromPathPipe(),
+                new StoreFileExtensionPipe(),
+                new GuessDateFromFilePipe(),
+                new File2StringBufferPipe(),
+                new StripHTMLFromStringBufferPipe(),
+                new GuessLanguageFromStringBufferPipe(),
+                new NewNERFromStringBufferPipe(),});
+
+        if (!p.checkDependencies()) {
+            System.out.println("Pipe dependencies are not satisfied");
+            System.exit(1);
+        } else {
+            System.out.println("Pipe dependencies are satisfied");
+        }
+
+        instances = InstanceListUtils.dropInvalid(instances);
+
+        //Pipe all instances
+        p.pipeAll(instances);
+
+        for (Instance i : instances) {
+            logger.info("Instance data after pipe: " + i.getSource() + " "
+                    + (((i.getData().toString().length()) > 10)
+                    ? (i.getData().toString().substring(0, 10) + "...")
+                    : i.getData().toString()));
+
+
+
+        /*
         String stringIntroduced = "";
         do{
             System.out.println("Escriba la cadena a detectar");
             Scanner scanner = new Scanner(System.in);
             stringIntroduced = scanner.nextLine();
-            CurrencyCardinalNumbers currencyCardinalNumbers = new CurrencyCardinalNumbers();
+            //CurrencyCardinalNumbers currencyCardinalNumbers = new CurrencyCardinalNumbers();
            //String stringToReturn = currencyCardinalNumbers.testingRegularExpressions(stringIntroduced);
            //if (stringToReturn.equals(stringIntroduced)){
            //    System.out.println("Ninguna entidad encontrada en el texto : " + stringIntroduced);
@@ -84,14 +135,49 @@ public class Main {
            //    //System.out.println("Entidades encontradas : " + currencyCardinalNumbers.getListOfEntitiesFound().toString() );
 
            //}
-            currencyCardinalNumbers.testingCurrencyFastNER3(stringIntroduced);
+            //currencyCardinalNumbers.testingCurrencyFastNER2(stringIntroduced);
+            //CardinalNumbers cardinalNumbers = new CardinalNumbers();
+            //System.out.println(cardinalNumbers.beforeAQuatrillion(stringIntroduced));
+           //CurrencyCardinalNumbers currencyCardinalNumbers = new CurrencyCardinalNumbers();
+           //currencyCardinalNumbers.testingCurrencyFastNER2(stringIntroduced);
+           //DateEntity dateEntity = new DateEntity();
+           //HashMap<String,List<String>> listOfDatesMatched = dateEntity.generateMapOfMatchedDates();
+           //listOfDatesMatched = dateEntity.generateListOfFastNERRules(listOfDatesMatched);
+           //dateEntity.processDatesToRecognize(listOfDatesMatched,stringIntroduced);
+           //CurrencyCardinalNumbers currencyCardinalNumbers = new CurrencyCardinalNumbers();
+           //currencyCardinalNumbers.testRegularExpression(stringIntroduced);
+           RegExpressionForDates regExpressionForDates = new RegExpressionForDates();
+           List<String> keys = regExpressionForDates.getKeysSorted();
+           List<String> regExp = regExpressionForDates.matchDatesWithRegExpressionKey(keys);
+           regExpressionForDates.testPatternRegExp(regExp,stringIntroduced);
+
 
         }while(!stringIntroduced.equals("0"));
+        */
+        }
 
     }
 
+    public static void readList (List<String> list){
+        for (String i : list){
+            System.out.println(i);
 
+        }
+    }
 
+    public static File showFileSelector() {
+        JFileChooser fileSelector = new JFileChooser(".");
+        fileSelector.setDialogTitle("Select a folder");
+        fileSelector.setMultiSelectionEnabled(true);
+        fileSelector.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+        int toRet = fileSelector.showOpenDialog(null);
+        if (toRet == JFileChooser.APPROVE_OPTION) {
+            return fileSelector.getSelectedFile();
+        } else {
+            return null;
+        }
+    }
     /**
      * Generate a instance List on instances attribute by recursivelly finding
      * all files included in testDir directory
