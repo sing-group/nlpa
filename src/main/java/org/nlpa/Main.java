@@ -66,12 +66,17 @@ public class Main {
      */
     public static void main(String[] args) {
         // System.out.println("Program started.");
-        if (args.length == 0) {
-            generateInstances("smsTest/");
-        } else {
-            generateInstances(args[0]);
-        }
+        // if (args.length == 0) {
+        //     generateInstances("smsTest/");
+        // } else {
+        //     generateInstances(args[0]);
+        // }
 
+        
+        //instances.add(new Instance(new StringBuffer("ejemplo en español, en un lugar de la mancha de cuyo nombre: ¿H0L4, C0|T|0 35745?"), null, "ej1", new StringBuffer("ej1")));
+        instances.add(new Instance(new StringBuffer("example of an english test: h4t? l33t sp34k, /\\/\\3"), null, "ej2", new StringBuffer("ej2")));
+        
+        
         // Configurations
         EMLTextExtractor.setCfgPartSelectedOnAlternative("text/plain");
 
@@ -132,28 +137,34 @@ public class Main {
         System.out.println("Default encoding: "+System.getProperty("file.encoding"));
         System.setProperty("file.encoding", "UTF-8");
 
-        /* create a example of pipe */
-         AbstractPipe p2= new SerialPipes(new AbstractPipe[]{new TargetAssigningFromPathPipe(),new StoreFileExtensionPipe(), 
-            new GuessDateFromFilePipe(), 
-            new File2StringBufferPipe(),
-            new TeeCSVFromStringBufferPipe("output.csv", true), 
-        });
 
-        AbstractPipe p = new SerialPipes(new AbstractPipe[]{new TargetAssigningFromPathPipe(),
-            new StoreFileExtensionPipe(), 
-            new GuessDateFromFilePipe(), 
-            new File2StringBufferPipe(),
+        AbstractPipe p = new SerialPipes(new AbstractPipe[]{
+            
+             new TargetAssigningFromPathPipe(),
+
+             new StoreFileExtensionPipe(), 
+             new GuessDateFromFilePipe(), 
+             new File2StringBufferPipe(),
+
+            //new ReverseLeetSpeakFromStringBufferPipe(),
+
             new MeasureLengthFromStringBufferPipe(),
             new FindUrlInStringBufferPipe(),
             new StripHTMLFromStringBufferPipe(),
             new MeasureLengthFromStringBufferPipe("length_after_html_drop"), 
             new GuessLanguageFromStringBufferPipe(),
-            new FindEmojiInStringBufferPipe("emojiTest", false, GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY, true, true),
-            new FindEmoticonInStringBufferPipe("emoticonTest", false, GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY, true, true),
-            new StringBufferToLowerCasePipe(), 
-            new InterjectionFromStringBufferPipe(),
-            new StopWordFromStringBufferPipe(),
-            new TeeCSVFromStringBufferPipe("output.csv", true), 
+
+            new AbbreviationFromStringBufferPipe(),
+            new LeetSpeakFromStringBufferPipe(true),
+
+            // new FindEmojiInStringBufferPipe("emojiTest", false, GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY, true, true),
+            // new FindEmoticonInStringBufferPipe("emoticonTest", false, GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY, true, true),
+            // new StringBufferToLowerCasePipe(), 
+            // new InterjectionFromStringBufferPipe(),
+            // new StopWordFromStringBufferPipe(),
+            
+            new TeeCSVFromStringBufferPipe("output.csv", true),
+              
             //new StringBuffer2SynsetSequencePipe(),
             //new StringBuffer2TokenSequencePipe(),
             //new TokenSequence2FeatureVectorPipe(SequenceGroupingStrategy.COUNT),
@@ -179,7 +190,13 @@ public class Main {
                     + (((i.getData().toString().length()) > 10)
                     ? (i.getData().toString().substring(0, 10) + "...")
                     : i.getData().toString()));
+            
+            System.out.println("\n");        
+            System.out.println( ((StringBuffer) i.getData()).toString() + ".");
+            
         }
+
+        
     }
 
     /**
