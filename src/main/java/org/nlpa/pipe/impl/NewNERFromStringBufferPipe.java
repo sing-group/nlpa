@@ -5,10 +5,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.Pipe;
+import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
 import org.nlpa.util.CurrencyPackage.DateEntity;
 import org.nlpa.util.RegExpressionForDates;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
@@ -16,15 +21,17 @@ import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_
 @PropertyComputingPipe()
 public class NewNERFromStringBufferPipe extends AbstractPipe {
 
-    /**
-     * The name of the property where the language is stored
-     */
-
     private String langProp = DEFAULT_LANG_PROPERTY;
 
-    /**
-     * Logger
-     */
+    List<String> identifiedEntitiesProperty = null;
+
+    public static final String DEFAULT_IDENTIFIED_ENTITIES_PROPERTY = "NERDATE,NERMONEY";
+
+    private void init() {
+        setIdentifiedEntitiesProperty(DEFAULT_IDENTIFIED_ENTITIES_PROPERTY);
+    }
+
+    private String identifiedEntitiesProp = DEFAULT_IDENTIFIED_ENTITIES_PROPERTY;
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -37,22 +44,32 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
     public Class<?> getOutputType() {
         return StringBuffer.class;
     }
-    /**
-     * Default constructor.
-     */
-    public NewNERFromStringBufferPipe(){
-        this(DEFAULT_LANG_PROPERTY);
 
+    public String getIdentifiedEntitiesProp() {
+        return identifiedEntitiesProp;
     }
-    /**
-     * Construct a ContractionsFromStringBuffer instance given a language
-     * property
-     *
-     * @param langProp The property that stores the language of text
-     */
-    public NewNERFromStringBufferPipe(String langProp){
-        super(new Class<?>[] { GuessLanguageFromStringBufferPipe.class },new Class<?>[0]);
 
+    @PipeParameter(name = "identifiedEntitiesProperty", description = "Indicates the identified entities through a list of comma-separated values", defaultValue = DEFAULT_IDENTIFIED_ENTITIES_PROPERTY)
+    public void setIdentifiedEntitiesProperty(String identifiedEntitiesProperty) {
+        this.identifiedEntitiesProp = identifiedEntitiesProperty;
+        this.identifiedEntitiesProperty = new ArrayList<>();
+
+        StringTokenizer st = new StringTokenizer(identifiedEntitiesProperty, ", ");
+        while (st.hasMoreTokens()) {
+            this.identifiedEntitiesProperty.add(st.nextToken());
+        }
+    }
+
+    public NewNERFromStringBufferPipe() {
+        super(new Class<?>[0], new Class<?>[0]);
+
+        init();
+    }
+
+    public NewNERFromStringBufferPipe(String identifiedEntitiesProp) {
+        super(new Class<?>[] { GuessLanguageFromStringBufferPipe.class }, new Class<?>[0]);
+
+        this.identifiedEntitiesProp = identifiedEntitiesProp;
     }
 
     //Proper pipe
@@ -67,6 +84,7 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
         }else{
             logger.error("Data it's not a Stringbuffer " + carrier.getName() + " it's a " + carrier.getData().getClass().getName());
         }
+        carrier.setProperty("NERDate", 0);
         return carrier;
     }
 

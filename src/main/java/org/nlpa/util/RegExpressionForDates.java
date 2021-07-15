@@ -49,20 +49,12 @@ public class RegExpressionForDates {
         }
         return sortKeys(listOfKeys);
     }
-    public List<String> sortKeys(List<String> keys) {
-        Collections.sort(keys, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return o2.length() - o1.length();
-            }
-        });
-        return keys;
-    }
 
     public String testingRegExpressionTime (String textToTest){
         long startTime = System.nanoTime();
         List<String> dateFormated = matchDatesWithRegExpressionKey(getKeysSorted());
-        testPatternRegExp(dateFormated,textToTest);
+        dateFormated = testPatternRegExp(dateFormated,textToTest);
+        System.out.println(dateFormated.size());
         long endTime = System.nanoTime();
 
         return "Duración Expresión Regular: " + (endTime-startTime)/1e6 + " ms";
@@ -86,17 +78,31 @@ public class RegExpressionForDates {
         }
         return listOfDatesMatchedWithRegExp;
     }
-    public void testPatternRegExp (List<String> listRegExp, String textToTry){
+
+    public List<String> testPatternRegExp (List<String> listRegExp, String textToTry){
+        List<String> listOfEntitiesFound = new ArrayList<>();
         if (!listRegExp.isEmpty()){
             for(String patternRegExp : listRegExp){
                 Pattern pattern = Pattern.compile(patternRegExp);
                 Matcher mat = pattern.matcher(textToTry);
                 while (mat.find()){
-                    System.out.println(patternRegExp);
-                    System.out.println(mat.group());
+                    //System.out.println(patternRegExp);
+                    //System.out.println(mat.group());
+                    listOfEntitiesFound.add(mat.group());
                 }
             }
         }
+        return listOfEntitiesFound;
+    }
+
+    public List<String> sortKeys(List<String> keys) {
+        Collections.sort(keys, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o2.length() - o1.length();
+            }
+        });
+        return keys;
     }
 
 
