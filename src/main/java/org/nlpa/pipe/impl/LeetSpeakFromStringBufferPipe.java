@@ -286,7 +286,7 @@ public class LeetSpeakFromStringBufferPipe extends AbstractPipe{
             }
             StringBuffer sb = (StringBuffer) carrier.getData();
             String value = "";
-            Pattern ptWord = Pattern.compile("[^\s]+");
+            Pattern ptWord = Pattern.compile("[^(\r\n\t\f\n )]+");
 
             LinkedList<Pattern> setWords = words.get(lang);
             if(setWords==null){//When there is not a dictionary for this language
