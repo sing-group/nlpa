@@ -8,8 +8,7 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
-import org.nlpa.util.CurrencyPackage.DateEntity;
-import org.nlpa.util.RegExpressionForDates;
+import org.nlpa.util.NER.CurrencyFastNER;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,10 +76,12 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
     public Instance pipe (Instance carrier){
         if (carrier.getData() instanceof StringBuffer){
             String data = carrier.getData().toString();
-            DateEntity dateEntity = new DateEntity();
-            System.out.println(dateEntity.testingFastNERTime(data));
-            RegExpressionForDates regExpressionForDates = new RegExpressionForDates();
-            System.out.println(regExpressionForDates.testingRegExpressionTime(data));
+            //DateEntity dateEntity = new DateEntity();
+            //System.out.println(dateEntity.testingFastNERTime(data));
+            //RegExpressionForDates regExpressionForDates = new RegExpressionForDates();
+            //System.out.println(regExpressionForDates.testingRegExpressionTime(data));
+            CurrencyFastNER currency = new CurrencyFastNER();
+            currency.findAllCurrenciesAsociatedToANumber(data);
         }else{
             logger.error("Data it's not a Stringbuffer " + carrier.getName() + " it's a " + carrier.getData().getClass().getName());
         }

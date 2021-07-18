@@ -1,6 +1,4 @@
-package org.nlpa.util;
-
-import org.nlpa.util.CurrencyPackage.DateEntity;
+package org.nlpa.util.NER;
 
 import javax.json.*;
 import java.io.InputStream;
@@ -8,14 +6,14 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RegExpressionForDates {
+public class DateRegExpr {
     private static final HashMap<String, String> keysToMatchRegExpr = new HashMap<>();
     private static final List<String> listDatesToMatch = new ArrayList<>();
-    public RegExpressionForDates() {
+    public DateRegExpr() {
     }
     static{
         try{
-            InputStream is = DateEntity.class.getResourceAsStream("/regexpressionfordates-json/regExpMatcher.json");
+            InputStream is = DateFastNER.class.getResourceAsStream("/regexpressionfordates-json/regExpMatcher.json");
             JsonReader rdr = Json.createReader(is);
             JsonObject jsonObject = rdr.readObject();
             rdr.close();
@@ -29,7 +27,7 @@ public class RegExpressionForDates {
     }
     static{
         try{
-            InputStream is = DateEntity.class.getResourceAsStream("/testdatesfnandre/DateFormat.json");;
+            InputStream is = DateFastNER.class.getResourceAsStream("/testdatesfnandre/DateFormat.json");;
             JsonReader rdr = Json.createReader(is);
             JsonArray array = rdr.readArray();
             rdr.close();

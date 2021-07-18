@@ -1,4 +1,4 @@
-package org.nlpa.util.CurrencyPackage;
+package org.nlpa.util.NER;
 
 import edu.utah.bmi.nlp.core.SimpleParser;
 import edu.utah.bmi.nlp.core.Span;
@@ -9,8 +9,8 @@ import javax.json.*;
 import java.io.InputStream;
 import java.util.*;
 
-public class DateEntity {
-    public DateEntity() {
+public class DateFastNER {
+    public DateFastNER() {
     }
 
     private static final HashMap<String, String> dateFormatDictionary = new HashMap<>();
@@ -21,7 +21,7 @@ public class DateEntity {
 
     static {
         try {
-            InputStream is = DateEntity.class.getResourceAsStream("/timezone-json/dates.json");
+            InputStream is = DateFastNER.class.getResourceAsStream("/timezone-json/dates.json");
             JsonReader rdr = Json.createReader(is);
             JsonObject jsonObject = rdr.readObject();
             rdr.close();
@@ -36,7 +36,7 @@ public class DateEntity {
 
     static {
         try {
-            InputStream is = DateEntity.class.getResourceAsStream("/testdatesfnandre/DateFormat.json");
+            InputStream is = DateFastNER.class.getResourceAsStream("/testdatesfnandre/DateFormat.json");
             JsonReader rdr = Json.createReader(is);
             JsonArray array = rdr.readArray();
             rdr.close();
