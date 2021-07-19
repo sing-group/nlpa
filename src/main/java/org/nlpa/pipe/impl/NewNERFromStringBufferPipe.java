@@ -8,7 +8,9 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
+import org.checkerframework.checker.units.qual.C;
 import org.nlpa.util.NER.CurrencyFastNER;
+import org.nlpa.util.NER.CurrencyRegExpr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,8 +82,10 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
             //System.out.println(dateEntity.testingFastNERTime(data));
             //RegExpressionForDates regExpressionForDates = new RegExpressionForDates();
             //System.out.println(regExpressionForDates.testingRegExpressionTime(data));
-            CurrencyFastNER currency = new CurrencyFastNER();
-            currency.findAllCurrenciesAsociatedToANumber(data);
+            //CurrencyFastNER currency = new CurrencyFastNER();
+            //currency.findAllCurrenciesAsociatedToANumber(data);
+            CurrencyRegExpr currencyRegExpr = new CurrencyRegExpr();
+            currencyRegExpr.findAllCurrencyEntities(data);
         }else{
             logger.error("Data it's not a Stringbuffer " + carrier.getName() + " it's a " + carrier.getData().getClass().getName());
         }

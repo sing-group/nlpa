@@ -1,0 +1,4 @@
+[
+	"((Numbers|CardinalNumberEs)?[ ]*(CurrencyISOandSymbol))",
+	"((Numbers|CardinalNumberEs)?[ ]*(CurrencyISOandSymbol)[ ]*(Numbers|CardinalNumberEs)?))" 	
+]

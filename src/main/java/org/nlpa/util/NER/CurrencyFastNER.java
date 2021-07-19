@@ -5,6 +5,7 @@ import edu.utah.bmi.nlp.core.SimpleParser;
 import edu.utah.bmi.nlp.core.Span;
 import edu.utah.bmi.nlp.fastcner.FastCNER;
 import edu.utah.bmi.nlp.fastner.FastNER;
+import org.checkerframework.checker.units.qual.C;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -48,17 +49,31 @@ public class CurrencyFastNER {
     }
 
     public List<String> findAllCurrenciesAsociatedToANumber (String textToFindAllCurrencies){
+        long startTime = System.nanoTime();
         List<String> currencyEntitiesAsociatedToANumber = new ArrayList<>();
         textToFindAllCurrencies = formatString(textToFindAllCurrencies);
+        CurrencyRegExpr currencyRegExpr = new CurrencyRegExpr();
         Boolean currencyAsociatedToANumber = false;
 
         HashMap <String, List<String>> allCurrencyEntitiesInText = findAllCurrencyEntities(textToFindAllCurrencies);
-        List<String> numberEntitiesFoundInText = findAllNumberEntities(textToFindAllCurrencies);
+        List<String> numberEntitiesFoundInText = currencyRegExpr.findAllNumberEntities(textToFindAllCurrencies);
+        List<String> cardinalNumberEntitiesFoundInText = currencyRegExpr.findAllCardinalNumberEntities(textToFindAllCurrencies);
 
         List<String> listOfNamesInPlural = allCurrencyEntitiesInText.get("NamesPlural");
         for (String currency : listOfNamesInPlural){
             for (String number : numberEntitiesFoundInText){
                 String rule = number + " " + currency;
+                String entityFound = findWithFastCNER(rule,textToFindAllCurrencies);
+                if (!entityFound.isEmpty()){
+                    currencyEntitiesAsociatedToANumber.add(entityFound);
+                    System.out.println(entityFound);
+                    if (!currencyAsociatedToANumber){
+                        currencyAsociatedToANumber = true;
+                    }
+                }
+            }
+            for (String cardinal : cardinalNumberEntitiesFoundInText){
+                String rule = cardinal + " " + currency;
                 String entityFound = findWithFastCNER(rule,textToFindAllCurrencies);
                 if (!entityFound.isEmpty()){
                     currencyEntitiesAsociatedToANumber.add(entityFound);
@@ -83,6 +98,17 @@ public class CurrencyFastNER {
                     currencyEntitiesAsociatedToANumber.add(entityFound);
                     System.out.println(entityFound);
                     if (!currencyAsociatedToANumber) {
+                        currencyAsociatedToANumber = true;
+                    }
+                }
+            }
+            for (String cardinal : cardinalNumberEntitiesFoundInText){
+                String rule = cardinal + " " + currency;
+                String entityFound = findWithFastCNER(rule,textToFindAllCurrencies);
+                if (!entityFound.isEmpty()){
+                    currencyEntitiesAsociatedToANumber.add(entityFound);
+                    System.out.println(entityFound);
+                    if (!currencyAsociatedToANumber){
                         currencyAsociatedToANumber = true;
                     }
                 }
@@ -114,18 +140,39 @@ public class CurrencyFastNER {
                     }
                 }
             }
+            for (String cardinal : cardinalNumberEntitiesFoundInText) {
+                String rule = cardinal + currency;
+                String entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
+                if (!entityFound.isEmpty()) {
+                    currencyEntitiesAsociatedToANumber.add(entityFound);
+                    System.out.println(entityFound);
+                    if (!currencyAsociatedToANumber) {
+                        currencyAsociatedToANumber = true;
+                    }
+                }
+                rule =  currency + " " + cardinal;
+                entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
+                if (!entityFound.isEmpty()) {
+                    currencyEntitiesAsociatedToANumber.add(entityFound);
+                    System.out.println(entityFound);
+                    if (!currencyAsociatedToANumber) {
+                        currencyAsociatedToANumber = true;
+                    }
+                }
+            }
             if (!currencyAsociatedToANumber) {
                 //En el caso de que no esté asociado a ningun numero interesa igualmente guardar la moneda encontrada
                 currencyEntitiesAsociatedToANumber.add(currency);
             }else {currencyAsociatedToANumber = false;}
         }
+        long endTime = System.nanoTime();
+        System.out.println("Duración Currency fastNER: " + (endTime - startTime) / 1e6 + " ms");
 
         return currencyEntitiesAsociatedToANumber;
     }
 
 
     public HashMap<String, List<String>> findAllCurrencyEntities (String textToGetCurrencies){
-        long startTime = System.nanoTime();
         HashMap<String, List<String>> mapOfCurrencyElementsFound = new HashMap<>();
         List<String> listOfNames = currencyEntities.get("Name");
         List<String> listOfNamesInPlural = currencyEntities.get("NamePlural");
@@ -140,8 +187,7 @@ public class CurrencyFastNER {
         if (!listOfISOandSymbols.isEmpty()){
             mapOfCurrencyElementsFound.put("IsoAndSymbols",getCurrencyEntitiesInTextWithFastCNER(listOfISOandSymbols, textToGetCurrencies));
         }
-        long endTime = System.nanoTime();
-        System.out.println("Duración fastNER: " + (endTime - startTime) / 1e6 + " ms");
+
         return mapOfCurrencyElementsFound;
 
     }
@@ -164,10 +210,14 @@ public class CurrencyFastNER {
         if (!currencyEntities.isEmpty()){
             for (String currency : currencyEntities){
                 String rule = currency + "\t Currency \n";
-                String entityFound = findWithFastNERToken(rule,textToGetCurrencies);
-                if (!entityFound.isEmpty() && !entitiesFound.contains(entityFound)){
-                    entitiesFound.add(entityFound);
-                    System.out.println(entityFound);
+                List<String> entityFound = findWithFastNERTokenList(rule,textToGetCurrencies);
+                if (!entityFound.isEmpty()){
+                    for (String entity : entityFound){
+                        if(!entitiesFound.contains(entity)){
+                            entitiesFound.add(entity);
+                            System.out.println(entity);
+                        }
+                    }
                 }
             }
         }
@@ -178,17 +228,19 @@ public class CurrencyFastNER {
         List<String> entitiesFound = new ArrayList<>();
         if (!currencyEntities.isEmpty()){
             for (String currency : currencyEntities){
-                String entityFound = findWithFastCNER(currency,textToGetCurrencies);
-                if (!entityFound.isEmpty() && !entitiesFound.contains(entityFound)){
-                    entitiesFound.add(entityFound);
-                    System.out.println(entityFound);
+                List<String> entityFound = findWithFastCNERList(currency,textToGetCurrencies);
+                if (!entityFound.isEmpty()){
+                    for (String entity : entityFound){
+                        if(!entitiesFound.contains(entity)){
+                            entitiesFound.add(entity);
+                            System.out.println(entity);
+                        }
+                    }
                 }
             }
         }
         return entitiesFound;
     }
-
-
 
     //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro, puede devolver una lista con los elementos encontrados o un string vacio
     public String findWithFastNERToken (String rule, String textToFindTokens){
@@ -203,6 +255,22 @@ public class CurrencyFastNER {
             });
         }
         return printList(result);
+    }
+    //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro, puede devolver una lista con los elementos encontrados o un string vacio
+    public List<String> findWithFastNERTokenList (String rule, String textToFindTokens){
+        FastNER fastNER = new FastNER(rule);
+        ArrayList<Span> tokens = SimpleParser.tokenizeDecimalSmartWSentences(textToFindTokens, true).get(0);
+        HashMap<String, ArrayList<Span>> res = fastNER.processSpanList(tokens);
+        List<String> result = new ArrayList<>();
+        for (Map.Entry<String, ArrayList<Span>> entry : res.entrySet()) {
+            entry.getValue().forEach((span) -> {
+                String resultToAdd = textToFindTokens.substring(span.getBegin(), span.getEnd()).replaceAll(" +", " ").trim();
+                if (!resultToAdd.isEmpty() && !result.contains(resultToAdd)){
+                    result.add(resultToAdd);
+                }
+            });
+        }
+        return result;
     }
 
     //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro, puede devolver un String con los elementos encontrados o un string vacio
@@ -220,6 +288,24 @@ public class CurrencyFastNER {
             });
         }
         return printList(resultList);
+    }
+    //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro, puede devolver un String con los elementos encontrados o un string vacio
+    public List<String> findWithFastCNERList (String rule, String textToFindTokens){
+        HashMap<Integer, NERRule> rules = new HashMap<>();
+        rules.put(0, new NERRule(0, rule, "Currency", 0.1, ACTUAL));
+        FastCNER fcrp = new FastCNER(rules);
+        fcrp.setReplicationSupport(true);
+        HashMap<String, ArrayList<Span>> result = fcrp.processString(textToFindTokens);
+        List<String> resultList = new ArrayList<>();
+        for (Map.Entry<String, ArrayList<Span>> entry : result.entrySet()) {
+            entry.getValue().forEach((span) -> {
+                String resultToAdd = textToFindTokens.substring(span.getBegin(), span.getEnd()).replaceAll(" +", " ").trim();
+                if (!resultToAdd.isEmpty() && !resultList.contains(resultToAdd)){
+                    resultList.add(resultToAdd);
+                }
+            });
+        }
+        return resultList;
     }
 
     //Metodo privado para eliminar ciertos caracteres en una cadena a traves de un patron, devuelve la cadena resultante con un espacio en blanco donde estaban las entidades
@@ -250,8 +336,6 @@ public class CurrencyFastNER {
         stringToFormat = stringToFormat.replaceAll(" +", " ");
         return stringToFormat;
     }
-
-
 
     public String printList (List<String> listOfCardinals){
         StringBuilder sb = new StringBuilder();
