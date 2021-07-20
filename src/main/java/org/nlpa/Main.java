@@ -74,7 +74,7 @@ public class Main {
 
         
         //instances.add(new Instance(new StringBuffer("ejemplo en español, en un lugar de la mancha de cuyo nombre: ¿H0L4, C0|T|0 35745?"), null, "ej1", new StringBuffer("ej1")));
-        instances.add(new Instance(new StringBuffer("example of an english test: h4t? l33t sp34k, /\\/\\3"), null, "ej2", new StringBuffer("ej2")));
+        instances.add(new Instance(new StringBuffer("ejemplo de texto español c4s4"), null, "ej2", new StringBuffer("ej2")));
         
         
         // Configurations

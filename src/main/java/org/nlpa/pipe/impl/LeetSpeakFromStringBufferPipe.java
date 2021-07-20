@@ -69,9 +69,7 @@ public class LeetSpeakFromStringBufferPipe extends AbstractPipe{
 
             String lang = i.substring(6, 8).toUpperCase();
             try {
-                //f = new File(i);
-                //fr = new FileReader(f);
-               
+
                 InputStreamReader isr = new InputStreamReader( LeetSpeakFromStringBuffer.class.getResourceAsStream(i));
                 
                 br = new BufferedReader(isr);
