@@ -82,10 +82,11 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
             //System.out.println(dateEntity.testingFastNERTime(data));
             //RegExpressionForDates regExpressionForDates = new RegExpressionForDates();
             //System.out.println(regExpressionForDates.testingRegExpressionTime(data));
-            //CurrencyFastNER currency = new CurrencyFastNER();
-            //currency.findAllCurrenciesAsociatedToANumber(data);
+            CurrencyFastNER currency = new CurrencyFastNER();
+            //currency.findAllCurrenciesAsociatedToANumber("es",data);
+            currency.findAllCurrenciesAsociatedToANumber("es",data);
             CurrencyRegExpr currencyRegExpr = new CurrencyRegExpr();
-            currencyRegExpr.findAllCurrencyEntities(data);
+            currencyRegExpr.findAllCurrencyAsociatedToANumberEntities("en", data);
         }else{
             logger.error("Data it's not a Stringbuffer " + carrier.getName() + " it's a " + carrier.getData().getClass().getName());
         }

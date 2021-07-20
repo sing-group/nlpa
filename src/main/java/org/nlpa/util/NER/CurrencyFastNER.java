@@ -48,7 +48,7 @@ public class CurrencyFastNER {
         }
     }
 
-    public List<String> findAllCurrenciesAsociatedToANumber (String textToFindAllCurrencies){
+    public List<String> findAllCurrenciesAsociatedToANumber (String lang ,String textToFindAllCurrencies){
         long startTime = System.nanoTime();
         List<String> currencyEntitiesAsociatedToANumber = new ArrayList<>();
         textToFindAllCurrencies = formatString(textToFindAllCurrencies);
@@ -57,10 +57,14 @@ public class CurrencyFastNER {
 
         HashMap <String, List<String>> allCurrencyEntitiesInText = findAllCurrencyEntities(textToFindAllCurrencies);
         List<String> numberEntitiesFoundInText = currencyRegExpr.findAllNumberEntities(textToFindAllCurrencies);
-        List<String> cardinalNumberEntitiesFoundInText = currencyRegExpr.findAllCardinalNumberEntities(textToFindAllCurrencies);
-
-        List<String> listOfNamesInPlural = allCurrencyEntitiesInText.get("NamesPlural");
-        for (String currency : listOfNamesInPlural){
+        List<String> cardinalNumberEntitiesFoundInText = currencyRegExpr.findAllCardinalNumberEsEntities(textToFindAllCurrencies);
+        List<String> listOfNames = new ArrayList<>();
+        if (lang.equals("en")){
+            listOfNames = allCurrencyEntitiesInText.get("CurrencyNameEn");
+        }else {
+            listOfNames = allCurrencyEntitiesInText.get("CurrencyNameEs");
+        }
+        for (String currency : listOfNames){
             for (String number : numberEntitiesFoundInText){
                 String rule = number + " " + currency;
                 String entityFound = findWithFastCNER(rule,textToFindAllCurrencies);
@@ -89,35 +93,6 @@ public class CurrencyFastNER {
             }else {currencyAsociatedToANumber = false;}
         }
         currencyAsociatedToANumber = false;
-        List<String> listOfNames = allCurrencyEntitiesInText.get("Names");
-        for (String currency : listOfNames) {
-            for (String number : numberEntitiesFoundInText) {
-                String rule = number + " " + currency;
-                String entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
-                if (!entityFound.isEmpty()) {
-                    currencyEntitiesAsociatedToANumber.add(entityFound);
-                    System.out.println(entityFound);
-                    if (!currencyAsociatedToANumber) {
-                        currencyAsociatedToANumber = true;
-                    }
-                }
-            }
-            for (String cardinal : cardinalNumberEntitiesFoundInText){
-                String rule = cardinal + " " + currency;
-                String entityFound = findWithFastCNER(rule,textToFindAllCurrencies);
-                if (!entityFound.isEmpty()){
-                    currencyEntitiesAsociatedToANumber.add(entityFound);
-                    System.out.println(entityFound);
-                    if (!currencyAsociatedToANumber){
-                        currencyAsociatedToANumber = true;
-                    }
-                }
-            }
-            if (!currencyAsociatedToANumber) {
-                //En el caso de que no esté asociado a ningun numero interesa igualmente guardar la moneda encontrada
-                currencyEntitiesAsociatedToANumber.add(currency);
-            }else {currencyAsociatedToANumber = false;}
-        }
         List<String> listOfIsoAndSymbols = allCurrencyEntitiesInText.get("IsoAndSymbols");
         for (String currency : listOfIsoAndSymbols) {
             for (String number : numberEntitiesFoundInText) {
@@ -174,15 +149,15 @@ public class CurrencyFastNER {
 
     public HashMap<String, List<String>> findAllCurrencyEntities (String textToGetCurrencies){
         HashMap<String, List<String>> mapOfCurrencyElementsFound = new HashMap<>();
-        List<String> listOfNames = currencyEntities.get("Name");
-        List<String> listOfNamesInPlural = currencyEntities.get("NamePlural");
+        List<String> listOfCurrencyNamesEs = currencyEntities.get("CurrencyNameEs");
+        List<String> listOfCurrencyNamesEn = currencyEntities.get("CurrencyNameEn");
         List<String> listOfISOandSymbols= currencyEntities.get("ISOandSymbol");
 
-        if (!listOfNames.isEmpty()){
-            mapOfCurrencyElementsFound.put("NamesPlural", getCurrencyEntitiesInText(listOfNamesInPlural, textToGetCurrencies));
+        if (!listOfCurrencyNamesEs.isEmpty()){
+            mapOfCurrencyElementsFound.put("CurrencyNameEs", getCurrencyEntitiesInText(listOfCurrencyNamesEs, textToGetCurrencies));
         }
-        if (!listOfNamesInPlural.isEmpty()){
-            mapOfCurrencyElementsFound.put("Names",getCurrencyEntitiesInText(listOfNames, textToGetCurrencies));
+        if (!listOfCurrencyNamesEn.isEmpty()){
+            mapOfCurrencyElementsFound.put("CurrencyNameEn",getCurrencyEntitiesInText(listOfCurrencyNamesEn, textToGetCurrencies));
         }
         if (!listOfISOandSymbols.isEmpty()){
             mapOfCurrencyElementsFound.put("IsoAndSymbols",getCurrencyEntitiesInTextWithFastCNER(listOfISOandSymbols, textToGetCurrencies));
