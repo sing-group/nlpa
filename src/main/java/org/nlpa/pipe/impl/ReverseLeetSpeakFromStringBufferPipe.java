@@ -118,10 +118,10 @@ public class ReverseLeetSpeakFromStringBufferPipe extends AbstractPipe{
         while(matcher.find(last)){
             Random rnd = new Random();
             int rd= rnd.nextInt();
-            if(rd> 0){ //0 for 50% // -1*Integer.MAX_VALUE/2 for 75%
+            if(rd>0){ //0 for 50% // -1*Integer.MAX_VALUE/2 for 75%
                 noleet=matcher.group().toLowerCase();
                 leet= dictionary.get(noleet).get(rnd.nextInt(dictionary.get(noleet).size()));
-                sb.replace(matcher.start(0),last=matcher.end(0)+leet.length()-1,leet);
+                sb.replace(matcher.start(0),last=matcher.end(0),leet);
             }else{
                 last=matcher.end(0); 
             }   
