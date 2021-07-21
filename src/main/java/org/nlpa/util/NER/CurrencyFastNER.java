@@ -29,7 +29,7 @@ public class CurrencyFastNER {
     static {
         try {
 
-            InputStream is = DateFastNER.class.getResourceAsStream("/currency-json/currency.es.json");
+            InputStream is = DateFastNER.class.getResourceAsStream("/currency-json/currencyFastNER.json");
             JsonReader rdr = Json.createReader(is);
             JsonObject jsonObject = rdr.readObject();
             rdr.close();
@@ -48,7 +48,7 @@ public class CurrencyFastNER {
         }
     }
 
-    public List<String> findAllCurrenciesAsociatedToANumber (String lang ,String textToFindAllCurrencies){
+    public String findAllCurrenciesAsociatedToANumber (String lang ,String textToFindAllCurrencies){
         long startTime = System.nanoTime();
         List<String> currencyEntitiesAsociatedToANumber = new ArrayList<>();
         textToFindAllCurrencies = formatString(textToFindAllCurrencies);
@@ -57,12 +57,14 @@ public class CurrencyFastNER {
 
         HashMap <String, List<String>> allCurrencyEntitiesInText = findAllCurrencyEntities(textToFindAllCurrencies);
         List<String> numberEntitiesFoundInText = currencyRegExpr.findAllNumberEntities(textToFindAllCurrencies);
-        List<String> cardinalNumberEntitiesFoundInText = currencyRegExpr.findAllCardinalNumberEsEntities(textToFindAllCurrencies);
+        List<String> cardinalNumberEntitiesFoundInText = new ArrayList<>();
         List<String> listOfNames = new ArrayList<>();
-        if (lang.equals("en")){
+        if (lang.equals("EN")){
             listOfNames = allCurrencyEntitiesInText.get("CurrencyNameEn");
-        }else {
+            cardinalNumberEntitiesFoundInText = currencyRegExpr.findAllCardinalNumberEnEntities(textToFindAllCurrencies);
+        }else if (lang.equals("ES")){
             listOfNames = allCurrencyEntitiesInText.get("CurrencyNameEs");
+            cardinalNumberEntitiesFoundInText = currencyRegExpr.findAllCardinalNumberEsEntities(textToFindAllCurrencies);
         }
         for (String currency : listOfNames){
             for (String number : numberEntitiesFoundInText){
@@ -143,7 +145,7 @@ public class CurrencyFastNER {
         long endTime = System.nanoTime();
         System.out.println("Duración Currency fastNER: " + (endTime - startTime) / 1e6 + " ms");
 
-        return currencyEntitiesAsociatedToANumber;
+        return printList(currencyEntitiesAsociatedToANumber);
     }
 
 
@@ -165,19 +167,6 @@ public class CurrencyFastNER {
 
         return mapOfCurrencyElementsFound;
 
-    }
-
-    public List<String> findAllNumberEntities (String textToFindEntities){
-        List<String> numberEntitiesFound = new ArrayList<>();
-        Pattern pattern = Pattern.compile("[\\+\\-]?[0-9]+([\\.\\'\\,][0-9]+)?");
-        Matcher matcher = pattern.matcher(textToFindEntities);
-        while (matcher.find()){
-            String numberFound = matcher.group();
-            if(!numberEntitiesFound.contains(numberFound)){
-                numberEntitiesFound.add(numberFound);
-            }
-        }
-        return numberEntitiesFound;
     }
 
     public List<String> getCurrencyEntitiesInText (List<String> currencyEntities, String textToGetCurrencies){
@@ -283,27 +272,7 @@ public class CurrencyFastNER {
         return resultList;
     }
 
-    //Metodo privado para eliminar ciertos caracteres en una cadena a traves de un patron, devuelve la cadena resultante con un espacio en blanco donde estaban las entidades
-    private String deleteAEntityWithPattern (String entity, String textToDeleteEntity){
-        String textToReturn = "";
-        Pattern pattern = Pattern.compile(entity);
-        Matcher matcher = pattern.matcher(textToDeleteEntity);
-        Boolean isFound = matcher.find();
-        if (isFound){
-            String[] textSplited = pattern.split(textToDeleteEntity);
-            StringBuilder sb = new StringBuilder();
-            for (String string : textSplited){
-                sb.append(string + " ");
-            }
-            textToReturn = sb.toString();
-            return textToReturn;
-        }
-        return textToReturn;
-    }
-
     private String formatString (String stringToFormat){
-        //stringToFormat = StringUtils.stripAccents(stringToFormat);
-        //stringToFormat = stringToFormat.toLowerCase();
         stringToFormat = stringToFormat.trim();
         stringToFormat = stringToFormat.replaceAll("\r", " ");
         stringToFormat = stringToFormat.replaceAll("\t", " ");
@@ -315,7 +284,7 @@ public class CurrencyFastNER {
     public String printList (List<String> listOfCardinals){
         StringBuilder sb = new StringBuilder();
         for (String string : listOfCardinals){
-            sb.append(string + " ");
+            sb.append(string + "\n");
         }
         return sb.toString();
     }

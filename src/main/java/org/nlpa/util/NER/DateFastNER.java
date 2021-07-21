@@ -21,7 +21,7 @@ public class DateFastNER {
 
     static {
         try {
-            InputStream is = DateFastNER.class.getResourceAsStream("/timezone-json/dates.json");
+            InputStream is = DateFastNER.class.getResourceAsStream("/fastnerrulesfordates-json/dates.json");
             JsonReader rdr = Json.createReader(is);
             JsonObject jsonObject = rdr.readObject();
             rdr.close();
@@ -36,7 +36,7 @@ public class DateFastNER {
 
     static {
         try {
-            InputStream is = DateFastNER.class.getResourceAsStream("/testdatesfnandre/DateFormat.json");
+            InputStream is = DateFastNER.class.getResourceAsStream("/fastnerrulesfordates-json/DateFormat.json");
             JsonReader rdr = Json.createReader(is);
             JsonArray array = rdr.readArray();
             rdr.close();
@@ -54,11 +54,18 @@ public class DateFastNER {
         textToTest = formatString(textToTest);
         List<String> fastNERRules = matchDatesWithFastNERRules();
         for (String rule : fastNERRules) {
-            listOfEntitiesFound = findWithFastNERToken(rule, textToTest);
+            List<String> dateEntities = findWithFastNERToken(rule, textToTest);
+            if (!dateEntities.isEmpty()){
+                for(String dateEntity : dateEntities){
+                    System.out.println(dateEntity);
+                    listOfEntitiesFound.add(dateEntity);
+                }
+            }
         }
         System.out.println(listOfEntitiesFound.size());
         long endTime = System.nanoTime();
-        return "Duración fastNER: " + (endTime - startTime) / 1e6 + " ms";
+        System.out.println("Duración fastNER: " + (endTime - startTime) / 1e6 + " ms");
+        return printList(listOfEntitiesFound);
     }
 
     public List<String> matchDatesWithFastNERRules() {
@@ -107,6 +114,14 @@ public class DateFastNER {
         stringToFormat = stringToFormat.replaceAll("\n", " ");
         stringToFormat = stringToFormat.replaceAll(" +", " ");
         return stringToFormat;
+    }
+
+    public String printList (List<String> listOfCardinals){
+        StringBuilder sb = new StringBuilder();
+        for (String string : listOfCardinals){
+            sb.append(string + "\n");
+        }
+        return sb.toString();
     }
 
     public List<String> sortKeys(List<String> keys) {

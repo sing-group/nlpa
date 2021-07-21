@@ -17,7 +17,7 @@ public class CurrencyRegExpr {
     }
     static{
         try{
-            InputStream is = DateFastNER.class.getResourceAsStream("/regexpressionforcurrency-json/regExprForCurrency.json");
+            InputStream is = DateFastNER.class.getResourceAsStream("/currency-json/regExprForCurrency.json");
             JsonReader rdr = Json.createReader(is);
             JsonObject jsonObject = rdr.readObject();
             rdr.close();
@@ -132,7 +132,7 @@ public class CurrencyRegExpr {
         }
         return currencyISOandSymbolEntitiesFound;
     }
-    public List<String> findAllCurrencyAsociatedToANumberEntities (String lang, String textToFindEntities){
+    public String findAllCurrencyAsociatedToANumberEntities (String lang, String textToFindEntities){
         long startTime = System.nanoTime();
         List<String> currencyAssociatedToANumberEntities = new ArrayList<>();
         if (!regularExpresionForCurrencyMap.isEmpty()){
@@ -143,10 +143,10 @@ public class CurrencyRegExpr {
             List<String> listNumberEntities  = findAllNumberEntities(textToFindEntities);
             List<String> listCardinalNumberEntities  = new ArrayList<>();
             List<String> listCurrencyNameEntities  = new ArrayList<>();
-            if (lang.equals("en")){
+            if (lang.equals("EN")){
                 listCardinalNumberEntities  = findAllCardinalNumberEnEntities(textToFindEntities);
                 listCurrencyNameEntities  = findAllCurrencyNameEnEntities(textToFindEntities);
-            }else {
+            }else if (lang.equals("ES")) {
                 listCardinalNumberEntities  = findAllCardinalNumberEsEntities(textToFindEntities);
                 listCurrencyNameEntities  = findAllCurrencyNameEsEntities(textToFindEntities);
             }
@@ -214,7 +214,7 @@ public class CurrencyRegExpr {
         }
         long endTime = System.nanoTime();
         System.out.println("Duración Currency Expresiones Regulares: " + (endTime - startTime) / 1e6 + " ms");
-        return currencyAssociatedToANumberEntities;
+        return printList(currencyAssociatedToANumberEntities);
     }
 
     private String formatString (String stringToFormat){
@@ -225,6 +225,14 @@ public class CurrencyRegExpr {
         stringToFormat = stringToFormat.replaceAll("\n", " ");
         stringToFormat = stringToFormat.replaceAll(" +", " ");
         return stringToFormat;
+    }
+
+    public String printList (List<String> listOfCardinals){
+        StringBuilder sb = new StringBuilder();
+        for (String string : listOfCardinals){
+            sb.append(string + "\n");
+        }
+        return sb.toString();
     }
 
 }

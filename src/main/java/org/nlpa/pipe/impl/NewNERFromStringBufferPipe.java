@@ -11,6 +11,8 @@ import org.bdp4j.types.Instance;
 import org.checkerframework.checker.units.qual.C;
 import org.nlpa.util.NER.CurrencyFastNER;
 import org.nlpa.util.NER.CurrencyRegExpr;
+import org.nlpa.util.NER.DateFastNER;
+import org.nlpa.util.NER.DateRegExpr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
 
     List<String> identifiedEntitiesProperty = null;
 
-    public static final String DEFAULT_IDENTIFIED_ENTITIES_PROPERTY = "NERDATE,NERMONEY";
+    public static final String DEFAULT_IDENTIFIED_ENTITIES_PROPERTY = "FASTNERDATE,FASTNERCURRENCY,REGEXPNERDATE,REGEXPNERCURRENCY";
 
     private void init() {
         setIdentifiedEntitiesProperty(DEFAULT_IDENTIFIED_ENTITIES_PROPERTY);
@@ -35,7 +37,6 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
     private String identifiedEntitiesProp = DEFAULT_IDENTIFIED_ENTITIES_PROPERTY;
 
     private static final Logger logger = LogManager.getLogger();
-
 
     @Override
     public Class<?> getInputType() {
@@ -50,7 +51,14 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
         return identifiedEntitiesProp;
     }
 
-    @PipeParameter(name = "identifiedEntitiesProperty", description = "Indicates the identified entities through a list of comma-separated values", defaultValue = DEFAULT_IDENTIFIED_ENTITIES_PROPERTY)
+    public void setLangProp(String langProp) {
+        this.langProp = langProp;
+    }
+
+    public String getLangProp() {
+        return this.langProp;
+    }
+
     public void setIdentifiedEntitiesProperty(String identifiedEntitiesProperty) {
         this.identifiedEntitiesProp = identifiedEntitiesProperty;
         this.identifiedEntitiesProperty = new ArrayList<>();
@@ -67,26 +75,32 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
         init();
     }
 
-    public NewNERFromStringBufferPipe(String identifiedEntitiesProp) {
+    public NewNERFromStringBufferPipe(String identifiedEntitiesProp, String langProp) {
         super(new Class<?>[] { GuessLanguageFromStringBufferPipe.class }, new Class<?>[0]);
-
+        this.langProp = langProp;
         this.identifiedEntitiesProp = identifiedEntitiesProp;
     }
 
-    //Proper pipe
     @Override
     public Instance pipe (Instance carrier){
         if (carrier.getData() instanceof StringBuffer){
             String data = carrier.getData().toString();
-            //DateEntity dateEntity = new DateEntity();
-            //System.out.println(dateEntity.testingFastNERTime(data));
-            //RegExpressionForDates regExpressionForDates = new RegExpressionForDates();
-            //System.out.println(regExpressionForDates.testingRegExpressionTime(data));
+            String value = "";
+            String lang = (String) carrier.getProperty(langProp);
+
+            DateFastNER dateEntity = new DateFastNER();
+            value = dateEntity.testingFastNERTime(data);
+            carrier.setProperty("FASTNERDATE",value);
+            DateRegExpr regExpressionForDates = new DateRegExpr();
+            value = regExpressionForDates.testingRegExpressionTime(lang, data);
+            carrier.setProperty("REGEXPNERDATE",value);
+
             CurrencyFastNER currency = new CurrencyFastNER();
-            //currency.findAllCurrenciesAsociatedToANumber("es",data);
-            currency.findAllCurrenciesAsociatedToANumber("es",data);
+            value = currency.findAllCurrenciesAsociatedToANumber(lang,data);
+            carrier.setProperty("FASTNERCURRENCY",value);
             CurrencyRegExpr currencyRegExpr = new CurrencyRegExpr();
-            currencyRegExpr.findAllCurrencyAsociatedToANumberEntities("en", data);
+            value = currencyRegExpr.findAllCurrencyAsociatedToANumberEntities(lang, data);
+            carrier.setProperty("REGEXPNERCURRENCY",value);
         }else{
             logger.error("Data it's not a Stringbuffer " + carrier.getName() + " it's a " + carrier.getData().getClass().getName());
         }
