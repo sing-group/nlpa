@@ -71,16 +71,14 @@ public class DateRegExpr {
             List<String> dateEntities= testPatternRegExp(dateFormated,textToTest);
             if (!dateEntities.isEmpty()){
                 for (String dateEntity : dateEntities){
-                    System.out.println(dateEntity);
                     dateEntitiesFound.add(dateEntity);
                 }
             }
         }
-
-        System.out.println(dateEntitiesFound.size());
+        System.out.println("Número de fechas encontradas con expresiones regulares: " + dateEntitiesFound.size());
         long endTime = System.nanoTime();
+        System.out.println("Duración búsqueda de fechas con expresiones regulares: " + (endTime-startTime)/1e6 + " ms");
 
-        System.out.println("Duración Expresión Regular: " + (endTime-startTime)/1e6 + " ms");
         return printList(dateEntitiesFound);
     }
 
@@ -115,8 +113,6 @@ public class DateRegExpr {
                 Pattern pattern = Pattern.compile(patternRegExp);
                 Matcher mat = pattern.matcher(textToTry);
                 while (mat.find()){
-                    //System.out.println(patternRegExp);
-                    //System.out.println(mat.group());
                     listOfEntitiesFound.add(mat.group());
                 }
             }

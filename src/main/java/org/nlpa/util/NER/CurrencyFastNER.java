@@ -72,7 +72,6 @@ public class CurrencyFastNER {
                 String entityFound = findWithFastCNER(rule,textToFindAllCurrencies);
                 if (!entityFound.isEmpty()){
                     currencyEntitiesAsociatedToANumber.add(entityFound);
-                    System.out.println(entityFound);
                     if (!currencyAsociatedToANumber){
                         currencyAsociatedToANumber = true;
                     }
@@ -83,7 +82,6 @@ public class CurrencyFastNER {
                 String entityFound = findWithFastCNER(rule,textToFindAllCurrencies);
                 if (!entityFound.isEmpty()){
                     currencyEntitiesAsociatedToANumber.add(entityFound);
-                    System.out.println(entityFound);
                     if (!currencyAsociatedToANumber){
                         currencyAsociatedToANumber = true;
                     }
@@ -102,7 +100,6 @@ public class CurrencyFastNER {
                 String entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
                 if (!entityFound.isEmpty()) {
                     currencyEntitiesAsociatedToANumber.add(entityFound);
-                    System.out.println(entityFound);
                     if (!currencyAsociatedToANumber) {
                         currencyAsociatedToANumber = true;
                     }
@@ -111,7 +108,6 @@ public class CurrencyFastNER {
                 entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
                 if (!entityFound.isEmpty()) {
                     currencyEntitiesAsociatedToANumber.add(entityFound);
-                    System.out.println(entityFound);
                     if (!currencyAsociatedToANumber) {
                         currencyAsociatedToANumber = true;
                     }
@@ -122,7 +118,6 @@ public class CurrencyFastNER {
                 String entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
                 if (!entityFound.isEmpty()) {
                     currencyEntitiesAsociatedToANumber.add(entityFound);
-                    System.out.println(entityFound);
                     if (!currencyAsociatedToANumber) {
                         currencyAsociatedToANumber = true;
                     }
@@ -131,7 +126,6 @@ public class CurrencyFastNER {
                 entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
                 if (!entityFound.isEmpty()) {
                     currencyEntitiesAsociatedToANumber.add(entityFound);
-                    System.out.println(entityFound);
                     if (!currencyAsociatedToANumber) {
                         currencyAsociatedToANumber = true;
                     }
@@ -142,8 +136,9 @@ public class CurrencyFastNER {
                 currencyEntitiesAsociatedToANumber.add(currency);
             }else {currencyAsociatedToANumber = false;}
         }
+        System.out.println("Número de entidades de dinero encontrados con fastNER: " + currencyEntitiesAsociatedToANumber.size());
         long endTime = System.nanoTime();
-        System.out.println("Duración Currency fastNER: " + (endTime - startTime) / 1e6 + " ms");
+        System.out.println("Duración búsqueda de entidades de dinero con fastNER: " + (endTime - startTime) / 1e6 + " ms");
 
         return printList(currencyEntitiesAsociatedToANumber);
     }
@@ -179,7 +174,6 @@ public class CurrencyFastNER {
                     for (String entity : entityFound){
                         if(!entitiesFound.contains(entity)){
                             entitiesFound.add(entity);
-                            System.out.println(entity);
                         }
                     }
                 }
@@ -197,7 +191,6 @@ public class CurrencyFastNER {
                     for (String entity : entityFound){
                         if(!entitiesFound.contains(entity)){
                             entitiesFound.add(entity);
-                            System.out.println(entity);
                         }
                     }
                 }

@@ -8,6 +8,7 @@ import org.bdp4j.pipe.Pipe;
 import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
+import org.bdp4j.util.EBoolean;
 import org.checkerframework.checker.units.qual.C;
 import org.nlpa.util.NER.CurrencyFastNER;
 import org.nlpa.util.NER.CurrencyRegExpr;
@@ -15,6 +16,7 @@ import org.nlpa.util.NER.DateFastNER;
 import org.nlpa.util.NER.DateRegExpr;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -25,16 +27,18 @@ import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_
 public class NewNERFromStringBufferPipe extends AbstractPipe {
 
     private String langProp = DEFAULT_LANG_PROPERTY;
+    List<String> entityTypes = null;
 
-    List<String> identifiedEntitiesProperty = null;
+    public static final String DEFAULT_FAST_NER_DATE = "true";
+    public static final String DEFAULT_FAST_NER_CURRENCY = "true";
+    public static final String DEFAULT_REGEXP_NER_DATE = "true";
+    public static final String DEFAULT_REGEXP_NER_CURRENCY = "true";
 
-    public static final String DEFAULT_IDENTIFIED_ENTITIES_PROPERTY = "FASTNERDATE,FASTNERCURRENCY,REGEXPNERDATE,REGEXPNERCURRENCY";
+    private boolean fastNERDate = EBoolean.getBoolean(DEFAULT_FAST_NER_DATE);
+    private boolean fastNERCurrency = EBoolean.getBoolean(DEFAULT_FAST_NER_CURRENCY);
+    private boolean regExpDate = EBoolean.getBoolean(DEFAULT_REGEXP_NER_DATE);
+    private boolean regExpCurrency = EBoolean.getBoolean(DEFAULT_REGEXP_NER_CURRENCY);
 
-    private void init() {
-        setIdentifiedEntitiesProperty(DEFAULT_IDENTIFIED_ENTITIES_PROPERTY);
-    }
-
-    private String identifiedEntitiesProp = DEFAULT_IDENTIFIED_ENTITIES_PROPERTY;
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -47,10 +51,6 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
         return StringBuffer.class;
     }
 
-    public String getIdentifiedEntitiesProp() {
-        return identifiedEntitiesProp;
-    }
-
     public void setLangProp(String langProp) {
         this.langProp = langProp;
     }
@@ -59,26 +59,50 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
         return this.langProp;
     }
 
-    public void setIdentifiedEntitiesProperty(String identifiedEntitiesProperty) {
-        this.identifiedEntitiesProp = identifiedEntitiesProperty;
-        this.identifiedEntitiesProperty = new ArrayList<>();
+    public boolean getFastNERDate() {
+        return fastNERDate;
+    }
 
-        StringTokenizer st = new StringTokenizer(identifiedEntitiesProperty, ", ");
-        while (st.hasMoreTokens()) {
-            this.identifiedEntitiesProperty.add(st.nextToken());
-        }
+    public void setFastNERDate(boolean fastNERDate) {
+        this.fastNERDate = fastNERDate;
+    }
+
+    public boolean getFastNERCurrency() {
+        return fastNERCurrency;
+    }
+
+    public void setFastNERCurrency(boolean fastNERCurrency) {
+        this.fastNERCurrency = fastNERCurrency;
+    }
+
+    public boolean getRegExpDate() {
+        return regExpDate;
+    }
+
+    public void setRegExpDate(boolean regExpDate) {
+        this.regExpDate = regExpDate;
+    }
+
+    public boolean getRegExpCurrency() {
+        return regExpCurrency;
+    }
+
+    public void setRegExpCurrency(boolean regExpCurrency) {
+        this.regExpCurrency = regExpCurrency;
     }
 
     public NewNERFromStringBufferPipe() {
-        super(new Class<?>[0], new Class<?>[0]);
-
-        init();
+        this(DEFAULT_LANG_PROPERTY ,EBoolean.getBoolean(DEFAULT_FAST_NER_DATE), EBoolean.getBoolean(DEFAULT_FAST_NER_CURRENCY),
+                EBoolean.getBoolean(DEFAULT_REGEXP_NER_DATE), EBoolean.getBoolean(DEFAULT_REGEXP_NER_CURRENCY));
     }
 
-    public NewNERFromStringBufferPipe(String identifiedEntitiesProp, String langProp) {
+    public NewNERFromStringBufferPipe(String langProp, boolean fastNERDate, boolean fastNERCurrency, boolean regExpDate, boolean regExpCurrency) {
         super(new Class<?>[] { GuessLanguageFromStringBufferPipe.class }, new Class<?>[0]);
         this.langProp = langProp;
-        this.identifiedEntitiesProp = identifiedEntitiesProp;
+        this.fastNERDate = fastNERDate;
+        this.fastNERCurrency = fastNERDate;
+        this.regExpDate = fastNERDate;
+        this.regExpCurrency = fastNERDate;
     }
 
     @Override
@@ -88,23 +112,29 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
             String value = "";
             String lang = (String) carrier.getProperty(langProp);
 
-            DateFastNER dateEntity = new DateFastNER();
-            value = dateEntity.testingFastNERTime(data);
+            if(fastNERDate){
+                DateFastNER dateEntity = new DateFastNER();
+                value = dateEntity.testingFastNERTime(data);
+            }
             carrier.setProperty("FASTNERDATE",value);
-            DateRegExpr regExpressionForDates = new DateRegExpr();
-            value = regExpressionForDates.testingRegExpressionTime(lang, data);
+            if(regExpDate){
+                DateRegExpr regExpressionForDates = new DateRegExpr();
+                value = regExpressionForDates.testingRegExpressionTime(lang, data);
+            }
             carrier.setProperty("REGEXPNERDATE",value);
-
-            CurrencyFastNER currency = new CurrencyFastNER();
-            value = currency.findAllCurrenciesAsociatedToANumber(lang,data);
-            carrier.setProperty("FASTNERCURRENCY",value);
-            CurrencyRegExpr currencyRegExpr = new CurrencyRegExpr();
-            value = currencyRegExpr.findAllCurrencyAsociatedToANumberEntities(lang, data);
+            if(fastNERCurrency){
+                CurrencyFastNER currency = new CurrencyFastNER();
+                value = currency.findAllCurrenciesAsociatedToANumber(lang, data);
+            }
+            carrier.setProperty("FASTNERCURRENCY",value);;
+            if(regExpCurrency){
+                CurrencyFastNER currency = new CurrencyFastNER();
+                value = currency.findAllCurrenciesAsociatedToANumber(lang, data);
+            }
             carrier.setProperty("REGEXPNERCURRENCY",value);
         }else{
             logger.error("Data it's not a Stringbuffer " + carrier.getName() + " it's a " + carrier.getData().getClass().getName());
         }
-        carrier.setProperty("NERDate", 0);
         return carrier;
     }
 

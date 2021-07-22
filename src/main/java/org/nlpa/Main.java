@@ -98,7 +98,8 @@ public class Main {
                 new File2StringBufferPipe(),
                 new StripHTMLFromStringBufferPipe(),
                 new GuessLanguageFromStringBufferPipe(),
-                new NewNERFromStringBufferPipe(),});
+                new NewNERFromStringBufferPipe(GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY,true, true, true, true),
+        });
 
         if (!p.checkDependencies()) {
             System.out.println("Pipe dependencies are not satisfied");
@@ -117,43 +118,6 @@ public class Main {
                     + (((i.getData().toString().length()) > 10)
                     ? (i.getData().toString().substring(0, 10) + "...")
                     : i.getData().toString()));
-
-
-
-        /*
-        String stringIntroduced = "";
-        do{
-            System.out.println("Escriba la cadena a detectar");
-            Scanner scanner = new Scanner(System.in);
-            stringIntroduced = scanner.nextLine();
-            //CurrencyCardinalNumbers currencyCardinalNumbers = new CurrencyCardinalNumbers();
-           //String stringToReturn = currencyCardinalNumbers.testingRegularExpressions(stringIntroduced);
-           //if (stringToReturn.equals(stringIntroduced)){
-           //    System.out.println("Ninguna entidad encontrada en el texto : " + stringIntroduced);
-           //}else {
-           //    System.out.println("Texto final : " + stringToReturn );
-           //    //System.out.println("Entidades encontradas : " + currencyCardinalNumbers.getListOfEntitiesFound().toString() );
-
-           //}
-            //currencyCardinalNumbers.testingCurrencyFastNER2(stringIntroduced);
-            //CardinalNumbers cardinalNumbers = new CardinalNumbers();
-            //System.out.println(cardinalNumbers.beforeAQuatrillion(stringIntroduced));
-           //CurrencyCardinalNumbers currencyCardinalNumbers = new CurrencyCardinalNumbers();
-           //currencyCardinalNumbers.testingCurrencyFastNER2(stringIntroduced);
-           //DateEntity dateEntity = new DateEntity();
-           //HashMap<String,List<String>> listOfDatesMatched = dateEntity.generateMapOfMatchedDates();
-           //listOfDatesMatched = dateEntity.generateListOfFastNERRules(listOfDatesMatched);
-           //dateEntity.processDatesToRecognize(listOfDatesMatched,stringIntroduced);
-           //CurrencyCardinalNumbers currencyCardinalNumbers = new CurrencyCardinalNumbers();
-           //currencyCardinalNumbers.testRegularExpression(stringIntroduced);
-           RegExpressionForDates regExpressionForDates = new RegExpressionForDates();
-           List<String> keys = regExpressionForDates.getKeysSorted();
-           List<String> regExp = regExpressionForDates.matchDatesWithRegExpressionKey(keys);
-           regExpressionForDates.testPatternRegExp(regExp,stringIntroduced);
-
-
-        }while(!stringIntroduced.equals("0"));
-        */
         }
 
     }

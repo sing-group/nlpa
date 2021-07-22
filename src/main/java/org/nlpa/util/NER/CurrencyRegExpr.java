@@ -37,7 +37,6 @@ public class CurrencyRegExpr {
         while (matcher.find()){
             String numberFound = matcher.group();
             if(!numberEntitiesFound.contains(numberFound)){
-                System.out.println(numberFound);
                 numberEntitiesFound.add(numberFound);
             }
         }
@@ -51,7 +50,6 @@ public class CurrencyRegExpr {
         while (matcher.find()){
             String cardinalNumberFound = matcher.group();
             if(!cardinalNumberEntitiesFound.contains(cardinalNumberFound)){
-                System.out.println(cardinalNumberFound);
                 cardinalNumberEntitiesFound.add(cardinalNumberFound);
             }
         }
@@ -64,7 +62,6 @@ public class CurrencyRegExpr {
         while (matcher.find()){
             String cardinalNumberFound = matcher.group();
             if(!cardinalNumberEntitiesFound.contains(cardinalNumberFound)){
-                System.out.println(cardinalNumberFound);
                 cardinalNumberEntitiesFound.add(cardinalNumberFound);
             }
         }
@@ -79,7 +76,6 @@ public class CurrencyRegExpr {
         while (matcher.find()){
             String currencyNameFound = matcher.group();
             if(!currencyNameEntitiesFound.contains(currencyNameFound)){
-                System.out.println(currencyNameFound);
                 currencyNameEntitiesFound.add(currencyNameFound);
             }
         }
@@ -88,7 +84,6 @@ public class CurrencyRegExpr {
         while (matcher.find()){
             String currencyNameFound = matcher.group();
             if(!currencyNameEntitiesFound.contains(currencyNameFound)){
-                System.out.println(currencyNameFound);
                 currencyNameEntitiesFound.add(currencyNameFound);
             }
         }
@@ -96,6 +91,7 @@ public class CurrencyRegExpr {
     }
 
     public List<String> findAllCurrencyNameEnEntities (String textToFindEntities){
+        long startTime = System.nanoTime();
         List<String> currencyNameEntitiesFound = new ArrayList<>();
         String namesEs = StringUtils.stripAccents(regularExpresionForCurrencyMap.get("CurrencyNameEn"));
         Pattern pattern = Pattern.compile(namesEs);
@@ -103,7 +99,6 @@ public class CurrencyRegExpr {
         while (matcher.find()){
             String currencyNameFound = matcher.group();
             if(!currencyNameEntitiesFound.contains(currencyNameFound)){
-                System.out.println(currencyNameFound);
                 currencyNameEntitiesFound.add(currencyNameFound);
             }
         }
@@ -112,10 +107,12 @@ public class CurrencyRegExpr {
         while (matcher.find()){
             String currencyNameFound = matcher.group();
             if(!currencyNameEntitiesFound.contains(currencyNameFound)){
-                System.out.println(currencyNameFound);
                 currencyNameEntitiesFound.add(currencyNameFound);
             }
         }
+        System.out.println("Número de entidades de dinero encontrados con expresiones regulares: " + currencyNameEntitiesFound.size());
+        long endTime = System.nanoTime();
+        System.out.println("Duración búsqueda de entidades de dinero con expresiones regulares: " + (endTime-startTime)/1e6 + " ms");
         return currencyNameEntitiesFound;
     }
 
@@ -126,7 +123,6 @@ public class CurrencyRegExpr {
         while (matcher.find()){
             String currencyISOandSymbolFound = matcher.group();
             if(!currencyISOandSymbolFound.isEmpty() && !currencyISOandSymbolEntitiesFound.contains(currencyISOandSymbolFound)){
-                System.out.println(currencyISOandSymbolFound);
                 currencyISOandSymbolEntitiesFound.add(currencyISOandSymbolFound);
             }
         }

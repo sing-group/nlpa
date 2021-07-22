@@ -57,14 +57,13 @@ public class DateFastNER {
             List<String> dateEntities = findWithFastNERToken(rule, textToTest);
             if (!dateEntities.isEmpty()){
                 for(String dateEntity : dateEntities){
-                    System.out.println(dateEntity);
                     listOfEntitiesFound.add(dateEntity);
                 }
             }
         }
-        System.out.println(listOfEntitiesFound.size());
+        System.out.println("Número de fechas encontradas con fastNER: " + listOfEntitiesFound.size());
         long endTime = System.nanoTime();
-        System.out.println("Duración fastNER: " + (endTime - startTime) / 1e6 + " ms");
+        System.out.println("Duración búsqueda de fechas con fastNER: " + (endTime - startTime) / 1e6 + " ms");
         return printList(listOfEntitiesFound);
     }
 
