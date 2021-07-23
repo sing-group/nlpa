@@ -66,12 +66,14 @@ public class DateRegExpr {
     public String testingRegExpressionTime (String lang, String textToTest){
         long startTime = System.nanoTime();
         List<String> dateEntitiesFound = new ArrayList<>();
-        List<String> dateFormated = matchDatesWithRegExpressionKey(getKeysSorted(), lang);
-        if (!dateFormated.isEmpty()){
-            List<String> dateEntities= testPatternRegExp(dateFormated,textToTest);
-            if (!dateEntities.isEmpty()){
-                for (String dateEntity : dateEntities){
-                    dateEntitiesFound.add(dateEntity);
+        if (!keysToMatchRegExprEs.isEmpty() && !keysToMatchRegExprEn.isEmpty() && !listDatesToMatch.isEmpty()){
+            List<String> dateFormated = matchDatesWithRegExpressionKey(getKeysSorted(), lang);
+            if (!dateFormated.isEmpty()){
+                List<String> dateEntities= testPatternRegExp(dateFormated,textToTest);
+                if (!dateEntities.isEmpty()){
+                    for (String dateEntity : dateEntities){
+                        dateEntitiesFound.add(dateEntity);
+                    }
                 }
             }
         }

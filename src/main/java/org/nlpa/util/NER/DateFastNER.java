@@ -50,14 +50,16 @@ public class DateFastNER {
 
     public String testingFastNERTime(String textToTest) {
         long startTime = System.nanoTime();
-        List<String> listOfEntitiesFound = new ArrayList<>();
         textToTest = formatString(textToTest);
-        List<String> fastNERRules = matchDatesWithFastNERRules();
-        for (String rule : fastNERRules) {
-            List<String> dateEntities = findWithFastNERToken(rule, textToTest);
-            if (!dateEntities.isEmpty()){
-                for(String dateEntity : dateEntities){
-                    listOfEntitiesFound.add(dateEntity);
+        List<String> listOfEntitiesFound = new ArrayList<>();
+        if (!dateFormatDictionary.isEmpty() && !listOfDatesToRecognize.isEmpty()){
+            List<String> fastNERRules = matchDatesWithFastNERRules();
+            for (String rule : fastNERRules) {
+                List<String> dateEntities = findWithFastNERToken(rule, textToTest);
+                if (!dateEntities.isEmpty()){
+                    for(String dateEntity : dateEntities){
+                        listOfEntitiesFound.add(dateEntity);
+                    }
                 }
             }
         }

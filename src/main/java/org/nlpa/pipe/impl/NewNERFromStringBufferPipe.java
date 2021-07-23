@@ -5,20 +5,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.Pipe;
-import org.bdp4j.pipe.PipeParameter;
 import org.bdp4j.pipe.PropertyComputingPipe;
 import org.bdp4j.types.Instance;
 import org.bdp4j.util.EBoolean;
-import org.checkerframework.checker.units.qual.C;
 import org.nlpa.util.NER.CurrencyFastNER;
 import org.nlpa.util.NER.CurrencyRegExpr;
 import org.nlpa.util.NER.DateFastNER;
 import org.nlpa.util.NER.DateRegExpr;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import static org.nlpa.pipe.impl.GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY;
 
@@ -116,22 +111,22 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
                 DateFastNER dateEntity = new DateFastNER();
                 value = dateEntity.testingFastNERTime(data);
             }
-            carrier.setProperty("FASTNERDATE",value);
+            carrier.setProperty("FASTNERDATE","Entities found with FASTNERDATE:\n" + value + "\n");
             if(regExpDate){
                 DateRegExpr regExpressionForDates = new DateRegExpr();
                 value = regExpressionForDates.testingRegExpressionTime(lang, data);
             }
-            carrier.setProperty("REGEXPNERDATE",value);
+            carrier.setProperty("REGEXPNERDATE","Entities found with REGEXPNERDATE:\n" + value + "\n");
             if(fastNERCurrency){
                 CurrencyFastNER currency = new CurrencyFastNER();
                 value = currency.findAllCurrenciesAsociatedToANumber(lang, data);
             }
-            carrier.setProperty("FASTNERCURRENCY",value);;
+            carrier.setProperty("FASTNERCURRENCY","Entities found with FASTNERCURRENCY:\n" + value + "\n");;
             if(regExpCurrency){
-                CurrencyFastNER currency = new CurrencyFastNER();
-                value = currency.findAllCurrenciesAsociatedToANumber(lang, data);
+                CurrencyRegExpr currency = new CurrencyRegExpr();
+                value = currency.findAllCurrencyAsociatedToANumberEntities(lang, data);
             }
-            carrier.setProperty("REGEXPNERCURRENCY",value);
+            carrier.setProperty("REGEXPNERCURRENCY","Entities found with REGEXPNERCURRENCY:\n" + value + "\n");
         }else{
             logger.error("Data it's not a Stringbuffer " + carrier.getName() + " it's a " + carrier.getData().getClass().getName());
         }

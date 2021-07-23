@@ -66,76 +66,91 @@ public class CurrencyFastNER {
             listOfNames = allCurrencyEntitiesInText.get("CurrencyNameEs");
             cardinalNumberEntitiesFoundInText = currencyRegExpr.findAllCardinalNumberEsEntities(textToFindAllCurrencies);
         }
-        for (String currency : listOfNames){
-            for (String number : numberEntitiesFoundInText){
-                String rule = number + " " + currency;
-                String entityFound = findWithFastCNER(rule,textToFindAllCurrencies);
-                if (!entityFound.isEmpty()){
-                    currencyEntitiesAsociatedToANumber.add(entityFound);
-                    if (!currencyAsociatedToANumber){
-                        currencyAsociatedToANumber = true;
+        if (!listOfNames.isEmpty()){
+            for (String currency : listOfNames){
+                if (!numberEntitiesFoundInText.isEmpty()){
+                    for (String number : numberEntitiesFoundInText){
+                        String rule = number + " " + currency;
+                        String entityFound = findWithFastCNER(rule,textToFindAllCurrencies);
+                        if (!entityFound.isEmpty()){
+                            currencyEntitiesAsociatedToANumber.add(entityFound);
+                            if (!currencyAsociatedToANumber){
+                                currencyAsociatedToANumber = true;
+                            }
+                        }
                     }
                 }
-            }
-            for (String cardinal : cardinalNumberEntitiesFoundInText){
-                String rule = cardinal + " " + currency;
-                String entityFound = findWithFastCNER(rule,textToFindAllCurrencies);
-                if (!entityFound.isEmpty()){
-                    currencyEntitiesAsociatedToANumber.add(entityFound);
-                    if (!currencyAsociatedToANumber){
-                        currencyAsociatedToANumber = true;
+                if (!cardinalNumberEntitiesFoundInText.isEmpty()){
+                    for (String cardinal : cardinalNumberEntitiesFoundInText){
+                        String rule = cardinal + " " + currency;
+                        String entityFound = findWithFastCNER(rule,textToFindAllCurrencies);
+                        if (!entityFound.isEmpty()){
+                            currencyEntitiesAsociatedToANumber.add(entityFound);
+                            if (!currencyAsociatedToANumber){
+                                currencyAsociatedToANumber = true;
+                            }
+                        }
                     }
                 }
+
+                if (!currencyAsociatedToANumber){
+                    //En el caso de que no esté asociado a ningun numero interesa igualmente guardar la moneda encontrada
+                    currencyEntitiesAsociatedToANumber.add(currency);
+                }else {currencyAsociatedToANumber = false;}
             }
-            if (!currencyAsociatedToANumber){
-                //En el caso de que no esté asociado a ningun numero interesa igualmente guardar la moneda encontrada
-                currencyEntitiesAsociatedToANumber.add(currency);
-            }else {currencyAsociatedToANumber = false;}
         }
+
         currencyAsociatedToANumber = false;
         List<String> listOfIsoAndSymbols = allCurrencyEntitiesInText.get("IsoAndSymbols");
-        for (String currency : listOfIsoAndSymbols) {
-            for (String number : numberEntitiesFoundInText) {
-                String rule = number + " " + currency;
-                String entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
-                if (!entityFound.isEmpty()) {
-                    currencyEntitiesAsociatedToANumber.add(entityFound);
-                    if (!currencyAsociatedToANumber) {
-                        currencyAsociatedToANumber = true;
+        if (!listOfIsoAndSymbols.isEmpty()){
+            for (String currency : listOfIsoAndSymbols) {
+                if (!numberEntitiesFoundInText.isEmpty()){
+                    for (String number : numberEntitiesFoundInText) {
+                        String rule = number + " " + currency;
+                        String entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
+                        if (!entityFound.isEmpty()) {
+                            currencyEntitiesAsociatedToANumber.add(entityFound);
+                            if (!currencyAsociatedToANumber) {
+                                currencyAsociatedToANumber = true;
+                            }
+                        }
+                        rule =  currency + " " + number;
+                        entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
+                        if (!entityFound.isEmpty()) {
+                            currencyEntitiesAsociatedToANumber.add(entityFound);
+                            if (!currencyAsociatedToANumber) {
+                                currencyAsociatedToANumber = true;
+                            }
+                        }
                     }
                 }
-                rule =  currency + " " + number;
-                entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
-                if (!entityFound.isEmpty()) {
-                    currencyEntitiesAsociatedToANumber.add(entityFound);
-                    if (!currencyAsociatedToANumber) {
-                        currencyAsociatedToANumber = true;
+                if (!cardinalNumberEntitiesFoundInText.isEmpty()){
+                    for (String cardinal : cardinalNumberEntitiesFoundInText) {
+                        String rule = cardinal + currency;
+                        String entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
+                        if (!entityFound.isEmpty()) {
+                            currencyEntitiesAsociatedToANumber.add(entityFound);
+                            if (!currencyAsociatedToANumber) {
+                                currencyAsociatedToANumber = true;
+                            }
+                        }
+                        rule =  currency + " " + cardinal;
+                        entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
+                        if (!entityFound.isEmpty()) {
+                            currencyEntitiesAsociatedToANumber.add(entityFound);
+                            if (!currencyAsociatedToANumber) {
+                                currencyAsociatedToANumber = true;
+                            }
+                        }
                     }
                 }
+                if (!currencyAsociatedToANumber) {
+                    //En el caso de que no esté asociado a ningun numero interesa igualmente guardar la moneda encontrada
+                    currencyEntitiesAsociatedToANumber.add(currency);
+                }else {currencyAsociatedToANumber = false;}
             }
-            for (String cardinal : cardinalNumberEntitiesFoundInText) {
-                String rule = cardinal + currency;
-                String entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
-                if (!entityFound.isEmpty()) {
-                    currencyEntitiesAsociatedToANumber.add(entityFound);
-                    if (!currencyAsociatedToANumber) {
-                        currencyAsociatedToANumber = true;
-                    }
-                }
-                rule =  currency + " " + cardinal;
-                entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
-                if (!entityFound.isEmpty()) {
-                    currencyEntitiesAsociatedToANumber.add(entityFound);
-                    if (!currencyAsociatedToANumber) {
-                        currencyAsociatedToANumber = true;
-                    }
-                }
-            }
-            if (!currencyAsociatedToANumber) {
-                //En el caso de que no esté asociado a ningun numero interesa igualmente guardar la moneda encontrada
-                currencyEntitiesAsociatedToANumber.add(currency);
-            }else {currencyAsociatedToANumber = false;}
         }
+
         System.out.println("Número de entidades de dinero encontrados con fastNER: " + currencyEntitiesAsociatedToANumber.size());
         long endTime = System.nanoTime();
         System.out.println("Duración búsqueda de entidades de dinero con fastNER: " + (endTime - startTime) / 1e6 + " ms");
