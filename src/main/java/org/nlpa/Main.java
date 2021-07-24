@@ -27,6 +27,7 @@ import org.bdp4j.pipe.AbstractPipe;
 import org.bdp4j.pipe.SerialPipes;
 import org.bdp4j.types.Instance;
 import org.bdp4j.util.InstanceListUtils;
+import org.nlpa.iu.MainUI;
 import org.nlpa.pipe.impl.*;
 import org.nlpa.util.textextractor.EMLTextExtractor;
 
@@ -66,7 +67,8 @@ public class Main {
     /*
      * The main method for the running application
      */
-    public static void main(String[] args) {
+
+    public static void normalCode (String[] args){
         System.out.println("Program started");
         if (args.length == 0) {
             System.out.println("Selecciona el texto para crear las instancias");
@@ -119,7 +121,9 @@ public class Main {
                     ? (i.getData().toString().substring(0, 10) + "...")
                     : i.getData().toString()));
         }
-
+    }
+    public static void main(String[] args) {
+        MainUI.initUI();
     }
 
     public static void readList (List<String> list){

@@ -76,7 +76,8 @@ public class AppCore {
      */
     public static Collection<Instance> findEntitiesInFiles() {
         checkDependencies();
-        instances = InstanceListUtils.dropInvalid(instances);
+        List<Instance> newInstances = new ArrayList<>(InstanceListUtils.dropInvalid(instances));
+        instances.clear();
 
         // Create the output directory if it doesn't exist
         File outputDirectory = new File("./output");
@@ -84,7 +85,7 @@ public class AppCore {
             outputDirectory.mkdir();
         }
 
-        return p.pipeAll(instances);
+        return p.pipeAll(newInstances);
     }
 
     public static void generateInstances(String testDir) {
