@@ -16,12 +16,7 @@ public class MainUI {
     private JFrame frame;
     private File selectedFolder = null;
 
-
-
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
+    public static void initUI (){
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -33,7 +28,6 @@ public class MainUI {
             }
         });
     }
-
 
     public MainUI() {
         initialize();
