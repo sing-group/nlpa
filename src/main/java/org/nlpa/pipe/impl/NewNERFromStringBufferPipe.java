@@ -24,6 +24,8 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
     private String langProp = DEFAULT_LANG_PROPERTY;
     List<String> entityTypes = null;
 
+    //Atributos por defecto del Pipe, en este caso todos los atributos están a true para que se haga la
+    //búsqueda de entidades de todas las formas creadas
     public static final String DEFAULT_FAST_NER_DATE = "true";
     public static final String DEFAULT_FAST_NER_CURRENCY = "true";
     public static final String DEFAULT_REGEXP_NER_DATE = "true";
@@ -37,10 +39,13 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
 
     private static final Logger logger = LogManager.getLogger();
 
+    //Determina el tipo de input para el atributo de datos de las Instancias después de ser
+    //procesado
     @Override
     public Class<?> getInputType() {
         return StringBuffer.class;
     }
+    //Determina el tipo de datos esperado en el atributo de datos de las instancias después del procesamiento
     @Override
     public Class<?> getOutputType() {
         return StringBuffer.class;
@@ -86,11 +91,13 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
         this.regExpCurrency = regExpCurrency;
     }
 
+    //Constructor que utiliza los valores por defecto en el caso de que no se le pase nada por parámetro
     public NewNERFromStringBufferPipe() {
         this(DEFAULT_LANG_PROPERTY ,EBoolean.getBoolean(DEFAULT_FAST_NER_DATE), EBoolean.getBoolean(DEFAULT_FAST_NER_CURRENCY),
                 EBoolean.getBoolean(DEFAULT_REGEXP_NER_DATE), EBoolean.getBoolean(DEFAULT_REGEXP_NER_CURRENCY));
     }
 
+    //Constructor que genera el Pipe con los atributos que se le pasan por parámetro
     public NewNERFromStringBufferPipe(String langProp, boolean fastNERDate, boolean fastNERCurrency, boolean regExpDate, boolean regExpCurrency) {
         super(new Class<?>[] { GuessLanguageFromStringBufferPipe.class }, new Class<?>[0]);
         this.langProp = langProp;
@@ -100,6 +107,9 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
         this.regExpCurrency = fastNERDate;
     }
 
+    //Pipe que se encarga de llamar a las diferentes clases creadas para detectar las diferentes entidades
+    //y almacenar los resultados que se añadiran a las propiedades del Pipe, sólo en el caso de que se le pase
+    //un StringBuffer como parámetro, sino devuelve un error%
     @Override
     public Instance pipe (Instance carrier){
         if (carrier.getData() instanceof StringBuffer){
@@ -109,12 +119,12 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
 
             if(fastNERDate){
                 DateFastNER dateEntity = new DateFastNER();
-                value = dateEntity.testingFastNERTime(data);
+                value = dateEntity.datesWithFastNER(data);
             }
             carrier.setProperty("FASTNERDATE","Entities found with FASTNERDATE:\n" + value + "\n");
             if(regExpDate){
                 DateRegExpr regExpressionForDates = new DateRegExpr();
-                value = regExpressionForDates.testingRegExpressionTime(lang, data);
+                value = regExpressionForDates.datesWithRegularExpressions(lang, data);
             }
             carrier.setProperty("REGEXPNERDATE","Entities found with REGEXPNERDATE:\n" + value + "\n");
             if(fastNERCurrency){

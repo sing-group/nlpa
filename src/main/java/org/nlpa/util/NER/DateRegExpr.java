@@ -12,6 +12,8 @@ public class DateRegExpr {
     private static final List<String> listDatesToMatch = new ArrayList<>();
     public DateRegExpr() {
     }
+
+    //Diccionario de claves con sus correspondientes valores en español para el reconocimiento de fechas con expresiones regulares
     static{
         try{
             InputStream is = DateFastNER.class.getResourceAsStream("/regexpressionfordates-json/regExpMatcher.json");
@@ -26,6 +28,8 @@ public class DateRegExpr {
         e.printStackTrace();
         }
     }
+
+    //Diccionario con los formatos de fecha a reconocer con expresiones regulares
     static{
         try{
             InputStream is = DateFastNER.class.getResourceAsStream("/regexpressionfordates-json/datesToMatch.json");;
@@ -39,6 +43,8 @@ public class DateRegExpr {
             e.printStackTrace();
         }
     }
+
+    //Diccionario de claves con sus correspondientes valores en inglés para el reconocimiento de fechas con expresiones regulares
     static{
         try{
             InputStream is = DateFastNER.class.getResourceAsStream("/regexpressionfordates-json/regExpMatcherEn.json");
@@ -53,6 +59,11 @@ public class DateRegExpr {
             e.printStackTrace();
         }
     }
+
+    //Método que devuelve la lista de claves del diccionario de claves ordenadas según el número de letras que contenga la clave,
+    //siendo las de mayor número de letras las primeras.
+    //Nótese que este método utiliza las claves del diccionario en español, en éste caso no supone un problema ya que las claves
+    //del diccionario en inglés y español son las mismas.
     public List<String> getKeysSorted (){
         List<String> listOfKeys = new ArrayList<>();
         if(!keysToMatchRegExprEs.isEmpty()){
@@ -63,7 +74,9 @@ public class DateRegExpr {
         return sortKeys(listOfKeys);
     }
 
-    public String testingRegExpressionTime (String lang, String textToTest){
+    //Método que tiene como parámetro el texto y el idioma de éste, por lo que dependiendo del idioma buscará las entidades de fecha
+    //en un idioma u otro, devolviendo como resultado una cadena de texto de las entidades encontradas separadas por un salto de línea
+    public String datesWithRegularExpressions(String lang, String textToTest){
         long startTime = System.nanoTime();
         List<String> dateEntitiesFound = new ArrayList<>();
         if (!keysToMatchRegExprEs.isEmpty() && !keysToMatchRegExprEn.isEmpty() && !listDatesToMatch.isEmpty()){
@@ -84,6 +97,8 @@ public class DateRegExpr {
         return printList(dateEntitiesFound);
     }
 
+    //Método que se encarga de hacer matching entre el diccionario de claves de fecha y las fechas que se quieren detectar en el texto. Para ello
+    //se le pasa por parámetro el idioma para que éste matching se haga con los valores correspondientes a dicho idioma
     public List<String> matchDatesWithRegExpressionKey(List<String> keysSorted, String lang){
         List<String> listOfDatesMatchedWithRegExp = new ArrayList<>();
         if (!keysSorted.isEmpty() && (!keysToMatchRegExprEs.isEmpty() || !keysToMatchRegExprEn.isEmpty()) && !listDatesToMatch.isEmpty()){
@@ -108,6 +123,8 @@ public class DateRegExpr {
         return listOfDatesMatchedWithRegExp;
     }
 
+    //Método que recibe una lista de patrones y un texto por parámetro. Se encarga de comprobar la existencia de cada uno de los patrones
+    //en el texto, devolviendo una lista con las entidades que se han encontrado que cumplen con dichos patrones
     public List<String> testPatternRegExp (List<String> listRegExp, String textToTry){
         List<String> listOfEntitiesFound = new ArrayList<>();
         if (!listRegExp.isEmpty()){
@@ -122,6 +139,8 @@ public class DateRegExpr {
         return listOfEntitiesFound;
     }
 
+    //Método que a partir de una lista de cadenas de texto devuelve una cadena de texto con cada una de los componentes de dicha lista
+    //separados por saltos de línea
     public String printList (List<String> listOfCardinals){
         StringBuilder sb = new StringBuilder();
         for (String string : listOfCardinals){
@@ -130,6 +149,8 @@ public class DateRegExpr {
         return sb.toString();
     }
 
+    //Método que se encarga de ordenar una lista de cadenas de texto por la cantidad de letras que contenga cada una de ellas
+    //siendo las de mayor tamaño las primeras en introducirse en la nueva lista
     public List<String> sortKeys(List<String> keys) {
         Collections.sort(keys, new Comparator<String>() {
             @Override

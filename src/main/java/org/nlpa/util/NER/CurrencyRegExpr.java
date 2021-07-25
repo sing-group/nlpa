@@ -2,12 +2,13 @@ package org.nlpa.util.NER;
 
 import org.apache.commons.lang3.StringUtils;
 
-import javax.json.*;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +16,9 @@ public class CurrencyRegExpr {
     private static HashMap<String,String> regularExpresionForCurrencyMap = new HashMap<>();
     public CurrencyRegExpr(){
     }
+
+    //Diccionario de claves con sus valores correspondientes para el reconocimiento de monedas y de monedas asociadas a un número o
+    //a un número cardinal
     static{
         try{
             InputStream is = DateFastNER.class.getResourceAsStream("/currency-json/regExprForCurrency.json");
@@ -30,6 +34,8 @@ public class CurrencyRegExpr {
         }
     }
 
+    //Método que busca todos los números que se encuentren en el texto que se le pasa por parámetro, devolviendo una lista
+    //con los que ha encontrado
     public List<String> findAllNumberEntities (String textToFindEntities){
         List<String> numberEntitiesFound = new ArrayList<>();
         Pattern pattern = Pattern.compile(regularExpresionForCurrencyMap.get("Numbers"));
@@ -43,6 +49,8 @@ public class CurrencyRegExpr {
         return numberEntitiesFound;
     }
 
+    //Método que busca todos los números cardinales en español en el texto que se le pasa por parámetro, devolviendo una lista
+    //con los que ha encontrado
     public List<String> findAllCardinalNumberEsEntities (String textToFindEntities){
         List<String> cardinalNumberEntitiesFound = new ArrayList<>();
         Pattern pattern = Pattern.compile(regularExpresionForCurrencyMap.get("CardinalNumberEs"));
@@ -55,6 +63,9 @@ public class CurrencyRegExpr {
         }
         return cardinalNumberEntitiesFound;
     }
+
+    //Método que busca todos los números cardinales en inglés en el texto que se le pasa por parámetro, devolviendo una lista
+    //con los que ha encontrado
     public List<String> findAllCardinalNumberEnEntities (String textToFindEntities){
         List<String> cardinalNumberEntitiesFound = new ArrayList<>();
         Pattern pattern = Pattern.compile(regularExpresionForCurrencyMap.get("CardinalNumberEn"));
@@ -68,6 +79,8 @@ public class CurrencyRegExpr {
         return cardinalNumberEntitiesFound;
     }
 
+    //Método que busca todos los nombres de monedas en español en el texto que se le pasa por parámetro, devolviendo una lista
+    //con los que ha encontrado
     public List<String> findAllCurrencyNameEsEntities (String textToFindEntities){
         List<String> currencyNameEntitiesFound = new ArrayList<>();
         String namesEs = StringUtils.stripAccents(regularExpresionForCurrencyMap.get("CurrencyNameEs"));
@@ -90,6 +103,8 @@ public class CurrencyRegExpr {
         return currencyNameEntitiesFound;
     }
 
+    //Método que busca todos los nombres de monedas en inglés en el texto que se le pasa por parámetro, devolviendo una lista
+    //con los que ha encontrado
     public List<String> findAllCurrencyNameEnEntities (String textToFindEntities){
         long startTime = System.nanoTime();
         List<String> currencyNameEntitiesFound = new ArrayList<>();
@@ -116,6 +131,8 @@ public class CurrencyRegExpr {
         return currencyNameEntitiesFound;
     }
 
+    //Método que busca todos los ISO y símbolos de monedas en el texto que se le pasa por parámetro, devolviendo una lista
+    //con los que ha encontrado
     public List<String> findAllCurrencyIsoAndSymbolEntities (String textToFindEntities){
         List<String> currencyISOandSymbolEntitiesFound = new ArrayList<>();
         Pattern pattern = Pattern.compile(regularExpresionForCurrencyMap.get("CurrencyISOandSymbol"));
@@ -128,6 +145,10 @@ public class CurrencyRegExpr {
         }
         return currencyISOandSymbolEntitiesFound;
     }
+
+    //Método al que se le pasa un idioma y un texto por parámetro por lo que dependiendo del idioma buscará las entidades de monedas y
+    //monedas asociadas a un número o a un número cardinal, devolviendo una lista con las entidades que ha encontrado en el texto.
+    //Para ello expresiones regulares
     public String findAllCurrencyAsociatedToANumberEntities (String lang, String textToFindEntities){
         long startTime = System.nanoTime();
         List<String> currencyAssociatedToANumberEntities = new ArrayList<>();
@@ -226,6 +247,7 @@ public class CurrencyRegExpr {
         return printList(currencyAssociatedToANumberEntities);
     }
 
+    //Método que se encarga de formatear la cadena de texto que se pasa por parámetro
     private String formatString (String stringToFormat){
         stringToFormat = StringUtils.stripAccents(stringToFormat);
         stringToFormat = stringToFormat.trim();
@@ -236,6 +258,8 @@ public class CurrencyRegExpr {
         return stringToFormat;
     }
 
+    //Método que a partir de una lista de cadenas de texto devuelve una cadena de texto con cada una de los componentes de dicha lista
+    //separados por saltos de línea
     public String printList (List<String> listOfCardinals){
         StringBuilder sb = new StringBuilder();
         for (String string : listOfCardinals){

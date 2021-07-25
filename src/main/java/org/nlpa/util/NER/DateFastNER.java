@@ -19,6 +19,8 @@ public class DateFastNER {
     private static HashMap<String, List<String>> mapOfFastNERRules = new HashMap<>();
     private static List<String> fastNERRules = new ArrayList<>();
 
+    //Crea el diccionario de las claves de fecha con su respectivo valor correspondiente los cuales se introducen en un HashMap
+    //para facilitar la búsqueda a través de las claves
     static {
         try {
             InputStream is = DateFastNER.class.getResourceAsStream("/fastnerrulesfordates-json/dates.json");
@@ -34,6 +36,7 @@ public class DateFastNER {
         }
     }
 
+    //Asigna los valores del json a una lista, estos valores contienen los tipos de fecha que va a detectar FastNER
     static {
         try {
             InputStream is = DateFastNER.class.getResourceAsStream("/fastnerrulesfordates-json/DateFormat.json");
@@ -48,7 +51,8 @@ public class DateFastNER {
         }
     }
 
-    public String testingFastNERTime(String textToTest) {
+    //Método que devuelve las entidades de fecha reconocidas por FastNER en un texto que se pasa por parámetro
+    public String datesWithFastNER(String textToTest) {
         long startTime = System.nanoTime();
         textToTest = formatString(textToTest);
         List<String> listOfEntitiesFound = new ArrayList<>();
@@ -69,6 +73,8 @@ public class DateFastNER {
         return printList(listOfEntitiesFound);
     }
 
+    //Método que se encarga de hacer matching del diccionario de claves de fecha con el diccionario de tipos de fecha a reconocer
+    //para crear las reglas que ejecutará FastNER
     public List<String> matchDatesWithFastNERRules() {
         List<String> listOfFastNERRulesForDates = new ArrayList<>();
         for (String i : dateFormatDictionary.keySet()) {
@@ -91,7 +97,7 @@ public class DateFastNER {
         return listOfFastNERRulesForDates;
     }
 
-    //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro, puede devolver una lista con los elementos encontrados o un string vacio
+    //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro, puede devolver una lista con los elementos encontrados
     public List<String> findWithFastNERToken(String rule, String textToFindTokens) {
         FastNER fastNER = new FastNER(rule);
         ArrayList<Span> tokens = SimpleParser.tokenizeDecimalSmartWSentences(textToFindTokens, true).get(0);
@@ -106,6 +112,7 @@ public class DateFastNER {
         return result;
     }
 
+    //Método que se encarga de formatear la cadena de texto que se pasa por parámetro
     private String formatString(String stringToFormat) {
         stringToFormat = StringUtils.stripAccents(stringToFormat);
         stringToFormat = stringToFormat.toLowerCase();
@@ -117,6 +124,8 @@ public class DateFastNER {
         return stringToFormat;
     }
 
+    //Método que a partir de una lista de cadenas de texto devuelve una cadena de texto con cada una de los componentes de dicha lista
+    //separados por saltos de línea
     public String printList (List<String> listOfCardinals){
         StringBuilder sb = new StringBuilder();
         for (String string : listOfCardinals){
@@ -125,6 +134,8 @@ public class DateFastNER {
         return sb.toString();
     }
 
+    //Método que se encarga de ordenar una lista de cadenas de texto por la cantidad de letras que contenga cada una de ellas
+    //siendo las de mayor tamaño las primeras en introducirse en la nueva lista
     public List<String> sortKeys(List<String> keys) {
         Collections.sort(keys, new Comparator<String>() {
             @Override

@@ -5,7 +5,6 @@ import edu.utah.bmi.nlp.core.SimpleParser;
 import edu.utah.bmi.nlp.core.Span;
 import edu.utah.bmi.nlp.fastcner.FastCNER;
 import edu.utah.bmi.nlp.fastner.FastNER;
-import org.checkerframework.checker.units.qual.C;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -16,8 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static edu.utah.bmi.nlp.core.DeterminantValueSet.Determinants.ACTUAL;
 
@@ -26,6 +23,7 @@ public class CurrencyFastNER {
     public CurrencyFastNER() {
     }
 
+    //Diccionario con las claves y valores que se van a utilizar para el reconocimiento de las monedas
     static {
         try {
 
@@ -48,6 +46,9 @@ public class CurrencyFastNER {
         }
     }
 
+    //Método al que se le pasa un idioma y un texto por parámetro por lo que dependiendo del idioma buscará las entidades de monedas y
+    //monedas asociadas a un número o a un número cardinal, devolviendo una lista con las entidades que ha encontrado en el texto.
+    //Utiliza FastNER para las monedas y expresiones regulares para los números y números cardinales
     public String findAllCurrenciesAsociatedToANumber (String lang ,String textToFindAllCurrencies){
         long startTime = System.nanoTime();
         List<String> currencyEntitiesAsociatedToANumber = new ArrayList<>();
@@ -158,7 +159,7 @@ public class CurrencyFastNER {
         return printList(currencyEntitiesAsociatedToANumber);
     }
 
-
+    //Método que se encarga de encontrar las entidades de monedas en un texto que se le pasa por parámetro
     public HashMap<String, List<String>> findAllCurrencyEntities (String textToGetCurrencies){
         HashMap<String, List<String>> mapOfCurrencyElementsFound = new HashMap<>();
         List<String> listOfCurrencyNamesEs = currencyEntities.get("CurrencyNameEs");
@@ -179,6 +180,9 @@ public class CurrencyFastNER {
 
     }
 
+    //Método que se encarga de crear las reglas de monedas, también hace la llamada al método de FastNER token que devolverá
+    //la entidad en caso de que se encuentre en el texto que se le pasa por parámetro. Por último devuelve una lista con las
+    //entidades reconocidas por FastNER
     public List<String> getCurrencyEntitiesInText (List<String> currencyEntities, String textToGetCurrencies){
         List<String> entitiesFound = new ArrayList<>();
         if (!currencyEntities.isEmpty()){
@@ -197,6 +201,9 @@ public class CurrencyFastNER {
         return entitiesFound;
     }
 
+    //Método que se encarga de crear las reglas de monedas, también hace la llamada al método de FastCNER que devolverá
+    //la entidad en caso de que se encuentre en el texto que se le pasa por parámetro. Por último devuelve una lista con las
+    //entidades reconocidas por FastNER
     public List<String> getCurrencyEntitiesInTextWithFastCNER (List<String> currencyEntities, String textToGetCurrencies){
         List<String> entitiesFound = new ArrayList<>();
         if (!currencyEntities.isEmpty()){
@@ -214,7 +221,8 @@ public class CurrencyFastNER {
         return entitiesFound;
     }
 
-    //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro, puede devolver una lista con los elementos encontrados o un string vacio
+    //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro con FastNER Token y devuelve una cadena
+    //de texto con las entidades encontradas separadas por saltos de línea a partir de una regla en el texto que se le pasa por parámetro
     public String findWithFastNERToken (String rule, String textToFindTokens){
         FastNER fastNER = new FastNER(rule);
         ArrayList<Span> tokens = SimpleParser.tokenizeDecimalSmartWSentences(textToFindTokens, true).get(0);
@@ -228,7 +236,9 @@ public class CurrencyFastNER {
         }
         return printList(result);
     }
-    //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro, puede devolver una lista con los elementos encontrados o un string vacio
+
+    //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro con FastNER Token y devuelve una lista
+    //de las entidades que ha encontrado a partir de una regla en el texto que se le pasa por parámetro
     public List<String> findWithFastNERTokenList (String rule, String textToFindTokens){
         FastNER fastNER = new FastNER(rule);
         ArrayList<Span> tokens = SimpleParser.tokenizeDecimalSmartWSentences(textToFindTokens, true).get(0);
@@ -245,7 +255,8 @@ public class CurrencyFastNER {
         return result;
     }
 
-    //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro, puede devolver un String con los elementos encontrados o un string vacio
+    //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro con FastCNER y devuelve una cadena
+    //de texto con las entidades encontradas separadas por saltos de línea a partir de una regla en el texto que se le pasa por parámetro
     public String findWithFastCNER(String rule, String textToFindTokens){
         HashMap<Integer, NERRule> rules = new HashMap<>();
         rules.put(0, new NERRule(0, rule, "Currency", 0.1, ACTUAL));
@@ -261,7 +272,9 @@ public class CurrencyFastNER {
         }
         return printList(resultList);
     }
-    //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro, puede devolver un String con los elementos encontrados o un string vacio
+
+    //Método que ejecuta la busqueda de la regla en el texto que se le pasa por parametro con FastCNER y devuelve una lista
+    //de las entidades que ha encontrado a partir de una regla en el texto que se le pasa por parámetro
     public List<String> findWithFastCNERList (String rule, String textToFindTokens){
         HashMap<Integer, NERRule> rules = new HashMap<>();
         rules.put(0, new NERRule(0, rule, "Currency", 0.1, ACTUAL));
@@ -280,6 +293,7 @@ public class CurrencyFastNER {
         return resultList;
     }
 
+    //Método que se encarga de formatear la cadena de texto que se pasa por parámetro
     private String formatString (String stringToFormat){
         stringToFormat = stringToFormat.trim();
         stringToFormat = stringToFormat.replaceAll("\r", " ");
@@ -289,6 +303,8 @@ public class CurrencyFastNER {
         return stringToFormat;
     }
 
+    //Método que a partir de una lista de cadenas de texto devuelve una cadena de texto con cada una de los componentes de dicha lista
+    //separados por saltos de línea
     public String printList (List<String> listOfCardinals){
         StringBuilder sb = new StringBuilder();
         for (String string : listOfCardinals){

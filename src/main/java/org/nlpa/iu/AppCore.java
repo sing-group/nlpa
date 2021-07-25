@@ -19,16 +19,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class AppCore {
-    /**
-     * A logger for logging purposes
-     */
-    private static final Logger logger = LogManager.getLogger(Main.class);
 
-    /**
-     * List of instances that are being processed
-     */
+    private static final Logger logger = LogManager.getLogger(Main.class);
+    //Lista de instancias que se están procesando
     private static List<Instance> instances = new ArrayList<>();
 
+    //Declaración estática del AbstractPipe que contendrá todos los Pipes que se van a ejecutar
     static AbstractPipe p = new SerialPipes(new AbstractPipe[]{
             new TargetAssigningFromPathPipe(),
             new StoreFileExtensionPipe(),
@@ -39,6 +35,7 @@ public class AppCore {
             new NewNERFromStringBufferPipe(GuessLanguageFromStringBufferPipe.DEFAULT_LANG_PROPERTY,true, true, true, true),
     });
 
+    //Comprueba que las dependencias se cumplen, sino sale del programa
     private static void checkDependencies() {
         if (!p.checkDependencies()) {
             System.out.println("Pipe dependencies are not satisfied");
@@ -47,39 +44,31 @@ public class AppCore {
             System.out.println("Pipe dependencies are satisfied");
         }
     }
-    private static void checkDependencies(AbstractPipe p) {
-        if (!p.checkDependencies()) {
-            System.out.println("Pipe dependencies are not satisfied");
-            System.exit(1);
-        } else {
-            System.out.println("Pipe dependencies are satisfied");
-        }
-    }
 
+    //Ejecuta los pipes del AbstractPipe creando una instancia nueva con el StringBuffer que se le pasa por parámetro y
+    //devolviendo una colección de instancias
     public static Collection<Instance> findEntitiesInString(StringBuffer str) {
         checkDependencies();
-        instances = new ArrayList<Instance>();
+        List<Instance> newInstances = new ArrayList<Instance>();
         Instance ins = new Instance(str, "entity", "NER", str);
-        instances.add(ins);
+        newInstances.add(ins);
 
-        // Create the output directory if it doesn't exist
+        //Crea el directorio output en el caso de que no exista
         File outputDirectory = new File("./output");
         if (!outputDirectory.exists()) {
             outputDirectory.mkdir();
         }
-        return p.pipeAll(instances);
+        return p.pipeAll(newInstances);
     }
 
-    /**
-     * Process the files within a folder
-     * @return the collection of instances after being processed by the pipes
-     */
+    //Ejecuta los pipes del AbstractPipe creando una nueva lista de instancias válidas que se han generado y
+    //devolviendo una colección de instancias
     public static Collection<Instance> findEntitiesInFiles() {
         checkDependencies();
         List<Instance> newInstances = new ArrayList<>(InstanceListUtils.dropInvalid(instances));
         instances.clear();
 
-        // Create the output directory if it doesn't exist
+        //Crea el directorio output en el caso de que no exista
         File outputDirectory = new File("./output");
         if (!outputDirectory.exists()) {
             outputDirectory.mkdir();
@@ -88,6 +77,7 @@ public class AppCore {
         return p.pipeAll(newInstances);
     }
 
+    //Genera instancias a partir de los archivos del directorio que se le pasa por parámetro
     public static void generateInstances(String testDir) {
         try {
             Files.walk(Paths.get(testDir))
@@ -99,10 +89,7 @@ public class AppCore {
         }
     }
 
-    /**
-     * Used to add a new instance on instances attribute when a new file is
-     * detected.
-     */
+    //Añade una nueva instancia a la lista de instancias cuando un nuevo archivo es detectado
     static class FileMng {
 
         static void visit(Path path) {

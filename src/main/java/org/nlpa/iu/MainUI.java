@@ -16,6 +16,7 @@ public class MainUI {
     private JFrame frame;
     private File selectedFolder = null;
 
+    //Inicializa la interfaz
     public static void initUI (){
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -33,6 +34,7 @@ public class MainUI {
         initialize();
     }
 
+    //Se encarga de crear todas las partes de la interfaz
     private void initialize() {
         JFrame.setDefaultLookAndFeelDecorated(true);
         frame = new JFrame();
@@ -313,6 +315,9 @@ public class MainUI {
         });
 
     }
+
+    //Método al que se le pasa una colección de instancias y que devolverá un string con los
+    //valores de las propiedades NER
     public String showInstanceResults(Collection<Instance> instances) {
         StringBuilder sb = new StringBuilder();
         for (Instance instance : instances){
@@ -324,6 +329,8 @@ public class MainUI {
         return sb.toString();
     }
 
+    //Método que escribe el texto que se le pasa por parámetro una cadena de texto la cual escribirá en un archivo
+    //output.txt en el directorio output si se ejecuta correctamente
     public Boolean WriteToFile (String text){
         if (text.isEmpty()){
             return false;
@@ -337,6 +344,8 @@ public class MainUI {
         }
         return true;
     }
+
+    //Método que permite selecciona un archivo o directorio a través de una interfaz
     private File showFileChooser() {
         JFileChooser fileChooser = new JFileChooser(".");
         fileChooser.setDialogTitle("Select one or multiple files:");
