@@ -166,8 +166,11 @@ public class CurrencyRegExpr {
             }else if (lang.equals("ES")) {
                 listCardinalNumberEntities  = findAllCardinalNumberEsEntities(textToFindEntities);
                 listCurrencyNameEntities  = findAllCurrencyNameEsEntities(textToFindEntities);
+            }else {
+                listCardinalNumberEntities  = findAllCardinalNumberEsEntities(textToFindEntities);
+                listCurrencyNameEntities  = findAllCurrencyNameEsEntities(textToFindEntities);
             }
-            List<String> listCurrencyISOandSymbolEntities  = findAllCurrencyIsoAndSymbolEntities(textToFindEntities);
+            String currencyISOandSymbolEntities  = regularExpresionForCurrencyMap.get("CurrencyISOandSymbol");
             if (!listCurrencyNameEntities.isEmpty()){
                 for (String currencyName : listCurrencyNameEntities){
                     if (!listNumberEntities.isEmpty()){
@@ -197,46 +200,40 @@ public class CurrencyRegExpr {
                 }
             }
 
-            if (!listCurrencyISOandSymbolEntities.isEmpty()){
-                currencyAsociatedToANumber = false;
-                for (String currencyISOandSymbol : listCurrencyISOandSymbolEntities){
-                    if (!listNumberEntities.isEmpty()){
-                        for (String number : listNumberEntities){
-                            pattern = Pattern.compile(number + "[ ]*" + currencyISOandSymbol);
-                            matcher = pattern.matcher(textToFindEntities);
-                            while (matcher.find()){
-                                currencyAsociatedToANumber = true;
-                                currencyAssociatedToANumberEntities.add(matcher.group());
-                            }
-                            pattern = Pattern.compile(currencyISOandSymbol + "[ ]*" + number);
-                            matcher = pattern.matcher(textToFindEntities);
-                            while (matcher.find()){
-                                currencyAsociatedToANumber = true;
-                                currencyAssociatedToANumberEntities.add(matcher.group());
-                            }
+            if (!currencyISOandSymbolEntities.isEmpty()){
+                pattern = Pattern.compile(currencyISOandSymbolEntities);
+                matcher = pattern.matcher(textToFindEntities);
+                while (matcher.find()){
+                    currencyAssociatedToANumberEntities.add(matcher.group());
+                }
+                if (!listNumberEntities.isEmpty()){
+                    for (String number : listNumberEntities){
+                        pattern = Pattern.compile(number + "[ ]*" + currencyISOandSymbolEntities);
+                        matcher = pattern.matcher(textToFindEntities);
+                        while (matcher.find()){
+                            currencyAssociatedToANumberEntities.add(matcher.group());
+                        }
+                        pattern = Pattern.compile(currencyISOandSymbolEntities + "[ ]*" + number);
+                        matcher = pattern.matcher(textToFindEntities);
+                        while (matcher.find()){
+                            currencyAssociatedToANumberEntities.add(matcher.group());
                         }
                     }
+                }
 
-                    if (!listCardinalNumberEntities.isEmpty()){
-                        for (String cardinalNumber : listCardinalNumberEntities){
-                            pattern = Pattern.compile(cardinalNumber + "[ ]*" + currencyISOandSymbol);
-                            matcher = pattern.matcher(textToFindEntities);
-                            while (matcher.find()){
-                                currencyAsociatedToANumber = true;
-                                currencyAssociatedToANumberEntities.add(matcher.group());
-                            }
-                            pattern = Pattern.compile(currencyISOandSymbol + "[ ]*" +  cardinalNumber);
-                            matcher = pattern.matcher(textToFindEntities);
-                            while (matcher.find()){
-                                currencyAsociatedToANumber = true;
-                                currencyAssociatedToANumberEntities.add(matcher.group());
-                            }
+                if (!listCardinalNumberEntities.isEmpty()){
+                    for (String cardinalNumber : listCardinalNumberEntities){
+                        pattern = Pattern.compile(cardinalNumber + "[ ]*" + currencyISOandSymbolEntities);
+                        matcher = pattern.matcher(textToFindEntities);
+                        while (matcher.find()){
+                            currencyAssociatedToANumberEntities.add(matcher.group());
+                        }
+                        pattern = Pattern.compile(currencyISOandSymbolEntities + "[ ]*" +  cardinalNumber);
+                        matcher = pattern.matcher(textToFindEntities);
+                        while (matcher.find()){
+                            currencyAssociatedToANumberEntities.add(matcher.group());
                         }
                     }
-
-                    if (!currencyAsociatedToANumber){
-                        currencyAssociatedToANumberEntities.add(currencyISOandSymbol);
-                    } else {currencyAsociatedToANumber = false;}
                 }
             }
 

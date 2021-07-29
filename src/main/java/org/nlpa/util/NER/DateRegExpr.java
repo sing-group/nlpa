@@ -111,6 +111,8 @@ public class DateRegExpr {
                             regExp = keysToMatchRegExprEn.get(key);
                         }else if (lang.equals("ES")){
                             regExp = keysToMatchRegExprEs.get(key);
+                        }else {
+                            regExp = keysToMatchRegExprEn.get(key);
                         }
                         dateFormated = dateFormated.replaceAll(key,regExp);
                     }

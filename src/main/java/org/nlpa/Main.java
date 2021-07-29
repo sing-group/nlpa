@@ -54,20 +54,12 @@ import java.util.Map;
  */
 public class Main {
 
-    /**
-     * A logger for logging purposes
-     */
     private static final Logger logger = LogManager.getLogger(Main.class);
 
-    /**
-     * List of instances that are being processed
-     */
+    //Lista de instancias
     private static List<Instance> instances = new ArrayList<Instance>();
 
-    /*
-     * The main method for the running application
-     */
-
+    //Main de prueba previo al uso de la interfaz
     public static void normalCode (String[] args){
         System.out.println("Program started");
         if (args.length == 0) {
@@ -78,14 +70,12 @@ public class Main {
             generateInstances(args[0]);
         }
 
-        //Configurations
         EMLTextExtractor.setCfgPartSelectedOnAlternative("text/plain");
 
         for (Instance i : instances){
             logger.info("Instance data before pipe: " + i.getData().toString());
         }
 
-        //Then load the dataset to use it with Weka TM
         Map<String, Integer> targetValues = new HashMap<>();
         targetValues.put("ham", 0);
         targetValues.put("spam", 1);
@@ -112,7 +102,6 @@ public class Main {
 
         instances = InstanceListUtils.dropInvalid(instances);
 
-        //Pipe all instances
         p.pipeAll(instances);
 
         for (Instance i : instances) {
@@ -122,17 +111,13 @@ public class Main {
                     : i.getData().toString()));
         }
     }
+
+    //Main que llama a la interfaz de usuario creada para la aplicación
     public static void main(String[] args) {
         MainUI.initUI();
     }
 
-    public static void readList (List<String> list){
-        for (String i : list){
-            System.out.println(i);
-
-        }
-    }
-
+    //Método que permite selecciona un archivo o directorio a través de una interfa
     public static File showFileSelector() {
         JFileChooser fileSelector = new JFileChooser(".");
         fileSelector.setDialogTitle("Select a folder");
@@ -146,12 +131,8 @@ public class Main {
             return null;
         }
     }
-    /**
-     * Generate a instance List on instances attribute by recursivelly finding
-     * all files included in testDir directory
-     *
-     * @param testDir The directory where the instances should be loaded
-     */
+
+    //Genera instancias a partir de los archivos del directorio que se le pasa por parámetro
     private static void generateInstances(String testDir) {
         try {
             Files.walk(Paths.get(testDir))
@@ -163,17 +144,9 @@ public class Main {
         }
     }
 
-    /**
-     * Used to add a new instance on instances attribute when a new file is
-     * detected.
-     */
+    //Añade una nueva instancia a la lista de instancias cuando un nuevo archivo es detectado
     static class FileMng {
 
-        /**
-         * Include a filne in the instancelist
-         *
-         * @param path The path of the file
-         */
         static void visit(Path path) {
             File data = path.toFile();
             String target = null;

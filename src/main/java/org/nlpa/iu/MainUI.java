@@ -160,6 +160,8 @@ public class MainUI {
                 selectedFolder = showFileChooser();
 
                 if (selectedFolder != null) {
+                    startButton.setEnabled(true);
+                    inputTextArea.setText("");
                     inputTextArea.setEnabled(false);
                     inputTextArea.setBackground(Color.LIGHT_GRAY);
 

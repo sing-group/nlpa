@@ -66,6 +66,9 @@ public class CurrencyFastNER {
         }else if (lang.equals("ES")){
             listOfNames = allCurrencyEntitiesInText.get("CurrencyNameEs");
             cardinalNumberEntitiesFoundInText = currencyRegExpr.findAllCardinalNumberEsEntities(textToFindAllCurrencies);
+        } else {
+        listOfNames = allCurrencyEntitiesInText.get("CurrencyNameEs");
+        cardinalNumberEntitiesFoundInText = currencyRegExpr.findAllCardinalNumberEsEntities(textToFindAllCurrencies);
         }
         if (!listOfNames.isEmpty()){
             for (String currency : listOfNames){
