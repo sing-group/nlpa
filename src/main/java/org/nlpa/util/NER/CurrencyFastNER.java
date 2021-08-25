@@ -67,8 +67,8 @@ public class CurrencyFastNER {
             listOfNames = allCurrencyEntitiesInText.get("CurrencyNameEs");
             cardinalNumberEntitiesFoundInText = currencyRegExpr.findAllCardinalNumberEsEntities(textToFindAllCurrencies);
         } else {
-        listOfNames = allCurrencyEntitiesInText.get("CurrencyNameEs");
-        cardinalNumberEntitiesFoundInText = currencyRegExpr.findAllCardinalNumberEsEntities(textToFindAllCurrencies);
+        listOfNames = allCurrencyEntitiesInText.get("CurrencyNameEn");
+        cardinalNumberEntitiesFoundInText = currencyRegExpr.findAllCardinalNumberEnEntities(textToFindAllCurrencies);
         }
         if (!listOfNames.isEmpty()){
             for (String currency : listOfNames){
@@ -86,7 +86,7 @@ public class CurrencyFastNER {
                 }
                 if (!cardinalNumberEntitiesFoundInText.isEmpty()){
                     for (String cardinal : cardinalNumberEntitiesFoundInText){
-                        String rule = cardinal + " " + currency;
+                        String rule = cardinal + currency;
                         String entityFound = findWithFastCNER(rule,textToFindAllCurrencies);
                         if (!entityFound.isEmpty()){
                             currencyEntitiesAsociatedToANumber.add(entityFound);
@@ -138,7 +138,7 @@ public class CurrencyFastNER {
                                 currencyAsociatedToANumber = true;
                             }
                         }
-                        rule =  currency + " " + cardinal;
+                        rule =  currency + cardinal;
                         entityFound = findWithFastCNER(rule, textToFindAllCurrencies);
                         if (!entityFound.isEmpty()) {
                             currencyEntitiesAsociatedToANumber.add(entityFound);

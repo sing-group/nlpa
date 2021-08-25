@@ -167,8 +167,8 @@ public class CurrencyRegExpr {
                 listCardinalNumberEntities  = findAllCardinalNumberEsEntities(textToFindEntities);
                 listCurrencyNameEntities  = findAllCurrencyNameEsEntities(textToFindEntities);
             }else {
-                listCardinalNumberEntities  = findAllCardinalNumberEsEntities(textToFindEntities);
-                listCurrencyNameEntities  = findAllCurrencyNameEsEntities(textToFindEntities);
+                listCardinalNumberEntities  = findAllCardinalNumberEnEntities(textToFindEntities);
+                listCurrencyNameEntities  = findAllCurrencyNameEnEntities(textToFindEntities);
             }
             String currencyISOandSymbolEntities  = regularExpresionForCurrencyMap.get("CurrencyISOandSymbol");
             if (!listCurrencyNameEntities.isEmpty()){
