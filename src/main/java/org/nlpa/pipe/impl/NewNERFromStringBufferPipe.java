@@ -109,7 +109,7 @@ public class NewNERFromStringBufferPipe extends AbstractPipe {
 
     //Pipe que se encarga de llamar a las diferentes clases creadas para detectar las diferentes entidades
     //y almacenar los resultados que se añadiran a las propiedades del Pipe, sólo en el caso de que se le pase
-    //un StringBuffer como parámetro, sino devuelve un error%
+    //un StringBuffer como parámetro, sino devuelve un error
     @Override
     public Instance pipe (Instance carrier){
         if (carrier.getData() instanceof StringBuffer){
