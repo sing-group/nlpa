@@ -164,3 +164,10 @@ This program is free software: you can redistribute it and/or modify it under th
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with this program. If not, see https://www.gnu.org/licenses/.
+
+## Citing
+
+Please, cite the following publication if you use NLPA:
+
+M. Novo-Lourés; R. Pavón; Rosalía Laza; D. Ruano-Ordas; J. R. Méndez (2020) Using Natural Language Preprocessing Architecture (NLPA) for Big Data Text Sources. Scientific Programming. Volume 2020, Article ID 2390941, 13 pages. ISSN: 1058-9244. DOI: [https://doi.org/10.1155/2020/2390941](https://doi.org/10.1155/2020/2390941)
+
