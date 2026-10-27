@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -183,6 +184,21 @@ public class EMLTextExtractor extends TextExtractor {
     }
 
     /**
+     * Find the charset with the given name. Java 18 and later no longer accept
+     * "default" (an alias of US-ASCII up to Java 17), which some old e-mails
+     * use in their content type
+     *
+     * @param charsetName the name of the charset
+     * @return the charset
+     */
+    private static Charset charsetForName(String charsetName) {
+        if (charsetName.equalsIgnoreCase("default")) {
+            return StandardCharsets.US_ASCII;
+        }
+        return Charset.forName(charsetName);
+    }
+
+    /**
      * Estact text for a file (which is written in eml format)
      *
      * @param f The file where the contents will be extracted
@@ -223,7 +239,7 @@ public class EMLTextExtractor extends TextExtractor {
                             String charsetName = getCharsetFromContentType(contentType);
                             if (charsetName != null) {
                                 logger.info("charset found in content-type: " + charsetName);
-                                sbResult.append(new String(contents, Charset.forName(charsetName)));
+                                sbResult.append(new String(contents, charsetForName(charsetName)));
                             } else {
                                 CharsetDetector detector = new CharsetDetector();
                                 detector.setText(contents);

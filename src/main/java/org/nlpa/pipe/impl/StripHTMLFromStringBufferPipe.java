@@ -30,6 +30,7 @@ import org.bdp4j.types.Instance;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import java.nio.charset.Charset;
@@ -124,6 +125,23 @@ public class StripHTMLFromStringBufferPipe extends AbstractPipe {
     }
 
     /**
+     * Check if an element has no text nodes of its own. Recent jsoup versions
+     * (unlike 1.11) keep the whitespace after the body as a blank text node of the
+     * document and of the html element; it is ignored there, so that the text of
+     * the whole document is still copied as it was with jsoup 1.11
+     *
+     * @param element the element to check
+     * @return true if the element has no text nodes (ignoring blank text nodes
+     * of the document and of the html element)
+     */
+    private static boolean hasNoText(Element element) {
+        if (element instanceof Document || element.normalName().equals("html")) {
+            return element.textNodes().stream().allMatch(TextNode::isBlank);
+        }
+        return element.textNodes().isEmpty();
+    }
+
+    /**
      * Process an Instance. This method takes an input Instance, removes HTML
      * markup tags or entities and returns it. This is the method by which all
      * pipes are eventually run.
@@ -150,7 +168,7 @@ public class StripHTMLFromStringBufferPipe extends AbstractPipe {
                 Elements elements = doc.getAllElements();
                String copiedText="";
                 for (Element element : elements) {
-                    if (element.textNodes().isEmpty()) {
+                    if (hasNoText(element)) {
                         if (!copiedText.contains(element.text())){
                             newSb.append(element.text());
                             copiedText += element.text();
