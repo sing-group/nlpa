@@ -1,6 +1,6 @@
 package org.nlpa.pipe.impl;
 
-import java.nio.channels.Pipe;
+import org.bdp4j.pipe.Pipe;
 
 import com.google.auto.service.AutoService;
 
